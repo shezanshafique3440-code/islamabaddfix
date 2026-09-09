@@ -62,6 +62,9 @@ export const TRANSITIONS: Record<BookingStatus, readonly TransitionRule[]> = {
   ],
   QUOTE_APPROVED: [
     { to: 'SCHEDULED', actors: ['PROVIDER', 'ADMIN', 'SYSTEM'], label: 'Confirm schedule', labelUr: 'Time confirm karein' },
+    // A technician already on site whose (revised or additional) quote was just
+    // approved resumes work directly rather than re-walking the travel steps.
+    { to: 'IN_PROGRESS', actors: ['PROVIDER', 'SYSTEM'], label: 'Resume job', labelUr: 'Kaam jari rakhein' },
     { to: 'CANCELLED', actors: ['CUSTOMER', 'PROVIDER', 'ADMIN'], label: 'Cancel', labelUr: 'Cancel karein' },
   ],
   SCHEDULED: [
