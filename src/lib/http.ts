@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { ZodError, type ZodType } from 'zod';
+import { ZodError, type ZodTypeAny, type output } from 'zod';
 import { Prisma } from '@prisma/client';
 import { AppError, type ErrorCode, type FieldError } from './errors';
 import { corsAllowedOrigins, isProduction } from './env';
@@ -193,7 +193,10 @@ function readCookie(request: Request, name: string): string | undefined {
 
 // ------------------------------------------------------------------- parsing
 
-export async function parseJson<T>(request: Request, schema: ZodType<T>): Promise<T> {
+export async function parseJson<S extends ZodTypeAny>(
+  request: Request,
+  schema: S,
+): Promise<output<S>> {
   let body: unknown;
   try {
     body = await request.json();
@@ -203,7 +206,7 @@ export async function parseJson<T>(request: Request, schema: ZodType<T>): Promis
   return schema.parse(body);
 }
 
-export function parseQuery<T>(request: Request, schema: ZodType<T>): T {
+export function parseQuery<S extends ZodTypeAny>(request: Request, schema: S): output<S> {
   const url = new URL(request.url);
   const raw: Record<string, string | string[]> = {};
   for (const key of new Set(url.searchParams.keys())) {
