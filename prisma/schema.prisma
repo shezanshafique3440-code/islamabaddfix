@@ -1,0 +1,1011 @@
+// ---------------------------------------------------------------------------
+// Islamabad Fix — data model
+//
+// Conventions:
+//  * UUID primary keys everywhere a row may be referenced by an external
+//    party (URLs, APIs, notifications). Join-only tables still use UUIDs for
+//    uniformity.
+//  * Money is stored in PAISA (integer minor units) to avoid float drift.
+//    Rs. 3,300 => 330000. Helpers in src/lib/money.ts do the conversion.
+//  * `deletedAt` marks soft deletion. Admin deletes are soft wherever the row
+//    participates in financial or audit history.
+// ---------------------------------------------------------------------------
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================ enums =======================================
+
+enum Role {
+  CUSTOMER
+  PROVIDER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum ProviderStatus {
+  PENDING_VERIFICATION
+  VERIFIED
+  REJECTED
+  SUSPENDED
+}
+
+enum VerificationKind {
+  IDENTITY_CNIC
+  PHONE
+  EMAIL
+  PLATFORM_ONBOARDING
+  BANK_ACCOUNT
+}
+
+enum VerificationStatus {
+  NOT_SUBMITTED
+  SUBMITTED
+  APPROVED
+  REJECTED
+}
+
+enum BookingStatus {
+  PENDING
+  PROVIDER_NOTIFIED
+  ACCEPTED
+  QUOTE_PENDING
+  QUOTE_APPROVED
+  SCHEDULED
+  ON_THE_WAY
+  ARRIVED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  DISPUTED
+  REFUNDED
+}
+
+enum BookingUrgency {
+  NORMAL
+  URGENT
+  EMERGENCY
+}
+
+enum QuoteStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+  SUPERSEDED
+  WITHDRAWN
+}
+
+enum QuoteItemKind {
+  INSPECTION
+  LABOUR
+  PARTS
+  EMERGENCY_FEE
+  TRAVEL
+  OTHER
+}
+
+enum PaymentStatus {
+  PENDING
+  AUTHORIZED
+  PAID
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+enum PaymentMethod {
+  CASH
+  BANK_TRANSFER
+  ONLINE_GATEWAY
+}
+
+enum DisputeReason {
+  TECHNICIAN_NO_SHOW
+  POOR_SERVICE
+  WRONG_PRICE
+  UNAUTHORIZED_CHARGE
+  DAMAGE
+  OTHER
+}
+
+enum DisputeStatus {
+  OPEN
+  UNDER_REVIEW
+  AWAITING_CUSTOMER
+  AWAITING_PROVIDER
+  RESOLVED_REFUND
+  RESOLVED_PARTIAL_REFUND
+  RESOLVED_REVISIT
+  RESOLVED_NO_ACTION
+  CLOSED
+}
+
+enum GuaranteeClaimStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  APPROVED
+  REVISIT_SCHEDULED
+  RESOLVED
+  REJECTED
+}
+
+enum NotificationChannel {
+  IN_APP
+  EMAIL
+  SMS
+  WHATSAPP
+  PUSH
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+  SKIPPED_NOT_CONFIGURED
+}
+
+enum FileVisibility {
+  PUBLIC
+  PRIVATE
+}
+
+enum FilePurpose {
+  BOOKING_EVIDENCE
+  COMPLETION_PROOF
+  PROVIDER_PROFILE_PHOTO
+  PROVIDER_DOCUMENT
+  DISPUTE_EVIDENCE
+  GUARANTEE_EVIDENCE
+  SUPPORT_ATTACHMENT
+  CATEGORY_IMAGE
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING_ON_CUSTOMER
+  RESOLVED
+  CLOSED
+}
+
+enum PayoutStatus {
+  PENDING
+  PROCESSING
+  PAID
+  FAILED
+}
+
+enum ConversationKind {
+  BOOKING
+  DISPUTE
+  SUPPORT_TICKET
+  WHATSAPP_INTAKE
+  VOICE_INTAKE
+}
+
+enum PromoKind {
+  PERCENTAGE
+  FIXED_AMOUNT
+}
+
+// ============================ identity ====================================
+
+model User {
+  id                  String    @id @default(uuid()) @db.Uuid
+  email               String    @unique
+  phone               String?   @unique
+  passwordHash        String
+  fullName            String
+  role                Role      @default(CUSTOMER)
+  isActive            Boolean   @default(true)
+  emailVerifiedAt     DateTime?
+  phoneVerifiedAt     DateTime?
+  lastLoginAt         DateTime?
+  failedLoginAttempts Int       @default(0)
+  lockedUntil         DateTime?
+  isDemo              Boolean   @default(false)
+  deletedAt           DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  customerProfile    CustomerProfile?
+  providerProfile    ProviderProfile?
+  refreshTokens      RefreshToken[]
+  addresses          Address[]
+  bookingsAsCustomer Booking[]                 @relation("customerBookings")
+  notifications      Notification[]
+  uploadedFiles      UploadedFile[]
+  auditLogs          AuditLog[]                @relation("auditActor")
+  reviewsAuthored    Review[]                  @relation("reviewAuthor")
+  messages           Message[]
+  supportTickets     SupportTicket[]           @relation("ticketRequester")
+  assignedTickets    SupportTicket[]           @relation("ticketAssignee")
+  conversationParts  ConversationParticipant[]
+
+  @@index([role, isActive])
+  @@index([createdAt])
+}
+
+model RefreshToken {
+  id           String    @id @default(uuid()) @db.Uuid
+  userId       String    @db.Uuid
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // SHA-256 of the token; the raw value never touches the database.
+  tokenHash    String    @unique
+  familyId     String    @db.Uuid
+  expiresAt    DateTime
+  revokedAt    DateTime?
+  // Set when this token was rotated into a successor — enables reuse detection.
+  replacedById String?   @db.Uuid
+  userAgent    String?
+  ipAddress    String?
+  createdAt    DateTime  @default(now())
+
+  @@index([userId, revokedAt])
+  @@index([familyId])
+  @@index([expiresAt])
+}
+
+model CustomerProfile {
+  id                 String   @id @default(uuid()) @db.Uuid
+  userId             String   @unique @db.Uuid
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  preferredLanguage  String   @default("roman-ur")
+  marketingOptIn     Boolean  @default(false)
+  // Denormalised counters, maintained inside the booking/review transactions.
+  totalBookings      Int      @default(0)
+  completedBookings  Int      @default(0)
+  cancelledBookings  Int      @default(0)
+  averageRatingGiven Float?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+// ============================ providers ===================================
+
+model ProviderProfile {
+  id              String         @id @default(uuid()) @db.Uuid
+  userId          String         @unique @db.Uuid
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  businessName    String
+  slug            String         @unique
+  status          ProviderStatus @default(PENDING_VERIFICATION)
+  headline        String?
+  description     String?
+  yearsExperience Int            @default(0)
+  profilePhotoId  String?        @unique @db.Uuid
+  profilePhoto    UploadedFile?  @relation("providerPhoto", fields: [profilePhotoId], references: [id], onDelete: SetNull)
+
+  // Contact/business details. Never exposed publicly — see selectors in
+  // src/lib/providers/visibility.ts.
+  contactPhone String
+  addressLine  String?
+  sector       String?
+  city         String  @default("Islamabad")
+
+  // Payout details. Only the last 4 digits are ever returned to clients.
+  bankAccountTitle String?
+  bankName         String?
+  bankAccountLast4 String?
+  bankIbanHash     String?
+
+  emergencyAvailable Boolean @default(false)
+  emergencyFeePaisa  Int     @default(0)
+  serviceRadiusKm    Int     @default(15)
+  // Minutes; rolling average maintained on accept/decline events.
+  avgResponseMinutes Int?
+  responseRate       Float   @default(0)
+  acceptedJobs       Int     @default(0)
+  offeredJobs        Int     @default(0)
+  completedJobs      Int     @default(0)
+  cancelledJobs      Int     @default(0)
+  noShowJobs         Int     @default(0)
+  ratingAverage      Float?
+  ratingCount        Int     @default(0)
+
+  // Provider-controlled: when false the ops map must not show live position.
+  shareLiveLocation Boolean @default(false)
+  // Max concurrent non-terminal jobs the matcher will assign.
+  maxActiveJobs     Int     @default(5)
+
+  suspendedReason String?
+  rejectedReason  String?
+  verifiedAt      DateTime?
+  isDemo          Boolean   @default(false)
+  deletedAt       DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  verifications ProviderVerification[]
+  services      ProviderService[]
+  serviceAreas  ServiceArea[]
+  availability  ProviderAvailability[]
+  locations     ProviderLocation[]
+  bookings      Booking[]
+  quotes        Quote[]
+  reviews       Review[]               @relation("providerReviews")
+  documents     UploadedFile[]         @relation("providerDocuments")
+  payouts       Payout[]
+
+  @@index([status, city])
+  @@index([status, emergencyAvailable])
+  @@index([ratingAverage])
+}
+
+model ProviderVerification {
+  id               String             @id @default(uuid()) @db.Uuid
+  providerId       String             @db.Uuid
+  provider         ProviderProfile    @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  kind             VerificationKind
+  status           VerificationStatus @default(NOT_SUBMITTED)
+  // Free-text reference (e.g. masked CNIC). Raw CNIC numbers are not stored.
+  reference        String?
+  notes            String?
+  reviewedByUserId String?            @db.Uuid
+  reviewedAt       DateTime?
+  documentId       String?            @db.Uuid
+  document         UploadedFile?      @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  @@unique([providerId, kind])
+  @@index([status])
+}
+
+model ProviderAvailability {
+  id          String          @id @default(uuid()) @db.Uuid
+  providerId  String          @db.Uuid
+  provider    ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  // 0 = Sunday .. 6 = Saturday
+  dayOfWeek   Int
+  // Minutes from midnight, local (Asia/Karachi). 540 = 09:00.
+  startMinute Int
+  endMinute   Int
+  isEnabled   Boolean         @default(true)
+
+  @@unique([providerId, dayOfWeek, startMinute])
+  @@index([providerId, dayOfWeek])
+}
+
+model ProviderLocation {
+  id         String          @id @default(uuid()) @db.Uuid
+  providerId String          @db.Uuid
+  provider   ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  latitude   Float
+  longitude  Float
+  accuracyM  Float?
+  recordedAt DateTime        @default(now())
+
+  @@index([providerId, recordedAt])
+}
+
+// ============================ catalogue ===================================
+
+model ServiceCategory {
+  id                  String    @id @default(uuid()) @db.Uuid
+  name                String
+  slug                String    @unique
+  tagline             String?
+  description         String?
+  // Icon key resolved by src/components/ui/ServiceIcon.tsx — not raw markup.
+  iconKey             String    @default("wrench")
+  sortOrder           Int       @default(0)
+  isActive            Boolean   @default(true)
+  isEmergencyCategory Boolean   @default(false)
+  guaranteeEligible   Boolean   @default(true)
+  deletedAt           DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  services Service[]
+
+  @@index([isActive, sortOrder])
+}
+
+model Service {
+  id                    String          @id @default(uuid()) @db.Uuid
+  categoryId            String          @db.Uuid
+  category              ServiceCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  name                  String
+  slug                  String          @unique
+  description           String?
+  // Indicative range shown before a provider quotes. Never used as the charge.
+  minPricePaisa         Int             @default(0)
+  maxPricePaisa         Int?
+  // Whether the provider must inspect before a price can be given.
+  requiresInspection    Boolean         @default(true)
+  estimatedMinutes      Int             @default(60)
+  isActive              Boolean         @default(true)
+  isEmergencyEnabled    Boolean         @default(false)
+  guaranteeEligible     Boolean         @default(true)
+  guaranteeDaysOverride Int?
+  sortOrder             Int             @default(0)
+  deletedAt             DateTime?
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+
+  providerServices ProviderService[]
+  bookings         Booking[]
+
+  @@unique([categoryId, name])
+  @@index([isActive, categoryId])
+}
+
+model ProviderService {
+  id                 String          @id @default(uuid()) @db.Uuid
+  providerId         String          @db.Uuid
+  provider           ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  serviceId          String          @db.Uuid
+  service            Service         @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  // Provider's own starting price for this service.
+  startingPricePaisa Int
+  isEnabled          Boolean         @default(true)
+  notes              String?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  @@unique([providerId, serviceId])
+  @@index([serviceId, isEnabled])
+}
+
+/// A named operating area (an Islamabad sector, a town, a zone). Rows are
+/// admin-configurable data — no sector list is hard-coded in business logic.
+model ServiceZone {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  slug      String   @unique
+  city      String   @default("Islamabad")
+  // Optional centroid, used for distance scoring when no GPS pin is given.
+  latitude  Float?
+  longitude Float?
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  serviceAreas ServiceArea[]
+  addresses    Address[]
+
+  @@unique([city, name])
+  @@index([isActive, city])
+}
+
+model ServiceArea {
+  id         String          @id @default(uuid()) @db.Uuid
+  providerId String          @db.Uuid
+  provider   ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  zoneId     String          @db.Uuid
+  zone       ServiceZone     @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  createdAt  DateTime        @default(now())
+
+  @@unique([providerId, zoneId])
+  @@index([zoneId])
+}
+
+model Address {
+  id              String       @id @default(uuid()) @db.Uuid
+  userId          String       @db.Uuid
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label           String       @default("Home")
+  zoneId          String?      @db.Uuid
+  zone            ServiceZone? @relation(fields: [zoneId], references: [id], onDelete: SetNull)
+  city            String       @default("Islamabad")
+  addressLine     String
+  houseOrBuilding String?
+  landmark        String?
+  latitude        Float?
+  longitude       Float?
+  contactPhone    String?
+  isDefault       Boolean      @default(false)
+  deletedAt       DateTime?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  bookings Booking[]
+
+  @@index([userId, deletedAt])
+}
+
+// ============================ bookings ====================================
+
+model Booking {
+  id         String           @id @default(uuid()) @db.Uuid
+  /// Human-facing identifier, e.g. IFX-7QK4M2. Unique, shown in all comms.
+  reference  String           @unique
+  customerId String           @db.Uuid
+  customer   User             @relation("customerBookings", fields: [customerId], references: [id], onDelete: Restrict)
+  serviceId  String           @db.Uuid
+  service    Service          @relation(fields: [serviceId], references: [id], onDelete: Restrict)
+  providerId String?          @db.Uuid
+  provider   ProviderProfile? @relation(fields: [providerId], references: [id], onDelete: SetNull)
+  addressId  String           @db.Uuid
+  address    Address          @relation(fields: [addressId], references: [id], onDelete: Restrict)
+
+  status      BookingStatus  @default(PENDING)
+  urgency     BookingUrgency @default(NORMAL)
+  isEmergency Boolean        @default(false)
+
+  problemDescription String
+  customerNotes      String?
+  providerNotes      String?
+
+  scheduledFor           DateTime?
+  scheduledWindowMinutes Int       @default(60)
+  providerNotifiedAt     DateTime?
+  acceptedAt             DateTime?
+  onTheWayAt             DateTime?
+  arrivedAt              DateTime?
+  startedAt              DateTime?
+  completedAt            DateTime?
+  cancelledAt            DateTime?
+  cancelledByUserId      String?   @db.Uuid
+  cancellationReason     String?
+
+  /// Snapshot of the approved quote total at approval time (paisa).
+  approvedTotalPaisa    Int?
+  /// Final charge (paisa) — set at completion, equals approved total plus any
+  /// customer-approved additional charges.
+  finalTotalPaisa       Int?
+  /// Commission is computed server-side at completion and frozen here.
+  commissionRateBp      Int?
+  commissionPaisa       Int?
+  providerEarningsPaisa Int?
+
+  emergencyFeePaisa Int        @default(0)
+  promoCodeId       String?    @db.Uuid
+  promoCode         PromoCode? @relation(fields: [promoCodeId], references: [id], onDelete: SetNull)
+  discountPaisa     Int        @default(0)
+
+  guaranteeEligible  Boolean   @default(false)
+  guaranteeDays      Int       @default(0)
+  guaranteeExpiresAt DateTime?
+
+  /// Structured output of the AI/rule-based intake, if the customer used it.
+  intakeSummary Json?
+
+  isDemo    Boolean   @default(false)
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  statusHistory   BookingStatusHistory[]
+  quotes          Quote[]
+  payments        Payment[]
+  review          Review?
+  disputes        Dispute[]
+  guaranteeClaims GuaranteeClaim[]
+  files           UploadedFile[]         @relation("bookingFiles")
+  offers          BookingOffer[]
+  conversations   Conversation[]
+  supportTickets  SupportTicket[]
+  payoutItems     PayoutItem[]
+
+  @@index([customerId, status])
+  @@index([providerId, status])
+  @@index([status, scheduledFor])
+  @@index([createdAt])
+  @@index([isEmergency, status])
+}
+
+model BookingStatusHistory {
+  id              String         @id @default(uuid()) @db.Uuid
+  bookingId       String         @db.Uuid
+  booking         Booking        @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  fromStatus      BookingStatus?
+  toStatus        BookingStatus
+  changedByUserId String?        @db.Uuid
+  changedByRole   Role?
+  reason          String?
+  metadata        Json?
+  createdAt       DateTime       @default(now())
+
+  @@index([bookingId, createdAt])
+}
+
+/// One row per provider the booking was offered to. Powers response-rate
+/// stats and the "provider notified" fan-out without overloading Booking.
+model BookingOffer {
+  id            String    @id @default(uuid()) @db.Uuid
+  bookingId     String    @db.Uuid
+  booking       Booking   @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  providerId    String    @db.Uuid
+  /// Matching score at offer time, kept for tuning the algorithm.
+  score         Float?
+  notifiedAt    DateTime  @default(now())
+  respondedAt   DateTime?
+  accepted      Boolean?
+  declineReason String?
+  expiresAt     DateTime?
+
+  @@unique([bookingId, providerId])
+  @@index([providerId, respondedAt])
+}
+
+// ============================ quotes ======================================
+
+model Quote {
+  id              String          @id @default(uuid()) @db.Uuid
+  bookingId       String          @db.Uuid
+  booking         Booking         @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  providerId      String          @db.Uuid
+  provider        ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  status          QuoteStatus     @default(DRAFT)
+  /// True when this quote adds charges on top of an already-approved quote.
+  isAdditional    Boolean         @default(false)
+  /// Server-computed sum of items. Clients never supply a total.
+  subtotalPaisa   Int             @default(0)
+  notes           String?
+  validUntil      DateTime?
+  submittedAt     DateTime?
+  respondedAt     DateTime?
+  rejectionReason String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  items QuoteItem[]
+
+  @@index([bookingId, status])
+  @@index([providerId, status])
+}
+
+model QuoteItem {
+  id             String        @id @default(uuid()) @db.Uuid
+  quoteId        String        @db.Uuid
+  quote          Quote         @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  kind           QuoteItemKind
+  label          String
+  quantity       Int           @default(1)
+  unitPricePaisa Int
+  createdAt      DateTime      @default(now())
+
+  @@index([quoteId])
+}
+
+// ============================ payments ====================================
+
+model Payment {
+  id               String        @id @default(uuid()) @db.Uuid
+  bookingId        String        @db.Uuid
+  booking          Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  method           PaymentMethod
+  status           PaymentStatus @default(PENDING)
+  amountPaisa      Int
+  refundedPaisa    Int           @default(0)
+  currency         String        @default("PKR")
+  /// Identifier from the external gateway, when one is involved.
+  providerKey      String?
+  externalRef      String?
+  /// Non-sensitive gateway metadata only. No PAN/CVV is ever stored.
+  metadata         Json?
+  paidAt           DateTime?
+  failureReason    String?
+  recordedByUserId String?       @db.Uuid
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@index([bookingId, status])
+  @@index([status, createdAt])
+}
+
+model Payout {
+  id              String          @id @default(uuid()) @db.Uuid
+  providerId      String          @db.Uuid
+  provider        ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  status          PayoutStatus    @default(PENDING)
+  periodStart     DateTime
+  periodEnd       DateTime
+  grossPaisa      Int             @default(0)
+  commissionPaisa Int             @default(0)
+  netPaisa        Int             @default(0)
+  reference       String?
+  processedAt     DateTime?
+  notes           String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  items PayoutItem[]
+
+  @@index([providerId, status])
+}
+
+model PayoutItem {
+  id              String  @id @default(uuid()) @db.Uuid
+  payoutId        String  @db.Uuid
+  payout          Payout  @relation(fields: [payoutId], references: [id], onDelete: Cascade)
+  bookingId       String  @db.Uuid
+  booking         Booking @relation(fields: [bookingId], references: [id], onDelete: Restrict)
+  grossPaisa      Int
+  commissionPaisa Int
+  netPaisa        Int
+
+  @@unique([payoutId, bookingId])
+  @@index([bookingId])
+}
+
+// ============================ feedback ====================================
+
+model Review {
+  id                        String          @id @default(uuid()) @db.Uuid
+  bookingId                 String          @unique @db.Uuid
+  booking                   Booking         @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  authorId                  String          @db.Uuid
+  author                    User            @relation("reviewAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  providerId                String          @db.Uuid
+  provider                  ProviderProfile @relation("providerReviews", fields: [providerId], references: [id], onDelete: Cascade)
+  rating                    Int
+  comment                   String?
+  serviceQuality            Int?
+  professionalism           Int?
+  punctuality               Int?
+  valueForMoney             Int?
+  /// Provider's rating of the customer. Never exposed to other customers.
+  providerRatingOfCustomer  Int?
+  providerCommentOnCustomer String?
+  isPublished               Boolean         @default(true)
+  isDemo                    Boolean         @default(false)
+  hiddenReason              String?
+  createdAt                 DateTime        @default(now())
+  updatedAt                 DateTime        @updatedAt
+
+  @@index([providerId, isPublished, createdAt])
+  @@index([rating])
+}
+
+model Dispute {
+  id               String        @id @default(uuid()) @db.Uuid
+  reference        String        @unique
+  bookingId        String        @db.Uuid
+  booking          Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  raisedByUserId   String        @db.Uuid
+  reason           DisputeReason
+  status           DisputeStatus @default(OPEN)
+  description      String
+  resolutionNotes  String?
+  refundPaisa      Int           @default(0)
+  resolvedByUserId String?       @db.Uuid
+  resolvedAt       DateTime?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  files         UploadedFile[] @relation("disputeFiles")
+  conversations Conversation[]
+
+  @@index([status, createdAt])
+  @@index([bookingId])
+}
+
+model GuaranteeClaim {
+  id                  String               @id @default(uuid()) @db.Uuid
+  reference           String               @unique
+  bookingId           String               @db.Uuid
+  booking             Booking              @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  raisedByUserId      String               @db.Uuid
+  status              GuaranteeClaimStatus @default(SUBMITTED)
+  description         String
+  reviewNotes         String?
+  /// Booking created to service an approved re-visit.
+  revisitBookingId    String?              @db.Uuid
+  revisitScheduledFor DateTime?
+  /// Whether the provider bears the cost of the re-visit.
+  providerResponsible Boolean?
+  decidedByUserId     String?              @db.Uuid
+  decidedAt           DateTime?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+
+  files UploadedFile[] @relation("guaranteeFiles")
+
+  @@index([status, createdAt])
+  @@index([bookingId])
+}
+
+// ============================ messaging ===================================
+
+model Conversation {
+  id            String           @id @default(uuid()) @db.Uuid
+  kind          ConversationKind
+  bookingId     String?          @db.Uuid
+  booking       Booking?         @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  disputeId     String?          @db.Uuid
+  dispute       Dispute?         @relation(fields: [disputeId], references: [id], onDelete: Cascade)
+  ticketId      String?          @db.Uuid
+  ticket        SupportTicket?   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  /// External channel identity, e.g. a WhatsApp phone number (E.164).
+  externalRef   String?
+  subject       String?
+  isClosed      Boolean          @default(false)
+  /// Scratch state for the WhatsApp/voice intake state machine.
+  intakeState   Json?
+  lastMessageAt DateTime?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  messages     Message[]
+  participants ConversationParticipant[]
+
+  @@unique([kind, externalRef])
+  @@index([bookingId])
+  @@index([lastMessageAt])
+}
+
+model ConversationParticipant {
+  id             String       @id @default(uuid()) @db.Uuid
+  conversationId String       @db.Uuid
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  userId         String       @db.Uuid
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastReadAt     DateTime?
+
+  @@unique([conversationId, userId])
+}
+
+model Message {
+  id             String        @id @default(uuid()) @db.Uuid
+  conversationId String        @db.Uuid
+  conversation   Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderUserId   String?       @db.Uuid
+  sender         User?         @relation(fields: [senderUserId], references: [id], onDelete: SetNull)
+  /// Set for messages produced by the assistant or by the platform itself.
+  systemAuthor   String?
+  body           String
+  attachmentId   String?       @db.Uuid
+  attachment     UploadedFile? @relation(fields: [attachmentId], references: [id], onDelete: SetNull)
+  createdAt      DateTime      @default(now())
+
+  @@index([conversationId, createdAt])
+}
+
+// ============================ support =====================================
+
+model SupportTicket {
+  id          String       @id @default(uuid()) @db.Uuid
+  reference   String       @unique
+  requesterId String       @db.Uuid
+  requester   User         @relation("ticketRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  assigneeId  String?      @db.Uuid
+  assignee    User?        @relation("ticketAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  bookingId   String?      @db.Uuid
+  booking     Booking?     @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+  subject     String
+  description String
+  status      TicketStatus @default(OPEN)
+  resolvedAt  DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  files         UploadedFile[] @relation("ticketFiles")
+  conversations Conversation[]
+
+  @@index([status, createdAt])
+  @@index([requesterId])
+}
+
+// ============================ platform ====================================
+
+model Notification {
+  id            String              @id @default(uuid()) @db.Uuid
+  userId        String              @db.Uuid
+  user          User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  channel       NotificationChannel
+  status        NotificationStatus  @default(PENDING)
+  /// Event key from src/lib/notifications/events.ts, e.g. "booking.accepted".
+  event         String
+  title         String
+  body          String
+  /// In-app deep link.
+  href          String?
+  data          Json?
+  readAt        DateTime?
+  sentAt        DateTime?
+  failureReason String?
+  createdAt     DateTime            @default(now())
+
+  @@index([userId, channel, readAt])
+  @@index([event, createdAt])
+}
+
+model UploadedFile {
+  id                String           @id @default(uuid()) @db.Uuid
+  /// Storage key inside the bucket / local root. Never a public URL.
+  storageKey        String           @unique
+  driver            String           @default("local")
+  purpose           FilePurpose
+  visibility        FileVisibility   @default(PRIVATE)
+  mimeType          String
+  sizeBytes         Int
+  originalName      String
+  checksumSha256    String?
+  width             Int?
+  height            Int?
+  ownerId           String?          @db.Uuid
+  owner             User?            @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  bookingId         String?          @db.Uuid
+  booking           Booking?         @relation("bookingFiles", fields: [bookingId], references: [id], onDelete: Cascade)
+  /// Distinguishes customer evidence from provider completion proof.
+  isCompletionProof Boolean          @default(false)
+  providerId        String?          @db.Uuid
+  provider          ProviderProfile? @relation("providerDocuments", fields: [providerId], references: [id], onDelete: Cascade)
+  disputeId         String?          @db.Uuid
+  dispute           Dispute?         @relation("disputeFiles", fields: [disputeId], references: [id], onDelete: Cascade)
+  guaranteeClaimId  String?          @db.Uuid
+  guaranteeClaim    GuaranteeClaim?  @relation("guaranteeFiles", fields: [guaranteeClaimId], references: [id], onDelete: Cascade)
+  ticketId          String?          @db.Uuid
+  ticket            SupportTicket?   @relation("ticketFiles", fields: [ticketId], references: [id], onDelete: Cascade)
+  deletedAt         DateTime?
+  createdAt         DateTime         @default(now())
+
+  providerPhotoFor ProviderProfile?       @relation("providerPhoto")
+  verifications    ProviderVerification[]
+  messages         Message[]
+
+  @@index([bookingId, isCompletionProof])
+  @@index([ownerId, purpose])
+  @@index([providerId, purpose])
+}
+
+model AuditLog {
+  id          String   @id @default(uuid()) @db.Uuid
+  actorUserId String?  @db.Uuid
+  actor       User?    @relation("auditActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+  actorRole   Role?
+  action      String
+  entity      String
+  entityId    String?
+  ipAddress   String?
+  userAgent   String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  @@index([entity, entityId])
+  @@index([actorUserId, createdAt])
+  @@index([action, createdAt])
+}
+
+model PromoCode {
+  id               String    @id @default(uuid()) @db.Uuid
+  code             String    @unique
+  kind             PromoKind
+  /// Percentage in basis points (1000 = 10%) or a fixed paisa amount.
+  value            Int
+  maxDiscountPaisa Int?
+  minOrderPaisa    Int       @default(0)
+  usageLimit       Int?
+  usageCount       Int       @default(0)
+  perCustomerLimit Int       @default(1)
+  startsAt         DateTime?
+  endsAt           DateTime?
+  isActive         Boolean   @default(true)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  bookings Booking[]
+
+  @@index([isActive, endsAt])
+}
+
+/// Single-row-per-key platform configuration. Typed accessors and defaults
+/// live in src/lib/settings — nothing reads this table directly.
+model Setting {
+  key             String   @id
+  value           Json
+  updatedByUserId String?  @db.Uuid
+  updatedAt       DateTime @updatedAt
+  createdAt       DateTime @default(now())
+}
+
+/// Sliding-window counters for rate limiting. Postgres-backed so limits hold
+/// across serverless instances; swap for Redis via the same interface.
+model RateLimitHit {
+  id        String   @id @default(uuid()) @db.Uuid
+  bucket    String
+  createdAt DateTime @default(now())
+
+  @@index([bucket, createdAt])
+}

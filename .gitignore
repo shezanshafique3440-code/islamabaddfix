@@ -1,0 +1,33 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# next
+.next/
+out/
+build/
+next-env.d.ts
+
+# env — never commit real secrets
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# testing
+coverage/
+.vitest/
+
+# local object storage (dev driver)
+/storage/
+/var/
+
+# misc
+.DS_Store
+*.pem
+npm-debug.log*
+yarn-error.log*
+.idea/
+.vscode/
+*.tsbuildinfo
