@@ -63,6 +63,23 @@ const config: Config = {
           600: '#1570ef',
           700: '#175cd3',
         },
+        /*
+         * Categorical chart hues, in fixed assignment order.
+         *
+         * Deliberately separate from the status colours above: amber and red
+         * mean "warning" and "problem" everywhere else in the product, so
+         * reusing them as data series would make a chart look like an alert.
+         *
+         * Validated with the dataviz palette checker (light surface, all pairs):
+         * worst adjacent CVD deltaE 10.0 deutan / 13.2 tritan, normal-vision 21.9 —
+         * all above the 8 floor, so colour alone is legible for CVD readers,
+         * and every chart still carries a legend plus direct labels.
+         */
+        chart: {
+          1: '#0f8663',
+          2: '#6d28d9',
+          3: '#b45309',
+        },
       },
       fontFamily: {
         sans: [

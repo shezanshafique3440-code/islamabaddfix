@@ -244,7 +244,7 @@ export async function getDailySeries(days = 30): Promise<TimeSeriesPoint[]> {
   >`
     WITH spine AS (
       SELECT generate_series(
-        date_trunc('day', now() AT TIME ZONE 'Asia/Karachi') - make_interval(days => ${days - 1}),
+        date_trunc('day', now() AT TIME ZONE 'Asia/Karachi') - make_interval(days => ${days - 1}::int),
         date_trunc('day', now() AT TIME ZONE 'Asia/Karachi'),
         interval '1 day'
       )::date AS date
@@ -302,7 +302,7 @@ export async function getCategoryBreakdown(days = 30): Promise<CategoryBreakdown
     JOIN "Service" s ON s.id = b."serviceId"
     JOIN "ServiceCategory" c ON c.id = s."categoryId"
     WHERE b."deletedAt" IS NULL
-      AND b."createdAt" >= now() - make_interval(days => ${days})
+      AND b."createdAt" >= now() - make_interval(days => ${days}::int)
     GROUP BY c."name", c."slug"
     ORDER BY bookings DESC
   `;
@@ -334,7 +334,7 @@ export async function getZoneBreakdown(days = 30): Promise<ZoneBreakdown[]> {
     JOIN "Address" a ON a.id = b."addressId"
     LEFT JOIN "ServiceZone" z ON z.id = a."zoneId"
     WHERE b."deletedAt" IS NULL
-      AND b."createdAt" >= now() - make_interval(days => ${days})
+      AND b."createdAt" >= now() - make_interval(days => ${days}::int)
     GROUP BY z."name"
     ORDER BY bookings DESC
     LIMIT 15
