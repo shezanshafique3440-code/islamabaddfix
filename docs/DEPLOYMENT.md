@@ -129,6 +129,17 @@ It loads the pages, watches for CSP violations and page errors, types into the
 booking wizard and checks that the assistant answers. It exits non-zero on any
 failure, so it can gate a release.
 
+On a staging deployment, go further and run the whole scenario:
+
+```bash
+npm run acceptance -- https://staging.islamabadfix.pk
+```
+
+That registers a customer and a provider, onboards and approves the provider,
+books a job, quotes it, works it to completion, pays, reviews and claims the
+guarantee — over HTTP, through the real routes, checking the database row behind
+every response. It writes data, so never point it at production.
+
 ---
 
 ## 5. Migrations
@@ -298,6 +309,7 @@ If a migration itself is the problem:
 - [ ] Migration reviewed by a second person, and backwards-compatible
 - [ ] A fresh database backup exists and is less than an hour old
 - [ ] Previous image tag noted for rollback
+- [ ] `npm run acceptance -- <staging url>` green on staging
 - [ ] Deploy: migrate → start → `npm run smoke -- <url>`
 - [ ] Watch 5xx and `/api/health` for fifteen minutes
 
