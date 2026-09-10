@@ -1,4 +1,4 @@
-import type { Quote, QuoteItemKind } from '@prisma/client';
+import type { BookingStatus, Quote, QuoteItemKind } from '@prisma/client';
 import { prisma } from '../db';
 import { AppError } from '../errors';
 import { AUDIT_ACTIONS, recordAudit } from '../audit';
@@ -37,9 +37,40 @@ function sumItems(items: QuoteItemInput[]): number {
 }
 
 /**
+ * Statuses a job can be resumed at once an additional quote has been decided.
+ * The agreed price already stands, so neither decision may rewind the job.
+ */
+const RESUMABLE_AFTER_QUOTE: readonly BookingStatus[] = [
+  'QUOTE_APPROVED',
+  'SCHEDULED',
+  'ARRIVED',
+  'IN_PROGRESS',
+];
+
+/**
+ * Where the job was when a quote interrupted it.
+ *
+ * Read from BookingStatusHistory, which `transitionBooking` writes in the same
+ * transaction as every status change — so this is the recorded interruption
+ * point, not a guess. A revised quote submitted while the booking is already
+ * QUOTE_PENDING writes no new row, so the original interruption point survives
+ * any number of revisions.
+ */
+async function interruptedFrom(bookingId: string): Promise<BookingStatus | null> {
+  const row = await prisma.bookingStatusHistory.findFirst({
+    where: { bookingId, toStatus: 'QUOTE_PENDING' },
+    orderBy: { createdAt: 'desc' },
+    select: { fromStatus: true },
+  });
+  return row?.fromStatus ?? null;
+}
+
+/**
  * Provider submits a quote. Works from ACCEPTED (initial quote), from ARRIVED
- * (revised after inspection) and from IN_PROGRESS (additional charges found
- * mid-job) — in the last two cases the quote is marked additional.
+ * (revised after inspection), from QUOTE_APPROVED / SCHEDULED (extra cost found
+ * before setting off) and from IN_PROGRESS (found mid-job) — in every case but
+ * the first the quote is marked additional. Submitting again while a quote is
+ * still undecided supersedes it rather than stacking a second live quote.
  */
 export async function submitQuote(params: {
   bookingId: string;
@@ -108,14 +139,20 @@ export async function submitQuote(params: {
     return created;
   });
 
-  await transitionBooking({
-    bookingId: booking.id,
-    to: 'QUOTE_PENDING',
-    actorRole: 'PROVIDER',
-    actorUserId: params.actorUserId,
-    reason: isAdditional ? 'Additional charges submitted' : 'Quote submitted',
-    metadata: { quoteId: quote.id, subtotalPaisa },
-  });
+  // A revision submitted before the customer decided leaves the status where it
+  // is — the booking is already awaiting a decision, and re-entering the same
+  // status would both fail the state machine and destroy the recorded
+  // interruption point that the decision needs in order to resume the job.
+  if (booking.status !== 'QUOTE_PENDING') {
+    await transitionBooking({
+      bookingId: booking.id,
+      to: 'QUOTE_PENDING',
+      actorRole: 'PROVIDER',
+      actorUserId: params.actorUserId,
+      reason: isAdditional ? 'Additional charges submitted' : 'Quote submitted',
+      metadata: { quoteId: quote.id, subtotalPaisa },
+    });
+  }
 
   await recordAudit({
     action: AUDIT_ACTIONS.QUOTE_SUBMITTED,
@@ -200,12 +237,8 @@ export async function approveQuote(params: {
   // Where the job was when the quote interrupted it decides where it resumes.
   // A technician who was already on site or working carries on; an initial
   // quote leaves the booking at QUOTE_APPROVED awaiting schedule confirmation.
-  const interrupted = await prisma.bookingStatusHistory.findFirst({
-    where: { bookingId: quote.booking.id, toStatus: 'QUOTE_PENDING' },
-    orderBy: { createdAt: 'desc' },
-    select: { fromStatus: true },
-  });
-  if (interrupted?.fromStatus === 'IN_PROGRESS' || interrupted?.fromStatus === 'ARRIVED') {
+  const interruptedAt = await interruptedFrom(quote.booking.id);
+  if (interruptedAt === 'IN_PROGRESS' || interruptedAt === 'ARRIVED') {
     await transitionBooking({
       bookingId: quote.booking.id,
       to: 'IN_PROGRESS',
@@ -266,15 +299,27 @@ export async function rejectQuote(params: {
     include: { items: true },
   });
 
-  // Back to ACCEPTED so the provider can re-quote. A rejected *additional*
-  // quote leaves the agreed price untouched, which is the point.
+  // A rejected *initial* quote goes back to ACCEPTED so the provider can
+  // re-quote — there is no agreed price yet. A rejected *additional* quote
+  // leaves the agreed price untouched (that is the whole point of requiring a
+  // separate approval) and returns the job to where the quote interrupted it,
+  // so declining an optional upgrade does not un-schedule the visit or send a
+  // technician who is already on site back to the start.
+  const resumeAt = quote.isAdditional ? await interruptedFrom(quote.booking.id) : null;
+  const nextStatus: BookingStatus =
+    resumeAt && RESUMABLE_AFTER_QUOTE.includes(resumeAt) ? resumeAt : 'ACCEPTED';
+
   await transitionBooking({
     bookingId: quote.booking.id,
-    to: 'ACCEPTED',
-    actorRole: 'CUSTOMER',
+    to: nextStatus,
+    // The customer rejected the quote; putting the job back where it was is the
+    // platform's own bookkeeping, not a customer action, so it is recorded as
+    // such — and these resume transitions are SYSTEM-only in the state machine
+    // precisely so they never surface as buttons.
+    actorRole: nextStatus === 'ACCEPTED' ? 'CUSTOMER' : 'SYSTEM',
     actorUserId: params.customerUserId,
     reason: params.reason ?? 'Quote rejected by customer',
-    metadata: { quoteId: quote.id },
+    metadata: { quoteId: quote.id, wasAdditional: quote.isAdditional },
   });
 
   await recordAudit({

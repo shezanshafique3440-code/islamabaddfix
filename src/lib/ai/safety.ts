@@ -121,14 +121,40 @@ export function assessHazard(text: string): HazardAssessment {
  * into giving instructions, so anything that reads like a repair directive is
  * replaced with a referral rather than shown to the customer.
  */
+/**
+ * Match two groups in either order, within one sentence.
+ *
+ * Word order cannot be assumed here. Roman Urdu is verb-final ("panel
+ * kholein") where English is verb-first ("open the panel"), and customers mix
+ * both in a single message — a pattern written in one order catches only half
+ * of what it is meant to catch. Staying inside a sentence (no `.` `!` `?`
+ * between the two halves) keeps it from joining an instruction in one sentence
+ * to an unrelated noun in the next.
+ */
+function eitherOrder(first: string, second: string): RegExp {
+  const within = '[^.!?\\n]*';
+  return new RegExp(
+    `\\b(?:${first})\\b${within}\\b(?:${second})\\b|\\b(?:${second})\\b${within}\\b(?:${first})\\b`,
+    'i',
+  );
+}
+
+const OPEN_UP = 'khol|kholein|kholo|kholna|kholni|open up|dismantle|disassemble';
+const APPLIANCE = 'panel|unit|appliance|geyser|AC|board|socket|switch|meter|cover';
+const REFRIGERANT = 'gas|refrigerant|freon|r22|r410|r-?32';
+const FILL = 'bhar|bharein|bharna|dalein|dal dein|refill|top up|recharge';
+const WIRE = 'wire|wiring|tar|taar';
+const JOIN = 'jorein|jor dein|jorna|connect|splice|cut|katein|kaatein';
+const SELF = 'khud|self|yourself';
+const REPAIR = 'repair|fix|theek|thik|marammat|replace|badal|badlein|tabdeel';
+
 const UNSAFE_OUTPUT_PATTERNS = [
-  /\b(khol|kholein|kholo|open up|dismantle|disassemble)\b.*\b(panel|unit|appliance|geyser|AC|board|socket|switch)\b/i,
-  /\b(gas|refrigerant|freon|r22|r410)\b.*\b(bhar|dalein|refill|add|top up|charge)\b/i,
-  /\b(wire|wiring|tar)\b.*\b(jorein|jor dein|connect|splice|cut|katein)\b/i,
+  eitherOrder(OPEN_UP, APPLIANCE),
+  eitherOrder(REFRIGERANT, FILL),
+  eitherOrder(WIRE, JOIN),
+  eitherOrder(SELF, REPAIR),
   /\bbypass\b/i,
-  /\b(capacitor|compressor)\b.*\b(replace|badal|change|tabdeel)\b.*\bkhud\b/i,
-  /\bkhud (theek|repair|fix) kar/i,
-  /\byourself\b.*\b(repair|fix|replace)\b/i,
+  /\b(capacitor|compressor|thermostat)\b[^.!?\n]*\b(khud|yourself)\b/i,
 ];
 
 const SAFE_REPLACEMENT =

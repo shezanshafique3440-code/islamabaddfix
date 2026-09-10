@@ -39,18 +39,20 @@ export function StepSchedule({
     () => (selected ?? days[0]?.date ?? new Date()).toISOString().slice(0, 10),
   );
 
-  const earliest = new Date(Date.now() + config.minLeadMinutes * 60_000);
-
   const emergencyAllowed = config.emergencyEnabled && (service?.isEmergencyEnabled ?? false);
 
   const slots = useMemo(() => {
+    // The lead-time cut-off is computed inside the memo: built outside it, a new
+    // Date on every render would defeat the memo entirely. Recomputing it when
+    // the selected day changes is exactly the freshness this needs.
+    const earliest = Date.now() + config.minLeadMinutes * 60_000;
     const day = new Date(`${activeDay}T00:00:00`);
     return SLOT_HOURS.map((hour) => {
       const slot = new Date(day);
       slot.setHours(hour, 0, 0, 0);
-      return { hour, slot, disabled: slot.getTime() < earliest.getTime() };
+      return { hour, slot, disabled: slot.getTime() < earliest };
     });
-  }, [activeDay, earliest]);
+  }, [activeDay, config.minLeadMinutes]);
 
   return (
     <StepShell

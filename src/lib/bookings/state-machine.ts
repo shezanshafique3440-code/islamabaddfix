@@ -55,9 +55,21 @@ export const TRANSITIONS: Record<BookingStatus, readonly TransitionRule[]> = {
     { to: 'CANCELLED', actors: ['CUSTOMER', 'PROVIDER', 'ADMIN'], label: 'Cancel', labelUr: 'Cancel karein' },
   ],
   QUOTE_PENDING: [
-    { to: 'QUOTE_APPROVED', actors: ['CUSTOMER'], label: 'Approve quote', labelUr: 'Quote approve karein' },
-    // Rejection returns the job to ACCEPTED so the provider may re-quote.
+    // 'SYSTEM' is on this rule as well as 'CUSTOMER' because a *rejected*
+    // additional quote also lands here: the agreed price still stands, so the
+    // job goes back to QUOTE_APPROVED even though nobody approved anything new.
+    { to: 'QUOTE_APPROVED', actors: ['CUSTOMER', 'SYSTEM'], label: 'Approve quote', labelUr: 'Quote approve karein' },
+    // Rejecting an *initial* quote returns the job to ACCEPTED so the provider
+    // may re-quote — there is no agreed price to protect.
     { to: 'ACCEPTED', actors: ['CUSTOMER'], label: 'Reject quote', labelUr: 'Quote reject karein' },
+    // Resume points for a decided *additional* quote. A quote interrupts the job
+    // wherever it was, and the decision has to put it back there: a technician
+    // standing in the customer's kitchen when the extra part was declined is
+    // still standing there. SYSTEM-only, so these never render as buttons —
+    // `rejectQuote` performs them from the recorded interruption point.
+    { to: 'SCHEDULED', actors: ['SYSTEM'], label: 'Resume schedule' },
+    { to: 'ARRIVED', actors: ['SYSTEM'], label: 'Resume on site' },
+    { to: 'IN_PROGRESS', actors: ['PROVIDER', 'SYSTEM'], label: 'Resume job', labelUr: 'Kaam jari rakhein' },
     { to: 'CANCELLED', actors: ['CUSTOMER', 'PROVIDER', 'ADMIN'], label: 'Cancel', labelUr: 'Cancel karein' },
   ],
   QUOTE_APPROVED: [
@@ -65,12 +77,16 @@ export const TRANSITIONS: Record<BookingStatus, readonly TransitionRule[]> = {
     // A technician already on site whose (revised or additional) quote was just
     // approved resumes work directly rather than re-walking the travel steps.
     { to: 'IN_PROGRESS', actors: ['PROVIDER', 'SYSTEM'], label: 'Resume job', labelUr: 'Kaam jari rakhein' },
+    // Extra cost found after the price was agreed but before setting off. It
+    // needs its own approval, exactly like one found mid-job.
+    { to: 'QUOTE_PENDING', actors: ['PROVIDER'], label: 'Request extra charges', labelUr: 'Extra charges' },
     { to: 'CANCELLED', actors: ['CUSTOMER', 'PROVIDER', 'ADMIN'], label: 'Cancel', labelUr: 'Cancel karein' },
   ],
   SCHEDULED: [
     { to: 'ON_THE_WAY', actors: ['PROVIDER'], label: 'On the way', labelUr: 'Raste mein hoon' },
     // A technician already on site can start without the travel step.
     { to: 'ARRIVED', actors: ['PROVIDER'], label: 'Arrived', labelUr: 'Pohonch gaya' },
+    { to: 'QUOTE_PENDING', actors: ['PROVIDER'], label: 'Request extra charges', labelUr: 'Extra charges' },
     { to: 'CANCELLED', actors: ['CUSTOMER', 'PROVIDER', 'ADMIN'], label: 'Cancel', labelUr: 'Cancel karein' },
   ],
   ON_THE_WAY: [

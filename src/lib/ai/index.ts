@@ -126,12 +126,16 @@ function finalize(
   degraded: boolean,
   safetyNotice: string | null,
 ): IntakeResponse {
-  // A hazard's own guidance replaces the conversational reply entirely.
-  const baseReply = safetyNotice ?? result.reply;
-  const { message, wasFiltered } = sanitizeAssistantMessage(baseReply);
+  // The output filter exists to catch a *model* drifting into repair
+  // instructions. Hazard guidance is platform-authored safety copy that
+  // deliberately says things like "open the windows, do not touch a switch" —
+  // running it through the filter would replace the most important message this
+  // product ever shows somebody with a generic referral. So the model's reply is
+  // filtered; ours is not, and a hazard's guidance replaces the reply entirely.
+  const { message, wasFiltered } = sanitizeAssistantMessage(result.reply);
   return {
     ...result,
-    reply: message,
+    reply: safetyNotice ?? message,
     urgency: safetyNotice ? 'EMERGENCY' : result.urgency,
     source,
     degraded,
