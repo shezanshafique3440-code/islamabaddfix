@@ -257,6 +257,7 @@ export function summarizeBooking(booking: BookingListRow) {
     hasDispute: booking._count.disputes > 0,
     hasGuaranteeClaim: booking._count.guaranteeClaims > 0,
     guaranteeExpiresAt: booking.guaranteeExpiresAt,
+    isDemo: booking.isDemo,
     createdAt: booking.createdAt,
     completedAt: booking.completedAt,
   };
