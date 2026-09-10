@@ -13,6 +13,7 @@ import { formatPaisa } from '@/lib/money';
 import { formatDate, DAY_NAMES, minutesToTimeLabel } from '@/lib/utils';
 import { env } from '@/lib/env';
 import type { VerificationKind } from '@prisma/client';
+import { jsonLdScript } from '@/lib/seo';
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -72,7 +73,7 @@ export default async function ProviderProfilePage({ params }: Params) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
 
       <div className="border-b border-ink-200 bg-ink-50/60">

@@ -1,0 +1,11 @@
+{
+  "name": "Islamabad Fix",
+  "short_name": "IslamabadFix",
+  "description": "Problem batao. Baqi hum sambhal lenge. Ghar aur business ke liye verified technicians, Islamabad mein.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0b6b51",
+  "lang": "en-PK",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

@@ -1,0 +1,118 @@
+# ---------------------------------------------------------------------------
+# Islamabad Fix — full local stack.
+#
+#   docker compose up --build
+#
+# Brings up Postgres, MinIO (S3-compatible object storage) and the application,
+# runs migrations as a release step, and seeds the reference catalogue. Every
+# optional integration is off, so the app starts in the honest "not configured"
+# state rather than pretending to have an AI model or a payment gateway.
+#
+# The credentials below are development values and are not secret. A real
+# deployment supplies its own through the environment or a secrets manager —
+# see docs/DEPLOYMENT.md.
+# ---------------------------------------------------------------------------
+
+name: islamabad-fix
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: isbfix
+      POSTGRES_PASSWORD: isbfix
+      POSTGRES_DB: isbfix
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U isbfix -d isbfix']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  minio:
+    image: minio/minio:latest
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: isbfix
+      MINIO_ROOT_PASSWORD: isbfix-dev-secret
+    volumes:
+      - minio-data:/data
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    healthcheck:
+      test: ['CMD', 'mc', 'ready', 'local']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # Creates the bucket once MinIO is up, then exits.
+  minio-init:
+    image: minio/mc:latest
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set local http://minio:9000 isbfix isbfix-dev-secret &&
+      mc mb --ignore-existing local/islamabad-fix &&
+      echo 'bucket ready'
+      "
+
+  # Release step: migrations run to completion before the app starts. Keeping
+  # this separate from the app container means a migration failure stops the
+  # deploy instead of starting a server against a schema it does not match.
+  migrate:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_APP_URL: http://localhost:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://isbfix:isbfix@postgres:5432/isbfix?schema=public
+    command: ['node_modules/.bin/prisma', 'migrate', 'deploy']
+    restart: 'no'
+
+  app:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_APP_URL: http://localhost:3000
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      minio-init:
+        condition: service_completed_successfully
+    environment:
+      DATABASE_URL: postgresql://isbfix:isbfix@postgres:5432/isbfix?schema=public
+      # Development value. Generate a real one with `openssl rand -base64 48`.
+      AUTH_SECRET: local-development-secret-at-least-thirty-two-chars
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      STORAGE_DRIVER: s3
+      STORAGE_ENDPOINT: http://minio:9000
+      STORAGE_BUCKET: islamabad-fix
+      STORAGE_ACCESS_KEY: isbfix
+      STORAGE_SECRET_KEY: isbfix-dev-secret
+      STORAGE_FORCE_PATH_STYLE: 'true'
+      # Everything below is off on purpose: the app degrades honestly.
+      AI_PROVIDER: 'none'
+      MAPS_PROVIDER: 'none'
+      EMAIL_PROVIDER: 'none'
+      SMS_PROVIDER: 'none'
+      PAYMENT_GATEWAY: 'none'
+    ports:
+      - '3000:3000'
+
+volumes:
+  postgres-data:
+  minio-data:

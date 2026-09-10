@@ -16,6 +16,7 @@ export const metadata: Metadata = {
   },
   description: DESCRIPTION,
   applicationName: APP_NAME,
+  manifest: '/manifest.webmanifest',
   keywords: [
     'Islamabad services',
     'AC repair Islamabad',

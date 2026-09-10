@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { PageHeader } from '@/components/marketing/PageHeader';
 import { getSetting } from '@/lib/settings';
 import { env } from '@/lib/env';
+import { jsonLdScript } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Aam sawalat (FAQ)',
@@ -121,7 +122,7 @@ export default async function FaqPage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
       <PageHeader
         eyebrow="FAQ"

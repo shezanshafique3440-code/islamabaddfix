@@ -21,6 +21,9 @@ export const RATE_LIMITS = {
   login: { name: 'auth:login', limit: 10, windowSeconds: 300 },
   register: { name: 'auth:register', limit: 5, windowSeconds: 3600 },
   refresh: { name: 'auth:refresh', limit: 60, windowSeconds: 300 },
+  // Changing a password requires the current one, so this endpoint is a
+  // credential-guessing surface for anyone holding a stolen session.
+  passwordChange: { name: 'auth:password', limit: 5, windowSeconds: 900 },
   bookingCreate: { name: 'booking:create', limit: 12, windowSeconds: 3600 },
   upload: { name: 'file:upload', limit: 40, windowSeconds: 3600 },
   aiIntake: { name: 'ai:intake', limit: 30, windowSeconds: 3600 },

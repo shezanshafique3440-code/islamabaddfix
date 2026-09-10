@@ -18,6 +18,7 @@ next-env.d.ts
 # testing
 coverage/
 .vitest/
+/storage-test/
 
 # local object storage (dev driver)
 /storage/

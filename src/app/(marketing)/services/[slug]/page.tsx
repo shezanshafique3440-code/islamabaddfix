@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/Badge';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { formatPaisaRange } from '@/lib/money';
 import { env } from '@/lib/env';
+import { jsonLdScript } from '@/lib/seo';
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -93,7 +94,7 @@ export default async function CategoryPage({ params }: Params) {
       <script
         type="application/ld+json"
         // Server-generated from our own database; no user input reaches it.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
 
       <PageHeader

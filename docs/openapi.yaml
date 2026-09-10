@@ -1,0 +1,1783 @@
+openapi: 3.1.0
+
+info:
+  title: Islamabad Fix API
+  version: '1.0.0'
+  summary: On-demand home and business services marketplace for Islamabad.
+  description: |
+    The customer- and provider-facing HTTP API.
+
+    Two things are true of every endpoint here and are worth stating once:
+
+    * **No request body carries a price, a total, a commission or a rate.**
+      There is nowhere to put one. Prices come from a technician's itemised
+      quote that the customer approves; the platform's commission is computed
+      server-side from an admin setting and frozen onto the booking at
+      completion.
+    * **An unconfigured integration is a documented state, not a failure.**
+      Endpoints that depend on credentials return `503`
+      `INTEGRATION_NOT_CONFIGURED` and the application keeps working around
+      them.
+
+    Administrative endpoints (`/admin/*`) are intentionally out of scope for
+    this document; they require a staff role plus a specific permission and are
+    described in `docs/API.md`.
+  contact:
+    name: Islamabad Fix engineering
+  license:
+    name: Proprietary
+
+servers:
+  - url: http://localhost:3000/api
+    description: Local development
+  - url: https://{host}/api
+    description: Deployment
+    variables:
+      host:
+        default: islamabadfix.pk
+
+tags:
+  - name: Public
+    description: No authentication required.
+  - name: Authentication
+  - name: Bookings
+  - name: Quotes and payment
+  - name: Escalations
+    description: Disputes and Fix Guarantee claims.
+  - name: Provider
+  - name: Files
+  - name: Assistant
+
+security:
+  - sessionCookie: []
+
+paths:
+  /health:
+    get:
+      tags: [Public]
+      summary: Service health and integration status
+      security: []
+      responses:
+        '200':
+          description: Health report. `status` is `ok` only when the database answered.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, enum: [ok, degraded] }
+                  database: { type: string, enum: [up, down] }
+                  latencyMs: { type: integer }
+                  integrations:
+                    type: object
+                    description: Which integrations actually have credentials.
+                    properties:
+                      ai: { type: boolean }
+                      maps: { type: boolean }
+                      email: { type: boolean }
+                      sms: { type: boolean }
+                      whatsapp: { type: boolean }
+                      voice: { type: boolean }
+                      onlinePayments: { type: boolean }
+                      storage: { type: string, enum: [local, s3] }
+
+  /catalogue:
+    get:
+      tags: [Public]
+      summary: Active categories and their services
+      security: []
+      responses:
+        '200':
+          description: The catalogue tree.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/Category' }
+
+  /catalogue/zones:
+    get:
+      tags: [Public]
+      summary: Active service zones
+      description: |
+        Zones are data, not code. An administrator adds, renames or retires one
+        and the matcher picks it up immediately.
+      security: []
+      responses:
+        '200':
+          description: Zones with centroids.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/Zone' }
+
+  /providers:
+    get:
+      tags: [Public]
+      summary: Public provider directory
+      description: Verified providers only. Never includes contact details or a location.
+      security: []
+      parameters:
+        - { in: query, name: categorySlug, schema: { type: string } }
+        - { in: query, name: serviceSlug, schema: { type: string } }
+        - { in: query, name: zoneSlug, schema: { type: string } }
+        - { in: query, name: search, schema: { type: string } }
+        - { in: query, name: minRating, schema: { type: number, minimum: 1, maximum: 5 } }
+        - { in: query, name: emergencyOnly, schema: { type: boolean } }
+        - in: query
+          name: sort
+          schema: { type: string, enum: [rating, jobs, experience, newest] }
+        - { in: query, name: page, schema: { type: integer, minimum: 1, default: 1 } }
+        - { in: query, name: perPage, schema: { type: integer, minimum: 1, maximum: 48, default: 12 } }
+      responses:
+        '200':
+          description: A page of provider cards.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/ProviderCard' }
+                      meta: { $ref: '#/components/schemas/Pagination' }
+
+  /providers/{slug}:
+    get:
+      tags: [Public]
+      summary: Public provider profile
+      security: []
+      parameters:
+        - { in: path, name: slug, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Profile, reviews and offered services.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data: { $ref: '#/components/schemas/ProviderCard' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /search:
+    get:
+      tags: [Public]
+      summary: Search services, categories and providers
+      security: []
+      parameters:
+        - { in: query, name: q, required: true, schema: { type: string, minLength: 2 } }
+      responses:
+        '200':
+          description: Grouped matches.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+
+  /auth/register:
+    post:
+      tags: [Authentication]
+      summary: Create an account
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [fullName, email, password, acceptedTerms]
+              properties:
+                fullName: { type: string, minLength: 2, maxLength: 80 }
+                email: { type: string, format: email }
+                phone:
+                  type: string
+                  description: Pakistani number; normalised to +92 form before storage.
+                  example: '+923001234567'
+                password: { type: string, minLength: 10 }
+                role: { type: string, enum: [CUSTOMER, PROVIDER], default: CUSTOMER }
+                acceptedTerms: { type: boolean, enum: [true] }
+      responses:
+        '201':
+          description: Account created; session cookies set.
+          headers:
+            Set-Cookie:
+              description: Access, refresh and CSRF cookies.
+              schema: { type: string }
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data: { $ref: '#/components/schemas/User' }
+        '409':
+          description: '`EMAIL_TAKEN` or `PHONE_TAKEN`.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /auth/login:
+    post:
+      tags: [Authentication]
+      summary: Start a session
+      description: |
+        A wrong password and an unknown email return the same error, so this
+        endpoint cannot be used to enumerate accounts. Rate limited by IP and
+        by email address independently.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string }
+      responses:
+        '200':
+          description: Signed in; session cookies set.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data: { $ref: '#/components/schemas/User' }
+        '401':
+          description: '`INVALID_CREDENTIALS`.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+        '423':
+          description: '`ACCOUNT_LOCKED` after repeated failures.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /auth/refresh:
+    post:
+      tags: [Authentication]
+      summary: Rotate the session
+      description: |
+        The refresh token is single-use. Presenting one that has already been
+        rotated is treated as theft: the entire token family is revoked and the
+        response is `TOKEN_REUSED`.
+      security: []
+      responses:
+        '200':
+          description: New access and refresh cookies.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+        '401':
+          description: '`TOKEN_EXPIRED` or `TOKEN_REUSED`.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+
+  /auth/logout:
+    post:
+      tags: [Authentication]
+      summary: End this session
+      responses:
+        '200':
+          description: Session revoked and cookies cleared.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+
+  /auth/me:
+    get:
+      tags: [Authentication]
+      summary: The signed-in user
+      responses:
+        '200':
+          description: User, role and provider status where applicable.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data: { $ref: '#/components/schemas/User' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+    patch:
+      tags: [Authentication]
+      summary: Update name or phone
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullName: { type: string }
+                phone: { type: string }
+      responses:
+        '200':
+          description: Updated user.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data: { $ref: '#/components/schemas/User' }
+
+  /auth/password:
+    post:
+      tags: [Authentication]
+      summary: Change password
+      description: Revokes every session, including the caller's own.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [currentPassword, newPassword]
+              properties:
+                currentPassword: { type: string }
+                newPassword: { type: string, minLength: 10 }
+      responses:
+        '200':
+          description: Changed; the client must sign in again.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          changed: { type: boolean }
+                          reloginRequired: { type: boolean }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /addresses:
+    get:
+      tags: [Bookings]
+      summary: The caller's addresses
+      responses:
+        '200':
+          description: Addresses, default first.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/Address' }
+    post:
+      tags: [Bookings]
+      summary: Add an address
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AddressInput' }
+      responses:
+        '201':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data: { $ref: '#/components/schemas/Address' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+
+  /addresses/{id}:
+    parameters:
+      - { in: path, name: id, required: true, schema: { type: string, format: uuid } }
+    patch:
+      tags: [Bookings]
+      summary: Update an address
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AddressInput' }
+      responses:
+        '200':
+          description: Updated.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [Bookings]
+      summary: Remove an address
+      description: |
+        Soft delete — bookings reference addresses and their history has to stay
+        readable. Refused while a live booking still points at it.
+      responses:
+        '200':
+          description: Removed.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+        '409':
+          description: '`CONFLICT` — a live booking uses this address.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+
+  /bookings:
+    get:
+      tags: [Bookings]
+      summary: The caller's bookings
+      parameters:
+        - in: query
+          name: status
+          schema:
+            oneOf:
+              - { type: string }
+              - { type: array, items: { type: string } }
+        - { in: query, name: page, schema: { type: integer, minimum: 1, default: 1 } }
+        - { in: query, name: perPage, schema: { type: integer, minimum: 1, maximum: 50, default: 20 } }
+      responses:
+        '200':
+          description: A page of bookings.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/BookingSummary' }
+                      meta: { $ref: '#/components/schemas/Pagination' }
+    post:
+      tags: [Bookings]
+      summary: Create a booking
+      description: |
+        Either assigns the provider the customer chose, or fans the job out to
+        the top-ranked eligible providers. When nothing matches, the booking is
+        still created and held as `PENDING` with
+        `meta.awaitingManualAssignment: true` — the customer is told the truth
+        rather than shown a confirmation that means nothing.
+
+        Note the absence of any price field.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateBooking' }
+      responses:
+        '201':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data: { $ref: '#/components/schemas/BookingSummary' }
+                      meta:
+                        type: object
+                        properties:
+                          providersNotified: { type: integer }
+                          awaitingManualAssignment: { type: boolean }
+        '403':
+          description: '`PROVIDER_NOT_VERIFIED` or `PROVIDER_SUSPENDED`.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+        '409':
+          description: '`PROVIDER_AT_CAPACITY`.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+        '422':
+          description: |
+            `VALIDATION_ERROR` — including an address that is not the caller's,
+            an inactive service, or a slot outside the configured lead-time
+            window.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /bookings/{id}:
+    get:
+      tags: [Bookings]
+      summary: Booking detail
+      description: |
+        Projected for whoever is asking. A provider who has only been *offered*
+        the job sees the zone but no street address, coordinates or phone
+        number; those are released when they accept. Anyone who is not a party
+        to the booking gets `404`, not `403` — confirming the booking exists
+        would itself be a leak.
+      parameters:
+        - { in: path, name: id, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: The booking.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data: { $ref: '#/components/schemas/BookingDetail' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /bookings/{id}/cancel:
+    post:
+      tags: [Bookings]
+      summary: Cancel a booking
+      description: |
+        A fee applies only inside the configured window, and never when staff
+        cancel on the customer's behalf.
+      parameters:
+        - { in: path, name: id, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties:
+                reason: { type: string, minLength: 4, maxLength: 500 }
+      responses:
+        '200':
+          description: Cancelled, with the fee that was applied.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          status: { type: string }
+                          cancellationFeePaisa: { type: integer }
+        '409':
+          description: '`CANCELLATION_NOT_ALLOWED`.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+
+  /bookings/{id}/quotes:
+    parameters:
+      - { in: path, name: id, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [Quotes and payment]
+      summary: Quote history for a booking
+      responses:
+        '200':
+          description: Every quote, newest first, including superseded ones.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/Quote' }
+    post:
+      tags: [Quotes and payment]
+      summary: Approve or reject a quote
+      description: |
+        The customer's decision is the only thing that writes an agreed price.
+        Rejecting an additional quote leaves the already-agreed price untouched
+        and returns the job to wherever the quote interrupted it.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [quoteId, decision]
+              properties:
+                quoteId: { type: string, format: uuid }
+                decision: { type: string, enum: [approve, reject] }
+                reason: { type: string, maxLength: 500 }
+      responses:
+        '200':
+          description: Decision recorded.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+        '403':
+          description: '`FORBIDDEN` — not this customer''s quote.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+        '409':
+          description: '`QUOTE_NOT_PENDING` — already decided, superseded or expired.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+
+  /bookings/{id}/payment:
+    parameters:
+      - { in: path, name: id, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [Quotes and payment]
+      summary: Payment record for a booking
+      responses:
+        '200':
+          description: The payment, if one exists.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+    post:
+      tags: [Quotes and payment]
+      summary: Start a payment
+      description: |
+        The amount is taken from the booking's server-side total; it is not part
+        of the request. Cash and bank transfer are recorded as real-world events
+        the system observes. `ONLINE_GATEWAY` returns `503` until a gateway is
+        configured.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [method]
+              properties:
+                method: { type: string, enum: [CASH, BANK_TRANSFER, ONLINE_GATEWAY] }
+                returnUrl: { type: string, format: uri }
+      responses:
+        '201':
+          description: Payment created; `redirectUrl` present for a gateway.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+        '409':
+          description: '`PAYMENT_ALREADY_SETTLED` or `QUOTE_REQUIRED`.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+        '503': { $ref: '#/components/responses/NotConfigured' }
+    patch:
+      tags: [Quotes and payment]
+      summary: Settle a pending payment
+      description: Records cash handed over, or a bank transfer confirmed by operations.
+      responses:
+        '200':
+          description: Settled.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+
+  /bookings/{id}/review:
+    post:
+      tags: [Bookings]
+      summary: Review a completed booking
+      parameters:
+        - { in: path, name: id, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [rating]
+              properties:
+                rating: { type: integer, minimum: 1, maximum: 5 }
+                comment: { type: string, maxLength: 1500 }
+                serviceQuality: { type: integer, minimum: 1, maximum: 5 }
+                professionalism: { type: integer, minimum: 1, maximum: 5 }
+                punctuality: { type: integer, minimum: 1, maximum: 5 }
+                valueForMoney: { type: integer, minimum: 1, maximum: 5 }
+      responses:
+        '201':
+          description: Review recorded and the provider's aggregate recomputed.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+        '403':
+          description: '`REVIEW_NOT_ALLOWED` — not the customer, or the job is not complete.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+        '409':
+          description: '`REVIEW_ALREADY_EXISTS`.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+
+  /bookings/{id}/dispute:
+    parameters:
+      - { in: path, name: id, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [Escalations]
+      summary: Dispute on this booking
+      responses:
+        '200':
+          description: The dispute, if one exists.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+    post:
+      tags: [Escalations]
+      summary: Open a dispute
+      description: Only the booking's own customer. One open dispute at a time.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason, description]
+              properties:
+                reason:
+                  type: string
+                  enum: [TECHNICIAN_NO_SHOW, POOR_SERVICE, WRONG_PRICE, UNAUTHORIZED_CHARGE, DAMAGE, OTHER]
+                description: { type: string, minLength: 15, maxLength: 2000 }
+                fileIds:
+                  type: array
+                  maxItems: 8
+                  items: { type: string, format: uuid }
+      responses:
+        '201':
+          description: Opened; a conversation thread is created for it.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+        '409':
+          description: '`DISPUTE_ALREADY_OPEN`.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+
+  /bookings/{id}/guarantee:
+    parameters:
+      - { in: path, name: id, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [Escalations]
+      summary: Guarantee claim on this booking
+      responses:
+        '200':
+          description: The claim, if one exists.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+    post:
+      tags: [Escalations]
+      summary: Claim the Fix Guarantee
+      description: |
+        Eligibility is read from what was frozen onto the booking when it
+        completed — not from the current platform setting, in either direction.
+        Not every service is covered, and every claim is reviewed by staff.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [description]
+              properties:
+                description: { type: string, minLength: 15, maxLength: 2000 }
+                fileIds:
+                  type: array
+                  maxItems: 8
+                  items: { type: string, format: uuid }
+      responses:
+        '201':
+          description: Claim submitted for review.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+        '409':
+          description: '`GUARANTEE_NOT_ELIGIBLE` or `GUARANTEE_EXPIRED`.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+
+  /ai/intake:
+    post:
+      tags: [Assistant]
+      summary: Triage a problem description
+      description: |
+        Returns a suggested category and service, questions worth asking, and a
+        recommendation — never a diagnosis, and never repair instructions.
+
+        `source` says which engine answered: `llm` when a model is configured,
+        `rules` when the transparent keyword classifier did. `degraded` is true
+        when a configured model was called and could not be used. A detected
+        hazard sets `safetyNotice`, forces `urgency: EMERGENCY`, and cannot be
+        overridden by anything the model returns.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [message]
+              properties:
+                message: { type: string, minLength: 3, maxLength: 1500 }
+                history:
+                  type: array
+                  maxItems: 20
+                  items:
+                    type: object
+                    properties:
+                      role: { type: string, enum: [user, assistant] }
+                      content: { type: string, maxLength: 2000 }
+      responses:
+        '200':
+          description: The assessment.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data: { $ref: '#/components/schemas/IntakeResult' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /providers/match:
+    post:
+      tags: [Bookings]
+      summary: Ranked providers for a job
+      description: |
+        Hard eligibility filters run in SQL and cannot be outscored; the ranking
+        that follows is explainable — each candidate carries a per-signal
+        `breakdown`, and the weights behind it are an admin setting.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [serviceId]
+              properties:
+                serviceId: { type: string, format: uuid }
+                addressId: { type: string, format: uuid }
+                zoneId: { type: string, format: uuid }
+                scheduledFor: { type: string, format: date-time }
+                urgency: { type: string, enum: [NORMAL, URGENT, EMERGENCY] }
+      responses:
+        '200':
+          description: Candidates, best first.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/MatchCandidate' }
+
+  /notifications:
+    get:
+      tags: [Bookings]
+      summary: The caller's notifications
+      responses:
+        '200':
+          description: Notifications, newest first.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+
+  /notifications/read:
+    post:
+      tags: [Bookings]
+      summary: Mark notifications read
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  description: Omit to mark everything read.
+                  items: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Marked.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+
+  /files:
+    post:
+      tags: [Files]
+      summary: Upload a file
+      description: |
+        Validated three independent ways, because any one alone is bypassable:
+        the declared MIME type must be on the allow-list for the purpose, the
+        extension must match that type, and the leading bytes must match it too.
+        A script named `holiday.jpg` and declared as `image/jpeg` fails the third
+        check.
+
+        Visibility is decided by purpose, never by the caller: verification
+        documents and dispute evidence are always private.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file, purpose]
+              properties:
+                file: { type: string, format: binary }
+                purpose:
+                  type: string
+                  enum:
+                    - BOOKING_EVIDENCE
+                    - COMPLETION_PROOF
+                    - PROVIDER_PROFILE_PHOTO
+                    - PROVIDER_DOCUMENT
+                    - DISPUTE_EVIDENCE
+                    - GUARANTEE_EVIDENCE
+                    - SUPPORT_ATTACHMENT
+                bookingId: { type: string, format: uuid }
+                disputeId: { type: string, format: uuid }
+                guaranteeClaimId: { type: string, format: uuid }
+                ticketId: { type: string, format: uuid }
+      responses:
+        '201':
+          description: Stored; the response carries metadata, never the bytes.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data: { $ref: '#/components/schemas/UploadedFile' }
+        '413':
+          description: '`PAYLOAD_TOO_LARGE`.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+        '415':
+          description: '`UNSUPPORTED_MEDIA_TYPE` — type, extension or content mismatch.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /files/{id}:
+    get:
+      tags: [Files]
+      summary: Download a file
+      description: |
+        The only way private media leaves the system; the storage root is not
+        web-served. A caller with no relationship to the file gets `404`, not
+        `403` — the existence of somebody's identity document is itself private
+        — and the denial is written to the audit log.
+      parameters:
+        - { in: path, name: id, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: The bytes, served with `nosniff` and a sandboxing CSP.
+          content:
+            application/octet-stream:
+              schema: { type: string, format: binary }
+        '404':
+          description: Missing, deleted, or not yours.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+
+  /provider/onboarding:
+    get:
+      tags: [Provider]
+      summary: The caller's provider profile
+      responses:
+        '200':
+          description: Profile, services, areas, availability and verification checklist.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+    put:
+      tags: [Provider]
+      summary: Submit or revise the provider profile
+      description: |
+        Idempotent: re-submitting replaces the service, area and availability
+        sets wholesale. It never changes verification status — that is an
+        administrator's decision. A full IBAN is never stored; only a hash and
+        the last four digits are kept.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProviderOnboarding' }
+      responses:
+        '200':
+          description: Saved. Status stays `PENDING_VERIFICATION` until an admin approves.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+
+  /provider/jobs:
+    get:
+      tags: [Provider]
+      summary: Assigned jobs and open offers
+      responses:
+        '200':
+          description: Jobs and offers.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+
+  /provider/jobs/{id}:
+    get:
+      tags: [Provider]
+      summary: Job detail
+      description: |
+        Address and customer phone number are withheld until the provider has
+        accepted the job.
+      parameters:
+        - { in: path, name: id, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: The job.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data: { $ref: '#/components/schemas/BookingDetail' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /provider/jobs/{id}/status:
+    post:
+      tags: [Provider]
+      summary: Move a job along
+      description: |
+        Every provider-side action funnels through here, so the state machine is
+        unavoidable. An action that is not legal from the current status, for
+        this actor, is refused with `INVALID_STATUS_TRANSITION`.
+      parameters:
+        - { in: path, name: id, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action]
+              properties:
+                action:
+                  type: string
+                  enum: [accept, decline, confirm_schedule, on_the_way, arrived, start, complete, resume]
+                reason: { type: string, maxLength: 500 }
+                notes: { type: string, maxLength: 1000 }
+                scheduledFor: { type: string, format: date-time }
+      responses:
+        '200':
+          description: The new status.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+        '409':
+          description: |
+            `INVALID_STATUS_TRANSITION`, `BOOKING_NOT_AVAILABLE` (already taken),
+            or `QUOTE_NOT_PENDING` when completing with charges still awaiting
+            the customer's decision.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+
+  /provider/jobs/{id}/quote:
+    parameters:
+      - { in: path, name: id, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [Provider]
+      summary: Quote history for this job
+      responses:
+        '200':
+          description: Every quote on the booking.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+    post:
+      tags: [Provider]
+      summary: Submit a quote or additional charges
+      description: |
+        Line items arrive in rupees and are converted to paisa by the route; the
+        total is summed from the persisted values. There is no total field, so a
+        client cannot assert one.
+
+        Submitting while a quote is still undecided supersedes it rather than
+        leaving two live. Submitting after a price was agreed marks the new
+        quote `isAdditional`, which requires its own approval before the job can
+        complete.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [items]
+              properties:
+                items:
+                  type: array
+                  minItems: 1
+                  maxItems: 20
+                  items: { $ref: '#/components/schemas/QuoteItemInput' }
+                notes: { type: string, maxLength: 1000 }
+                validUntil: { type: string, format: date-time, nullable: true }
+      responses:
+        '201':
+          description: Quote created; the customer is notified.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data: { $ref: '#/components/schemas/Quote' }
+        '403':
+          description: '`FORBIDDEN` — the job is not assigned to this provider.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+
+  /provider/location:
+    post:
+      tags: [Provider]
+      summary: Publish the current position
+      description: Visible to staff for dispatch. Never exposed on any public projection.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [latitude, longitude]
+              properties:
+                latitude: { type: number, minimum: -90, maximum: 90 }
+                longitude: { type: number, minimum: -180, maximum: 180 }
+                accuracyMeters: { type: number }
+      responses:
+        '200':
+          description: Recorded.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+    delete:
+      tags: [Provider]
+      summary: Stop sharing position
+      responses:
+        '200':
+          description: Cleared.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+
+  /provider/earnings:
+    get:
+      tags: [Provider]
+      summary: Earnings and payout history
+      description: |
+        Shows gross, the platform commission that was applied, and net. A
+        provider sees their own commission; they never see another provider's,
+        and a customer never sees any.
+      responses:
+        '200':
+          description: Earnings summary.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+
+  /provider/reviews:
+    get:
+      tags: [Provider]
+      summary: Reviews received
+      responses:
+        '200':
+          description: Reviews, newest first.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+
+  /provider/settings:
+    get:
+      tags: [Provider]
+      summary: Working preferences
+      responses:
+        '200':
+          description: Availability, radius, capacity, emergency preferences.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+    patch:
+      tags: [Provider]
+      summary: Update working preferences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                serviceRadiusKm: { type: number, minimum: 1, maximum: 60 }
+                maxActiveJobs: { type: integer, minimum: 1, maximum: 20 }
+                emergencyAvailable: { type: boolean }
+                emergencyFeeRupees: { type: number, minimum: 0 }
+                availability:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      dayOfWeek: { type: integer, minimum: 0, maximum: 6 }
+                      startMinute: { type: integer, minimum: 0, maximum: 1440 }
+                      endMinute: { type: integer, minimum: 0, maximum: 1440 }
+      responses:
+        '200':
+          description: Updated.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+        '422':
+          description: '`VALIDATION_ERROR` — for example an emergency fee above the platform ceiling.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+
+components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: __Host-ifx_at
+      description: |
+        Set by `/auth/login` and `/auth/register`. `httpOnly`, `SameSite=Lax`,
+        `Secure` with the `__Host-` prefix in production. Unsafe methods also
+        require the CSRF token — read it from the non-`httpOnly` CSRF cookie and
+        send it as `x-csrf-token`.
+
+  responses:
+    Unauthenticated:
+      description: '`UNAUTHENTICATED` — sign in, or refresh and retry.'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Failure' }
+    NotFound:
+      description: '`NOT_FOUND` — missing, or present and not yours.'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Failure' }
+    ValidationError:
+      description: '`VALIDATION_ERROR`, with per-field messages.'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Failure' }
+    RateLimited:
+      description: '`RATE_LIMITED`.'
+      headers:
+        Retry-After:
+          schema: { type: integer }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Failure' }
+    NotConfigured:
+      description: |
+        `INTEGRATION_NOT_CONFIGURED` — this deployment has no credentials for
+        that integration. The rest of the application still works.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Failure' }
+
+  schemas:
+    Success:
+      type: object
+      required: [success, data]
+      properties:
+        success: { type: boolean, enum: [true] }
+        data: {}
+        meta: { type: object }
+
+    Failure:
+      type: object
+      required: [success, message, code]
+      properties:
+        success: { type: boolean, enum: [false] }
+        message:
+          type: string
+          description: Written for the end user, in Roman Urdu.
+          example: Booking nahi mili.
+        code:
+          type: string
+          description: Stable identifier; branch on this, not on the message.
+          example: NOT_FOUND
+        fields:
+          type: array
+          items:
+            type: object
+            properties:
+              path: { type: string }
+              message: { type: string }
+
+    Pagination:
+      type: object
+      properties:
+        page: { type: integer }
+        perPage: { type: integer }
+        total: { type: integer }
+        totalPages: { type: integer }
+
+    User:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        email: { type: string, format: email }
+        phone: { type: string, nullable: true }
+        fullName: { type: string }
+        role: { type: string, enum: [CUSTOMER, PROVIDER, ADMIN, SUPER_ADMIN] }
+        emailVerified: { type: boolean }
+        phoneVerified: { type: boolean }
+        createdAt: { type: string, format: date-time }
+      description: The password hash has no representation here and never leaves the database.
+
+    Category:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        slug: { type: string }
+        tagline: { type: string, nullable: true }
+        description: { type: string, nullable: true }
+        iconKey: { type: string }
+        isEmergencyCategory: { type: boolean }
+        services:
+          type: array
+          items: { $ref: '#/components/schemas/Service' }
+
+    Service:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        slug: { type: string }
+        description: { type: string, nullable: true }
+        minPricePaisa:
+          type: integer
+          description: Indicative floor, in paisa. Not a quote.
+        maxPricePaisa: { type: integer, nullable: true }
+        requiresInspection: { type: boolean }
+        estimatedMinutes: { type: integer }
+        isEmergencyEnabled: { type: boolean }
+        guaranteeEligible:
+          type: boolean
+          description: Whether the Fix Guarantee applies to this service. Not every service is covered.
+
+    Zone:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string, example: G-10 }
+        slug: { type: string }
+        city: { type: string }
+        latitude: { type: number, nullable: true }
+        longitude: { type: number, nullable: true }
+
+    Address:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        label: { type: string }
+        addressLine: { type: string }
+        houseOrBuilding: { type: string, nullable: true }
+        landmark: { type: string, nullable: true }
+        city: { type: string }
+        zone: { $ref: '#/components/schemas/Zone' }
+        latitude: { type: number, nullable: true }
+        longitude: { type: number, nullable: true }
+        contactPhone: { type: string, nullable: true }
+        isDefault: { type: boolean }
+
+    AddressInput:
+      type: object
+      required: [addressLine]
+      properties:
+        label: { type: string, maxLength: 40, default: Home }
+        zoneId: { type: string, format: uuid, nullable: true }
+        city: { type: string, default: Islamabad }
+        addressLine: { type: string, minLength: 5, maxLength: 300 }
+        houseOrBuilding: { type: string, maxLength: 120 }
+        landmark: { type: string, maxLength: 160 }
+        latitude: { type: number, minimum: -90, maximum: 90, nullable: true }
+        longitude: { type: number, minimum: -180, maximum: 180, nullable: true }
+        contactPhone: { type: string }
+        isDefault: { type: boolean, default: false }
+
+    CreateBooking:
+      type: object
+      required: [serviceId, addressId, problemDescription]
+      properties:
+        serviceId: { type: string, format: uuid }
+        addressId:
+          type: string
+          format: uuid
+          description: Must belong to the caller; ownership is checked before anything else happens.
+        problemDescription: { type: string, minLength: 10, maxLength: 2000 }
+        providerId:
+          type: string
+          format: uuid
+          nullable: true
+          description: Null fans the job out to the top-ranked eligible providers.
+        scheduledFor: { type: string, format: date-time, nullable: true }
+        urgency: { type: string, enum: [NORMAL, URGENT, EMERGENCY], default: NORMAL }
+        isEmergency: { type: boolean, default: false }
+        customerNotes: { type: string, maxLength: 1000 }
+        fileIds:
+          type: array
+          maxItems: 8
+          items: { type: string, format: uuid }
+        intakeSummary:
+          type: object
+          nullable: true
+          description: Structured result from the intake assistant, kept for the technician.
+        promoCode: { type: string, minLength: 3, maxLength: 32 }
+
+    BookingSummary:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        reference: { type: string, example: IFX-7K2M4A }
+        status: { $ref: '#/components/schemas/BookingStatus' }
+        statusLabel: { type: string }
+        statusLabelUr: { type: string }
+        urgency: { type: string, enum: [NORMAL, URGENT, EMERGENCY] }
+        isEmergency: { type: boolean }
+        scheduledFor: { type: string, format: date-time, nullable: true }
+        service: { $ref: '#/components/schemas/Service' }
+        isDemo:
+          type: boolean
+          description: True for seeded demo rows, which the UI badges as demo.
+
+    BookingDetail:
+      allOf:
+        - $ref: '#/components/schemas/BookingSummary'
+        - type: object
+          properties:
+            problemDescription: { type: string }
+            customerNotes: { type: string, nullable: true }
+            providerNotes: { type: string, nullable: true }
+            trackerStep: { type: integer }
+            customer:
+              type: object
+              description: Phone is masked until the provider has accepted the job.
+              properties:
+                id: { type: string, format: uuid }
+                fullName: { type: string }
+                phone: { type: string, nullable: true }
+                isYou: { type: boolean }
+            provider:
+              type: object
+              nullable: true
+              properties:
+                id: { type: string, format: uuid }
+                slug: { type: string }
+                businessName: { type: string }
+                ratingAverage: { type: number, nullable: true }
+                ratingCount: { type: integer }
+                completedJobs: { type: integer }
+                badges:
+                  type: array
+                  items: { type: string }
+                  description: Only checks that were actually completed.
+                contactPhone: { type: string, nullable: true }
+            address:
+              type: object
+              description: |
+                Street, coordinates and phone are null for a provider who has
+                only been offered the job — they see the zone and nothing more.
+              properties:
+                id: { type: string, format: uuid }
+                label: { type: string, nullable: true }
+                addressLine: { type: string, nullable: true }
+                city: { type: string }
+                zone: { $ref: '#/components/schemas/Zone' }
+                latitude: { type: number, nullable: true }
+                longitude: { type: number, nullable: true }
+                contactPhone: { type: string, nullable: true }
+            pricing:
+              type: object
+              properties:
+                approvedTotalPaisa: { type: integer, nullable: true }
+                finalTotalPaisa: { type: integer, nullable: true }
+                emergencyFeePaisa: { type: integer }
+                discountPaisa: { type: integer }
+                commissionPaisa:
+                  type: integer
+                  nullable: true
+                  description: Staff only; absent for customers and providers.
+                providerEarningsPaisa:
+                  type: integer
+                  nullable: true
+                  description: The assigned provider and staff only.
+            quotes:
+              type: array
+              items: { $ref: '#/components/schemas/Quote' }
+            media:
+              type: array
+              items: { $ref: '#/components/schemas/UploadedFile' }
+            history:
+              type: array
+              description: Every status change, in order.
+              items:
+                type: object
+                properties:
+                  fromStatus: { $ref: '#/components/schemas/BookingStatus' }
+                  toStatus: { $ref: '#/components/schemas/BookingStatus' }
+                  reason: { type: string, nullable: true }
+                  createdAt: { type: string, format: date-time }
+            guarantee:
+              type: object
+              properties:
+                eligible: { type: boolean }
+                days: { type: integer, nullable: true }
+                expiresAt: { type: string, format: date-time, nullable: true }
+
+    BookingStatus:
+      type: string
+      enum:
+        - PENDING
+        - PROVIDER_NOTIFIED
+        - ACCEPTED
+        - QUOTE_PENDING
+        - QUOTE_APPROVED
+        - SCHEDULED
+        - ON_THE_WAY
+        - ARRIVED
+        - IN_PROGRESS
+        - COMPLETED
+        - CANCELLED
+        - DISPUTED
+        - REFUNDED
+
+    Quote:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        status: { type: string, enum: [SUBMITTED, APPROVED, REJECTED, SUPERSEDED, EXPIRED] }
+        isAdditional:
+          type: boolean
+          description: A charge raised after a price was already agreed. Needs its own approval.
+        subtotalPaisa:
+          type: integer
+          description: Summed on the server from the line items.
+        notes: { type: string, nullable: true }
+        rejectionReason: { type: string, nullable: true }
+        validUntil: { type: string, format: date-time, nullable: true }
+        submittedAt: { type: string, format: date-time, nullable: true }
+        respondedAt: { type: string, format: date-time, nullable: true }
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: string, format: uuid }
+              kind: { type: string, enum: [INSPECTION, LABOUR, PARTS, EMERGENCY_FEE, TRAVEL, OTHER] }
+              label: { type: string }
+              quantity: { type: integer }
+              unitPricePaisa: { type: integer }
+              totalPaisa: { type: integer }
+
+    QuoteItemInput:
+      type: object
+      required: [kind, label, unitPriceRupees]
+      properties:
+        kind: { type: string, enum: [INSPECTION, LABOUR, PARTS, EMERGENCY_FEE, TRAVEL, OTHER] }
+        label: { type: string, minLength: 2, maxLength: 120 }
+        quantity: { type: integer, minimum: 1, maximum: 999, default: 1 }
+        unitPriceRupees:
+          type: number
+          description: Providers type rupees; the route converts to paisa.
+
+    UploadedFile:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        url:
+          type: string
+          description: Always `/api/files/{id}`. Storage keys are never exposed.
+        mimeType: { type: string }
+        originalName: { type: string }
+        sizeBytes: { type: integer }
+        isCompletionProof: { type: boolean }
+        createdAt: { type: string, format: date-time }
+
+    ProviderCard:
+      type: object
+      description: |
+        The public projection. It carries trust signals and nothing that
+        identifies or locates the person — no phone number, no address, no bank
+        details, no CNIC reference, no GPS position.
+      properties:
+        id: { type: string, format: uuid }
+        slug: { type: string }
+        businessName: { type: string }
+        headline: { type: string, nullable: true }
+        photoUrl: { type: string, nullable: true }
+        yearsExperience: { type: integer }
+        ratingAverage: { type: number, nullable: true }
+        ratingCount: { type: integer }
+        completedJobs: { type: integer }
+        avgResponseMinutes: { type: integer, nullable: true }
+        emergencyAvailable: { type: boolean }
+        emergencyFeePaisa: { type: integer }
+        badges:
+          type: array
+          description: |
+            One entry per verification that was actually completed.
+            `PLATFORM_ONBOARDING` means an administrator reviewed this
+            provider's onboarding submission — not a government check, a
+            licence, an insurance policy or a background check.
+          items:
+            type: object
+            properties:
+              kind:
+                type: string
+                enum: [IDENTITY_CNIC, PHONE, EMAIL, PLATFORM_ONBOARDING, BANK_ACCOUNT]
+              label: { type: string }
+        isDemo: { type: boolean }
+
+    ProviderOnboarding:
+      type: object
+      required: [businessName, contactPhone, yearsExperience, services, zoneIds]
+      properties:
+        businessName: { type: string, minLength: 2, maxLength: 120 }
+        contactPhone: { type: string }
+        headline: { type: string, maxLength: 160 }
+        description: { type: string, maxLength: 2000 }
+        yearsExperience: { type: integer, minimum: 0, maximum: 70 }
+        addressLine: { type: string }
+        sector: { type: string }
+        services:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required: [serviceId, startingPriceRupees]
+            properties:
+              serviceId: { type: string, format: uuid }
+              startingPriceRupees: { type: number, minimum: 0 }
+        zoneIds:
+          type: array
+          minItems: 1
+          items: { type: string, format: uuid }
+        availability:
+          type: array
+          items:
+            type: object
+            properties:
+              dayOfWeek: { type: integer, minimum: 0, maximum: 6 }
+              startMinute: { type: integer, minimum: 0, maximum: 1440 }
+              endMinute: { type: integer, minimum: 0, maximum: 1440 }
+        emergencyAvailable: { type: boolean }
+        emergencyFeeRupees: { type: number, minimum: 0 }
+        serviceRadiusKm: { type: number, minimum: 1, maximum: 60 }
+        cnicReference:
+          type: string
+          description: A masked reference such as the last four digits. The full number is never stored.
+        bankAccountTitle: { type: string }
+        bankName: { type: string }
+        bankIban:
+          type: string
+          description: Only a SHA-256 hash and the last four digits are persisted.
+
+    MatchCandidate:
+      type: object
+      properties:
+        providerId: { type: string, format: uuid }
+        businessName: { type: string }
+        slug: { type: string }
+        ratingAverage: { type: number, nullable: true }
+        ratingCount: { type: integer }
+        completedJobs: { type: integer }
+        startingPricePaisa: { type: integer }
+        emergencyAvailable: { type: boolean }
+        distanceKm: { type: number }
+        distanceIsEstimate:
+          type: boolean
+          description: True when no GPS fix was available and a zone centroid was used.
+        activeJobs: { type: integer }
+        score: { type: number }
+        breakdown:
+          type: object
+          description: Per-signal contribution, so a ranking can be explained rather than trusted.
+          additionalProperties: { type: number }
+
+    IntakeResult:
+      type: object
+      properties:
+        categorySlug: { type: string, nullable: true }
+        serviceSlug: { type: string, nullable: true }
+        issueSummary: { type: string }
+        urgency: { type: string, enum: [NORMAL, URGENT, EMERGENCY] }
+        confidence: { type: number, minimum: 0, maximum: 1 }
+        questions:
+          type: array
+          items: { type: string }
+        mediaRequest: { type: string, nullable: true }
+        recommendation: { type: string }
+        reply: { type: string }
+        source:
+          type: string
+          enum: [llm, rules]
+          description: Which engine answered. The UI shows this, so nobody is told keyword matching is AI.
+        degraded:
+          type: boolean
+          description: True when a configured model was called and its answer could not be used.
+        safetyNotice:
+          type: string
+          nullable: true
+          description: |
+            Present when a hazard was detected in the description — gas, fire,
+            electrical, flood or injury. It tells the customer how to make
+            themselves safe and who to call. It is never a repair instruction,
+            and no model output can suppress it.
+        disclaimer:
+          type: string
+          description: Attached to every conclusion. This is a suggestion, not a diagnosis.
