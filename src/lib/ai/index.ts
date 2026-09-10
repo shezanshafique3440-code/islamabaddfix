@@ -4,7 +4,7 @@ import { getSetting } from '../settings';
 import { classifyIntake } from './classifier';
 import { anthropicProvider } from './providers/anthropic';
 import { openaiProvider } from './providers/openai';
-import { assessHazard, DIAGNOSIS_DISCLAIMER, sanitizeAssistantMessage, SYSTEM_PROMPT } from './safety';
+import { assessHazard, sanitizeAssistantMessage, SYSTEM_PROMPT } from './safety';
 import { intakeResultSchema, type IntakeContext, type IntakeResponse, type LlmProvider } from './types';
 
 export { DIAGNOSIS_DISCLAIMER } from './safety';

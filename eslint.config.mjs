@@ -23,7 +23,9 @@ export default [
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
       'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
-      eqeqeq: ['error', 'always'],
+      // `x != null` is the intended idiom for "neither null nor undefined";
+      // rewriting it as two comparisons everywhere would be worse code.
+      eqeqeq: ['error', 'always', { null: 'ignore' }],
     },
   },
 ];

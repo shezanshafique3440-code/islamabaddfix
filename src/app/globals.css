@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Islamabad Fix base layer.
+ *
+ * Kept small on purpose: the design system lives in Tailwind tokens and the
+ * components under src/components/ui, not in a pile of global overrides.
+ */
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-white text-ink-900 antialiased;
+    font-feature-settings: 'cv11', 'ss01';
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Visible focus for keyboard users, suppressed for mouse clicks. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand-600 ring-offset-2;
+  }
+
+  /* Roman Urdu strings mix scripts; keep numerals consistently Latin. */
+  [lang='ur'] {
+    font-feature-settings: normal;
+  }
+
+  ::selection {
+    @apply bg-brand-100 text-brand-900;
+  }
+}
+
+@layer components {
+  /*
+   * Skeleton shimmer. Pakistani mobile connections make loading states a
+   * first-class part of the experience rather than an afterthought.
+   */
+  .skeleton {
+    @apply relative overflow-hidden rounded-md bg-ink-100;
+  }
+  .skeleton::after {
+    @apply absolute inset-0 -translate-x-full;
+    content: '';
+    background-image: linear-gradient(
+      90deg,
+      rgb(255 255 255 / 0) 0%,
+      rgb(255 255 255 / 0.55) 50%,
+      rgb(255 255 255 / 0) 100%
+    );
+    animation: shimmer 1.6s infinite;
+  }
+
+  /* Hairline that survives fractional device pixel ratios. */
+  .hairline {
+    @apply border-ink-200;
+  }
+}
+
+@layer utilities {
+  /* Horizontal scrollers (category chips, day strips) without visible bars. */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Respect users who ask for less motion. */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-in,
+    .animate-slide-up,
+    .animate-slide-in-right,
+    .skeleton::after {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+}
