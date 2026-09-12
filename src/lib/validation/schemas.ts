@@ -190,6 +190,18 @@ export const bookingStatusActionSchema = z.object({
   scheduledFor: dateSchema.optional().nullable(),
 });
 
+// --------------------------------------------------------- booking messaging
+
+export const bookingMessageSchema = z.object({
+  body: z.string().trim().max(2000, 'Message bohat lamba hai.'),
+  attachmentId: uuidSchema.optional().nullable(),
+});
+
+export const rescheduleSchema = z.object({
+  scheduledFor: dateSchema,
+  reason: z.string().trim().max(300).optional(),
+});
+
 // ---------------------------------------------------------------------- quotes
 
 export const quoteItemSchema = z.object({

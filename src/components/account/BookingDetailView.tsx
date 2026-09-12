@@ -16,6 +16,8 @@ import { formatPaisa } from '@/lib/money';
 import { formatDateTime, formatRelative } from '@/lib/utils';
 import { BookingTracker } from './BookingTracker';
 import { QuoteCard } from './QuoteCard';
+import { BookingChat } from '@/components/booking/BookingChat';
+import { RescheduleDialog } from '@/components/booking/RescheduleDialog';
 
 interface PaymentMethodOption {
   method: 'CASH' | 'BANK_TRANSFER' | 'ONLINE_GATEWAY';
@@ -36,10 +38,12 @@ export function BookingDetailView({
   booking,
   paymentMethods,
   freeCancelMinutes,
+  reschedule,
 }: {
   booking: BookingDetail;
   paymentMethods: PaymentMethodOption[];
   freeCancelMinutes: number;
+  reschedule: { remaining: number; minLeadMinutes: number; maxLeadDays: number } | null;
 }) {
   const router = useRouter();
   const { toast } = useToast();
@@ -541,6 +545,17 @@ export function BookingDetailView({
             Booking cancel karein
           </Button>
         ) : null}
+        {reschedule ? (
+          <RescheduleDialog
+            bookingId={booking.id}
+            current={
+              booking.scheduledFor ? new Date(booking.scheduledFor).toISOString() : null
+            }
+            remaining={reschedule.remaining}
+            minLeadMinutes={reschedule.minLeadMinutes}
+            maxLeadDays={reschedule.maxLeadDays}
+          />
+        ) : null}
         {(booking.status === 'COMPLETED' || booking.status === 'IN_PROGRESS') &&
         booking.disputes.length === 0 ? (
           <Button variant="ghost" onClick={() => setDialog('dispute')}>
@@ -548,6 +563,17 @@ export function BookingDetailView({
           </Button>
         ) : null}
       </section>
+
+      {/* Talking to the technician only makes sense once there is one. */}
+      {booking.provider ? (
+        <section className="mt-6">
+          <BookingChat
+            bookingId={booking.id}
+            audience="customer"
+            closed={booking.status === 'CANCELLED' || booking.status === 'REFUNDED'}
+          />
+        </section>
+      ) : null}
 
       {/* ------------------------------------------------------------ dialogs */}
       <CancelDialog

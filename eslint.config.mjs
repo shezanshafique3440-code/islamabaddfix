@@ -28,6 +28,13 @@ const config = [
       eqeqeq: ['error', 'always', { null: 'ignore' }],
     },
   },
+  {
+    // Last entry wins in flat config, so this override has to come after the
+    // shared rules. CLI scripts print to the terminal — that is their output,
+    // not a stray debug statement.
+    files: ['scripts/**/*.mjs'],
+    rules: { 'no-console': 'off' },
+  },
 ];
 
 export default config;

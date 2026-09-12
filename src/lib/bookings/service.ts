@@ -264,7 +264,7 @@ function offerDeadline(minutes: number): Date {
   return new Date(Date.now() + minutes * 60_000);
 }
 
-function assertScheduleWindow(
+export function assertScheduleWindow(
   scheduledFor: Date,
   options: { minLeadMinutes: number; maxLeadDays: number; isEmergency: boolean },
 ): void {

@@ -16,6 +16,8 @@ import { QuoteCard } from '@/components/account/QuoteCard';
 import { formatPaisa, splitCommission } from '@/lib/money';
 import { formatDateTime, formatRelative } from '@/lib/utils';
 import { directionsUrl } from '@/lib/maps';
+import { BookingChat } from '@/components/booking/BookingChat';
+import { RescheduleDialog } from '@/components/booking/RescheduleDialog';
 
 type QuoteItemKind = 'INSPECTION' | 'LABOUR' | 'PARTS' | 'EMERGENCY_FEE' | 'TRAVEL' | 'OTHER';
 
@@ -37,10 +39,12 @@ export function ProviderJobView({
   booking,
   commissionRateBp,
   isAssigned,
+  reschedule,
 }: {
   booking: BookingDetail;
   commissionRateBp: number;
   isAssigned: boolean;
+  reschedule: { remaining: number; minLeadMinutes: number; maxLeadDays: number } | null;
 }) {
   const router = useRouter();
   const { toast } = useToast();
@@ -443,6 +447,33 @@ export function ProviderJobView({
           ))}
         </ol>
       </section>
+
+      {/* The thread only exists once this job is actually theirs — a provider
+          who has merely been offered it must not be able to ask for the
+          address here, which is the whole point of staging the address. */}
+      {isAssigned ? (
+        <section className="mt-6">
+          {reschedule ? (
+            <div className="mb-4 flex flex-wrap items-center gap-3 rounded-xl border border-ink-200 bg-white px-4 py-3">
+              <p className="flex-1 text-sm text-ink-600">
+                Is waqt nahi pohonch sakte? Customer ko bata kar time badal lein.
+              </p>
+              <RescheduleDialog
+                bookingId={booking.id}
+                current={booking.scheduledFor ? new Date(booking.scheduledFor).toISOString() : null}
+                remaining={reschedule.remaining}
+                minLeadMinutes={reschedule.minLeadMinutes}
+                maxLeadDays={reschedule.maxLeadDays}
+              />
+            </div>
+          ) : null}
+          <BookingChat
+            bookingId={booking.id}
+            audience="provider"
+            closed={booking.status === 'CANCELLED' || booking.status === 'REFUNDED'}
+          />
+        </section>
+      ) : null}
 
       {/* ------------------------------------------------------------ dialogs */}
       <QuoteDialog

@@ -31,6 +31,9 @@ export const RATE_LIMITS = {
   // Guessing a six-digit code: the token's own attempt counter is the real
   // ceiling, this stops somebody cycling through fresh codes to get more.
   otpAttempt: { name: 'auth:otp', limit: 12, windowSeconds: 900 },
+  // Generous: a real back-and-forth about a job runs to dozens of messages,
+  // and this only needs to stop scripted flooding.
+  message: { name: 'booking:message', limit: 60, windowSeconds: 600 },
   bookingCreate: { name: 'booking:create', limit: 12, windowSeconds: 3600 },
   upload: { name: 'file:upload', limit: 40, windowSeconds: 3600 },
   aiIntake: { name: 'ai:intake', limit: 30, windowSeconds: 3600 },

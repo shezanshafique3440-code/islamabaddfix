@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { requirePageRole } from '@/lib/auth/session';
 import { getBookingDetailFor } from '@/lib/bookings/queries';
-import { getSetting } from '@/lib/settings';
+import { getSetting, getSettings } from '@/lib/settings';
+import { reschedulesRemaining } from '@/lib/bookings/reschedule';
 import { ProviderJobView } from '@/components/provider/ProviderJobView';
 
 export const metadata: Metadata = { title: 'Job detail', robots: { index: false, follow: false } };
@@ -15,13 +16,24 @@ export default async function ProviderJobPage({ params }: Params) {
 
   const { id } = await params;
   const booking = await getBookingDetailFor(id, ctx);
-  const commissionRateBp = await getSetting('platform.commissionRateBp');
+  const [commissionRateBp, [minLeadMinutes, maxLeadDays], remaining] = await Promise.all([
+    getSetting('platform.commissionRateBp'),
+    getSettings(['booking.minLeadMinutes', 'booking.maxLeadDays']),
+    reschedulesRemaining(id),
+  ]);
+
+  const isAssigned = booking.provider?.id === ctx.providerId;
+  const canReschedule =
+    isAssigned &&
+    !booking.isEmergency &&
+    ['ACCEPTED', 'QUOTE_PENDING', 'QUOTE_APPROVED', 'SCHEDULED'].includes(booking.status);
 
   return (
     <ProviderJobView
       booking={booking}
       commissionRateBp={commissionRateBp}
-      isAssigned={booking.provider?.id === ctx.providerId}
+      isAssigned={isAssigned}
+      reschedule={canReschedule ? { remaining, minLeadMinutes, maxLeadDays } : null}
     />
   );
 }
