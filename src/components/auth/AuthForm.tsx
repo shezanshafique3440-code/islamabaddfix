@@ -13,6 +13,17 @@ interface AuthResult {
   redirectTo: string;
 }
 
+/** A correct password on an account with a second factor buys only this. */
+interface TwoFactorChallenge {
+  twoFactorRequired: true;
+  challengeToken: string;
+}
+
+type LoginResponse = AuthResult | TwoFactorChallenge;
+
+const needsSecondFactor = (result: LoginResponse): result is TwoFactorChallenge =>
+  'twoFactorRequired' in result;
+
 /** Field-level errors from the server, keyed by the schema path. */
 type Errors = Record<string, string>;
 
@@ -22,6 +33,8 @@ export function LoginForm() {
   const [errors, setErrors] = useState<Errors>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [challenge, setChallenge] = useState<string | null>(null);
+  const [code, setCode] = useState('');
 
   const next = searchParams.get('next');
 
@@ -33,10 +46,17 @@ export function LoginForm() {
 
     const form = new FormData(event.currentTarget);
     try {
-      const result = await api.post<AuthResult>('/api/auth/login', {
+      const result = await api.post<LoginResponse>('/api/auth/login', {
         email: String(form.get('email') ?? ''),
         password: String(form.get('password') ?? ''),
       });
+
+      if (needsSecondFactor(result)) {
+        setChallenge(result.challengeToken);
+        setLoading(false);
+        return;
+      }
+
       toast({ tone: 'success', title: `Khush aamdeed, ${result.user.fullName.split(' ')[0]}!` });
       // Full navigation so every server component re-renders signed in.
       window.location.href = next ?? result.redirectTo;
@@ -49,6 +69,62 @@ export function LoginForm() {
       }
       setLoading(false);
     }
+  }
+
+  async function submitCode(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setFormError(null);
+    setLoading(true);
+    try {
+      const result = await api.post<AuthResult>('/api/auth/two-factor', {
+        challengeToken: challenge,
+        code,
+      });
+      toast({ tone: 'success', title: `Khush aamdeed, ${result.user.fullName.split(' ')[0]}!` });
+      window.location.href = next ?? result.redirectTo;
+    } catch (error) {
+      setFormError(error instanceof ApiError ? error.message : 'Code check nahi kar sake.');
+      setLoading(false);
+    }
+  }
+
+  if (challenge) {
+    return (
+      <form onSubmit={submitCode} className="space-y-4" noValidate>
+        {formError ? <FormError message={formError} /> : null}
+
+        <p className="text-sm leading-relaxed text-ink-600">
+          Apni authenticator app kholein aur 6-hindson ka code likhein. Phone kho gaya ho to
+          recovery code bhi chalega.
+        </p>
+
+        <TextInput
+          label="Code"
+          value={code}
+          onChange={(event) => setCode(event.target.value.toUpperCase().slice(0, 20))}
+          inputMode="numeric"
+          autoComplete="one-time-code"
+          autoFocus
+          required
+        />
+
+        <Button type="submit" fullWidth size="lg" loading={loading} disabled={code.length < 6}>
+          Login mukammal karein
+        </Button>
+
+        <button
+          type="button"
+          onClick={() => {
+            setChallenge(null);
+            setCode('');
+            setFormError(null);
+          }}
+          className="w-full text-center text-sm text-ink-500 hover:text-ink-800 hover:underline"
+        >
+          Wapis jayein
+        </button>
+      </form>
+    );
   }
 
   return (

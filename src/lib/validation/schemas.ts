@@ -115,6 +115,19 @@ export const confirmPhoneCodeSchema = z.object({
     .regex(/^\d{6}$/, 'Code chhe hindson ka hota hai.'),
 });
 
+// ---------------------------------------------------------------- two-factor
+
+export const twoFactorChallengeSchema = z.object({
+  challengeToken: z.string().min(20).max(400),
+  /** A six-digit TOTP code, or a recovery code like A1B2C-3D4E5. */
+  code: z.string().trim().min(6).max(20),
+});
+
+export const twoFactorCodeSchema = z.object({
+  action: z.enum(['confirm', 'disable']),
+  code: z.string().trim().min(6).max(20),
+});
+
 // ------------------------------------------------------------------- account
 
 export const notificationPreferencesSchema = z

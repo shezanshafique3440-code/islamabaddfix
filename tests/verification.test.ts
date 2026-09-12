@@ -7,6 +7,7 @@ import {
   isResetTokenLive,
   pruneVerificationTokens,
   requestEmailVerification,
+  issueTwoFactorChallenge,
   requestPasswordReset,
   requestPhoneVerification,
   resetPassword,
@@ -164,6 +165,18 @@ describe('password reset', () => {
     const report = await requestPasswordReset('disabled@test.local');
     expect(report.devToken).toBeUndefined();
     expect(await db.verificationToken.count()).toBe(0);
+  });
+
+  it('does not lock a staff member out for mistyping their second factor', async () => {
+    // A delivered secret is capped tightly because issuing one mails somebody.
+    // A two-factor challenge is handed back to a caller who already proved the
+    // password, so the same cap would mean five wrong codes cost an hour.
+    const admin = await createUser({ role: 'ADMIN', email: 'staff2fa@test.local' });
+
+    for (let attempt = 0; attempt < 12; attempt += 1) {
+      const token = await issueTwoFactorChallenge(admin.id);
+      expect(token).toBeTruthy();
+    }
   });
 
   it('stops runaway requests for one account', async () => {

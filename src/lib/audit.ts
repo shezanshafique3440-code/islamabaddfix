@@ -45,6 +45,9 @@ export const AUDIT_ACTIONS = {
   ACCOUNT_DELETED: 'user.account_deleted',
   DATA_EXPORTED: 'user.data_exported',
   BOOKING_RESCHEDULED: 'booking.rescheduled',
+  TWO_FACTOR_ENABLED: 'auth.two_factor_enabled',
+  TWO_FACTOR_DISABLED: 'auth.two_factor_disabled',
+  TWO_FACTOR_RECOVERY_USED: 'auth.two_factor_recovery_used',
 } as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[keyof typeof AUDIT_ACTIONS];

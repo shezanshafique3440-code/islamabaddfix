@@ -3,6 +3,8 @@ import { requirePermission } from '@/lib/auth/session';
 import { getAllSettings, settingsMetadata } from '@/lib/settings';
 import { can } from '@/lib/auth/rbac';
 import { SettingsEditor } from '@/components/admin/SettingsEditor';
+import { TwoFactorPanel } from '@/components/admin/TwoFactorPanel';
+import { twoFactorStatus } from '@/lib/auth/two-factor';
 
 export const metadata: Metadata = {
   title: 'Platform settings',
@@ -11,7 +13,11 @@ export const metadata: Metadata = {
 
 export default async function AdminSettingsPage() {
   const ctx = await requirePermission('settings:read');
-  const [values, metadata] = await Promise.all([getAllSettings(), settingsMetadata()]);
+  const [values, metadata, twoFactor] = await Promise.all([
+    getAllSettings(),
+    settingsMetadata(),
+    twoFactorStatus(ctx.user.id),
+  ]);
 
   return (
     <div>
@@ -22,6 +28,15 @@ export default async function AdminSettingsPage() {
           aur booking policy sab yahan se badalte hain.
         </p>
       </header>
+
+      {/* An account that can issue refunds and approve providers deserves more
+          than a password. */}
+      <section className="mt-6 rounded-2xl border border-ink-200 bg-white p-5">
+        <h2 className="text-[0.9375rem] font-semibold text-ink-900">Aapke account ki hifazat</h2>
+        <div className="mt-4">
+          <TwoFactorPanel initial={twoFactor} email={ctx.user.email} />
+        </div>
+      </section>
 
       <div className="mt-6">
         <SettingsEditor

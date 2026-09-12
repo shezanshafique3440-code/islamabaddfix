@@ -59,7 +59,7 @@ export function normalizePhone(input: string): string {
   return `+92${digits}`;
 }
 
-async function issueSession(
+export async function issueSession(
   user: User,
   meta: RequestMeta,
   familyId = newFamilyId(),
@@ -140,10 +140,18 @@ export async function registerUser(
 
 // ---------------------------------------------------------------------- login
 
-export async function loginUser(
+/**
+ * Verify an email and password, without issuing anything.
+ *
+ * Split from session creation so the login route can decide what happens next:
+ * an account with a second factor gets a challenge instead of a session, and no
+ * half-authorised cookie is ever set. Lockout, the disabled-account check and
+ * the audit trail all live here, because they apply either way.
+ */
+export async function authenticateCredentials(
   input: { email: string; password: string },
   meta: RequestMeta,
-): Promise<IssuedSession> {
+): Promise<User> {
   const email = normalizeEmail(input.email);
   const user = await prisma.user.findUnique({ where: { email } });
 
@@ -209,7 +217,16 @@ export async function loginUser(
     userAgent: meta.userAgent,
   });
 
-  return issueSession(fresh, meta);
+  return fresh;
+}
+
+/** Credentials plus a session — what every caller with no second factor wants. */
+export async function loginUser(
+  input: { email: string; password: string },
+  meta: RequestMeta,
+): Promise<IssuedSession> {
+  const user = await authenticateCredentials(input, meta);
+  return issueSession(user, meta);
 }
 
 // -------------------------------------------------------------------- refresh

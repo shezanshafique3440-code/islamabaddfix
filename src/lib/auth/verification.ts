@@ -28,13 +28,31 @@ const TTL_MINUTES: Record<VerificationPurpose, number> = {
   PASSWORD_RESET: 30,
   EMAIL_VERIFY: 60 * 24,
   PHONE_VERIFY: 10,
+  // Long enough to open an authenticator app, short enough that a proven
+  // password does not sit around waiting to be used.
+  TWO_FACTOR_CHALLENGE: 5,
 };
 
 /** A six-digit code is guessable, so it gets a hard attempt ceiling. */
 const MAX_OTP_ATTEMPTS = 5;
 
-/** How many live secrets of one purpose a user may hold before we stop issuing. */
-const MAX_LIVE_PER_PURPOSE = 5;
+/**
+ * How many secrets of one purpose a user may be issued in an hour.
+ *
+ * The three delivered kinds are capped tightly, because issuing one sends a
+ * message to somebody — a mail-bomb is the attack. A two-factor challenge is
+ * handed straight back to a caller who already proved the password and costs
+ * nothing to produce, so capping it at the same number would lock a staff
+ * member out for an hour after five mistyped codes. Its real controls are the
+ * login limiter, which bounds attempts by IP *and* by address, and the
+ * five-minute expiry.
+ */
+const ISSUE_LIMIT_PER_HOUR: Record<VerificationPurpose, number> = {
+  PASSWORD_RESET: 5,
+  EMAIL_VERIFY: 5,
+  PHONE_VERIFY: 5,
+  TWO_FACTOR_CHALLENGE: 30,
+};
 
 const hashSecret = (raw: string): string => createHash('sha256').update(raw).digest('hex');
 
@@ -94,14 +112,14 @@ async function issue(params: {
   raw: string;
 }): Promise<void> {
   const now = new Date();
-  const live = await prisma.verificationToken.count({
+  const issuedThisHour = await prisma.verificationToken.count({
     where: {
       userId: params.userId,
       purpose: params.purpose,
       createdAt: { gt: new Date(Date.now() - 3600_000) },
     },
   });
-  if (live >= MAX_LIVE_PER_PURPOSE) {
+  if (issuedThisHour >= ISSUE_LIMIT_PER_HOUR[params.purpose]) {
     throw new AppError(
       'RATE_LIMITED',
       'Bohat zyada requests. Thori der baad dobara koshish karein.',
@@ -153,6 +171,27 @@ async function consume(purpose: VerificationPurpose, raw: string, userId?: strin
     data: { consumedAt: new Date() },
   });
   return token;
+}
+
+// ======================== two-factor challenge =============================
+
+/**
+ * Record that a password was accepted, pending the second factor.
+ *
+ * Deliberately not a session cookie: a half-authenticated session is a session,
+ * and one left in a browser is a way in. This is an opaque, single-use,
+ * five-minute token that proves one thing and grants nothing.
+ */
+export async function issueTwoFactorChallenge(userId: string): Promise<string> {
+  const raw = generateLinkToken();
+  await issue({ userId, purpose: 'TWO_FACTOR_CHALLENGE', sentTo: null, raw });
+  return raw;
+}
+
+/** Spend a challenge, returning the user it belongs to. */
+export async function consumeTwoFactorChallenge(rawToken: string): Promise<string> {
+  const token = await consume('TWO_FACTOR_CHALLENGE', rawToken);
+  return token.userId;
 }
 
 // ========================== password reset ================================

@@ -230,6 +230,7 @@ model User {
   conversationParts  ConversationParticipant[]
   verificationTokens VerificationToken[]
   notificationPrefs  NotificationPreference?
+  twoFactor          TwoFactorSecret?
 
   @@index([role, isActive])
   @@index([createdAt])
@@ -279,6 +280,27 @@ model NotificationPreference {
   updatedAt DateTime @updatedAt
 }
 
+/// Second factor for staff accounts.
+///
+/// The secret has to be stored in a usable form — it is the input to the code
+/// calculation — so it is encrypted at rest with a key derived from
+/// AUTH_SECRET rather than sitting in plaintext. A stolen database dump alone
+/// then yields no working second factors.
+model TwoFactorSecret {
+  userId String @id @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// AES-256-GCM, base64, of the base32 TOTP secret.
+  secret String
+  /// Null until the user has proved they can read a code from their app.
+  confirmedAt DateTime?
+  /// Highest 30-second step already accepted, so a code cannot be replayed.
+  lastUsedStep BigInt?
+  /// SHA-256 of each single-use recovery code. Removed as they are spent.
+  recoveryCodeHashes String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model VerificationToken {
   id        String              @id @default(uuid()) @db.Uuid
   userId    String              @db.Uuid
@@ -302,6 +324,8 @@ enum VerificationPurpose {
   PASSWORD_RESET
   EMAIL_VERIFY
   PHONE_VERIFY
+  /// Proof that a password was accepted, pending the second factor.
+  TWO_FACTOR_CHALLENGE
 }
 
 model CustomerProfile {
