@@ -12,7 +12,10 @@ import { MetricCard } from '@/components/admin/MetricCard';
 import { BookingsChart } from '@/components/admin/BookingsChart';
 import { IntegrationStatusList } from '@/components/admin/IntegrationStatusList';
 
-export const metadata: Metadata = { title: 'Admin dashboard', robots: { index: false, follow: false } };
+export const metadata: Metadata = {
+  title: 'Admin dashboard',
+  robots: { index: false, follow: false },
+};
 
 export default async function AdminDashboardPage() {
   await requirePermission('analytics:read');
@@ -27,16 +30,14 @@ export default async function AdminDashboardPage() {
     <div className="space-y-8">
       <header>
         <h1 className="text-display-sm text-ink-950">Dashboard</h1>
-        <p className="mt-1 text-sm text-ink-600">
-          Poore marketplace ki soorat-e-haal ek jagah.
-        </p>
+        <p className="mt-1 text-sm text-ink-600">Poore marketplace ki soorat-e-haal ek jagah.</p>
       </header>
 
       {/* Queues first: these are the things that need a human today. */}
-      {(metrics.queues.pendingProviders > 0 ||
-        metrics.quality.openDisputes > 0 ||
-        metrics.queues.unassignedBookings > 0 ||
-        metrics.quality.openGuaranteeClaims > 0) ? (
+      {metrics.queues.pendingProviders > 0 ||
+      metrics.quality.openDisputes > 0 ||
+      metrics.queues.unassignedBookings > 0 ||
+      metrics.quality.openGuaranteeClaims > 0 ? (
         <section
           aria-labelledby="queues-heading"
           className="rounded-2xl border border-warn-200 bg-warn-50 p-5"
@@ -105,14 +106,8 @@ export default async function AdminDashboardPage() {
           Pichle 30 din
         </h2>
         <dl className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <MetricCard
-            label="Mukammal jobs"
-            value={String(metrics.bookings.completedThisMonth)}
-          />
-          <MetricCard
-            label="Gross revenue"
-            value={formatPaisa(metrics.revenue.monthGrossPaisa)}
-          />
+          <MetricCard label="Mukammal jobs" value={String(metrics.bookings.completedThisMonth)} />
+          <MetricCard label="Gross revenue" value={formatPaisa(metrics.revenue.monthGrossPaisa)} />
           <MetricCard
             label="Platform commission"
             value={formatPaisa(metrics.revenue.monthCommissionPaisa)}
@@ -133,7 +128,10 @@ export default async function AdminDashboardPage() {
         </dl>
       </section>
 
-      <section aria-labelledby="chart-heading" className="rounded-2xl border border-ink-200 bg-white p-5">
+      <section
+        aria-labelledby="chart-heading"
+        className="rounded-2xl border border-ink-200 bg-white p-5"
+      >
         <h2 id="chart-heading" className="text-[0.9375rem] font-semibold text-ink-900">
           Pichle 14 din
         </h2>
@@ -154,10 +152,7 @@ export default async function AdminDashboardPage() {
               value={String(metrics.providers.pendingVerification)}
             />
             <MetricCard label="Customers" value={String(metrics.users.customers)} />
-            <MetricCard
-              label="Naye users (7 din)"
-              value={String(metrics.users.newThisWeek)}
-            />
+            <MetricCard label="Naye users (7 din)" value={String(metrics.users.newThisWeek)} />
           </dl>
         </section>
 
@@ -192,7 +187,10 @@ export default async function AdminDashboardPage() {
         </section>
       </div>
 
-      <section aria-labelledby="categories-heading" className="rounded-2xl border border-ink-200 bg-white p-5">
+      <section
+        aria-labelledby="categories-heading"
+        className="rounded-2xl border border-ink-200 bg-white p-5"
+      >
         <h2 id="categories-heading" className="text-[0.9375rem] font-semibold text-ink-900">
           Top categories (30 din)
         </h2>

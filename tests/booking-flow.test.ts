@@ -484,9 +484,9 @@ describe('quotes and additional charges', () => {
       items: [{ kind: 'LABOUR', label: 'Labour', unitPricePaisa: 50_000 }],
     });
 
-    await expect(
-      approveQuote({ quoteId: quote.id, customerUserId: stranger.id }),
-    ).rejects.toThrow(/aapki booking ka nahi/i);
+    await expect(approveQuote({ quoteId: quote.id, customerUserId: stranger.id })).rejects.toThrow(
+      /aapki booking ka nahi/i,
+    );
   });
 
   it('returns the booking to ACCEPTED when the quote is rejected', async () => {

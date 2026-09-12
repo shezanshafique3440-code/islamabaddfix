@@ -32,7 +32,8 @@ export function ProviderSidebar({
           const active = link.exact
             ? pathname === link.href
             : pathname === link.href || pathname.startsWith(`${link.href}/`);
-          const count = link.badge === 'unread' ? unread : link.badge === 'offers' ? pendingOffers : 0;
+          const count =
+            link.badge === 'unread' ? unread : link.badge === 'offers' ? pendingOffers : 0;
           return (
             <Link
               key={link.href}

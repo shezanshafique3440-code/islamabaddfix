@@ -26,9 +26,7 @@ export const GET = route(async (_request, { params }: Params) => {
   }
 
   const ctx = await getAuthContext();
-  const viewer = ctx
-    ? { userId: ctx.user.id, role: ctx.role, providerId: ctx.providerId }
-    : null;
+  const viewer = ctx ? { userId: ctx.user.id, role: ctx.role, providerId: ctx.providerId } : null;
 
   if (!(await canReadFile(file, viewer))) {
     await recordAudit({

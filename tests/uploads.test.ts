@@ -117,8 +117,9 @@ describe('upload content validation', () => {
 
   it('keeps documents and images on separate allow-lists', () => {
     // A PDF is a valid verification document but not a valid profile photo.
-    expect(validateUpload(upload('cnic.pdf', 'application/pdf', PDF), PDF, CONSTRAINTS.document))
-      .toEqual({ mimeType: 'application/pdf' });
+    expect(
+      validateUpload(upload('cnic.pdf', 'application/pdf', PDF), PDF, CONSTRAINTS.document),
+    ).toEqual({ mimeType: 'application/pdf' });
     expect(() =>
       validateUpload(upload('cnic.pdf', 'application/pdf', PDF), PDF, CONSTRAINTS.image),
     ).toThrowError(/allowed nahi/i);
@@ -211,7 +212,11 @@ describe('file read authorization', () => {
     return { customer, stranger, admin, assigned, other, booking };
   }
 
-  const viewerFor = (user: { id: string }, role: 'CUSTOMER' | 'PROVIDER' | 'ADMIN', providerId?: string) => ({
+  const viewerFor = (
+    user: { id: string },
+    role: 'CUSTOMER' | 'PROVIDER' | 'ADMIN',
+    providerId?: string,
+  ) => ({
     userId: user.id,
     role,
     providerId,
@@ -315,11 +320,14 @@ describe('file read authorization', () => {
 
     // A provider claiming somebody else's providerId is still refused, because
     // the comparison is against the file's own providerId.
+    expect(await canReadFile(file, viewerFor(other.user, 'PROVIDER', assigned.provider.id))).toBe(
+      true,
+    );
     expect(
-      await canReadFile(file, viewerFor(other.user, 'PROVIDER', assigned.provider.id)),
-    ).toBe(true);
-    expect(
-      await canReadFile({ ...file, providerId: other.provider.id }, viewerFor(other.user, 'PROVIDER', assigned.provider.id)),
+      await canReadFile(
+        { ...file, providerId: other.provider.id },
+        viewerFor(other.user, 'PROVIDER', assigned.provider.id),
+      ),
     ).toBe(false);
   });
 

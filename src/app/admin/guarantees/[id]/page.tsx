@@ -11,7 +11,10 @@ import { fileUrl } from '@/lib/storage';
 import { formatPaisa } from '@/lib/money';
 import { formatDate, formatDateTime } from '@/lib/utils';
 
-export const metadata: Metadata = { title: 'Guarantee claim', robots: { index: false, follow: false } };
+export const metadata: Metadata = {
+  title: 'Guarantee claim',
+  robots: { index: false, follow: false },
+};
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -46,7 +49,10 @@ export default async function AdminGuaranteeDetailPage({ params }: Params) {
 
   return (
     <div className="space-y-6">
-      <Link href="/admin/guarantees" className="text-sm text-ink-600 hover:text-brand-700 hover:underline">
+      <Link
+        href="/admin/guarantees"
+        className="text-sm text-ink-600 hover:text-brand-700 hover:underline"
+      >
         ← Sab claims
       </Link>
 
@@ -83,9 +89,7 @@ export default async function AdminGuaranteeDetailPage({ params }: Params) {
           <Fact
             label="Khatam"
             value={
-              claim.booking.guaranteeExpiresAt
-                ? formatDate(claim.booking.guaranteeExpiresAt)
-                : '—'
+              claim.booking.guaranteeExpiresAt ? formatDate(claim.booking.guaranteeExpiresAt) : '—'
             }
             tone={expired ? 'bad' : 'good'}
           />
@@ -174,9 +178,7 @@ export default async function AdminGuaranteeDetailPage({ params }: Params) {
                   >
                     {file.originalName}
                   </a>
-                  {file.isCompletionProof ? (
-                    <Badge tone="neutral">Completion proof</Badge>
-                  ) : null}
+                  {file.isCompletionProof ? <Badge tone="neutral">Completion proof</Badge> : null}
                 </li>
               ))}
             </ul>
@@ -214,15 +216,7 @@ function Row({ label, value }: { label: string; value: string }) {
   );
 }
 
-function Fact({
-  label,
-  value,
-  tone,
-}: {
-  label: string;
-  value: string;
-  tone?: 'good' | 'bad';
-}) {
+function Fact({ label, value, tone }: { label: string; value: string; tone?: 'good' | 'bad' }) {
   return (
     <div>
       <dt className="text-[0.6875rem] font-medium uppercase tracking-wide text-ink-400">{label}</dt>

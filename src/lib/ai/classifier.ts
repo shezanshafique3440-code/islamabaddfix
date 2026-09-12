@@ -264,7 +264,10 @@ export function classifyIntake(text: string, context: IntakeContext): IntakeResu
   // highest-scoring specific entry within the winning category.
   const categoryTotals = new Map<string, number>();
   for (const entry of ranked) {
-    categoryTotals.set(entry.categorySlug, (categoryTotals.get(entry.categorySlug) ?? 0) + entry.score);
+    categoryTotals.set(
+      entry.categorySlug,
+      (categoryTotals.get(entry.categorySlug) ?? 0) + entry.score,
+    );
   }
   const bestCategory = [...categoryTotals.entries()].sort((a, b) => b[1] - a[1])[0];
 
@@ -278,9 +281,10 @@ export function classifyIntake(text: string, context: IntakeContext): IntakeResu
 
   // Confidence is a saturating function of the winning score, discounted when a
   // runner-up category scores nearly as high.
-  const runnerUp = [...categoryTotals.entries()]
-    .filter(([slug]) => slug !== categorySlug)
-    .sort((a, b) => b[1] - a[1])[0]?.[1] ?? 0;
+  const runnerUp =
+    [...categoryTotals.entries()]
+      .filter(([slug]) => slug !== categorySlug)
+      .sort((a, b) => b[1] - a[1])[0]?.[1] ?? 0;
   const margin = categoryScore === 0 ? 0 : (categoryScore - runnerUp) / categoryScore;
   const confidence = categorySlug
     ? Math.min(0.9, (Math.min(categoryScore, 8) / 8) * 0.75 * (0.5 + 0.5 * margin) + 0.15)
@@ -351,9 +355,7 @@ function buildQuestions(
     ];
   }
   const common =
-    confidence < 0.45
-      ? ['Kya hum ne sahi category samjhi? Neeche se confirm kar dein.']
-      : [];
+    confidence < 0.45 ? ['Kya hum ne sahi category samjhi? Neeche se confirm kar dein.'] : [];
 
   switch (categorySlug) {
     case 'ac-cooling':

@@ -36,9 +36,7 @@ export function RescheduleDialog({
   const [loading, setLoading] = useState(false);
 
   const earliest = toLocalInput(new Date(Date.now() + minLeadMinutes * 60_000).toISOString());
-  const latest = toLocalInput(
-    new Date(Date.now() + maxLeadDays * 24 * 3600_000).toISOString(),
-  );
+  const latest = toLocalInput(new Date(Date.now() + maxLeadDays * 24 * 3600_000).toISOString());
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();

@@ -109,7 +109,7 @@ export default async function EmergencyPage() {
                       <li key={service.id}>
                         <Link
                           href={`/book?service=${service.slug}&emergency=1`}
-                          className="flex items-center justify-between gap-3 rounded-xl border border-ink-200 bg-white px-4 py-3 transition-all hover:border-alert-300 hover:bg-alert-50/50"
+                          className="hover:border-alert-300 flex items-center justify-between gap-3 rounded-xl border border-ink-200 bg-white px-4 py-3 transition-all hover:bg-alert-50/50"
                         >
                           <span className="text-sm font-medium text-ink-900">{service.name}</span>
                           <span aria-hidden="true" className="text-ink-400">
@@ -145,9 +145,10 @@ export default async function EmergencyPage() {
               <strong className="font-semibold text-ink-900">{formatPaisa(maxFee)}</strong> hai.
             </p>
             <p className="mt-2.5 text-sm leading-relaxed text-ink-700">
-              Aap ko yeh fee <strong className="font-semibold">booking confirm karne se pehle</strong>{' '}
-              dikhayi jati hai, aur baqi kaam ka kharcha technician ke muaina ke baad quote mein
-              aata hai — jise aap approve ya reject karte hain.
+              Aap ko yeh fee{' '}
+              <strong className="font-semibold">booking confirm karne se pehle</strong> dikhayi jati
+              hai, aur baqi kaam ka kharcha technician ke muaina ke baad quote mein aata hai — jise
+              aap approve ya reject karte hain.
             </p>
           </div>
         </section>
@@ -202,7 +203,7 @@ export default async function EmergencyPage() {
  */
 function SafetyNotice() {
   return (
-    <div className="rounded-2xl border-2 border-alert-300 bg-white p-5">
+    <div className="border-alert-300 rounded-2xl border-2 bg-white p-5">
       <h2 className="flex items-center gap-2 text-sm font-bold text-alert-700">
         <span aria-hidden="true">⚠️</span> Pehle safety
       </h2>

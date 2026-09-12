@@ -15,8 +15,7 @@ export const POST = route(async (request) => {
       description: input.description,
       minPricePaisa:
         input.minPriceRupees !== undefined ? rupeesToPaisa(input.minPriceRupees) : undefined,
-      maxPricePaisa:
-        input.maxPriceRupees != null ? rupeesToPaisa(input.maxPriceRupees) : null,
+      maxPricePaisa: input.maxPriceRupees != null ? rupeesToPaisa(input.maxPriceRupees) : null,
       requiresInspection: input.requiresInspection,
       estimatedMinutes: input.estimatedMinutes,
       isActive: input.isActive,

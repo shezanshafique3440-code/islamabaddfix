@@ -108,12 +108,10 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
   }
 
   const emergencyFeePaisa = isEmergency
-    ? (chosenProvider?.emergencyFeePaisa || defaultEmergencyFee)
+    ? chosenProvider?.emergencyFeePaisa || defaultEmergencyFee
     : 0;
 
-  const promo = input.promoCode
-    ? await resolvePromoCode(input.promoCode, input.customerId)
-    : null;
+  const promo = input.promoCode ? await resolvePromoCode(input.promoCode, input.customerId) : null;
 
   const booking = await prisma.$transaction(async (tx) => {
     const created = await tx.booking.create({
@@ -175,7 +173,11 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
 
   if (chosenProvider) {
     await prisma.bookingOffer.create({
-      data: { bookingId: booking.id, providerId: chosenProvider.id, expiresAt: offerDeadline(offerExpiry) },
+      data: {
+        bookingId: booking.id,
+        providerId: chosenProvider.id,
+        expiresAt: offerDeadline(offerExpiry),
+      },
     });
     await prisma.providerProfile.update({
       where: { id: chosenProvider.id },
@@ -230,15 +232,18 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
         metadata: { providerIds: offeredProviderIds },
       });
 
-      await notifyMany(offered.map((o) => o.userId), {
-        event: NOTIFICATION_EVENTS.PROVIDER_NOTIFIED,
-        title: isEmergency ? 'Emergency job request' : 'Nayi job request',
-        body: `${service.name} — ${address.zone?.name ?? address.city}. ${
-          scheduledFor ? formatDateTime(scheduledFor) : 'Foran'
-        }`,
-        href: `/provider/jobs/${booking.id}`,
-        data: { bookingId: booking.id, reference: booking.reference },
-      });
+      await notifyMany(
+        offered.map((o) => o.userId),
+        {
+          event: NOTIFICATION_EVENTS.PROVIDER_NOTIFIED,
+          title: isEmergency ? 'Emergency job request' : 'Nayi job request',
+          body: `${service.name} — ${address.zone?.name ?? address.city}. ${
+            scheduledFor ? formatDateTime(scheduledFor) : 'Foran'
+          }`,
+          href: `/provider/jobs/${booking.id}`,
+          data: { bookingId: booking.id, reference: booking.reference },
+        },
+      );
     }
     // No match found: the booking stays PENDING and appears in the admin queue
     // for manual assignment. We do not pretend a technician was found.

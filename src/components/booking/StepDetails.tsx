@@ -97,9 +97,7 @@ export function StepDetails({
           <div className="flex flex-wrap items-center gap-2 rounded-xl bg-ink-50 px-3.5 py-2.5">
             <span className="text-sm font-medium text-ink-900">{service.name}</span>
             <span className="text-xs text-ink-500">{service.categoryName}</span>
-            {service.requiresInspection ? (
-              <Badge tone="neutral">Muaina ke baad quote</Badge>
-            ) : null}
+            {service.requiresInspection ? <Badge tone="neutral">Muaina ke baad quote</Badge> : null}
           </div>
         ) : null}
 
@@ -197,7 +195,12 @@ export function StepDetails({
                     className="absolute -right-1.5 -top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-ink-900 text-white shadow-sm hover:bg-alert-600"
                     aria-label={`${file.originalName} hatayein`}
                   >
-                    <svg viewBox="0 0 20 20" className="h-3.5 w-3.5" fill="currentColor" aria-hidden="true">
+                    <svg
+                      viewBox="0 0 20 20"
+                      className="h-3.5 w-3.5"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
                       <path d="M6.3 5 5 6.3 8.7 10 5 13.7 6.3 15 10 11.3 13.7 15 15 13.7 11.3 10 15 6.3 13.7 5 10 8.7 6.3 5z" />
                     </svg>
                   </button>

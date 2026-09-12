@@ -28,13 +28,7 @@ const PATHS: Record<string, string> = {
 /** Filled icons look heavy at small sizes; these are stroked outlines. */
 const STROKED = new Set(['snowflake', 'droplet', 'plug']);
 
-export function ServiceIcon({
-  iconKey,
-  className,
-}: {
-  iconKey: string;
-  className?: string;
-}) {
+export function ServiceIcon({ iconKey, className }: { iconKey: string; className?: string }) {
   const path = PATHS[iconKey] ?? PATHS.wrench!;
   const stroked = STROKED.has(iconKey);
   return (

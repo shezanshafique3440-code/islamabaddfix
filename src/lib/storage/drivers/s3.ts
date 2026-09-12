@@ -1,4 +1,9 @@
-import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+  DeleteObjectCommand,
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { env, integrations } from '../../env';
 import { AppError } from '../../errors';
@@ -52,9 +57,7 @@ export const s3Driver: StorageDriver = {
   },
 
   async get(key: string) {
-    const result = await s3().send(
-      new GetObjectCommand({ Bucket: env.STORAGE_BUCKET, Key: key }),
-    );
+    const result = await s3().send(new GetObjectCommand({ Bucket: env.STORAGE_BUCKET, Key: key }));
     if (!result.Body) throw new AppError('NOT_FOUND', 'File storage mein nahi mili.');
     const bytes = await result.Body.transformToByteArray();
     return {
@@ -68,10 +71,8 @@ export const s3Driver: StorageDriver = {
   },
 
   async signedUrl(key: string, expiresInSeconds: number) {
-    return getSignedUrl(
-      s3(),
-      new GetObjectCommand({ Bucket: env.STORAGE_BUCKET, Key: key }),
-      { expiresIn: expiresInSeconds },
-    );
+    return getSignedUrl(s3(), new GetObjectCommand({ Bucket: env.STORAGE_BUCKET, Key: key }), {
+      expiresIn: expiresInSeconds,
+    });
   },
 };

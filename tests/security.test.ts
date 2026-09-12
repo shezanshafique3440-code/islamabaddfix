@@ -33,7 +33,11 @@ import { truncateAll } from './setup';
  * because they must keep passing regardless of how the features change.
  */
 
-async function context(user: { id: string }, role: 'CUSTOMER' | 'PROVIDER' | 'ADMIN', providerId?: string) {
+async function context(
+  user: { id: string },
+  role: 'CUSTOMER' | 'PROVIDER' | 'ADMIN',
+  providerId?: string,
+) {
   const row = await db.user.findUniqueOrThrow({ where: { id: user.id } });
   return { user: toSafeUser(row), role, providerId } as Parameters<typeof getBookingDetailFor>[1];
 }

@@ -170,7 +170,9 @@ export async function listBookingsFor(ctx: AuthContext, query: ListBookingsQuery
             ...(isStaff(ctx.role)
               ? [
                   {
-                    customer: { fullName: { contains: query.search, mode: 'insensitive' as const } },
+                    customer: {
+                      fullName: { contains: query.search, mode: 'insensitive' as const },
+                    },
                   },
                   {
                     provider: {
@@ -342,7 +344,9 @@ export function projectBooking(
             id: booking.customer.id,
             fullName: booking.customer.fullName,
             // Masked until the provider has committed to the job.
-            phone: showCustomerContact ? booking.customer.phone : maskPhone(booking.customer.phone ?? ''),
+            phone: showCustomerContact
+              ? booking.customer.phone
+              : maskPhone(booking.customer.phone ?? ''),
             email: viewer === 'ADMIN' ? booking.customer.email : undefined,
             isYou: false,
           },
@@ -534,7 +538,9 @@ export async function getProviderSchedule(providerId: string, day: Date) {
     where: {
       providerId,
       deletedAt: null,
-      status: { in: ['ACCEPTED', 'QUOTE_APPROVED', 'SCHEDULED', 'ON_THE_WAY', 'ARRIVED', 'IN_PROGRESS'] },
+      status: {
+        in: ['ACCEPTED', 'QUOTE_APPROVED', 'SCHEDULED', 'ON_THE_WAY', 'ARRIVED', 'IN_PROGRESS'],
+      },
       OR: [
         { scheduledFor: { gte: dayStart, lt: dayEnd } },
         // Emergencies without a slot still belong on today's list.
@@ -559,14 +565,16 @@ export async function getProviderOffers(providerId: string) {
   });
 
   const now = Date.now();
-  return offers
-    // An expired offer is not actionable; hide it rather than let a provider
-    // accept something the customer has moved on from.
-    .filter((offer) => !offer.expiresAt || offer.expiresAt.getTime() > now)
-    .map((offer) => ({
-      offerId: offer.id,
-      notifiedAt: offer.notifiedAt,
-      expiresAt: offer.expiresAt,
-      booking: summarizeBooking(offer.booking),
-    }));
+  return (
+    offers
+      // An expired offer is not actionable; hide it rather than let a provider
+      // accept something the customer has moved on from.
+      .filter((offer) => !offer.expiresAt || offer.expiresAt.getTime() > now)
+      .map((offer) => ({
+        offerId: offer.id,
+        notifiedAt: offer.notifiedAt,
+        expiresAt: offer.expiresAt,
+        booking: summarizeBooking(offer.booking),
+      }))
+  );
 }

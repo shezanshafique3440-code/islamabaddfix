@@ -41,7 +41,9 @@ export function ForgotPasswordForm() {
       );
     } catch (caught) {
       setError(
-        caught instanceof ApiError ? caught.message : 'Request bhej nahi sake. Dobara koshish karein.',
+        caught instanceof ApiError
+          ? caught.message
+          : 'Request bhej nahi sake. Dobara koshish karein.',
       );
     } finally {
       setLoading(false);

@@ -84,7 +84,7 @@ codebase assigns `Booking.status` directly — everything goes through
 4. writes the derived timestamps and money fields,
 5. writes a `BookingStatusHistory` row,
 
-all in one transaction. Notifications are emitted *after* the commit, by the
+all in one transaction. Notifications are emitted _after_ the commit, by the
 caller, so a slow email provider can never roll back a status change.
 
 The same table drives the UI: the action buttons a provider sees are
@@ -105,7 +105,7 @@ into the matcher.
 
 ### Privacy is staged along the job
 
-A provider who has merely been *offered* a job sees the zone and nothing else —
+A provider who has merely been _offered_ a job sees the zone and nothing else —
 no street address, no coordinates, no phone number. Those are released at the
 moment the provider accepts, which is the moment they have committed to turning
 up. `projectBooking` in `src/lib/bookings/queries.ts` is the single place that
@@ -128,36 +128,36 @@ money as integer paisa, and every timestamp in UTC.
 
 ### Identity and access
 
-| Model | Purpose |
-|---|---|
-| `User` | One row per person. Role, bcrypt hash, lockout counters. Case-insensitive unique email (`lower(email)` unique index). |
-| `RefreshToken` | Opaque token stored as SHA-256, with `familyId` for rotation and reuse detection. |
-| `CustomerProfile` / `ProviderProfile` | Role-specific data. Providers carry status, rating aggregates, response statistics, service radius, capacity, and bank details as a hash + last 4 digits — never a full IBAN. |
-| `ProviderVerification` | One row per check (`PHONE`, `EMAIL`, `IDENTITY_CNIC`, `PLATFORM_ONBOARDING`, `BANK_ACCOUNT`). A badge is shown only when its own row is `APPROVED`. |
-| `ProviderAvailability` / `ProviderLocation` | Weekly working windows; last known GPS fix (staff-only). |
+| Model                                       | Purpose                                                                                                                                                                       |
+| ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `User`                                      | One row per person. Role, bcrypt hash, lockout counters. Case-insensitive unique email (`lower(email)` unique index).                                                         |
+| `RefreshToken`                              | Opaque token stored as SHA-256, with `familyId` for rotation and reuse detection.                                                                                             |
+| `CustomerProfile` / `ProviderProfile`       | Role-specific data. Providers carry status, rating aggregates, response statistics, service radius, capacity, and bank details as a hash + last 4 digits — never a full IBAN. |
+| `ProviderVerification`                      | One row per check (`PHONE`, `EMAIL`, `IDENTITY_CNIC`, `PLATFORM_ONBOARDING`, `BANK_ACCOUNT`). A badge is shown only when its own row is `APPROVED`.                           |
+| `ProviderAvailability` / `ProviderLocation` | Weekly working windows; last known GPS fix (staff-only).                                                                                                                      |
 
 ### Catalogue and coverage
 
-| Model | Purpose |
-|---|---|
+| Model                         | Purpose                                                                                    |
+| ----------------------------- | ------------------------------------------------------------------------------------------ |
 | `ServiceCategory` / `Service` | The catalogue. Price bands, inspection requirement, emergency flag, guarantee eligibility. |
-| `ProviderService` | Which provider offers which service, at what starting price. |
-| `ServiceZone` | An area of the city, with a centroid used for distance when no GPS fix exists. |
-| `ServiceArea` | Which zones a provider covers. |
-| `Address` | A customer's saved address. Partial unique index enforces one default per user. |
+| `ProviderService`             | Which provider offers which service, at what starting price.                               |
+| `ServiceZone`                 | An area of the city, with a centroid used for distance when no GPS fix exists.             |
+| `ServiceArea`                 | Which zones a provider covers.                                                             |
+| `Address`                     | A customer's saved address. Partial unique index enforces one default per user.            |
 
 ### The job
 
-| Model | Purpose |
-|---|---|
-| `Booking` | The centre of the system. Status, schedule, urgency, the frozen commission and guarantee fields, and the agreed and final totals. |
-| `BookingStatusHistory` | Every transition: from, to, actor, reason, metadata. Written in the same transaction as the status change, so it cannot drift. |
-| `BookingOffer` | A fan-out offer to one provider, with its matching score and expiry. Feeds the response-rate signal. |
-| `Quote` / `QuoteItem` | Itemised quotes. `isAdditional` marks a charge raised after a price was agreed. A partial unique index allows at most one approved non-additional quote per booking. |
-| `Payment` | Cash, bank transfer or gateway. Refunds tracked against the original. No card data is ever stored. |
-| `Payout` / `PayoutItem` | Provider settlement batches. |
-| `Review` | One per booking, from the customer, after completion. |
-| `Dispute` / `GuaranteeClaim` | Escalations. Customer-opened, staff-resolved, audit-logged. |
+| Model                        | Purpose                                                                                                                                                              |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Booking`                    | The centre of the system. Status, schedule, urgency, the frozen commission and guarantee fields, and the agreed and final totals.                                    |
+| `BookingStatusHistory`       | Every transition: from, to, actor, reason, metadata. Written in the same transaction as the status change, so it cannot drift.                                       |
+| `BookingOffer`               | A fan-out offer to one provider, with its matching score and expiry. Feeds the response-rate signal.                                                                 |
+| `Quote` / `QuoteItem`        | Itemised quotes. `isAdditional` marks a charge raised after a price was agreed. A partial unique index allows at most one approved non-additional quote per booking. |
+| `Payment`                    | Cash, bank transfer or gateway. Refunds tracked against the original. No card data is ever stored.                                                                   |
+| `Payout` / `PayoutItem`      | Provider settlement batches.                                                                                                                                         |
+| `Review`                     | One per booking, from the customer, after completion.                                                                                                                |
+| `Dispute` / `GuaranteeClaim` | Escalations. Customer-opened, staff-resolved, audit-logged.                                                                                                          |
 
 ### Supporting
 
@@ -225,21 +225,21 @@ Two stages, deliberately separated.
 provider must be `VERIFIED`, not soft-deleted, on an active account, offering
 this service with the listing enabled, covering this zone, under their own job
 ceiling, and — for an emergency — signed up for emergencies. Distance is a hard
-filter *only when it is actually known*: an estimated distance never excludes
+filter _only when it is actually known_: an estimated distance never excludes
 anybody, because a guess is not evidence.
 
 **Soft scoring (in memory).** Every survivor is scored on seven signals, each
 normalised to 0–1 before weighting, which is what makes the weights comparable:
 
-| Signal | Meaning |
-|---|---|
-| `serviceMatch` | Reaching this point means the service and area match. |
-| `availability` | Does the weekly schedule cover the requested slot (PKT)? Emergencies score 1. |
-| `rating` | Confidence ramps in over the first ten reviews; an unrated provider is credited the configured floor so they can win their first job. |
-| `distance` | Nearer is better; an unknown distance scores mid-range, not best. |
-| `responseRate` | Share of offers answered. A provider who has never been offered a job scores neutrally rather than zero. |
-| `completedJobs` | Log scale — 5 vs 50 matters more than 500 vs 545. |
-| `workload` | Lighter current load ranks higher, so work spreads across the network. |
+| Signal          | Meaning                                                                                                                               |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `serviceMatch`  | Reaching this point means the service and area match.                                                                                 |
+| `availability`  | Does the weekly schedule cover the requested slot (PKT)? Emergencies score 1.                                                         |
+| `rating`        | Confidence ramps in over the first ten reviews; an unrated provider is credited the configured floor so they can win their first job. |
+| `distance`      | Nearer is better; an unknown distance scores mid-range, not best.                                                                     |
+| `responseRate`  | Share of offers answered. A provider who has never been offered a job scores neutrally rather than zero.                              |
+| `completedJobs` | Log scale — 5 vs 50 matters more than 500 vs 545.                                                                                     |
+| `workload`      | Lighter current load ranks higher, so work spreads across the network.                                                                |
 
 Weights live in the `matching.weights` setting, so operations retunes ranking
 from the admin panel without a deploy. Each candidate carries a per-signal
@@ -271,7 +271,7 @@ from the admin panel without a deploy. Each candidate carries a per-signal
   being able to change what the platform earns or who is an administrator.
 - **Rate limits**: a Postgres-backed sliding window, chosen over in-memory
   counters because the app is expected to run behind more than one instance.
-  Applied to login (by IP *and* by email), registration, refresh, password
+  Applied to login (by IP _and_ by email), registration, refresh, password
   change, booking creation, uploads, AI intake, reviews, support tickets and
   inbound webhooks.
 
@@ -285,14 +285,14 @@ Every adapter implements the same contract: `isConfigured()`, plus its
 operations. `src/lib/env.ts` exposes an `integrations` object that the UI and
 `/api/health` read.
 
-| Adapter | Configured | Not configured |
-|---|---|---|
-| Storage | S3/MinIO | Local disk driver (fully working) |
-| AI | Anthropic or OpenAI | Rule-based classifier; the UI says "Rule-based", never "AI" |
-| Maps | Google or Mapbox | Zone centroids for distance; the map panel states plainly that tiles are unavailable and shows the same operational data as a list |
-| Email / SMS / WhatsApp | Provider API | Notification rows are still written and shown in-app |
-| Payments | Gateway | Cash and bank transfer, which are the real methods in this market anyway |
-| Voice | Vapi-compatible webhook | Endpoint returns a clear "not configured" state |
+| Adapter                | Configured              | Not configured                                                                                                                     |
+| ---------------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Storage                | S3/MinIO                | Local disk driver (fully working)                                                                                                  |
+| AI                     | Anthropic or OpenAI     | Rule-based classifier; the UI says "Rule-based", never "AI"                                                                        |
+| Maps                   | Google or Mapbox        | Zone centroids for distance; the map panel states plainly that tiles are unavailable and shows the same operational data as a list |
+| Email / SMS / WhatsApp | Provider API            | Notification rows are still written and shown in-app                                                                               |
+| Payments               | Gateway                 | Cash and bank transfer, which are the real methods in this market anyway                                                           |
+| Voice                  | Vapi-compatible webhook | Endpoint returns a clear "not configured" state                                                                                    |
 
 There is no code path anywhere that reports success for an operation that did
 not happen.
@@ -316,7 +316,7 @@ Order of operations in `runIntake`, and the order is the point:
    English is verb-first ("open the panel") and customers mix both in one
    sentence.
 
-Platform-authored safety guidance deliberately *does not* pass through that
+Platform-authored safety guidance deliberately _does not_ pass through that
 filter: it says things like "open the windows, do not touch a switch", which the
 filter would otherwise replace with a generic referral — silently destroying the
 most important message the product ever shows anybody.
@@ -351,26 +351,26 @@ refrigeration or structural work.
 
 ## 10. Testing
 
-| Suite | What it covers |
-|---|---|
-| `tests/money.test.ts` | Paisa arithmetic, the commission split, rounding direction |
-| `tests/state-machine.test.ts` | The transition table, per actor |
-| `tests/auth.test.ts` | Registration, login, lockout, token rotation, family revocation, password change |
-| `tests/booking-flow.test.ts` | Creation, offers, acceptance, quotes, additional charges, cancellation, reviews |
-| `tests/provider-approval.test.ts` | Onboarding, admin approval, badge honesty, suspension, public projection |
-| `tests/matching.test.ts` | Hard filters, scoring, offers, response statistics |
-| `tests/uploads.test.ts` | MIME/extension/magic-byte validation, read authorization |
-| `tests/disputes.test.ts` | Disputes, refunds, guarantee eligibility and decisions |
-| `tests/ai-safety.test.ts` | Hazard detection, the output filter, the intake pipeline |
-| `tests/security.test.ts` | Booking visibility, server-side money, credentials, permissions, rate limits |
-| `tests/acceptance.test.ts` | The full AC-repair scenario, seventeen steps, asserting database state at each |
-| `tests/ui/booking-wizard.test.tsx` | Intake honesty, confirm-step promises, quote rendering |
+| Suite                              | What it covers                                                                   |
+| ---------------------------------- | -------------------------------------------------------------------------------- |
+| `tests/money.test.ts`              | Paisa arithmetic, the commission split, rounding direction                       |
+| `tests/state-machine.test.ts`      | The transition table, per actor                                                  |
+| `tests/auth.test.ts`               | Registration, login, lockout, token rotation, family revocation, password change |
+| `tests/booking-flow.test.ts`       | Creation, offers, acceptance, quotes, additional charges, cancellation, reviews  |
+| `tests/provider-approval.test.ts`  | Onboarding, admin approval, badge honesty, suspension, public projection         |
+| `tests/matching.test.ts`           | Hard filters, scoring, offers, response statistics                               |
+| `tests/uploads.test.ts`            | MIME/extension/magic-byte validation, read authorization                         |
+| `tests/disputes.test.ts`           | Disputes, refunds, guarantee eligibility and decisions                           |
+| `tests/ai-safety.test.ts`          | Hazard detection, the output filter, the intake pipeline                         |
+| `tests/security.test.ts`           | Booking visibility, server-side money, credentials, permissions, rate limits     |
+| `tests/acceptance.test.ts`         | The full AC-repair scenario, seventeen steps, asserting database state at each   |
+| `tests/ui/booking-wizard.test.tsx` | Intake honesty, confirm-step promises, quote rendering                           |
 
 Server tests run against a real PostgreSQL database — the behaviour under test
 lives partly in Postgres, so mocking it out would test nothing. The suite
 refuses to run unless the database name contains `test`.
 
-Two further checks run against a *deployed* application rather than the code:
+Two further checks run against a _deployed_ application rather than the code:
 
 - `npm run smoke -- <url>` opens the real pages in Chromium, watches for CSP
   violations and page errors, and types into the booking wizard to confirm it

@@ -9,7 +9,9 @@ import { execSync } from 'child_process';
  * would destroy someone's work.
  */
 export default function globalSetup(): void {
-  const url = process.env.TEST_DATABASE_URL ?? 'postgresql://isbfix:isbfix@localhost:5432/isbfix_test?schema=public';
+  const url =
+    process.env.TEST_DATABASE_URL ??
+    'postgresql://isbfix:isbfix@localhost:5432/isbfix_test?schema=public';
 
   if (!/test/i.test(url)) {
     throw new Error(

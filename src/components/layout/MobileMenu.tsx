@@ -48,7 +48,14 @@ export function MobileMenu({
         aria-label="Menu kholein"
         aria-expanded={open}
       >
-        <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+        <svg
+          viewBox="0 0 24 24"
+          className="h-6 w-6"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          aria-hidden="true"
+        >
           <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
         </svg>
         {isSignedIn && unread > 0 ? (
@@ -65,7 +72,7 @@ export function MobileMenu({
             aria-label="Menu band karein"
           />
           <div
-            className="absolute inset-y-0 right-0 flex w-[min(20rem,85vw)] flex-col bg-white shadow-pop animate-slide-in-right"
+            className="absolute inset-y-0 right-0 flex w-[min(20rem,85vw)] animate-slide-in-right flex-col bg-white shadow-pop"
             role="dialog"
             aria-label="Navigation"
           >

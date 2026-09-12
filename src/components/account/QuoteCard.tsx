@@ -118,9 +118,7 @@ export function QuoteCard({
         <p className="mt-2 text-sm text-alert-600">Reject ki wajah: {quote.rejectionReason}</p>
       ) : null}
       {quote.validUntil ? (
-        <p className="mt-1.5 text-xs text-ink-500">
-          {formatDateTime(quote.validUntil)} tak valid
-        </p>
+        <p className="mt-1.5 text-xs text-ink-500">{formatDateTime(quote.validUntil)} tak valid</p>
       ) : null}
     </div>
   );

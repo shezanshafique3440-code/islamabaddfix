@@ -18,8 +18,9 @@ if (process.env.NODE_ENV === 'production') {
 
 const url = process.env.DATABASE_URL ?? '';
 // A crude but effective guard against pointing this at a managed database.
-const looksRemote =
-  /amazonaws|azure|gcp|neon\.tech|supabase|render\.com|railway|planetscale/i.test(url);
+const looksRemote = /amazonaws|azure|gcp|neon\.tech|supabase|render\.com|railway|planetscale/i.test(
+  url,
+);
 if (looksRemote && !process.argv.includes('--i-really-mean-it')) {
   fail(
     'DATABASE_URL looks like a hosted database. Refusing to reset it.\n' +

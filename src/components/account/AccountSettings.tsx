@@ -118,9 +118,9 @@ export function AccountControls({ blockers }: { blockers: string[] }) {
       <div className="border-t border-ink-100 pt-5">
         <h3 className="text-sm font-semibold text-ink-900">Account band karein</h3>
         <p className="mt-1 text-sm leading-relaxed text-ink-600">
-          Aapka naam, email, phone, addresses aur tasveerein hata di jayengi. Booking aur payment
-          ka record accounting ki zaroorat aur doosri party ke haq ke tehat rakha jata hai — us par
-          aap ka naam nahi rahega.
+          Aapka naam, email, phone, addresses aur tasveerein hata di jayengi. Booking aur payment ka
+          record accounting ki zaroorat aur doosri party ke haq ke tehat rakha jata hai — us par aap
+          ka naam nahi rahega.
         </p>
 
         {blockers.length > 0 ? (

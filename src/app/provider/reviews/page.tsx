@@ -82,9 +82,7 @@ export default async function ProviderReviewsPage() {
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2.5">
                   <Rating value={review.rating} size="sm" />
-                  <span className="text-sm font-medium text-ink-800">
-                    {review.authorFirstName}
-                  </span>
+                  <span className="text-sm font-medium text-ink-800">{review.authorFirstName}</span>
                   {review.isDemo ? <DemoBadge /> : null}
                 </div>
                 <span className="text-xs text-ink-400">{formatDate(review.createdAt)}</span>

@@ -125,7 +125,10 @@ describe('authentication', () => {
       { email: 'login@example.com', password: 'StrongPass123', fullName: 'Login' },
       meta,
     );
-    const session = await loginUser({ email: 'login@example.com', password: 'StrongPass123' }, meta);
+    const session = await loginUser(
+      { email: 'login@example.com', password: 'StrongPass123' },
+      meta,
+    );
     expect(session.user.email).toBe('login@example.com');
 
     const user = await db.user.findUniqueOrThrow({ where: { email: 'login@example.com' } });
@@ -273,7 +276,13 @@ describe('authentication', () => {
   });
 
   it('normalises Pakistani phone formats to one canonical value', () => {
-    for (const input of ['03001234567', '0300-1234567', '+923001234567', '923001234567', '00923001234567']) {
+    for (const input of [
+      '03001234567',
+      '0300-1234567',
+      '+923001234567',
+      '923001234567',
+      '00923001234567',
+    ]) {
       expect(normalizePhone(input)).toBe('+923001234567');
     }
   });

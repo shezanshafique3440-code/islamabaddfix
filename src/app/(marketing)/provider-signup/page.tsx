@@ -136,7 +136,9 @@ export default async function ProviderSignupPage() {
             <h2 className="text-title text-ink-950">Kharcha kitna hai</h2>
             <p className="mt-3 text-sm leading-relaxed text-ink-700">
               Profile banane ya listing ki koi fee nahi. Platform sirf mukammal booking par{' '}
-              <strong className="font-semibold text-ink-900">{commissionBp / 100}% commission</strong>{' '}
+              <strong className="font-semibold text-ink-900">
+                {commissionBp / 100}% commission
+              </strong>{' '}
               leta hai, jo aapki earning se katta hai. Kaam na ho to kuch bhi nahi.
             </p>
             <p className="mt-3 text-xs leading-relaxed text-ink-500">
@@ -167,8 +169,8 @@ export default async function ProviderSignupPage() {
         <div className="mt-14 rounded-2xl bg-ink-950 p-8 text-center text-white">
           <h2 className="text-display-sm">Shuru karne ke liye tayyar hain?</h2>
           <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-ink-300">
-            Account banane mein do minute lagte hain. Profile mukammal karne ke baad review shuru
-            ho jati hai.
+            Account banane mein do minute lagte hain. Profile mukammal karne ke baad review shuru ho
+            jati hai.
           </p>
           <ButtonLink
             href="/register?role=provider"

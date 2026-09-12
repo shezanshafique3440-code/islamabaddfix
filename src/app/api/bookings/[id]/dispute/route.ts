@@ -47,7 +47,10 @@ export const GET = route(async (_request, { params }: Params) => {
     where: { bookingId: id },
     orderBy: { createdAt: 'desc' },
     include: {
-      files: { where: { deletedAt: null }, select: { id: true, mimeType: true, originalName: true } },
+      files: {
+        where: { deletedAt: null },
+        select: { id: true, mimeType: true, originalName: true },
+      },
     },
   });
   return ok(disputes);

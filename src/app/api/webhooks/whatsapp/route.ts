@@ -35,10 +35,7 @@ export async function POST(request: Request) {
   // The raw body is required: re-serialising JSON would change the bytes the
   // signature was computed over.
   const rawBody = await request.text();
-  const verification = verifyWhatsappSignature(
-    rawBody,
-    request.headers.get('x-hub-signature-256'),
-  );
+  const verification = verifyWhatsappSignature(rawBody, request.headers.get('x-hub-signature-256'));
   if (!verification.valid) {
     console.warn('[webhook:whatsapp] rejected', { reason: verification.reason });
     return new NextResponse('Invalid signature', { status: 401 });

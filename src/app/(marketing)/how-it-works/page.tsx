@@ -37,13 +37,15 @@ export default async function HowItWorksPage() {
               <li className="flex gap-3">
                 <Step n={1} />
                 <span>
-                  Technician muaina karta hai aur likhit quote bhejta hai jismein inspection,
-                  labour aur parts alag alag likhe hote hain.
+                  Technician muaina karta hai aur likhit quote bhejta hai jismein inspection, labour
+                  aur parts alag alag likhe hote hain.
                 </span>
               </li>
               <li className="flex gap-3">
                 <Step n={2} />
-                <span>Aap quote dekh kar approve ya reject karte hain. Sawal bhi pooch sakte hain.</span>
+                <span>
+                  Aap quote dekh kar approve ya reject karte hain. Sawal bhi pooch sakte hain.
+                </span>
               </li>
               <li className="flex gap-3">
                 <Step n={3} />
@@ -54,9 +56,7 @@ export default async function HowItWorksPage() {
               </li>
               <li className="flex gap-3">
                 <Step n={4} />
-                <span>
-                  Kaam mukammal hone par aap payment karte hain aur review dete hain.
-                </span>
+                <span>Kaam mukammal hone par aap payment karte hain aur review dete hain.</span>
               </li>
             </ol>
           </section>
@@ -70,9 +70,9 @@ export default async function HowItWorksPage() {
                 dikhta hai jo waqai verify hua ho.
               </li>
               <li>
-                <strong className="font-semibold text-ink-900">Privacy.</strong> Aapka poora
-                address aur phone number technician ko tab milta hai jab woh job qubool kar leta
-                hai — pehle sirf area dikhta hai.
+                <strong className="font-semibold text-ink-900">Privacy.</strong> Aapka poora address
+                aur phone number technician ko tab milta hai jab woh job qubool kar leta hai — pehle
+                sirf area dikhta hai.
               </li>
               {guaranteeEnabled ? (
                 <li>
@@ -85,8 +85,8 @@ export default async function HowItWorksPage() {
               ) : null}
               <li>
                 <strong className="font-semibold text-ink-900">Dispute.</strong> Kaam theek na ho,
-                technician na aaye, ya ghalat charge lage to booking par dispute khol dein. Ops
-                team dono taraf se baat kar ke faisla karti hai.
+                technician na aaye, ya ghalat charge lage to booking par dispute khol dein. Ops team
+                dono taraf se baat kar ke faisla karti hai.
               </li>
               <li>
                 <strong className="font-semibold text-ink-900">Commission.</strong> Platform har

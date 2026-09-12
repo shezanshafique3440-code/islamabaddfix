@@ -94,7 +94,11 @@ export function UserActions({
         }
       >
         <div className="space-y-4">
-          <Select label="Naya role" value={newRole} onChange={(event) => setNewRole(event.target.value)}>
+          <Select
+            label="Naya role"
+            value={newRole}
+            onChange={(event) => setNewRole(event.target.value)}
+          >
             <option value="CUSTOMER">Customer</option>
             <option value="PROVIDER">Provider</option>
             <option value="ADMIN">Admin</option>
@@ -113,7 +117,11 @@ export function UserActions({
       <Dialog
         open={dialog === 'active'}
         onClose={() => setDialog(null)}
-        title={isActive ? `${fullName} ka account disable karein?` : `${fullName} ka account enable karein?`}
+        title={
+          isActive
+            ? `${fullName} ka account disable karein?`
+            : `${fullName} ka account enable karein?`
+        }
         description={
           isActive
             ? 'Disable karne par sessions khatam ho jayenge aur woh login nahi kar sakenge.'
@@ -135,7 +143,10 @@ export function UserActions({
                     isActive: !isActive,
                     reason: reason.trim(),
                   });
-                  toast({ tone: 'success', title: isActive ? 'Account disabled' : 'Account enabled' });
+                  toast({
+                    tone: 'success',
+                    title: isActive ? 'Account disabled' : 'Account enabled',
+                  });
                   setDialog(null);
                   router.refresh();
                 } catch (error) {

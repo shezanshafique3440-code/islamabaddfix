@@ -51,7 +51,14 @@ export function CategoryGrid({
           className="group flex items-center gap-3 rounded-xl border border-dashed border-ink-300 bg-white p-3.5 transition-colors hover:border-brand-400 hover:bg-brand-50/40"
         >
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-ink-100 text-ink-600 transition-colors group-hover:bg-brand-100 group-hover:text-brand-700">
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              className="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              aria-hidden="true"
+            >
               <path d="M12 5v14M5 12h14" strokeLinecap="round" />
             </svg>
           </span>

@@ -78,9 +78,7 @@ export default async function ProfilePage() {
             <Stat label="Cancelled" value={String(user.customerProfile.cancelledBookings)} />
             <Stat
               label="Kharch"
-              value={
-                stats._sum.finalTotalPaisa ? formatPaisa(stats._sum.finalTotalPaisa) : 'Rs. 0'
-              }
+              value={stats._sum.finalTotalPaisa ? formatPaisa(stats._sum.finalTotalPaisa) : 'Rs. 0'}
             />
           </dl>
           <p className="mt-4 border-t border-ink-100 pt-3 text-xs text-ink-500">

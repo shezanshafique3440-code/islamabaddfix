@@ -23,9 +23,7 @@ export function Rating({
 
   if (value === null || value === 0) {
     if (!showEmpty) return null;
-    return (
-      <span className={cn('text-ink-500', text, className)}>Abhi koi rating nahi</span>
-    );
+    return <span className={cn('text-ink-500', text, className)}>Abhi koi rating nahi</span>;
   }
 
   const rounded = Math.round(value * 10) / 10;
@@ -47,9 +45,7 @@ export function Rating({
         ))}
       </span>
       <span className={cn('font-semibold text-ink-900', text)}>{rounded.toFixed(1)}</span>
-      {count !== undefined ? (
-        <span className={cn('text-ink-500', text)}>({count})</span>
-      ) : null}
+      {count !== undefined ? <span className={cn('text-ink-500', text)}>({count})</span> : null}
     </span>
   );
 }

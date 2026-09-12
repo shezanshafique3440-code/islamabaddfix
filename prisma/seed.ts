@@ -70,12 +70,51 @@ const CATEGORIES: CategorySeed[] = [
     iconKey: 'snowflake',
     emergencyCategory: true,
     services: [
-      { name: 'AC Service', slug: 'ac-service', minRupees: 1500, maxRupees: 3000, requiresInspection: false, minutes: 90 },
-      { name: 'AC Repair', slug: 'ac-repair', minRupees: 1500, maxRupees: 8000, minutes: 120, emergency: true },
-      { name: 'AC Installation', slug: 'ac-installation', minRupees: 3500, maxRupees: 9000, minutes: 180 },
-      { name: 'AC Dismantling', slug: 'ac-dismantling', minRupees: 2000, maxRupees: 4500, minutes: 120 },
-      { name: 'AC Gas Refill', slug: 'ac-gas-refill', minRupees: 3500, maxRupees: 9000, minutes: 120 },
-      { name: 'AC Deep Cleaning', slug: 'ac-deep-cleaning', minRupees: 2500, maxRupees: 5000, requiresInspection: false, minutes: 150 },
+      {
+        name: 'AC Service',
+        slug: 'ac-service',
+        minRupees: 1500,
+        maxRupees: 3000,
+        requiresInspection: false,
+        minutes: 90,
+      },
+      {
+        name: 'AC Repair',
+        slug: 'ac-repair',
+        minRupees: 1500,
+        maxRupees: 8000,
+        minutes: 120,
+        emergency: true,
+      },
+      {
+        name: 'AC Installation',
+        slug: 'ac-installation',
+        minRupees: 3500,
+        maxRupees: 9000,
+        minutes: 180,
+      },
+      {
+        name: 'AC Dismantling',
+        slug: 'ac-dismantling',
+        minRupees: 2000,
+        maxRupees: 4500,
+        minutes: 120,
+      },
+      {
+        name: 'AC Gas Refill',
+        slug: 'ac-gas-refill',
+        minRupees: 3500,
+        maxRupees: 9000,
+        minutes: 120,
+      },
+      {
+        name: 'AC Deep Cleaning',
+        slug: 'ac-deep-cleaning',
+        minRupees: 2500,
+        maxRupees: 5000,
+        requiresInspection: false,
+        minutes: 150,
+      },
     ],
   },
   {
@@ -87,13 +126,52 @@ const CATEGORIES: CategorySeed[] = [
     iconKey: 'bolt',
     emergencyCategory: true,
     services: [
-      { name: 'Electrical Repair', slug: 'electrical-repair', minRupees: 1000, maxRupees: 6000, minutes: 90, emergency: true },
-      { name: 'House Wiring', slug: 'house-wiring', minRupees: 5000, maxRupees: 60000, minutes: 480 },
+      {
+        name: 'Electrical Repair',
+        slug: 'electrical-repair',
+        minRupees: 1000,
+        maxRupees: 6000,
+        minutes: 90,
+        emergency: true,
+      },
+      {
+        name: 'House Wiring',
+        slug: 'house-wiring',
+        minRupees: 5000,
+        maxRupees: 60000,
+        minutes: 480,
+      },
       { name: 'Fan Repair', slug: 'fan-repair', minRupees: 800, maxRupees: 3000, minutes: 60 },
-      { name: 'Light Installation', slug: 'light-installation', minRupees: 700, maxRupees: 4000, requiresInspection: false, minutes: 60 },
-      { name: 'Switch & Socket Repair', slug: 'switch-socket-repair', minRupees: 600, maxRupees: 2500, minutes: 45 },
-      { name: 'UPS Installation & Repair', slug: 'ups-service', minRupees: 1500, maxRupees: 8000, minutes: 90 },
-      { name: 'Generator Service', slug: 'generator-service', minRupees: 2500, maxRupees: 15000, minutes: 150, emergency: true },
+      {
+        name: 'Light Installation',
+        slug: 'light-installation',
+        minRupees: 700,
+        maxRupees: 4000,
+        requiresInspection: false,
+        minutes: 60,
+      },
+      {
+        name: 'Switch & Socket Repair',
+        slug: 'switch-socket-repair',
+        minRupees: 600,
+        maxRupees: 2500,
+        minutes: 45,
+      },
+      {
+        name: 'UPS Installation & Repair',
+        slug: 'ups-service',
+        minRupees: 1500,
+        maxRupees: 8000,
+        minutes: 90,
+      },
+      {
+        name: 'Generator Service',
+        slug: 'generator-service',
+        minRupees: 2500,
+        maxRupees: 15000,
+        minutes: 150,
+        emergency: true,
+      },
     ],
   },
   {
@@ -105,12 +183,50 @@ const CATEGORIES: CategorySeed[] = [
     iconKey: 'droplet',
     emergencyCategory: true,
     services: [
-      { name: 'Pipe Leakage', slug: 'pipe-leakage', minRupees: 1000, maxRupees: 6000, minutes: 90, emergency: true },
-      { name: 'Drain Blockage', slug: 'drain-blockage', minRupees: 1200, maxRupees: 5000, minutes: 90, emergency: true },
-      { name: 'Tap / Faucet Repair', slug: 'tap-faucet-repair', minRupees: 700, maxRupees: 3000, minutes: 45 },
-      { name: 'Water Tank Repair', slug: 'water-tank-repair', minRupees: 1500, maxRupees: 8000, minutes: 120 },
-      { name: 'Bathroom Plumbing', slug: 'bathroom-plumbing', minRupees: 1500, maxRupees: 12000, minutes: 150 },
-      { name: 'Kitchen Plumbing', slug: 'kitchen-plumbing', minRupees: 1200, maxRupees: 9000, minutes: 120 },
+      {
+        name: 'Pipe Leakage',
+        slug: 'pipe-leakage',
+        minRupees: 1000,
+        maxRupees: 6000,
+        minutes: 90,
+        emergency: true,
+      },
+      {
+        name: 'Drain Blockage',
+        slug: 'drain-blockage',
+        minRupees: 1200,
+        maxRupees: 5000,
+        minutes: 90,
+        emergency: true,
+      },
+      {
+        name: 'Tap / Faucet Repair',
+        slug: 'tap-faucet-repair',
+        minRupees: 700,
+        maxRupees: 3000,
+        minutes: 45,
+      },
+      {
+        name: 'Water Tank Repair',
+        slug: 'water-tank-repair',
+        minRupees: 1500,
+        maxRupees: 8000,
+        minutes: 120,
+      },
+      {
+        name: 'Bathroom Plumbing',
+        slug: 'bathroom-plumbing',
+        minRupees: 1500,
+        maxRupees: 12000,
+        minutes: 150,
+      },
+      {
+        name: 'Kitchen Plumbing',
+        slug: 'kitchen-plumbing',
+        minRupees: 1200,
+        maxRupees: 9000,
+        minutes: 120,
+      },
     ],
   },
   {
@@ -121,11 +237,46 @@ const CATEGORIES: CategorySeed[] = [
       'Home aur office deep cleaning, sofa aur carpet shampooing, water tank cleaning. Team apna equipment saath laati hai.',
     iconKey: 'sparkles',
     services: [
-      { name: 'Home Cleaning', slug: 'home-cleaning', minRupees: 3500, maxRupees: 15000, requiresInspection: false, minutes: 300 },
-      { name: 'Office Cleaning', slug: 'office-cleaning', minRupees: 5000, maxRupees: 25000, requiresInspection: false, minutes: 360 },
-      { name: 'Sofa Cleaning', slug: 'sofa-cleaning', minRupees: 2000, maxRupees: 8000, requiresInspection: false, minutes: 120 },
-      { name: 'Carpet Cleaning', slug: 'carpet-cleaning', minRupees: 1500, maxRupees: 7000, requiresInspection: false, minutes: 120 },
-      { name: 'Water Tank Cleaning', slug: 'water-tank-cleaning', minRupees: 2500, maxRupees: 6000, requiresInspection: false, minutes: 150 },
+      {
+        name: 'Home Cleaning',
+        slug: 'home-cleaning',
+        minRupees: 3500,
+        maxRupees: 15000,
+        requiresInspection: false,
+        minutes: 300,
+      },
+      {
+        name: 'Office Cleaning',
+        slug: 'office-cleaning',
+        minRupees: 5000,
+        maxRupees: 25000,
+        requiresInspection: false,
+        minutes: 360,
+      },
+      {
+        name: 'Sofa Cleaning',
+        slug: 'sofa-cleaning',
+        minRupees: 2000,
+        maxRupees: 8000,
+        requiresInspection: false,
+        minutes: 120,
+      },
+      {
+        name: 'Carpet Cleaning',
+        slug: 'carpet-cleaning',
+        minRupees: 1500,
+        maxRupees: 7000,
+        requiresInspection: false,
+        minutes: 120,
+      },
+      {
+        name: 'Water Tank Cleaning',
+        slug: 'water-tank-cleaning',
+        minRupees: 2500,
+        maxRupees: 6000,
+        requiresInspection: false,
+        minutes: 150,
+      },
     ],
   },
   {
@@ -137,10 +288,34 @@ const CATEGORIES: CategorySeed[] = [
     iconKey: 'hammer',
     services: [
       { name: 'Door Repair', slug: 'door-repair', minRupees: 1200, maxRupees: 8000, minutes: 120 },
-      { name: 'Furniture Repair', slug: 'furniture-repair', minRupees: 1500, maxRupees: 12000, minutes: 150 },
-      { name: 'Cabinet Work', slug: 'cabinet-work', minRupees: 5000, maxRupees: 60000, minutes: 480 },
-      { name: 'Shelves & Storage', slug: 'shelves-storage', minRupees: 2500, maxRupees: 20000, minutes: 240 },
-      { name: 'General Carpentry', slug: 'general-carpentry', minRupees: 1500, maxRupees: 15000, minutes: 180 },
+      {
+        name: 'Furniture Repair',
+        slug: 'furniture-repair',
+        minRupees: 1500,
+        maxRupees: 12000,
+        minutes: 150,
+      },
+      {
+        name: 'Cabinet Work',
+        slug: 'cabinet-work',
+        minRupees: 5000,
+        maxRupees: 60000,
+        minutes: 480,
+      },
+      {
+        name: 'Shelves & Storage',
+        slug: 'shelves-storage',
+        minRupees: 2500,
+        maxRupees: 20000,
+        minutes: 240,
+      },
+      {
+        name: 'General Carpentry',
+        slug: 'general-carpentry',
+        minRupees: 1500,
+        maxRupees: 15000,
+        minutes: 180,
+      },
     ],
   },
   {
@@ -151,9 +326,27 @@ const CATEGORIES: CategorySeed[] = [
       'Room aur poore ghar ki painting, office painting aur wall repair. Area dekh kar quote diya jata hai.',
     iconKey: 'brush',
     services: [
-      { name: 'Room Painting', slug: 'room-painting', minRupees: 6000, maxRupees: 25000, minutes: 480 },
-      { name: 'House Painting', slug: 'house-painting', minRupees: 25000, maxRupees: 250000, minutes: 2880 },
-      { name: 'Office Painting', slug: 'office-painting', minRupees: 20000, maxRupees: 200000, minutes: 1440 },
+      {
+        name: 'Room Painting',
+        slug: 'room-painting',
+        minRupees: 6000,
+        maxRupees: 25000,
+        minutes: 480,
+      },
+      {
+        name: 'House Painting',
+        slug: 'house-painting',
+        minRupees: 25000,
+        maxRupees: 250000,
+        minutes: 2880,
+      },
+      {
+        name: 'Office Painting',
+        slug: 'office-painting',
+        minRupees: 20000,
+        maxRupees: 200000,
+        minutes: 1440,
+      },
       { name: 'Wall Repair', slug: 'wall-repair', minRupees: 2500, maxRupees: 20000, minutes: 240 },
     ],
   },
@@ -165,11 +358,42 @@ const CATEGORIES: CategorySeed[] = [
       'Refrigerator, washing machine, microwave aur geyser ki repair. Brand aur model batayein taake technician parts saath laaye.',
     iconKey: 'plug',
     services: [
-      { name: 'Refrigerator Repair', slug: 'refrigerator', minRupees: 1500, maxRupees: 12000, minutes: 120 },
-      { name: 'Washing Machine Repair', slug: 'washing-machine', minRupees: 1500, maxRupees: 10000, minutes: 120 },
-      { name: 'Microwave Repair', slug: 'microwave', minRupees: 1200, maxRupees: 7000, minutes: 90 },
-      { name: 'Geyser Repair', slug: 'geyser', minRupees: 1500, maxRupees: 9000, minutes: 120, emergency: true },
-      { name: 'Other Appliances', slug: 'other-appliances', minRupees: 1200, maxRupees: 12000, minutes: 120 },
+      {
+        name: 'Refrigerator Repair',
+        slug: 'refrigerator',
+        minRupees: 1500,
+        maxRupees: 12000,
+        minutes: 120,
+      },
+      {
+        name: 'Washing Machine Repair',
+        slug: 'washing-machine',
+        minRupees: 1500,
+        maxRupees: 10000,
+        minutes: 120,
+      },
+      {
+        name: 'Microwave Repair',
+        slug: 'microwave',
+        minRupees: 1200,
+        maxRupees: 7000,
+        minutes: 90,
+      },
+      {
+        name: 'Geyser Repair',
+        slug: 'geyser',
+        minRupees: 1500,
+        maxRupees: 9000,
+        minutes: 120,
+        emergency: true,
+      },
+      {
+        name: 'Other Appliances',
+        slug: 'other-appliances',
+        minRupees: 1200,
+        maxRupees: 12000,
+        minutes: 120,
+      },
     ],
   },
   {
@@ -180,10 +404,28 @@ const CATEGORIES: CategorySeed[] = [
       'CCTV installation aur repair, access control aur security system maintenance. Site dekh kar cameras aur cabling ka quote milta hai.',
     iconKey: 'shield',
     services: [
-      { name: 'CCTV Installation', slug: 'cctv-installation', minRupees: 8000, maxRupees: 120000, minutes: 360 },
+      {
+        name: 'CCTV Installation',
+        slug: 'cctv-installation',
+        minRupees: 8000,
+        maxRupees: 120000,
+        minutes: 360,
+      },
       { name: 'CCTV Repair', slug: 'cctv-repair', minRupees: 2000, maxRupees: 15000, minutes: 120 },
-      { name: 'Access Control', slug: 'access-control', minRupees: 12000, maxRupees: 90000, minutes: 300 },
-      { name: 'Security System Maintenance', slug: 'security-maintenance', minRupees: 3000, maxRupees: 20000, minutes: 180 },
+      {
+        name: 'Access Control',
+        slug: 'access-control',
+        minRupees: 12000,
+        maxRupees: 90000,
+        minutes: 300,
+      },
+      {
+        name: 'Security System Maintenance',
+        slug: 'security-maintenance',
+        minRupees: 3000,
+        maxRupees: 20000,
+        minutes: 180,
+      },
     ],
   },
 ];
@@ -251,7 +493,15 @@ const DEMO_PROVIDERS: DemoProviderSeed[] = [
     description:
       'Split aur window AC ki service, repair aur gas refilling. Electrical repair aur UPS installation bhi karte hain. Har kaam se pehle muaina, phir clear quote.',
     years: 12,
-    serviceSlugs: ['ac-service', 'ac-repair', 'ac-installation', 'ac-gas-refill', 'electrical-repair', 'ups-service', 'fan-repair'],
+    serviceSlugs: [
+      'ac-service',
+      'ac-repair',
+      'ac-installation',
+      'ac-gas-refill',
+      'electrical-repair',
+      'ups-service',
+      'fan-repair',
+    ],
     zoneNames: ['G-10', 'G-11', 'F-10', 'F-11', 'G-9'],
     emergency: true,
     emergencyFeeRupees: 800,
@@ -269,7 +519,14 @@ const DEMO_PROVIDERS: DemoProviderSeed[] = [
     description:
       'Pipe leakage, drain blockage aur bathroom plumbing. Emergency calls raat ko bhi attend karte hain. Apne tools aur camera inspection ke saath.',
     years: 9,
-    serviceSlugs: ['pipe-leakage', 'drain-blockage', 'tap-faucet-repair', 'bathroom-plumbing', 'kitchen-plumbing', 'water-tank-repair'],
+    serviceSlugs: [
+      'pipe-leakage',
+      'drain-blockage',
+      'tap-faucet-repair',
+      'bathroom-plumbing',
+      'kitchen-plumbing',
+      'water-tank-repair',
+    ],
     zoneNames: ['G-10', 'G-9', 'G-8', 'I-8', 'H-8', 'Blue Area'],
     emergency: true,
     emergencyFeeRupees: 1000,
@@ -287,7 +544,13 @@ const DEMO_PROVIDERS: DemoProviderSeed[] = [
     description:
       'Ghar aur office ki deep cleaning, sofa aur carpet shampooing. Trained team, machine se cleaning, fixed rates per area.',
     years: 5,
-    serviceSlugs: ['home-cleaning', 'office-cleaning', 'sofa-cleaning', 'carpet-cleaning', 'water-tank-cleaning'],
+    serviceSlugs: [
+      'home-cleaning',
+      'office-cleaning',
+      'sofa-cleaning',
+      'carpet-cleaning',
+      'water-tank-cleaning',
+    ],
     zoneNames: ['F-6', 'F-7', 'F-8', 'G-6', 'G-7', 'DHA Phase 2'],
     emergency: false,
     emergencyFeeRupees: 0,
@@ -305,7 +568,13 @@ const DEMO_PROVIDERS: DemoProviderSeed[] = [
     description:
       'Door aur furniture repair, kitchen cabinets aur wardrobes. Material ka hisaab pehle likh kar dete hain.',
     years: 18,
-    serviceSlugs: ['door-repair', 'furniture-repair', 'cabinet-work', 'shelves-storage', 'general-carpentry'],
+    serviceSlugs: [
+      'door-repair',
+      'furniture-repair',
+      'cabinet-work',
+      'shelves-storage',
+      'general-carpentry',
+    ],
     zoneNames: ['G-13', 'G-14', 'E-11', 'F-11', 'G-11'],
     emergency: false,
     emergencyFeeRupees: 0,
@@ -377,7 +646,14 @@ const DEMO_PROVIDERS: DemoProviderSeed[] = [
     description:
       'House wiring, generator service aur emergency electrical faults. Raat ko bhi available for urgent faults.',
     years: 14,
-    serviceSlugs: ['electrical-repair', 'house-wiring', 'generator-service', 'light-installation', 'switch-socket-repair', 'ups-service'],
+    serviceSlugs: [
+      'electrical-repair',
+      'house-wiring',
+      'generator-service',
+      'light-installation',
+      'switch-socket-repair',
+      'ups-service',
+    ],
     zoneNames: ['F-6', 'F-7', 'G-6', 'G-7', 'Blue Area', 'F-8'],
     emergency: true,
     emergencyFeeRupees: 1200,
@@ -477,7 +753,12 @@ async function seedZones(): Promise<Map<string, string>> {
         longitude: zone.lng ?? null,
         sortOrder: index,
       },
-      update: { name: zone.name, latitude: zone.lat ?? null, longitude: zone.lng ?? null, sortOrder: index },
+      update: {
+        name: zone.name,
+        latitude: zone.lat ?? null,
+        longitude: zone.lng ?? null,
+        sortOrder: index,
+      },
     });
     map.set(zone.name, row.id);
   }
@@ -573,9 +854,16 @@ async function seedSettings(): Promise<void> {
 async function seedDemoProviders(
   zones: Map<string, string>,
   services: Map<string, { id: string; categorySlug: string }>,
-): Promise<Array<{ providerId: string; userId: string; serviceSlugs: string[]; zoneNames: string[] }>> {
+): Promise<
+  Array<{ providerId: string; userId: string; serviceSlugs: string[]; zoneNames: string[] }>
+> {
   const passwordHash = await bcrypt.hash(DEMO_PASSWORD, 12);
-  const result: Array<{ providerId: string; userId: string; serviceSlugs: string[]; zoneNames: string[] }> = [];
+  const result: Array<{
+    providerId: string;
+    userId: string;
+    serviceSlugs: string[];
+    zoneNames: string[];
+  }> = [];
 
   for (const seed of DEMO_PROVIDERS) {
     const user = await prisma.user.upsert({
@@ -685,7 +973,12 @@ async function seedDemoProviders(
 }
 
 async function seedDemoBookings(
-  providers: Array<{ providerId: string; userId: string; serviceSlugs: string[]; zoneNames: string[] }>,
+  providers: Array<{
+    providerId: string;
+    userId: string;
+    serviceSlugs: string[];
+    zoneNames: string[];
+  }>,
   services: Map<string, { id: string; categorySlug: string }>,
   zones: Map<string, string>,
 ): Promise<void> {
@@ -757,21 +1050,117 @@ async function seedDemoBookings(
     totalRupees?: number;
     rating?: number;
   }> = [
-    { serviceSlug: 'ac-repair', status: 'COMPLETED', daysOffset: -18, problem: 'AC chal raha hai lekin thandi hawa nahi aa rahi.', totalRupees: 3300, rating: 5 },
-    { serviceSlug: 'ac-service', status: 'COMPLETED', daysOffset: -14, problem: 'Do split AC ki service karani hai, filter bohat gande hain.', totalRupees: 3000, rating: 4 },
-    { serviceSlug: 'pipe-leakage', status: 'COMPLETED', daysOffset: -11, problem: 'Kitchen ke neeche pipe se paani tapak raha hai.', totalRupees: 2500, rating: 5 },
-    { serviceSlug: 'drain-blockage', status: 'COMPLETED', daysOffset: -9, problem: 'Bathroom ki nali band ho gayi hai, paani khara ho raha hai.', totalRupees: 2000, rating: 4 },
-    { serviceSlug: 'home-cleaning', status: 'COMPLETED', daysOffset: -7, problem: 'Poore ghar ki deep cleaning chahiye, 3 bedroom.', totalRupees: 8500, rating: 5 },
-    { serviceSlug: 'refrigerator', status: 'COMPLETED', daysOffset: -5, problem: 'Fridge ka freezer kaam kar raha hai lekin neeche cooling nahi.', totalRupees: 4200, rating: 4 },
-    { serviceSlug: 'door-repair', status: 'COMPLETED', daysOffset: -4, problem: 'Bedroom ka darwaza band nahi hota, hinge dheele hain.', totalRupees: 1800, rating: 5 },
-    { serviceSlug: 'electrical-repair', status: 'COMPLETED', daysOffset: -3, problem: 'Lounge ke do switch kaam nahi kar rahe.', totalRupees: 1600, rating: 5 },
-    { serviceSlug: 'geyser', status: 'COMPLETED', daysOffset: -2, problem: 'Geyser se paani garam nahi ho raha.', totalRupees: 2800, rating: 3 },
-    { serviceSlug: 'cctv-installation', status: 'SCHEDULED', daysOffset: 1, problem: 'Ghar ke bahar 4 cameras lagwane hain.', totalRupees: 32000 },
-    { serviceSlug: 'ac-installation', status: 'SCHEDULED', daysOffset: 2, problem: 'Naya 1.5 ton split AC install karana hai.', totalRupees: 5500 },
-    { serviceSlug: 'sofa-cleaning', status: 'QUOTE_PENDING', daysOffset: 1, problem: '7-seater sofa aur ek carpet clean karana hai.' },
-    { serviceSlug: 'room-painting', status: 'IN_PROGRESS', daysOffset: 0, problem: 'Do kamron ki painting karani hai, deewar par kuch cracks bhi hain.', totalRupees: 18000 },
-    { serviceSlug: 'washing-machine', status: 'CANCELLED', daysOffset: -6, problem: 'Washing machine spin nahi kar rahi.' },
-    { serviceSlug: 'fan-repair', status: 'PENDING', daysOffset: 2, problem: 'Ceiling fan se khat khat ki awaz aa rahi hai.' },
+    {
+      serviceSlug: 'ac-repair',
+      status: 'COMPLETED',
+      daysOffset: -18,
+      problem: 'AC chal raha hai lekin thandi hawa nahi aa rahi.',
+      totalRupees: 3300,
+      rating: 5,
+    },
+    {
+      serviceSlug: 'ac-service',
+      status: 'COMPLETED',
+      daysOffset: -14,
+      problem: 'Do split AC ki service karani hai, filter bohat gande hain.',
+      totalRupees: 3000,
+      rating: 4,
+    },
+    {
+      serviceSlug: 'pipe-leakage',
+      status: 'COMPLETED',
+      daysOffset: -11,
+      problem: 'Kitchen ke neeche pipe se paani tapak raha hai.',
+      totalRupees: 2500,
+      rating: 5,
+    },
+    {
+      serviceSlug: 'drain-blockage',
+      status: 'COMPLETED',
+      daysOffset: -9,
+      problem: 'Bathroom ki nali band ho gayi hai, paani khara ho raha hai.',
+      totalRupees: 2000,
+      rating: 4,
+    },
+    {
+      serviceSlug: 'home-cleaning',
+      status: 'COMPLETED',
+      daysOffset: -7,
+      problem: 'Poore ghar ki deep cleaning chahiye, 3 bedroom.',
+      totalRupees: 8500,
+      rating: 5,
+    },
+    {
+      serviceSlug: 'refrigerator',
+      status: 'COMPLETED',
+      daysOffset: -5,
+      problem: 'Fridge ka freezer kaam kar raha hai lekin neeche cooling nahi.',
+      totalRupees: 4200,
+      rating: 4,
+    },
+    {
+      serviceSlug: 'door-repair',
+      status: 'COMPLETED',
+      daysOffset: -4,
+      problem: 'Bedroom ka darwaza band nahi hota, hinge dheele hain.',
+      totalRupees: 1800,
+      rating: 5,
+    },
+    {
+      serviceSlug: 'electrical-repair',
+      status: 'COMPLETED',
+      daysOffset: -3,
+      problem: 'Lounge ke do switch kaam nahi kar rahe.',
+      totalRupees: 1600,
+      rating: 5,
+    },
+    {
+      serviceSlug: 'geyser',
+      status: 'COMPLETED',
+      daysOffset: -2,
+      problem: 'Geyser se paani garam nahi ho raha.',
+      totalRupees: 2800,
+      rating: 3,
+    },
+    {
+      serviceSlug: 'cctv-installation',
+      status: 'SCHEDULED',
+      daysOffset: 1,
+      problem: 'Ghar ke bahar 4 cameras lagwane hain.',
+      totalRupees: 32000,
+    },
+    {
+      serviceSlug: 'ac-installation',
+      status: 'SCHEDULED',
+      daysOffset: 2,
+      problem: 'Naya 1.5 ton split AC install karana hai.',
+      totalRupees: 5500,
+    },
+    {
+      serviceSlug: 'sofa-cleaning',
+      status: 'QUOTE_PENDING',
+      daysOffset: 1,
+      problem: '7-seater sofa aur ek carpet clean karana hai.',
+    },
+    {
+      serviceSlug: 'room-painting',
+      status: 'IN_PROGRESS',
+      daysOffset: 0,
+      problem: 'Do kamron ki painting karani hai, deewar par kuch cracks bhi hain.',
+      totalRupees: 18000,
+    },
+    {
+      serviceSlug: 'washing-machine',
+      status: 'CANCELLED',
+      daysOffset: -6,
+      problem: 'Washing machine spin nahi kar rahi.',
+    },
+    {
+      serviceSlug: 'fan-repair',
+      status: 'PENDING',
+      daysOffset: 2,
+      problem: 'Ceiling fan se khat khat ki awaz aa rahi hai.',
+    },
   ];
 
   for (const [index, entry] of plan.entries()) {
@@ -787,7 +1176,9 @@ async function seedDemoBookings(
     const isTerminal = entry.status === 'COMPLETED' || entry.status === 'CANCELLED';
     const totalPaisa = entry.totalRupees ? rs(entry.totalRupees) : null;
     const commissionRateBp = 1000;
-    const commissionPaisa = totalPaisa ? Math.floor((totalPaisa * commissionRateBp) / 10_000) : null;
+    const commissionPaisa = totalPaisa
+      ? Math.floor((totalPaisa * commissionRateBp) / 10_000)
+      : null;
 
     const booking = await prisma.booking.create({
       data: {
@@ -800,7 +1191,8 @@ async function seedDemoBookings(
         problemDescription: entry.problem,
         scheduledFor,
         createdAt: new Date(scheduledFor.getTime() - 2 * 86_400_000),
-        acceptedAt: entry.status === 'PENDING' ? null : new Date(scheduledFor.getTime() - 86_400_000),
+        acceptedAt:
+          entry.status === 'PENDING' ? null : new Date(scheduledFor.getTime() - 86_400_000),
         completedAt: entry.status === 'COMPLETED' ? scheduledFor : null,
         cancelledAt: entry.status === 'CANCELLED' ? scheduledFor : null,
         cancellationReason:

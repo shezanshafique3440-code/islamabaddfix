@@ -3,13 +3,7 @@ import type { Catalogue } from '@/lib/catalogue';
 export type WizardCatalogue = Catalogue;
 
 export type WizardStep =
-  | 'intake'
-  | 'service'
-  | 'details'
-  | 'location'
-  | 'schedule'
-  | 'provider'
-  | 'confirm';
+  'intake' | 'service' | 'details' | 'location' | 'schedule' | 'provider' | 'confirm';
 
 export interface ZoneOption {
   id: string;

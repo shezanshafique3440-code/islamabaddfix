@@ -63,12 +63,15 @@ export function CatalogueManager({ categories }: { categories: CategoryRow[] }) 
   const router = useRouter();
   const { toast } = useToast();
   const [categoryDialog, setCategoryDialog] = useState<CategoryRow | 'new' | null>(null);
-  const [serviceDialog, setServiceDialog] = useState<
-    { categoryId: string; service: ServiceRow | null } | null
-  >(null);
-  const [deleting, setDeleting] = useState<
-    { kind: 'category' | 'service'; id: string; name: string } | null
-  >(null);
+  const [serviceDialog, setServiceDialog] = useState<{
+    categoryId: string;
+    service: ServiceRow | null;
+  } | null>(null);
+  const [deleting, setDeleting] = useState<{
+    kind: 'category' | 'service';
+    id: string;
+    name: string;
+  } | null>(null);
   const [busy, setBusy] = useState(false);
 
   return (
@@ -86,9 +89,7 @@ export function CatalogueManager({ categories }: { categories: CategoryRow[] }) 
                     <h2 className="text-[0.9375rem] font-semibold text-ink-900">{category.name}</h2>
                     {!category.isActive ? <Badge tone="neutral">Inactive</Badge> : null}
                     {category.isEmergencyCategory ? <Badge tone="danger">Emergency</Badge> : null}
-                    {!category.guaranteeEligible ? (
-                      <Badge tone="warn">No guarantee</Badge>
-                    ) : null}
+                    {!category.guaranteeEligible ? <Badge tone="warn">No guarantee</Badge> : null}
                   </div>
                   <p className="text-xs text-ink-500">
                     /{category.slug} · {category.services.length} services · order{' '}
@@ -130,9 +131,7 @@ export function CatalogueManager({ categories }: { categories: CategoryRow[] }) 
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="text-sm font-medium text-ink-900">{service.name}</span>
                         {!service.isActive ? <Badge tone="neutral">Inactive</Badge> : null}
-                        {service.isEmergencyEnabled ? (
-                          <Badge tone="danger">Emergency</Badge>
-                        ) : null}
+                        {service.isEmergencyEnabled ? <Badge tone="danger">Emergency</Badge> : null}
                         {service.requiresInspection ? (
                           <Badge tone="neutral">Inspection first</Badge>
                         ) : null}
@@ -420,7 +419,8 @@ function ServiceDialog({
                 guaranteeEligible: form.guaranteeEligible,
               };
               try {
-                if (service) await api.patch(`/api/admin/catalogue/services/${service.id}`, payload);
+                if (service)
+                  await api.patch(`/api/admin/catalogue/services/${service.id}`, payload);
                 else await api.post('/api/admin/catalogue/services', payload);
                 toast({ tone: 'success', title: 'Save ho gaya' });
                 onDone();
@@ -509,9 +509,7 @@ function ServiceDialog({
         <Checkbox
           label="Emergency booking allowed"
           checked={form.isEmergencyEnabled}
-          onChange={(event) =>
-            setForm((f) => ({ ...f, isEmergencyEnabled: event.target.checked }))
-          }
+          onChange={(event) => setForm((f) => ({ ...f, isEmergencyEnabled: event.target.checked }))}
         />
         <Checkbox
           label="Guarantee eligible"

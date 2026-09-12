@@ -69,10 +69,7 @@ export const POST = route(async (request, { params }: Params) => {
   if (!target) throw new AppError('NOT_FOUND', 'User nahi mila.');
 
   // Only a SUPER_ADMIN may disable another staff account.
-  if (
-    (target.role === 'ADMIN' || target.role === 'SUPER_ADMIN') &&
-    ctx.role !== 'SUPER_ADMIN'
-  ) {
+  if ((target.role === 'ADMIN' || target.role === 'SUPER_ADMIN') && ctx.role !== 'SUPER_ADMIN') {
     throw new AppError('FORBIDDEN', 'Admin account sirf super admin disable kar sakta hai.');
   }
 

@@ -64,42 +64,99 @@ export function BottomNav({ items, badge }: { items: NavItem[]; badge?: Record<s
 /** Icon set used by the bottom bars. 24px stroked, consistent weight. */
 export const NavIcons = {
   home: (
-    <svg viewBox="0 0 24 24" className="h-[1.375rem] w-[1.375rem]" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true">
-      <path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9.5Z" strokeLinecap="round" strokeLinejoin="round" />
+    <svg
+      viewBox="0 0 24 24"
+      className="h-[1.375rem] w-[1.375rem]"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      aria-hidden="true"
+    >
+      <path
+        d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9.5Z"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   ),
   bookings: (
-    <svg viewBox="0 0 24 24" className="h-[1.375rem] w-[1.375rem]" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true">
+    <svg
+      viewBox="0 0 24 24"
+      className="h-[1.375rem] w-[1.375rem]"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      aria-hidden="true"
+    >
       <rect x="3.5" y="4.5" width="17" height="16" rx="2.5" />
       <path d="M8 3v3M16 3v3M3.5 9.5h17M8 13h3M8 16.5h6" strokeLinecap="round" />
     </svg>
   ),
   jobs: (
-    <svg viewBox="0 0 24 24" className="h-[1.375rem] w-[1.375rem]" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true">
+    <svg
+      viewBox="0 0 24 24"
+      className="h-[1.375rem] w-[1.375rem]"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      aria-hidden="true"
+    >
       <rect x="3" y="7" width="18" height="13" rx="2.5" />
       <path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7" strokeLinecap="round" />
       <path d="M3 12h18" />
     </svg>
   ),
   search: (
-    <svg viewBox="0 0 24 24" className="h-[1.375rem] w-[1.375rem]" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true">
+    <svg
+      viewBox="0 0 24 24"
+      className="h-[1.375rem] w-[1.375rem]"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      aria-hidden="true"
+    >
       <circle cx="11" cy="11" r="6.5" />
       <path d="m16 16 4.5 4.5" strokeLinecap="round" />
     </svg>
   ),
   earnings: (
-    <svg viewBox="0 0 24 24" className="h-[1.375rem] w-[1.375rem]" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true">
+    <svg
+      viewBox="0 0 24 24"
+      className="h-[1.375rem] w-[1.375rem]"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      aria-hidden="true"
+    >
       <path d="M4 19V9M10 19V5M16 19v-7M22 19H2" strokeLinecap="round" />
     </svg>
   ),
   bell: (
-    <svg viewBox="0 0 24 24" className="h-[1.375rem] w-[1.375rem]" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true">
-      <path d="M6.5 9a5.5 5.5 0 0 1 11 0v3.4l1.4 2.6a.8.8 0 0 1-.7 1.2H5.8a.8.8 0 0 1-.7-1.2l1.4-2.6V9Z" strokeLinecap="round" strokeLinejoin="round" />
+    <svg
+      viewBox="0 0 24 24"
+      className="h-[1.375rem] w-[1.375rem]"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      aria-hidden="true"
+    >
+      <path
+        d="M6.5 9a5.5 5.5 0 0 1 11 0v3.4l1.4 2.6a.8.8 0 0 1-.7 1.2H5.8a.8.8 0 0 1-.7-1.2l1.4-2.6V9Z"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
       <path d="M9.5 19a2.5 2.5 0 0 0 5 0" strokeLinecap="round" />
     </svg>
   ),
   profile: (
-    <svg viewBox="0 0 24 24" className="h-[1.375rem] w-[1.375rem]" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true">
+    <svg
+      viewBox="0 0 24 24"
+      className="h-[1.375rem] w-[1.375rem]"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      aria-hidden="true"
+    >
       <circle cx="12" cy="8.5" r="3.75" />
       <path d="M4.5 20.5a7.5 7.5 0 0 1 15 0" strokeLinecap="round" />
     </svg>

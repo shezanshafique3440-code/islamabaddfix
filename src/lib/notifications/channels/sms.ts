@@ -1,5 +1,10 @@
 import { env, integrations } from '../../env';
-import type { DeliveryOutcome, DeliveryTarget, NotificationChannelDriver, NotificationPayload } from '../types';
+import type {
+  DeliveryOutcome,
+  DeliveryTarget,
+  NotificationChannelDriver,
+  NotificationPayload,
+} from '../types';
 
 /**
  * SMS delivery against a generic HTTP gateway — most Pakistani providers
@@ -13,7 +18,10 @@ export const smsChannel: NotificationChannelDriver = {
 
   async send(target: DeliveryTarget, payload: NotificationPayload): Promise<DeliveryOutcome> {
     if (!integrations.sms.configured) {
-      return { status: 'SKIPPED_NOT_CONFIGURED', reason: 'SMS_PROVIDER / SMS_API_KEY set nahi hai.' };
+      return {
+        status: 'SKIPPED_NOT_CONFIGURED',
+        reason: 'SMS_PROVIDER / SMS_API_KEY set nahi hai.',
+      };
     }
     if (!target.phone) {
       return { status: 'FAILED', reason: 'Recipient ka phone number mojood nahi hai.' };

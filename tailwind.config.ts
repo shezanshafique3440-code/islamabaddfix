@@ -98,11 +98,17 @@ const config: Config = {
         mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Consolas', 'monospace'],
       },
       fontSize: {
-        'display-lg': ['3.25rem', { lineHeight: '1.05', letterSpacing: '-0.033em', fontWeight: '700' }],
+        'display-lg': [
+          '3.25rem',
+          { lineHeight: '1.05', letterSpacing: '-0.033em', fontWeight: '700' },
+        ],
         display: ['2.5rem', { lineHeight: '1.1', letterSpacing: '-0.028em', fontWeight: '700' }],
-        'display-sm': ['1.875rem', { lineHeight: '1.15', letterSpacing: '-0.022em', fontWeight: '700' }],
-        'title': ['1.375rem', { lineHeight: '1.25', letterSpacing: '-0.014em', fontWeight: '650' }],
-        'eyebrow': ['0.75rem', { lineHeight: '1', letterSpacing: '0.08em', fontWeight: '650' }],
+        'display-sm': [
+          '1.875rem',
+          { lineHeight: '1.15', letterSpacing: '-0.022em', fontWeight: '700' },
+        ],
+        title: ['1.375rem', { lineHeight: '1.25', letterSpacing: '-0.014em', fontWeight: '650' }],
+        eyebrow: ['0.75rem', { lineHeight: '1', letterSpacing: '0.08em', fontWeight: '650' }],
       },
       borderRadius: { xl: '0.875rem', '2xl': '1.25rem', '3xl': '1.75rem' },
       boxShadow: {

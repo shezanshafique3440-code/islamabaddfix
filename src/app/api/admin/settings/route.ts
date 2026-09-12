@@ -42,10 +42,7 @@ export const PATCH = route(async (request) => {
   const key = input.key as SettingKey;
 
   if (FINANCIAL_KEYS.includes(key) && !can(ctx.role, 'settings:write:financial')) {
-    throw new AppError(
-      'FORBIDDEN',
-      'Yeh financial setting sirf super admin badal sakta hai.',
-    );
+    throw new AppError('FORBIDDEN', 'Yeh financial setting sirf super admin badal sakta hai.');
   }
 
   const previous = (await getAllSettings())[key];

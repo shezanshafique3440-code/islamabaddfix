@@ -250,11 +250,7 @@ function availabilityScore(
  * provider has no reviews so new joiners can win their first jobs. Confidence
  * ramps in over the first ten reviews.
  */
-function ratingScore(
-  average: number | null,
-  count: number,
-  floor: number,
-): number {
+function ratingScore(average: number | null, count: number, floor: number): number {
   if (average === null || count === 0) return floor / 5;
   const confidence = Math.min(1, count / 10);
   const blended = average * confidence + floor * (1 - confidence);

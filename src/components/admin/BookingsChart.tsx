@@ -200,12 +200,22 @@ export function BookingsChart({ data }: { data: Point[] }) {
           className="mt-2 h-20 w-full"
         >
           <path
-            d={areaPath(data.map((point) => point.grossPaisa), maxRevenue, 100, 24)}
+            d={areaPath(
+              data.map((point) => point.grossPaisa),
+              maxRevenue,
+              100,
+              24,
+            )}
             fill={CHART_1}
             fillOpacity={0.1}
           />
           <path
-            d={linePath(data.map((point) => point.grossPaisa), maxRevenue, 100, 24)}
+            d={linePath(
+              data.map((point) => point.grossPaisa),
+              maxRevenue,
+              100,
+              24,
+            )}
             fill="none"
             stroke={CHART_1}
             strokeWidth={2}
@@ -230,16 +240,28 @@ export function BookingsChart({ data }: { data: Point[] }) {
                 <th scope="col" className="px-3 py-2 text-xs font-semibold uppercase text-ink-500">
                   Tareekh
                 </th>
-                <th scope="col" className="px-3 py-2 text-right text-xs font-semibold uppercase text-ink-500">
+                <th
+                  scope="col"
+                  className="px-3 py-2 text-right text-xs font-semibold uppercase text-ink-500"
+                >
                   Aayi
                 </th>
-                <th scope="col" className="px-3 py-2 text-right text-xs font-semibold uppercase text-ink-500">
+                <th
+                  scope="col"
+                  className="px-3 py-2 text-right text-xs font-semibold uppercase text-ink-500"
+                >
                   Mukammal
                 </th>
-                <th scope="col" className="px-3 py-2 text-right text-xs font-semibold uppercase text-ink-500">
+                <th
+                  scope="col"
+                  className="px-3 py-2 text-right text-xs font-semibold uppercase text-ink-500"
+                >
                   Cancelled
                 </th>
-                <th scope="col" className="px-3 py-2 text-right text-xs font-semibold uppercase text-ink-500">
+                <th
+                  scope="col"
+                  className="px-3 py-2 text-right text-xs font-semibold uppercase text-ink-500"
+                >
                   Revenue
                 </th>
               </tr>

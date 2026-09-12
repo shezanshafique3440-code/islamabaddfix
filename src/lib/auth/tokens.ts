@@ -60,8 +60,7 @@ export async function verifyAccessToken(token: string): Promise<AccessTokenClaim
     return payload as AccessTokenClaims;
   } catch (error) {
     if (error instanceof AppError) throw error;
-    const expired =
-      error instanceof Error && error.name === 'JWTExpired';
+    const expired = error instanceof Error && error.name === 'JWTExpired';
     throw new AppError(
       expired ? 'TOKEN_EXPIRED' : 'UNAUTHENTICATED',
       expired ? 'Session expire ho gaya.' : 'Session invalid hai. Dobara login karein.',

@@ -106,7 +106,9 @@ export async function storeFile(input: StoreFileInput): Promise<UploadedFile> {
       },
     });
   } catch (error) {
-    await storage().delete(storageKey).catch(() => {});
+    await storage()
+      .delete(storageKey)
+      .catch(() => {});
     throw error;
   }
 }

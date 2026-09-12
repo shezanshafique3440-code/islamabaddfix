@@ -81,10 +81,7 @@ export async function initiatePayment(params: {
 
   const amountPaisa = booking.finalTotalPaisa ?? booking.approvedTotalPaisa;
   if (amountPaisa === null) {
-    throw new AppError(
-      'QUOTE_REQUIRED',
-      'Payment se pehle quote approve hona zaroori hai.',
-    );
+    throw new AppError('QUOTE_REQUIRED', 'Payment se pehle quote approve hona zaroori hai.');
   }
 
   const existing = await prisma.payment.findFirst({

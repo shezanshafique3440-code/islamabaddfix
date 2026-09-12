@@ -80,7 +80,13 @@ export default async function ReceiptPage({ params }: Params) {
       },
       payments: {
         where: { status: { in: ['PAID', 'PARTIALLY_REFUNDED', 'REFUNDED'] } },
-        select: { method: true, status: true, amountPaisa: true, refundedPaisa: true, paidAt: true },
+        select: {
+          method: true,
+          status: true,
+          amountPaisa: true,
+          refundedPaisa: true,
+          paidAt: true,
+        },
       },
     },
   });
@@ -151,7 +157,10 @@ export default async function ReceiptPage({ params }: Params) {
               <th scope="col" className="pb-2 text-xs font-semibold uppercase text-ink-500">
                 Tafseel
               </th>
-              <th scope="col" className="pb-2 text-right text-xs font-semibold uppercase text-ink-500">
+              <th
+                scope="col"
+                className="pb-2 text-right text-xs font-semibold uppercase text-ink-500"
+              >
                 Qeemat
               </th>
             </tr>
@@ -231,7 +240,9 @@ export default async function ReceiptPage({ params }: Params) {
         <section className="mt-5 border-t border-ink-100 pt-4">
           <h2 className="text-xs font-semibold uppercase tracking-wide text-ink-500">Payment</h2>
           {booking.payments.length === 0 ? (
-            <p className="mt-1.5 text-sm text-ink-600">Is booking par koi payment record nahi hai.</p>
+            <p className="mt-1.5 text-sm text-ink-600">
+              Is booking par koi payment record nahi hai.
+            </p>
           ) : (
             <ul className="mt-1.5 space-y-1 text-sm text-ink-700">
               {booking.payments.map((payment, index) => (
@@ -287,4 +298,3 @@ function Pair({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
-

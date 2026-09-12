@@ -42,8 +42,8 @@ export default async function AboutPage() {
               tracking, payment record, review aur dispute resolution.
             </p>
             <p className="mt-3">
-              Hum har provider ki shanakht aur onboarding maloomat ka jaiza lete hain. Jo check
-              hota hai sirf wohi badge profile par dikhta hai — is se zyada ka dawa hum nahi karte.
+              Hum har provider ki shanakht aur onboarding maloomat ka jaiza lete hain. Jo check hota
+              hai sirf wohi badge profile par dikhta hai — is se zyada ka dawa hum nahi karte.
             </p>
           </section>
 

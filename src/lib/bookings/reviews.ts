@@ -127,7 +127,9 @@ export async function updateReview(params: {
         ...(params.rating !== undefined ? { rating: params.rating } : {}),
         ...(params.comment !== undefined ? { comment: params.comment.trim() || null } : {}),
         ...(params.serviceQuality !== undefined ? { serviceQuality: params.serviceQuality } : {}),
-        ...(params.professionalism !== undefined ? { professionalism: params.professionalism } : {}),
+        ...(params.professionalism !== undefined
+          ? { professionalism: params.professionalism }
+          : {}),
         ...(params.punctuality !== undefined ? { punctuality: params.punctuality } : {}),
         ...(params.valueForMoney !== undefined ? { valueForMoney: params.valueForMoney } : {}),
       },
@@ -159,7 +161,10 @@ export async function rateCustomer(params: {
     throw new AppError('FORBIDDEN', 'Yeh booking aap ko assign nahi hui.');
   }
   if (booking.status !== 'COMPLETED') {
-    throw new AppError('REVIEW_NOT_ALLOWED', 'Rating sirf mukammal booking ke baad di ja sakti hai.');
+    throw new AppError(
+      'REVIEW_NOT_ALLOWED',
+      'Rating sirf mukammal booking ke baad di ja sakti hai.',
+    );
   }
 
   // The Review row may not exist yet if the customer has not reviewed; upsert so
@@ -197,9 +202,7 @@ async function recomputeProviderRating(
   await tx.providerProfile.update({
     where: { id: providerId },
     data: {
-      ratingAverage: aggregate._avg.rating
-        ? Math.round(aggregate._avg.rating * 100) / 100
-        : null,
+      ratingAverage: aggregate._avg.rating ? Math.round(aggregate._avg.rating * 100) / 100 : null,
       ratingCount: aggregate._count.rating,
     },
   });

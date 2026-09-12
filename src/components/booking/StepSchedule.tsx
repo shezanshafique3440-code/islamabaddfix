@@ -35,8 +35,8 @@ export function StepSchedule({
   const days = useMemo(() => buildDays(config.maxLeadDays), [config.maxLeadDays]);
   const selected = draft.scheduledFor ? new Date(draft.scheduledFor) : null;
 
-  const [activeDay, setActiveDay] = useState<string>(
-    () => (selected ?? days[0]?.date ?? new Date()).toISOString().slice(0, 10),
+  const [activeDay, setActiveDay] = useState<string>(() =>
+    (selected ?? days[0]?.date ?? new Date()).toISOString().slice(0, 10),
   );
 
   const emergencyAllowed = config.emergencyEnabled && (service?.isEmergencyEnabled ?? false);
@@ -69,7 +69,7 @@ export function StepSchedule({
             className={cn(
               'flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-colors',
               draft.isEmergency
-                ? 'border-alert-300 bg-alert-50 ring-1 ring-alert-300'
+                ? 'border-alert-300 ring-alert-300 bg-alert-50 ring-1'
                 : 'border-ink-200 hover:bg-ink-50',
             )}
           >
@@ -113,10 +113,8 @@ export function StepSchedule({
           <>
             {/* Day strip */}
             <div>
-              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-500">
-                Din
-              </p>
-              <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-2 no-scrollbar">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-500">Din</p>
+              <div className="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1 pb-2">
                 {days.map((day) => {
                   const key = day.date.toISOString().slice(0, 10);
                   const active = key === activeDay;
@@ -153,8 +151,7 @@ export function StepSchedule({
               </p>
               <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
                 {slots.map(({ hour, slot, disabled }) => {
-                  const isSelected =
-                    selected !== null && selected.getTime() === slot.getTime();
+                  const isSelected = selected !== null && selected.getTime() === slot.getTime();
                   return (
                     <button
                       key={hour}
@@ -194,7 +191,8 @@ export function StepSchedule({
 
         {selected && !draft.isEmergency ? (
           <Badge tone="brand">
-            Chuna gaya: {selected.toLocaleString('en-PK', { dateStyle: 'medium', timeStyle: 'short' })}
+            Chuna gaya:{' '}
+            {selected.toLocaleString('en-PK', { dateStyle: 'medium', timeStyle: 'short' })}
           </Badge>
         ) : null}
       </div>
@@ -212,7 +210,20 @@ export function StepSchedule({
 function buildDays(maxLeadDays: number) {
   const count = Math.min(14, maxLeadDays);
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const monthNames = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
 
   return Array.from({ length: count }).map((_, offset) => {
     const date = new Date();

@@ -29,7 +29,9 @@ export const GET = route(async (request) => {
       skip: (query.page - 1) * query.perPage,
       take: query.perPage,
       include: {
-        provider: { select: { id: true, businessName: true, bankAccountLast4: true, bankName: true } },
+        provider: {
+          select: { id: true, businessName: true, bankAccountLast4: true, bankName: true },
+        },
         _count: { select: { items: true } },
       },
     }),

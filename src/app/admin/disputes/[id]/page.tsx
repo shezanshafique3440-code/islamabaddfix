@@ -50,13 +50,14 @@ export default async function AdminDisputeDetailPage({ params }: Params) {
   const paidPayment = dispute.booking.payments.find(
     (payment) => payment.status === 'PAID' || payment.status === 'PARTIALLY_REFUNDED',
   );
-  const refundable = paidPayment
-    ? paidPayment.amountPaisa - paidPayment.refundedPaisa
-    : 0;
+  const refundable = paidPayment ? paidPayment.amountPaisa - paidPayment.refundedPaisa : 0;
 
   return (
     <div className="space-y-6">
-      <Link href="/admin/disputes" className="text-sm text-ink-600 hover:text-brand-700 hover:underline">
+      <Link
+        href="/admin/disputes"
+        className="text-sm text-ink-600 hover:text-brand-700 hover:underline"
+      >
         ← Sab disputes
       </Link>
 
@@ -70,7 +71,8 @@ export default async function AdminDisputeDetailPage({ params }: Params) {
           </Badge>
         </div>
         <p className="mt-1 text-sm text-ink-600">
-          <span className="font-mono">{dispute.reference}</span> · {formatDateTime(dispute.createdAt)}
+          <span className="font-mono">{dispute.reference}</span> ·{' '}
+          {formatDateTime(dispute.createdAt)}
         </p>
       </header>
 
@@ -163,10 +165,7 @@ export default async function AdminDisputeDetailPage({ params }: Params) {
               label="Area"
               value={dispute.booking.address.zone?.name ?? dispute.booking.address.city}
             />
-            <Row
-              label="Address"
-              value={dispute.booking.address.addressLine}
-            />
+            <Row label="Address" value={dispute.booking.address.addressLine} />
             <Row
               label="Approved total"
               value={
@@ -178,17 +177,13 @@ export default async function AdminDisputeDetailPage({ params }: Params) {
             <Row
               label="Final total"
               value={
-                dispute.booking.finalTotalPaisa
-                  ? formatPaisa(dispute.booking.finalTotalPaisa)
-                  : '—'
+                dispute.booking.finalTotalPaisa ? formatPaisa(dispute.booking.finalTotalPaisa) : '—'
               }
             />
             <Row
               label="Commission"
               value={
-                dispute.booking.commissionPaisa
-                  ? formatPaisa(dispute.booking.commissionPaisa)
-                  : '—'
+                dispute.booking.commissionPaisa ? formatPaisa(dispute.booking.commissionPaisa) : '—'
               }
             />
           </dl>

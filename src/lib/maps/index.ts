@@ -140,7 +140,9 @@ export async function reverseGeocode(point: LatLng): Promise<GeocodeResult> {
     url.searchParams.set('access_token', env.MAPS_API_KEY!);
     const response = await fetch(url);
     if (!response.ok) throw new AppError('INTEGRATION_FAILED', 'Reverse geocoding fail ho gayi.');
-    const json = (await response.json()) as { features?: Array<{ place_name: string; id: string }> };
+    const json = (await response.json()) as {
+      features?: Array<{ place_name: string; id: string }>;
+    };
     const first = json.features?.[0];
     if (!first) throw new AppError('NOT_FOUND', 'Is location ka address nahi mila.');
     return { ...point, formattedAddress: first.place_name, placeId: first.id };

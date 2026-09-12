@@ -34,11 +34,7 @@ interface SearchParams {
  * pass, so the first step renders immediately instead of waterfalling three
  * client requests on a slow connection.
  */
-export default async function BookPage({
-  searchParams,
-}: {
-  searchParams: Promise<SearchParams>;
-}) {
+export default async function BookPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const query = await searchParams;
   const ctx = await getAuthContext();
 
@@ -87,7 +83,13 @@ export default async function BookPage({
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
       <main id="main" className="flex-1 bg-ink-50/40">
-        <Suspense fallback={<div className="mx-auto max-w-3xl p-6"><SkeletonCard /></div>}>
+        <Suspense
+          fallback={
+            <div className="mx-auto max-w-3xl p-6">
+              <SkeletonCard />
+            </div>
+          }
+        >
           <BookingWizard
             isSignedIn={Boolean(ctx)}
             catalogue={catalogue}

@@ -230,11 +230,19 @@ export function RegisterForm() {
         label={
           <>
             Main{' '}
-            <Link href="/terms" target="_blank" className="font-medium text-brand-700 hover:underline">
+            <Link
+              href="/terms"
+              target="_blank"
+              className="font-medium text-brand-700 hover:underline"
+            >
               Terms
             </Link>{' '}
             aur{' '}
-            <Link href="/privacy" target="_blank" className="font-medium text-brand-700 hover:underline">
+            <Link
+              href="/privacy"
+              target="_blank"
+              className="font-medium text-brand-700 hover:underline"
+            >
               Privacy Policy
             </Link>{' '}
             se ittefaq karta/karti hoon.

@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { ok, parseQuery, route } from '@/lib/http';
 import { requireProvider } from '@/lib/auth/session';
-import { getProviderOffers, getProviderSchedule, listBookingsFor, summarizeBooking } from '@/lib/bookings/queries';
+import {
+  getProviderOffers,
+  getProviderSchedule,
+  listBookingsFor,
+  summarizeBooking,
+} from '@/lib/bookings/queries';
 
 const querySchema = z.object({
   view: z.enum(['today', 'offers', 'active', 'completed', 'all']).default('today'),
@@ -34,7 +39,8 @@ export const GET = route(async (request) => {
     });
   }
 
-  const scope = query.view === 'completed' ? 'completed' : query.view === 'active' ? 'active' : 'all';
+  const scope =
+    query.view === 'completed' ? 'completed' : query.view === 'active' ? 'active' : 'all';
   const result = await listBookingsFor(ctx, {
     page: query.page,
     perPage: query.perPage,

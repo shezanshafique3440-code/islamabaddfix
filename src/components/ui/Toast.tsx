@@ -59,7 +59,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
           <div
             key={entry.id}
             className={cn(
-              'pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-xl border px-4 py-3 shadow-pop animate-slide-up',
+              'pointer-events-auto flex w-full max-w-sm animate-slide-up items-start gap-3 rounded-xl border px-4 py-3 shadow-pop',
               entry.tone === 'success' && 'border-brand-200 bg-white',
               entry.tone === 'error' && 'border-alert-200 bg-white',
               entry.tone === 'info' && 'border-ink-200 bg-white',
@@ -93,7 +93,12 @@ function ToastIcon({ tone }: { tone: ToastTone }) {
   const shared = 'mt-0.5 h-5 w-5 shrink-0';
   if (tone === 'success') {
     return (
-      <svg viewBox="0 0 20 20" className={cn(shared, 'text-brand-600')} fill="currentColor" aria-hidden="true">
+      <svg
+        viewBox="0 0 20 20"
+        className={cn(shared, 'text-brand-600')}
+        fill="currentColor"
+        aria-hidden="true"
+      >
         <path
           fillRule="evenodd"
           d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.7-9.3-1.4-1.4L9 10.6 7.7 9.3l-1.4 1.4 2.7 2.7 4.7-4.7Z"
@@ -104,7 +109,12 @@ function ToastIcon({ tone }: { tone: ToastTone }) {
   }
   if (tone === 'error') {
     return (
-      <svg viewBox="0 0 20 20" className={cn(shared, 'text-alert-600')} fill="currentColor" aria-hidden="true">
+      <svg
+        viewBox="0 0 20 20"
+        className={cn(shared, 'text-alert-600')}
+        fill="currentColor"
+        aria-hidden="true"
+      >
         <path
           fillRule="evenodd"
           d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm1-12H9v6h2V6Zm0 7H9v2h2v-2Z"
@@ -114,7 +124,12 @@ function ToastIcon({ tone }: { tone: ToastTone }) {
     );
   }
   return (
-    <svg viewBox="0 0 20 20" className={cn(shared, 'text-info-600')} fill="currentColor" aria-hidden="true">
+    <svg
+      viewBox="0 0 20 20"
+      className={cn(shared, 'text-info-600')}
+      fill="currentColor"
+      aria-hidden="true"
+    >
       <path
         fillRule="evenodd"
         d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm1-12H9v2h2V6Zm0 3H9v5h2V9Z"

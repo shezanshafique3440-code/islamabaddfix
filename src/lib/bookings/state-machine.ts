@@ -51,14 +51,29 @@ export const TRANSITIONS: Record<BookingStatus, readonly TransitionRule[]> = {
       labelUr: 'Quote bhejein',
     },
     // Services with a fixed published price skip quoting entirely.
-    { to: 'SCHEDULED', actors: ['PROVIDER', 'ADMIN'], label: 'Confirm schedule', labelUr: 'Time confirm karein' },
-    { to: 'CANCELLED', actors: ['CUSTOMER', 'PROVIDER', 'ADMIN'], label: 'Cancel', labelUr: 'Cancel karein' },
+    {
+      to: 'SCHEDULED',
+      actors: ['PROVIDER', 'ADMIN'],
+      label: 'Confirm schedule',
+      labelUr: 'Time confirm karein',
+    },
+    {
+      to: 'CANCELLED',
+      actors: ['CUSTOMER', 'PROVIDER', 'ADMIN'],
+      label: 'Cancel',
+      labelUr: 'Cancel karein',
+    },
   ],
   QUOTE_PENDING: [
     // 'SYSTEM' is on this rule as well as 'CUSTOMER' because a *rejected*
     // additional quote also lands here: the agreed price still stands, so the
     // job goes back to QUOTE_APPROVED even though nobody approved anything new.
-    { to: 'QUOTE_APPROVED', actors: ['CUSTOMER', 'SYSTEM'], label: 'Approve quote', labelUr: 'Quote approve karein' },
+    {
+      to: 'QUOTE_APPROVED',
+      actors: ['CUSTOMER', 'SYSTEM'],
+      label: 'Approve quote',
+      labelUr: 'Quote approve karein',
+    },
     // Rejecting an *initial* quote returns the job to ACCEPTED so the provider
     // may re-quote — there is no agreed price to protect.
     { to: 'ACCEPTED', actors: ['CUSTOMER'], label: 'Reject quote', labelUr: 'Quote reject karein' },
@@ -69,44 +84,114 @@ export const TRANSITIONS: Record<BookingStatus, readonly TransitionRule[]> = {
     // `rejectQuote` performs them from the recorded interruption point.
     { to: 'SCHEDULED', actors: ['SYSTEM'], label: 'Resume schedule' },
     { to: 'ARRIVED', actors: ['SYSTEM'], label: 'Resume on site' },
-    { to: 'IN_PROGRESS', actors: ['PROVIDER', 'SYSTEM'], label: 'Resume job', labelUr: 'Kaam jari rakhein' },
-    { to: 'CANCELLED', actors: ['CUSTOMER', 'PROVIDER', 'ADMIN'], label: 'Cancel', labelUr: 'Cancel karein' },
+    {
+      to: 'IN_PROGRESS',
+      actors: ['PROVIDER', 'SYSTEM'],
+      label: 'Resume job',
+      labelUr: 'Kaam jari rakhein',
+    },
+    {
+      to: 'CANCELLED',
+      actors: ['CUSTOMER', 'PROVIDER', 'ADMIN'],
+      label: 'Cancel',
+      labelUr: 'Cancel karein',
+    },
   ],
   QUOTE_APPROVED: [
-    { to: 'SCHEDULED', actors: ['PROVIDER', 'ADMIN', 'SYSTEM'], label: 'Confirm schedule', labelUr: 'Time confirm karein' },
+    {
+      to: 'SCHEDULED',
+      actors: ['PROVIDER', 'ADMIN', 'SYSTEM'],
+      label: 'Confirm schedule',
+      labelUr: 'Time confirm karein',
+    },
     // A technician already on site whose (revised or additional) quote was just
     // approved resumes work directly rather than re-walking the travel steps.
-    { to: 'IN_PROGRESS', actors: ['PROVIDER', 'SYSTEM'], label: 'Resume job', labelUr: 'Kaam jari rakhein' },
+    {
+      to: 'IN_PROGRESS',
+      actors: ['PROVIDER', 'SYSTEM'],
+      label: 'Resume job',
+      labelUr: 'Kaam jari rakhein',
+    },
     // Extra cost found after the price was agreed but before setting off. It
     // needs its own approval, exactly like one found mid-job.
-    { to: 'QUOTE_PENDING', actors: ['PROVIDER'], label: 'Request extra charges', labelUr: 'Extra charges' },
-    { to: 'CANCELLED', actors: ['CUSTOMER', 'PROVIDER', 'ADMIN'], label: 'Cancel', labelUr: 'Cancel karein' },
+    {
+      to: 'QUOTE_PENDING',
+      actors: ['PROVIDER'],
+      label: 'Request extra charges',
+      labelUr: 'Extra charges',
+    },
+    {
+      to: 'CANCELLED',
+      actors: ['CUSTOMER', 'PROVIDER', 'ADMIN'],
+      label: 'Cancel',
+      labelUr: 'Cancel karein',
+    },
   ],
   SCHEDULED: [
     { to: 'ON_THE_WAY', actors: ['PROVIDER'], label: 'On the way', labelUr: 'Raste mein hoon' },
     // A technician already on site can start without the travel step.
     { to: 'ARRIVED', actors: ['PROVIDER'], label: 'Arrived', labelUr: 'Pohonch gaya' },
-    { to: 'QUOTE_PENDING', actors: ['PROVIDER'], label: 'Request extra charges', labelUr: 'Extra charges' },
-    { to: 'CANCELLED', actors: ['CUSTOMER', 'PROVIDER', 'ADMIN'], label: 'Cancel', labelUr: 'Cancel karein' },
+    {
+      to: 'QUOTE_PENDING',
+      actors: ['PROVIDER'],
+      label: 'Request extra charges',
+      labelUr: 'Extra charges',
+    },
+    {
+      to: 'CANCELLED',
+      actors: ['CUSTOMER', 'PROVIDER', 'ADMIN'],
+      label: 'Cancel',
+      labelUr: 'Cancel karein',
+    },
   ],
   ON_THE_WAY: [
     { to: 'ARRIVED', actors: ['PROVIDER'], label: 'Arrived', labelUr: 'Pohonch gaya' },
-    { to: 'CANCELLED', actors: ['CUSTOMER', 'PROVIDER', 'ADMIN'], label: 'Cancel', labelUr: 'Cancel karein' },
+    {
+      to: 'CANCELLED',
+      actors: ['CUSTOMER', 'PROVIDER', 'ADMIN'],
+      label: 'Cancel',
+      labelUr: 'Cancel karein',
+    },
   ],
   ARRIVED: [
     { to: 'IN_PROGRESS', actors: ['PROVIDER'], label: 'Start job', labelUr: 'Kaam shuru karein' },
     // On-site inspection often reveals the real scope — allow a fresh quote.
-    { to: 'QUOTE_PENDING', actors: ['PROVIDER'], label: 'Revise quote', labelUr: 'Quote update karein' },
-    { to: 'CANCELLED', actors: ['CUSTOMER', 'PROVIDER', 'ADMIN'], label: 'Cancel', labelUr: 'Cancel karein' },
+    {
+      to: 'QUOTE_PENDING',
+      actors: ['PROVIDER'],
+      label: 'Revise quote',
+      labelUr: 'Quote update karein',
+    },
+    {
+      to: 'CANCELLED',
+      actors: ['CUSTOMER', 'PROVIDER', 'ADMIN'],
+      label: 'Cancel',
+      labelUr: 'Cancel karein',
+    },
   ],
   IN_PROGRESS: [
-    { to: 'COMPLETED', actors: ['PROVIDER'], label: 'Complete job', labelUr: 'Kaam complete karein' },
+    {
+      to: 'COMPLETED',
+      actors: ['PROVIDER'],
+      label: 'Complete job',
+      labelUr: 'Kaam complete karein',
+    },
     // Additional charges discovered mid-job need customer approval first.
-    { to: 'QUOTE_PENDING', actors: ['PROVIDER'], label: 'Request extra charges', labelUr: 'Extra charges' },
+    {
+      to: 'QUOTE_PENDING',
+      actors: ['PROVIDER'],
+      label: 'Request extra charges',
+      labelUr: 'Extra charges',
+    },
     { to: 'CANCELLED', actors: ['ADMIN'], label: 'Cancel', labelUr: 'Cancel karein' },
   ],
   COMPLETED: [
-    { to: 'DISPUTED', actors: ['CUSTOMER', 'ADMIN'], label: 'Raise dispute', labelUr: 'Shikayat darj karein' },
+    {
+      to: 'DISPUTED',
+      actors: ['CUSTOMER', 'ADMIN'],
+      label: 'Raise dispute',
+      labelUr: 'Shikayat darj karein',
+    },
     { to: 'REFUNDED', actors: ['ADMIN'], label: 'Refund', labelUr: 'Refund karein' },
   ],
   DISPUTED: [

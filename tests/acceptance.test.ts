@@ -333,9 +333,9 @@ describe('acceptance: AC repair booking, start to finish', () => {
   });
 
   it('step 15: a second review on the same booking is refused', async () => {
-    await expect(
-      createReview({ bookingId, authorId: customerId, rating: 1 }),
-    ).rejects.toThrow(/pehle de chuke/i);
+    await expect(createReview({ bookingId, authorId: customerId, rating: 1 })).rejects.toThrow(
+      /pehle de chuke/i,
+    );
 
     expect(await db.review.count({ where: { bookingId } })).toBe(1);
   });

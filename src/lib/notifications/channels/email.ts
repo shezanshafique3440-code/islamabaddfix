@@ -1,5 +1,10 @@
 import { env, integrations } from '../../env';
-import type { DeliveryOutcome, DeliveryTarget, NotificationChannelDriver, NotificationPayload } from '../types';
+import type {
+  DeliveryOutcome,
+  DeliveryTarget,
+  NotificationChannelDriver,
+  NotificationPayload,
+} from '../types';
 import { renderEmail } from '../templates';
 
 /**

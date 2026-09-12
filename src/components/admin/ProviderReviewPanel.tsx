@@ -149,8 +149,8 @@ export function ProviderReviewPanel({
 
         {status === 'VERIFIED' ? (
           <p className="mt-3 text-xs text-ink-500">
-            Yeh provider customers ko dikh raha hai aur jobs receive kar sakta hai. Suspend karne par
-            uske sessions khatam ho jayenge aur pending offers withdraw ho jayenge.
+            Yeh provider customers ko dikh raha hai aur jobs receive kar sakta hai. Suspend karne
+            par uske sessions khatam ho jayenge aur pending offers withdraw ho jayenge.
           </p>
         ) : null}
       </section>
@@ -319,7 +319,11 @@ function VerificationDialog({
           ))}
         </Select>
 
-        <Select label="Naya status" value={status} onChange={(event) => setStatus(event.target.value)}>
+        <Select
+          label="Naya status"
+          value={status}
+          onChange={(event) => setStatus(event.target.value)}
+        >
           <option value="APPROVED">Approved — check mukammal</option>
           <option value="SUBMITTED">Submitted — jaiza baqi</option>
           <option value="REJECTED">Rejected — check fail</option>

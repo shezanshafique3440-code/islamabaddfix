@@ -71,9 +71,7 @@ export function GuaranteeDecisionPanel({
           {providerResponsible !== null ? (
             <div className="flex justify-between gap-3">
               <dt className="text-ink-500">Kharcha kis par</dt>
-              <dd className="text-ink-900">
-                {providerResponsible ? 'Provider' : 'Platform'}
-              </dd>
+              <dd className="text-ink-900">{providerResponsible ? 'Provider' : 'Platform'}</dd>
             </div>
           ) : null}
         </dl>
@@ -130,7 +128,11 @@ export function GuaranteeDecisionPanel({
         }
       >
         <div className="space-y-4">
-          <Select label="Faisla" value={outcome} onChange={(event) => setOutcome(event.target.value)}>
+          <Select
+            label="Faisla"
+            value={outcome}
+            onChange={(event) => setOutcome(event.target.value)}
+          >
             {OUTCOMES.map((entry) => (
               <option key={entry.value} value={entry.value}>
                 {entry.label}

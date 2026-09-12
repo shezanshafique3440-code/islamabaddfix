@@ -46,7 +46,11 @@ export default async function ProviderLayout({ children }: { children: React.Rea
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
       <div className="mx-auto flex w-full max-w-content flex-1 gap-8 px-4 py-6 sm:px-6 sm:py-8">
-        <ProviderSidebar unread={unread} pendingOffers={pendingOffers} status={profile?.status ?? null} />
+        <ProviderSidebar
+          unread={unread}
+          pendingOffers={pendingOffers}
+          status={profile?.status ?? null}
+        />
         <main id="main" className="min-w-0 flex-1 pb-20 md:pb-0">
           {profile ? (
             <ProviderStatusBanner

@@ -103,8 +103,7 @@ export function BookingChat({
         ref={listRef}
         onScroll={(event) => {
           const node = event.currentTarget;
-          pinnedToBottom.current =
-            node.scrollHeight - node.scrollTop - node.clientHeight < 40;
+          pinnedToBottom.current = node.scrollHeight - node.scrollTop - node.clientHeight < 40;
         }}
         className="max-h-80 min-h-[8rem] space-y-3 overflow-y-auto px-4 py-4"
         role="log"

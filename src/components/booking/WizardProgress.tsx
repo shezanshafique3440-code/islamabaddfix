@@ -85,7 +85,12 @@ export function WizardProgress({
                   )}
                 >
                   {isDone ? (
-                    <svg viewBox="0 0 12 12" className="h-3 w-3" fill="currentColor" aria-hidden="true">
+                    <svg
+                      viewBox="0 0 12 12"
+                      className="h-3 w-3"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
                       <path d="M4.6 8.4 2.2 6l-.9.9 3.3 3.3 6-6-.9-.9-5.1 5.1Z" />
                     </svg>
                   ) : (
@@ -135,9 +140,26 @@ export function StepFooter({
             className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-brand-700 px-5 text-[0.9375rem] font-semibold text-white transition-colors hover:bg-brand-800 disabled:pointer-events-none disabled:opacity-50"
           >
             {loading ? (
-              <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeOpacity="0.25" strokeWidth="3" />
-                <path d="M22 12a10 10 0 0 0-10-10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+              <svg
+                className="h-4 w-4 animate-spin"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeOpacity="0.25"
+                  strokeWidth="3"
+                />
+                <path
+                  d="M22 12a10 10 0 0 0-10-10"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                />
               </svg>
             ) : null}
             {nextLabel}

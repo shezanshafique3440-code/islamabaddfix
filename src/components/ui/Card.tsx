@@ -69,6 +69,8 @@ export function CardFooter({
   children: React.ReactNode;
 }) {
   return (
-    <div className={cn('border-t border-ink-200 bg-ink-50/60 px-5 py-3', className)}>{children}</div>
+    <div className={cn('border-t border-ink-200 bg-ink-50/60 px-5 py-3', className)}>
+      {children}
+    </div>
   );
 }

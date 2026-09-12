@@ -376,7 +376,10 @@ describe('confirm step', () => {
     await user.click(screen.getByRole('button', { name: /booking confirm karein/i }));
 
     await waitFor(() => expect(withMeta).toHaveBeenCalledTimes(1));
-    const [path, options] = withMeta.mock.calls[0] as [string, { method: string; body: Record<string, unknown> }];
+    const [path, options] = withMeta.mock.calls[0] as [
+      string,
+      { method: string; body: Record<string, unknown> },
+    ];
     expect(path).toBe('/api/bookings');
     expect(options.method).toBe('POST');
     expect(options.body).toMatchObject({ serviceId: 'svc-1', addressId: 'addr-1' });
@@ -464,9 +467,12 @@ describe('confirm step', () => {
     await user.click(screen.getByRole('button', { name: /booking confirm karein/i }));
 
     await waitFor(() => expect(withMeta).toHaveBeenCalled());
-    expect(post).toHaveBeenCalledWith('/api/addresses', expect.objectContaining({
-      addressLine: 'Office 4, Blue Area',
-    }));
+    expect(post).toHaveBeenCalledWith(
+      '/api/addresses',
+      expect.objectContaining({
+        addressLine: 'Office 4, Blue Area',
+      }),
+    );
     const [, options] = withMeta.mock.calls[0] as [string, { body: Record<string, unknown> }];
     expect(options.body.addressId).toBe('addr-new');
   });

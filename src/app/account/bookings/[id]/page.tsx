@@ -32,9 +32,14 @@ export default async function BookingDetailPage({ params }: Params) {
   // emergency — the same window the server enforces.
   const canReschedule =
     !booking.isEmergency &&
-    ['PENDING', 'PROVIDER_NOTIFIED', 'ACCEPTED', 'QUOTE_PENDING', 'QUOTE_APPROVED', 'SCHEDULED'].includes(
-      booking.status,
-    );
+    [
+      'PENDING',
+      'PROVIDER_NOTIFIED',
+      'ACCEPTED',
+      'QUOTE_PENDING',
+      'QUOTE_APPROVED',
+      'SCHEDULED',
+    ].includes(booking.status);
 
   return (
     <BookingDetailView

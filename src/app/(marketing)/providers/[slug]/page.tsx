@@ -215,10 +215,7 @@ export default async function ProviderProfilePage({ params }: Params) {
               {reviews.items.length > 0 ? (
                 <ul className="mt-4 space-y-4">
                   {reviews.items.map((review) => (
-                    <li
-                      key={review.id}
-                      className="rounded-xl border border-ink-200 bg-white p-4"
-                    >
+                    <li key={review.id} className="rounded-xl border border-ink-200 bg-white p-4">
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <div className="flex items-center gap-2.5">
                           <Rating value={review.rating} size="sm" />
@@ -227,9 +224,7 @@ export default async function ProviderProfilePage({ params }: Params) {
                           </span>
                           {review.isDemo ? <DemoBadge /> : null}
                         </div>
-                        <span className="text-xs text-ink-400">
-                          {formatDate(review.createdAt)}
-                        </span>
+                        <span className="text-xs text-ink-400">{formatDate(review.createdAt)}</span>
                       </div>
                       {review.comment ? (
                         <p className="mt-2.5 text-sm leading-relaxed text-ink-700">

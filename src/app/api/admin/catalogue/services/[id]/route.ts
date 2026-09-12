@@ -21,14 +21,15 @@ export const PATCH = route(async (request, { params }: Params) => {
         ? { minPricePaisa: rupeesToPaisa(input.minPriceRupees) }
         : {}),
       ...(input.maxPriceRupees !== undefined
-        ? { maxPricePaisa: input.maxPriceRupees == null ? null : rupeesToPaisa(input.maxPriceRupees) }
+        ? {
+            maxPricePaisa:
+              input.maxPriceRupees == null ? null : rupeesToPaisa(input.maxPriceRupees),
+          }
         : {}),
       ...(input.requiresInspection !== undefined
         ? { requiresInspection: input.requiresInspection }
         : {}),
-      ...(input.estimatedMinutes !== undefined
-        ? { estimatedMinutes: input.estimatedMinutes }
-        : {}),
+      ...(input.estimatedMinutes !== undefined ? { estimatedMinutes: input.estimatedMinutes } : {}),
       ...(input.isActive !== undefined ? { isActive: input.isActive } : {}),
       ...(input.isEmergencyEnabled !== undefined
         ? { isEmergencyEnabled: input.isEmergencyEnabled }

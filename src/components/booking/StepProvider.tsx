@@ -61,13 +61,17 @@ export function StepProvider({
           'Technicians dekhne ke liye login zaroori hai. Login karne ke baad aap wapis yahin aa jayenge.',
         );
       } else {
-        setError(
-          caught instanceof ApiError ? caught.message : 'Technicians load nahi ho sake.',
-        );
+        setError(caught instanceof ApiError ? caught.message : 'Technicians load nahi ho sake.');
       }
       setProviders([]);
     }
-  }, [draft.serviceId, draft.addressId, draft.newAddress?.zoneId, draft.scheduledFor, draft.isEmergency]);
+  }, [
+    draft.serviceId,
+    draft.addressId,
+    draft.newAddress?.zoneId,
+    draft.scheduledFor,
+    draft.isEmergency,
+  ]);
 
   useEffect(() => {
     void load();

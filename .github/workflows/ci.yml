@@ -1,0 +1,105 @@
+name: CI
+
+# Every push and every pull request. A branch that cannot go green is a branch
+# that is not ready, and finding that out at review time is too late.
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+# A new push supersedes the run it interrupted — no point burning minutes on a
+# commit nobody will merge.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # The suite refuses any database whose name does not contain "test".
+  TEST_DATABASE_URL: postgresql://isbfix:isbfix@localhost:5432/isbfix_test?schema=public
+  AUTH_SECRET: ci-secret-at-least-thirty-two-characters-long
+  NEXT_PUBLIC_APP_URL: http://localhost:3000
+
+jobs:
+  verify:
+    name: Typecheck, lint and test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: isbfix
+          POSTGRES_PASSWORD: isbfix
+          POSTGRES_DB: isbfix_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd="pg_isready -U isbfix"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Apply migrations
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ env.TEST_DATABASE_URL }}
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Format check
+        run: npm run format:check
+
+      - name: Test
+        run: npm test
+        env:
+          DATABASE_URL: ${{ env.TEST_DATABASE_URL }}
+
+  build:
+    name: Production build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build
+        run: npm run build
+        env:
+          # Never connected to; the schema is read for `prisma generate`.
+          DATABASE_URL: postgresql://build:build@localhost:5432/build
+          AUTH_SECRET: build-time-placeholder-not-used-at-runtime-32
+          NEXT_PUBLIC_APP_URL: http://localhost:3000
+
+  audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # Production dependencies only: a dev-tooling advisory should not block a
+      # deploy of code that never ships it.
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high

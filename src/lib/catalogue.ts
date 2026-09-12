@@ -185,11 +185,7 @@ export async function createCategory(input: CategoryInput, actor: Actor) {
   return category;
 }
 
-export async function updateCategory(
-  id: string,
-  input: Partial<CategoryInput>,
-  actor: Actor,
-) {
+export async function updateCategory(id: string, input: Partial<CategoryInput>, actor: Actor) {
   const existing = await prisma.serviceCategory.findFirst({ where: { id, deletedAt: null } });
   if (!existing) throw new AppError('NOT_FOUND', 'Category nahi mili.');
 
@@ -198,9 +194,7 @@ export async function updateCategory(
     data: {
       ...(input.name !== undefined ? { name: input.name.trim() } : {}),
       ...(input.tagline !== undefined ? { tagline: input.tagline.trim() || null } : {}),
-      ...(input.description !== undefined
-        ? { description: input.description.trim() || null }
-        : {}),
+      ...(input.description !== undefined ? { description: input.description.trim() || null } : {}),
       ...(input.iconKey !== undefined ? { iconKey: input.iconKey } : {}),
       ...(input.sortOrder !== undefined ? { sortOrder: input.sortOrder } : {}),
       ...(input.isActive !== undefined ? { isActive: input.isActive } : {}),
@@ -325,11 +319,7 @@ export async function createService(input: ServiceInput, actor: Actor) {
   return service;
 }
 
-export async function updateService(
-  id: string,
-  input: Partial<ServiceInput>,
-  actor: Actor,
-) {
+export async function updateService(id: string, input: Partial<ServiceInput>, actor: Actor) {
   const existing = await prisma.service.findFirst({ where: { id, deletedAt: null } });
   if (!existing) throw new AppError('NOT_FOUND', 'Service nahi mili.');
 

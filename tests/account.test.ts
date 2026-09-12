@@ -284,7 +284,9 @@ describe('account closure', () => {
 
     const savedAddress = await db.address.findUniqueOrThrow({ where: { id: address.id } });
     expect(savedAddress.deletedAt).not.toBeNull();
-    expect(await db.uploadedFile.count({ where: { ownerId: customer.id, deletedAt: null } })).toBe(0);
+    expect(await db.uploadedFile.count({ where: { ownerId: customer.id, deletedAt: null } })).toBe(
+      0,
+    );
   });
 
   it('revokes every session', async () => {
@@ -293,7 +295,9 @@ describe('account closure', () => {
 
     await closeAccount({ userId: customer.id, password: PASSWORD });
 
-    expect(await db.refreshToken.count({ where: { userId: customer.id, revokedAt: null } })).toBe(0);
+    expect(await db.refreshToken.count({ where: { userId: customer.id, revokedAt: null } })).toBe(
+      0,
+    );
   });
 
   it('requires the correct password', async () => {
@@ -373,7 +377,11 @@ describe('account closure', () => {
     });
     await db.providerProfile.update({
       where: { id: provider.id },
-      data: { bankIbanHash: 'f'.repeat(64), bankAccountLast4: '6702', contactPhone: '+923001112233' },
+      data: {
+        bankIbanHash: 'f'.repeat(64),
+        bankAccountLast4: '6702',
+        contactPhone: '+923001112233',
+      },
     });
 
     await closeAccount({ userId: user.id, password: PASSWORD });
@@ -387,7 +395,11 @@ describe('account closure', () => {
 
   it('records the closure in the audit log', async () => {
     const { customer } = await customerWithHistory();
-    await closeAccount({ userId: customer.id, password: PASSWORD, reason: 'Shehr chhor raha hoon' });
+    await closeAccount({
+      userId: customer.id,
+      password: PASSWORD,
+      reason: 'Shehr chhor raha hoon',
+    });
 
     const entry = await db.auditLog.findFirstOrThrow({
       where: { entity: 'User', entityId: customer.id, action: 'user.account_deleted' },

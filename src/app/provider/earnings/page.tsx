@@ -51,9 +51,21 @@ export default async function ProviderEarningsPage() {
       </header>
 
       <dl className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Stat label="Aaj" value={formatPaisa(earnings.today.earningsPaisa)} hint={`${earnings.today.jobs} job`} />
-        <Stat label="Is hafte" value={formatPaisa(earnings.week.earningsPaisa)} hint={`${earnings.week.jobs} jobs`} />
-        <Stat label="Is mahine" value={formatPaisa(earnings.month.earningsPaisa)} hint={`${earnings.month.jobs} jobs`} />
+        <Stat
+          label="Aaj"
+          value={formatPaisa(earnings.today.earningsPaisa)}
+          hint={`${earnings.today.jobs} job`}
+        />
+        <Stat
+          label="Is hafte"
+          value={formatPaisa(earnings.week.earningsPaisa)}
+          hint={`${earnings.week.jobs} jobs`}
+        />
+        <Stat
+          label="Is mahine"
+          value={formatPaisa(earnings.month.earningsPaisa)}
+          hint={`${earnings.month.jobs} jobs`}
+        />
         <Stat
           label="Pending payout"
           value={formatPaisa(earnings.pendingPayout.earningsPaisa)}

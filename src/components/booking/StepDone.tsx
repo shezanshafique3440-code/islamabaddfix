@@ -28,7 +28,12 @@ export function StepDone({
     <div className="mx-auto max-w-xl px-4 py-12 sm:px-6">
       <div className="rounded-2xl border border-ink-200 bg-white p-6 text-center sm:p-8">
         <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-brand-100">
-          <svg viewBox="0 0 24 24" className="h-7 w-7 text-brand-700" fill="currentColor" aria-hidden="true">
+          <svg
+            viewBox="0 0 24 24"
+            className="h-7 w-7 text-brand-700"
+            fill="currentColor"
+            aria-hidden="true"
+          >
             <path d="M9.5 16.2 5.3 12l-1.4 1.4 5.6 5.6L20.1 8.4 18.7 7 9.5 16.2Z" />
           </svg>
         </span>
@@ -92,7 +97,10 @@ export function StepDone({
 
         <p className="mt-5 text-xs text-ink-500">
           Kuch badalna hai?{' '}
-          <Link href={`/account/bookings/${booking.id}`} className="font-medium text-brand-700 hover:underline">
+          <Link
+            href={`/account/bookings/${booking.id}`}
+            className="font-medium text-brand-700 hover:underline"
+          >
             Booking page
           </Link>{' '}
           se cancel ya support se rabta kar sakte hain.

@@ -191,7 +191,16 @@ export async function approveQuote(params: {
   const quote = await prisma.quote.findUnique({
     where: { id: params.quoteId },
     include: {
-      booking: { select: { id: true, customerId: true, status: true, approvedTotalPaisa: true, emergencyFeePaisa: true, reference: true } },
+      booking: {
+        select: {
+          id: true,
+          customerId: true,
+          status: true,
+          approvedTotalPaisa: true,
+          emergencyFeePaisa: true,
+          reference: true,
+        },
+      },
       provider: { select: { userId: true, businessName: true } },
     },
   });
@@ -277,7 +286,9 @@ export async function rejectQuote(params: {
   const quote = await prisma.quote.findUnique({
     where: { id: params.quoteId },
     include: {
-      booking: { select: { id: true, customerId: true, reference: true, approvedTotalPaisa: true } },
+      booking: {
+        select: { id: true, customerId: true, reference: true, approvedTotalPaisa: true },
+      },
       provider: { select: { userId: true } },
     },
   });

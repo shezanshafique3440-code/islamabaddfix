@@ -195,7 +195,10 @@ function AddressDialog({
     try {
       if (address) await api.patch(`/api/addresses/${address.id}`, payload);
       else await api.post('/api/addresses', payload);
-      toast({ tone: 'success', title: address ? 'Address update ho gaya' : 'Address save ho gaya' });
+      toast({
+        tone: 'success',
+        title: address ? 'Address update ho gaya' : 'Address save ho gaya',
+      });
       onDone();
     } catch (error) {
       if (error instanceof ApiError) {

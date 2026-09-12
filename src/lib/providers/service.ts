@@ -52,12 +52,15 @@ export interface OnboardProviderInput {
  * PENDING_VERIFICATION. Once VERIFIED, changing services/areas/pricing is still
  * allowed, but status is never modified from here.
  */
-export async function upsertProviderProfile(
-  input: OnboardProviderInput,
-): Promise<ProviderProfile> {
+export async function upsertProviderProfile(input: OnboardProviderInput): Promise<ProviderProfile> {
   const user = await prisma.user.findFirst({
     where: { id: input.userId, isActive: true, deletedAt: null },
-    select: { id: true, role: true, fullName: true, providerProfile: { select: { id: true, status: true } } },
+    select: {
+      id: true,
+      role: true,
+      fullName: true,
+      providerProfile: { select: { id: true, status: true } },
+    },
   });
   if (!user) throw new AppError('NOT_FOUND', 'User nahi mila.');
   if (user.role !== 'PROVIDER') {
@@ -103,13 +106,20 @@ export async function upsertProviderProfile(
   const slug = user.providerProfile
     ? undefined
     : await uniqueSlug(input.businessName, async (candidate) =>
-        Boolean(await prisma.providerProfile.findUnique({ where: { slug: candidate }, select: { id: true } })),
+        Boolean(
+          await prisma.providerProfile.findUnique({
+            where: { slug: candidate },
+            select: { id: true },
+          }),
+        ),
       );
 
   const bankIbanHash = input.bankIban
     ? createHash('sha256').update(input.bankIban.replace(/\s+/g, '').toUpperCase()).digest('hex')
     : undefined;
-  const bankAccountLast4 = input.bankIban ? input.bankIban.replace(/\s+/g, '').slice(-4) : undefined;
+  const bankAccountLast4 = input.bankIban
+    ? input.bankIban.replace(/\s+/g, '').slice(-4)
+    : undefined;
 
   const profile = await prisma.$transaction(async (tx) => {
     const saved = user.providerProfile
@@ -517,31 +527,33 @@ export const PROVIDER_STATUS_LABELS: Record<ProviderStatus, { en: string; ur: st
   SUSPENDED: { en: 'Suspended', ur: 'Suspend' },
 };
 
-export const VERIFICATION_LABELS: Record<VerificationKind, { en: string; ur: string; help: string }> =
-  {
-    IDENTITY_CNIC: {
-      en: 'Identity verified',
-      ur: 'Shanakht verified',
-      help: 'Provider ne CNIC document submit kiya jo team ne check kiya.',
-    },
-    PHONE: {
-      en: 'Phone verified',
-      ur: 'Phone verified',
-      help: 'Phone number confirm kiya gaya hai.',
-    },
-    EMAIL: {
-      en: 'Email verified',
-      ur: 'Email verified',
-      help: 'Email address confirm kiya gaya hai.',
-    },
-    PLATFORM_ONBOARDING: {
-      en: 'Platform verified',
-      ur: 'Platform verified',
-      help: 'Islamabad Fix team ne onboarding maloomat ka jaiza liya.',
-    },
-    BANK_ACCOUNT: {
-      en: 'Payout account verified',
-      ur: 'Payout account verified',
-      help: 'Payout ke liye bank account confirm kiya gaya hai.',
-    },
-  };
+export const VERIFICATION_LABELS: Record<
+  VerificationKind,
+  { en: string; ur: string; help: string }
+> = {
+  IDENTITY_CNIC: {
+    en: 'Identity verified',
+    ur: 'Shanakht verified',
+    help: 'Provider ne CNIC document submit kiya jo team ne check kiya.',
+  },
+  PHONE: {
+    en: 'Phone verified',
+    ur: 'Phone verified',
+    help: 'Phone number confirm kiya gaya hai.',
+  },
+  EMAIL: {
+    en: 'Email verified',
+    ur: 'Email verified',
+    help: 'Email address confirm kiya gaya hai.',
+  },
+  PLATFORM_ONBOARDING: {
+    en: 'Platform verified',
+    ur: 'Platform verified',
+    help: 'Islamabad Fix team ne onboarding maloomat ka jaiza liya.',
+  },
+  BANK_ACCOUNT: {
+    en: 'Payout account verified',
+    ur: 'Payout account verified',
+    help: 'Payout ke liye bank account confirm kiya gaya hai.',
+  },
+};

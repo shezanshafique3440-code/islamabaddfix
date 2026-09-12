@@ -169,9 +169,7 @@ export function PayoutManager({
                       Paid mark karein
                     </Button>
                   ) : payout.processedAt ? (
-                    <span className="text-xs text-ink-500">
-                      {formatDate(payout.processedAt)}
-                    </span>
+                    <span className="text-xs text-ink-500">{formatDate(payout.processedAt)}</span>
                   ) : null}
                 </div>
               </li>

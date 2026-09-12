@@ -25,7 +25,12 @@ export default async function AccountLayout({ children }: { children: React.Reac
       </div>
       <BottomNav
         items={[
-          { href: '/account', label: 'Bookings', icon: NavIcons.bookings, match: '/account/bookings' },
+          {
+            href: '/account',
+            label: 'Bookings',
+            icon: NavIcons.bookings,
+            match: '/account/bookings',
+          },
           { href: '/book', label: 'Naya', icon: NavIcons.search },
           { href: '/account/notifications', label: 'Alerts', icon: NavIcons.bell },
           { href: '/account/profile', label: 'Profile', icon: NavIcons.profile },

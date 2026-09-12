@@ -24,9 +24,22 @@ export const GET = route(async (_request, { params }: Params) => {
   const provider = await prisma.providerProfile.findUnique({
     where: { id },
     include: {
-      user: { select: { id: true, fullName: true, email: true, phone: true, isActive: true, createdAt: true } },
-      verifications: { include: { document: { select: { id: true, originalName: true, mimeType: true } } } },
-      services: { include: { service: { select: { name: true, category: { select: { name: true } } } } } },
+      user: {
+        select: {
+          id: true,
+          fullName: true,
+          email: true,
+          phone: true,
+          isActive: true,
+          createdAt: true,
+        },
+      },
+      verifications: {
+        include: { document: { select: { id: true, originalName: true, mimeType: true } } },
+      },
+      services: {
+        include: { service: { select: { name: true, category: { select: { name: true } } } } },
+      },
       serviceAreas: { include: { zone: { select: { name: true, slug: true } } } },
       availability: { orderBy: [{ dayOfWeek: 'asc' }, { startMinute: 'asc' }] },
       documents: {

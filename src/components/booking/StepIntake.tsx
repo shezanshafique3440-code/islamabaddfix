@@ -148,10 +148,7 @@ export function StepIntake({
         {result ? (
           <div className="space-y-3">
             {result.safetyNotice ? (
-              <div
-                role="alert"
-                className="rounded-xl border-2 border-alert-400 bg-alert-50 p-4"
-              >
+              <div role="alert" className="rounded-xl border-2 border-alert-400 bg-alert-50 p-4">
                 <p className="flex items-center gap-2 text-sm font-bold text-alert-700">
                   <span aria-hidden="true">⚠️</span> Pehle safety
                 </p>
@@ -181,9 +178,7 @@ export function StepIntake({
                       <dt className="text-[0.6875rem] uppercase tracking-wide text-ink-400">
                         Category
                       </dt>
-                      <dd className="text-sm font-semibold text-ink-900">
-                        {result.category.name}
-                      </dd>
+                      <dd className="text-sm font-semibold text-ink-900">{result.category.name}</dd>
                     </div>
                   </div>
                   <div>

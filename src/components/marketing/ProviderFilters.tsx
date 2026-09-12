@@ -129,10 +129,7 @@ export function ProviderFilters({
           🚨 Emergency only
         </button>
 
-        {(current.categorySlug ||
-          current.zoneSlug ||
-          current.emergencyOnly ||
-          current.search) ? (
+        {current.categorySlug || current.zoneSlug || current.emergencyOnly || current.search ? (
           <button
             type="button"
             onClick={() => {

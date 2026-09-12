@@ -72,7 +72,10 @@ describe('password reset', () => {
 
     await resetPassword(token, 'BrandNewPass!2026');
 
-    const session = await loginUser({ email: 'reset@test.local', password: 'BrandNewPass!2026' }, meta);
+    const session = await loginUser(
+      { email: 'reset@test.local', password: 'BrandNewPass!2026' },
+      meta,
+    );
     expect(session.user.id).toBe(user.id);
   });
 
@@ -81,7 +84,9 @@ describe('password reset', () => {
     const token = await resetTokenFor('old@test.local');
     await resetPassword(token, 'BrandNewPass!2026');
 
-    await expect(loginUser({ email: 'old@test.local', password: PASSWORD }, meta)).rejects.toThrow();
+    await expect(
+      loginUser({ email: 'old@test.local', password: PASSWORD }, meta),
+    ).rejects.toThrow();
   });
 
   it('revokes every existing session — the point of resetting', async () => {

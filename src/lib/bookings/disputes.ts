@@ -46,7 +46,15 @@ export async function openDispute(params: {
   const open = await prisma.dispute.findFirst({
     where: {
       bookingId: booking.id,
-      status: { notIn: ['CLOSED', 'RESOLVED_NO_ACTION', 'RESOLVED_REFUND', 'RESOLVED_PARTIAL_REFUND', 'RESOLVED_REVISIT'] },
+      status: {
+        notIn: [
+          'CLOSED',
+          'RESOLVED_NO_ACTION',
+          'RESOLVED_REFUND',
+          'RESOLVED_PARTIAL_REFUND',
+          'RESOLVED_REVISIT',
+        ],
+      },
     },
   });
   if (open) {
@@ -178,8 +186,7 @@ export async function resolveDispute(input: ResolveDisputeInput): Promise<{
   });
   if (!dispute) throw new AppError('NOT_FOUND', 'Dispute nahi mila.');
 
-  const isRefund =
-    input.status === 'RESOLVED_REFUND' || input.status === 'RESOLVED_PARTIAL_REFUND';
+  const isRefund = input.status === 'RESOLVED_REFUND' || input.status === 'RESOLVED_PARTIAL_REFUND';
 
   let refundInstructions: string | undefined;
   let refundedPaisa = 0;
@@ -462,14 +469,12 @@ export async function decideGuaranteeClaim(params: {
   return updated;
 }
 
-export const GUARANTEE_STATUS_LABELS: Record<
-  GuaranteeClaim['status'],
-  { en: string; ur: string }
-> = {
-  SUBMITTED: { en: 'Submitted', ur: 'Jama ho gaya' },
-  UNDER_REVIEW: { en: 'Under review', ur: 'Jaiza liya ja raha hai' },
-  APPROVED: { en: 'Approved', ur: 'Manzoor' },
-  REVISIT_SCHEDULED: { en: 'Re-visit scheduled', ur: 'Dobara visit ka time set' },
-  RESOLVED: { en: 'Resolved', ur: 'Hal ho gaya' },
-  REJECTED: { en: 'Rejected', ur: 'Manzoor nahi hua' },
-};
+export const GUARANTEE_STATUS_LABELS: Record<GuaranteeClaim['status'], { en: string; ur: string }> =
+  {
+    SUBMITTED: { en: 'Submitted', ur: 'Jama ho gaya' },
+    UNDER_REVIEW: { en: 'Under review', ur: 'Jaiza liya ja raha hai' },
+    APPROVED: { en: 'Approved', ur: 'Manzoor' },
+    REVISIT_SCHEDULED: { en: 'Re-visit scheduled', ur: 'Dobara visit ka time set' },
+    RESOLVED: { en: 'Resolved', ur: 'Hal ho gaya' },
+    REJECTED: { en: 'Rejected', ur: 'Manzoor nahi hua' },
+  };

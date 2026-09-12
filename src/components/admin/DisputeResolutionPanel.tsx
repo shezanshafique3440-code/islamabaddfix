@@ -154,7 +154,11 @@ export function DisputeResolutionPanel({
         }
       >
         <div className="space-y-4">
-          <Select label="Faisla" value={outcome} onChange={(event) => setOutcome(event.target.value)}>
+          <Select
+            label="Faisla"
+            value={outcome}
+            onChange={(event) => setOutcome(event.target.value)}
+          >
             {available.map((entry) => (
               <option key={entry.value} value={entry.value}>
                 {entry.label}

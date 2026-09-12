@@ -140,8 +140,7 @@ export async function transitionBooking(input: TransitionInput): Promise<Transit
         where: { id: booking.serviceId },
         select: { slug: true, guaranteeEligible: true, guaranteeDaysOverride: true },
       });
-      const days =
-        serviceRow.guaranteeDaysOverride ?? (await getSetting('guarantee.days'));
+      const days = serviceRow.guaranteeDaysOverride ?? (await getSetting('guarantee.days'));
       const eligible =
         guaranteeEnabled && serviceRow.guaranteeEligible && !excluded.includes(serviceRow.slug);
 

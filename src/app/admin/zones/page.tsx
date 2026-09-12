@@ -4,7 +4,10 @@ import { listZones } from '@/lib/catalogue';
 import { prisma } from '@/lib/db';
 import { ZoneManager } from '@/components/admin/ZoneManager';
 
-export const metadata: Metadata = { title: 'Service areas', robots: { index: false, follow: false } };
+export const metadata: Metadata = {
+  title: 'Service areas',
+  robots: { index: false, follow: false },
+};
 
 export default async function AdminZonesPage() {
   await requirePermission('catalogue:write');

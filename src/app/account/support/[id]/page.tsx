@@ -8,7 +8,10 @@ import { Badge } from '@/components/ui/Badge';
 import { TicketThread } from '@/components/account/TicketThread';
 import { formatDateTime } from '@/lib/utils';
 
-export const metadata: Metadata = { title: 'Support ticket', robots: { index: false, follow: false } };
+export const metadata: Metadata = {
+  title: 'Support ticket',
+  robots: { index: false, follow: false },
+};
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -39,7 +42,10 @@ export default async function TicketPage({ params }: Params) {
 
   return (
     <div className="max-w-3xl">
-      <Link href="/account/support" className="text-sm text-ink-600 hover:text-brand-700 hover:underline">
+      <Link
+        href="/account/support"
+        className="text-sm text-ink-600 hover:text-brand-700 hover:underline"
+      >
         ← Sab tickets
       </Link>
 
@@ -63,7 +69,9 @@ export default async function TicketPage({ params }: Params) {
             ) : null}
           </p>
         </div>
-        <Badge tone={ticket.status === 'RESOLVED' || ticket.status === 'CLOSED' ? 'success' : 'info'}>
+        <Badge
+          tone={ticket.status === 'RESOLVED' || ticket.status === 'CLOSED' ? 'success' : 'info'}
+        >
           {ticket.status}
         </Badge>
       </div>
@@ -85,8 +93,7 @@ export default async function TicketPage({ params }: Params) {
             body: message.body,
             createdAt: message.createdAt.toISOString(),
             senderName: message.sender?.fullName ?? 'Islamabad Fix',
-            isStaff:
-              message.sender?.role === 'ADMIN' || message.sender?.role === 'SUPER_ADMIN',
+            isStaff: message.sender?.role === 'ADMIN' || message.sender?.role === 'SUPER_ADMIN',
             isMine: message.sender?.id === ctx.user.id,
           }))}
         />

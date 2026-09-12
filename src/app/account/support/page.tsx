@@ -9,7 +9,10 @@ import { formatRelative } from '@/lib/utils';
 
 export const metadata: Metadata = { title: 'Support', robots: { index: false, follow: false } };
 
-const STATUS_LABELS: Record<string, { label: string; tone: 'neutral' | 'info' | 'warn' | 'success' }> = {
+const STATUS_LABELS: Record<
+  string,
+  { label: string; tone: 'neutral' | 'info' | 'warn' | 'success' }
+> = {
   OPEN: { label: 'Khula hai', tone: 'info' },
   IN_PROGRESS: { label: 'Kaam ho raha hai', tone: 'warn' },
   WAITING_ON_CUSTOMER: { label: 'Aapke jawab ka intezar', tone: 'warn' },

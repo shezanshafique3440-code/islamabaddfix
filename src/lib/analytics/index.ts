@@ -156,8 +156,7 @@ export async function getOverviewMetrics(): Promise<OverviewMetrics> {
     where: { respondedAt: { not: null } },
   });
 
-  const roleCount = (role: string) =>
-    userCounts.find((row) => row.role === role)?._count._all ?? 0;
+  const roleCount = (role: string) => userCounts.find((row) => row.role === role)?._count._all ?? 0;
   const providerStatusCount = (status: string) =>
     providerCounts.find((row) => row.status === status)?._count._all ?? 0;
 
@@ -408,9 +407,7 @@ export interface RetentionMetrics {
 }
 
 export async function getRetentionMetrics(): Promise<RetentionMetrics> {
-  const rows = await prisma.$queryRaw<
-    Array<{ total: bigint; repeat: bigint; active: bigint }>
-  >`
+  const rows = await prisma.$queryRaw<Array<{ total: bigint; repeat: bigint; active: bigint }>>`
     WITH per_customer AS (
       SELECT
         "customerId",

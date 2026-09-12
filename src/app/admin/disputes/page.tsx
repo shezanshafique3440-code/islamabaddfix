@@ -87,9 +87,7 @@ export default async function AdminDisputesPage({
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="font-mono text-xs text-ink-500">{dispute.reference}</span>
-                      <Badge tone="danger">
-                        {DISPUTE_REASON_LABELS[dispute.reason].en}
-                      </Badge>
+                      <Badge tone="danger">{DISPUTE_REASON_LABELS[dispute.reason].en}</Badge>
                       {dispute._count.files > 0 ? (
                         <Badge tone="neutral">{dispute._count.files} evidence</Badge>
                       ) : null}
@@ -100,7 +98,9 @@ export default async function AdminDisputesPage({
                     <p className="mt-1.5 text-xs text-ink-500">
                       {dispute.booking.reference} · {dispute.booking.service.name} ·{' '}
                       {dispute.booking.customer.fullName}
-                      {dispute.booking.provider ? ` vs ${dispute.booking.provider.businessName}` : ''}
+                      {dispute.booking.provider
+                        ? ` vs ${dispute.booking.provider.businessName}`
+                        : ''}
                       {' · '}
                       {formatRelative(dispute.createdAt)}
                     </p>

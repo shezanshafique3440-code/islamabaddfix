@@ -280,7 +280,13 @@ export async function exportAccountData(userId: string): Promise<Record<string, 
       }),
       prisma.supportTicket.findMany({
         where: { requesterId: userId },
-        select: { reference: true, subject: true, description: true, status: true, createdAt: true },
+        select: {
+          reference: true,
+          subject: true,
+          description: true,
+          status: true,
+          createdAt: true,
+        },
       }),
       prisma.dispute.findMany({
         where: { raisedByUserId: userId },
@@ -323,8 +329,7 @@ export async function exportAccountData(userId: string): Promise<Record<string, 
 
   return {
     exportedAt: new Date().toISOString(),
-    note:
-      'Yeh Islamabad Fix par mojood aap ki maloomat hai. Password kabhi store nahi hota — sirf uska hash, jo yahan shamil nahi. Uploaded files ke naam shamil hain, files khud nahi.',
+    note: 'Yeh Islamabad Fix par mojood aap ki maloomat hai. Password kabhi store nahi hota — sirf uska hash, jo yahan shamil nahi. Uploaded files ke naam shamil hain, files khud nahi.',
     account: user,
     notificationPreferences: await prisma.notificationPreference.findUnique({
       where: { userId },

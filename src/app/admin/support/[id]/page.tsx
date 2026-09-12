@@ -9,7 +9,10 @@ import { AdminTicketControls } from '@/components/admin/AdminTicketControls';
 import { fileUrl } from '@/lib/storage';
 import { formatDateTime } from '@/lib/utils';
 
-export const metadata: Metadata = { title: 'Support ticket', robots: { index: false, follow: false } };
+export const metadata: Metadata = {
+  title: 'Support ticket',
+  robots: { index: false, follow: false },
+};
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -48,7 +51,10 @@ export default async function AdminTicketPage({ params }: Params) {
 
   return (
     <div className="max-w-4xl space-y-6">
-      <Link href="/admin/support" className="text-sm text-ink-600 hover:text-brand-700 hover:underline">
+      <Link
+        href="/admin/support"
+        className="text-sm text-ink-600 hover:text-brand-700 hover:underline"
+      >
         ← Sab tickets
       </Link>
 

@@ -24,11 +24,7 @@ export default async function AdminBookingsPage({
   const ctx = await requirePermission('booking:read:any');
   const query = await searchParams;
   const scope = (TABS.find((tab) => tab.key === query.scope)?.key ?? 'all') as
-    | 'all'
-    | 'active'
-    | 'completed'
-    | 'disputed'
-    | 'cancelled';
+    'all' | 'active' | 'completed' | 'disputed' | 'cancelled';
 
   const result = await listBookingsFor(ctx, {
     page: Number(query.page ?? 1) || 1,

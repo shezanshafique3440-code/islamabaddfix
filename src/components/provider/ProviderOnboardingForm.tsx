@@ -77,8 +77,7 @@ export function ProviderOnboardingForm({
     emergencyAvailable: profile?.emergencyAvailable ?? false,
     emergencyFeeRupees: profile ? String(profile.emergencyFeePaisa / 100) : '',
     serviceRadiusKm: String(profile?.serviceRadiusKm ?? 15),
-    cnicReference:
-      profile?.verifications.find((v) => v.kind === 'IDENTITY_CNIC')?.reference ?? '',
+    cnicReference: profile?.verifications.find((v) => v.kind === 'IDENTITY_CNIC')?.reference ?? '',
     bankAccountTitle: profile?.bankAccountTitle ?? '',
     bankName: profile?.bankName ?? '',
     bankIban: '',
@@ -467,12 +466,18 @@ export function ProviderOnboardingForm({
       </Section>
 
       {/* ------------------------------------------------------------- hours */}
-      <Section title="Working hours" description="Matching mein aap ke waqt ka khayal rakha jata hai.">
+      <Section
+        title="Working hours"
+        description="Matching mein aap ke waqt ka khayal rakha jata hai."
+      >
         <ul className="space-y-2">
           {DAY_NAMES.map((dayName, day) => {
             const window = availability[day]!;
             return (
-              <li key={day} className="flex flex-wrap items-center gap-3 rounded-xl border border-ink-200 p-3">
+              <li
+                key={day}
+                className="flex flex-wrap items-center gap-3 rounded-xl border border-ink-200 p-3"
+              >
                 <label className="flex w-32 shrink-0 items-center gap-2.5">
                   <input
                     type="checkbox"

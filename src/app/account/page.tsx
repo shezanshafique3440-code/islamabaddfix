@@ -40,9 +40,7 @@ export default async function AccountBookingsPage({
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-display-sm text-ink-950">Meri bookings</h1>
-          <p className="mt-1 text-sm text-ink-600">
-            Status, quotes aur payments — sab yahan.
-          </p>
+          <p className="mt-1 text-sm text-ink-600">Status, quotes aur payments — sab yahan.</p>
         </div>
         <Link
           href="/book"
@@ -52,7 +50,7 @@ export default async function AccountBookingsPage({
         </Link>
       </div>
 
-      <nav aria-label="Booking filters" className="mt-5 -mx-1 overflow-x-auto px-1 no-scrollbar">
+      <nav aria-label="Booking filters" className="no-scrollbar -mx-1 mt-5 overflow-x-auto px-1">
         <div className="flex gap-1.5">
           {TABS.map((tab) => (
             <Link
@@ -74,7 +72,11 @@ export default async function AccountBookingsPage({
 
       <div className="mt-5">
         {bookings.length > 0 ? (
-          <BookingList bookings={bookings} pagination={result.pagination} basePath={`/account?scope=${scope}`} />
+          <BookingList
+            bookings={bookings}
+            pagination={result.pagination}
+            basePath={`/account?scope=${scope}`}
+          />
         ) : (
           <EmptyState
             title={

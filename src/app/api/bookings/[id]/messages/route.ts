@@ -1,11 +1,7 @@
 import { created, ok, parseJson, rateLimitIdentity, route } from '@/lib/http';
 import { requireAuth } from '@/lib/auth/session';
 import { bookingMessageSchema } from '@/lib/validation/schemas';
-import {
-  listBookingMessages,
-  markThreadRead,
-  sendBookingMessage,
-} from '@/lib/bookings/messages';
+import { listBookingMessages, markThreadRead, sendBookingMessage } from '@/lib/bookings/messages';
 import { enforceRateLimit, RATE_LIMITS } from '@/lib/auth/rate-limit';
 
 type Params = { params: Promise<{ id: string }> };

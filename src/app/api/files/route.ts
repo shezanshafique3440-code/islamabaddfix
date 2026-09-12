@@ -36,7 +36,12 @@ const fieldsSchema = z.object({
 /** Which roles may upload which purposes. */
 const ROLE_PURPOSES: Record<string, readonly string[]> = {
   CUSTOMER: ['BOOKING_EVIDENCE', 'DISPUTE_EVIDENCE', 'GUARANTEE_EVIDENCE', 'SUPPORT_ATTACHMENT'],
-  PROVIDER: ['COMPLETION_PROOF', 'PROVIDER_PROFILE_PHOTO', 'PROVIDER_DOCUMENT', 'SUPPORT_ATTACHMENT'],
+  PROVIDER: [
+    'COMPLETION_PROOF',
+    'PROVIDER_PROFILE_PHOTO',
+    'PROVIDER_DOCUMENT',
+    'SUPPORT_ATTACHMENT',
+  ],
 };
 
 export const POST = route(async (request) => {
@@ -72,12 +77,16 @@ export const POST = route(async (request) => {
     });
     if (!booking) throw new AppError('NOT_FOUND', 'Booking nahi mili.');
     const isCustomer = booking.customerId === ctx.user.id;
-    const isAssignedProvider = ctx.providerId !== undefined && booking.providerId === ctx.providerId;
+    const isAssignedProvider =
+      ctx.providerId !== undefined && booking.providerId === ctx.providerId;
     if (!isCustomer && !isAssignedProvider && !isStaff(ctx.role)) {
       throw new AppError('FORBIDDEN', 'Yeh booking aapki nahi hai.');
     }
     if (fields.purpose === 'COMPLETION_PROOF' && !isAssignedProvider) {
-      throw new AppError('FORBIDDEN', 'Completion photos sirf assigned technician upload kar sakta hai.');
+      throw new AppError(
+        'FORBIDDEN',
+        'Completion photos sirf assigned technician upload kar sakta hai.',
+      );
     }
   }
 

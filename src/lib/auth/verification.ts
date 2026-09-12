@@ -95,7 +95,11 @@ async function issue(params: {
 }): Promise<void> {
   const now = new Date();
   const live = await prisma.verificationToken.count({
-    where: { userId: params.userId, purpose: params.purpose, createdAt: { gt: new Date(Date.now() - 3600_000) } },
+    where: {
+      userId: params.userId,
+      purpose: params.purpose,
+      createdAt: { gt: new Date(Date.now() - 3600_000) },
+    },
   });
   if (live >= MAX_LIVE_PER_PURPOSE) {
     throw new AppError(
@@ -129,7 +133,9 @@ async function consume(purpose: VerificationPurpose, raw: string, userId?: strin
       tokenHash: hashSecret(raw),
       ...(userId ? { userId } : {}),
     },
-    include: { user: { select: { id: true, email: true, phone: true, isActive: true, deletedAt: true } } },
+    include: {
+      user: { select: { id: true, email: true, phone: true, isActive: true, deletedAt: true } },
+    },
   });
 
   if (!token || token.consumedAt || token.expiresAt < new Date()) {

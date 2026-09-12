@@ -114,7 +114,9 @@ export default async function AdminAnalyticsPage({
           <MetricCard label="Repeat customers" value={String(retention.repeatCustomers)} />
           <MetricCard
             label="Repeat rate"
-            value={retention.repeatRate !== null ? `${(retention.repeatRate * 100).toFixed(1)}%` : '—'}
+            value={
+              retention.repeatRate !== null ? `${(retention.repeatRate * 100).toFixed(1)}%` : '—'
+            }
             hint={retention.repeatRate === null ? 'Koi mukammal booking nahi' : undefined}
           />
           <MetricCard label="Active (30 din)" value={String(retention.activeCustomers)} />

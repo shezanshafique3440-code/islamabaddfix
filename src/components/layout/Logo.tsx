@@ -17,7 +17,12 @@ export function Logo({
   return (
     <Link href={href} className={cn('group inline-flex items-center gap-2.5', className)}>
       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[0.625rem] bg-brand-700 text-white shadow-sm transition-colors group-hover:bg-brand-800">
-        <svg viewBox="0 0 24 24" className="h-[1.125rem] w-[1.125rem]" fill="currentColor" aria-hidden="true">
+        <svg
+          viewBox="0 0 24 24"
+          className="h-[1.125rem] w-[1.125rem]"
+          fill="currentColor"
+          aria-hidden="true"
+        >
           <path d="M12 1.8 4.4 4.7v6.6c0 4.6 3.1 8.4 7.6 9.5 4.5-1.1 7.6-4.9 7.6-9.5V4.7L12 1.8Zm4.1 5.4a3.4 3.4 0 0 1-4.4 4.4l-2.9 2.9a1.2 1.2 0 0 1-1.7-1.7l2.9-2.9a3.4 3.4 0 0 1 4.4-4.4l-1.9 1.9 1.7 1.7 1.9-1.9Z" />
         </svg>
       </span>

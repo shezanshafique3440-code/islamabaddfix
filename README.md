@@ -15,23 +15,23 @@ plainly instead of pretending to work.
 
 ## What is actually built
 
-| Area | State |
-|---|---|
-| Customer booking (7-step wizard, intake → confirm) | Working end to end |
-| Provider onboarding, admin verification, suspension | Working |
-| Matching engine (hard eligibility filters + tunable scoring) | Working |
-| Quotes, additional charges, customer approval | Working |
-| Booking lifecycle state machine + full status history | Working |
-| Commission split, provider earnings, payouts | Working, server-side only |
-| Cash payments | Working |
-| Online payment gateway | Interface built, needs credentials |
-| Disputes, Fix Guarantee claims | Working |
-| Reviews and ratings | Working |
-| Admin dashboard: ops, catalogue, zones, settings, analytics, audit | Working |
-| AI intake assistant | Working; falls back to a rule-based classifier, and says which answered |
-| Maps / geocoding | Interface built, needs credentials; zone centroids used meanwhile |
-| Email / SMS / WhatsApp / voice agent | Interfaces built, need credentials |
-| Object storage | Local disk by default; S3/MinIO driver included |
+| Area                                                               | State                                                                   |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------------- |
+| Customer booking (7-step wizard, intake → confirm)                 | Working end to end                                                      |
+| Provider onboarding, admin verification, suspension                | Working                                                                 |
+| Matching engine (hard eligibility filters + tunable scoring)       | Working                                                                 |
+| Quotes, additional charges, customer approval                      | Working                                                                 |
+| Booking lifecycle state machine + full status history              | Working                                                                 |
+| Commission split, provider earnings, payouts                       | Working, server-side only                                               |
+| Cash payments                                                      | Working                                                                 |
+| Online payment gateway                                             | Interface built, needs credentials                                      |
+| Disputes, Fix Guarantee claims                                     | Working                                                                 |
+| Reviews and ratings                                                | Working                                                                 |
+| Admin dashboard: ops, catalogue, zones, settings, analytics, audit | Working                                                                 |
+| AI intake assistant                                                | Working; falls back to a rule-based classifier, and says which answered |
+| Maps / geocoding                                                   | Interface built, needs credentials; zone centroids used meanwhile       |
+| Email / SMS / WhatsApp / voice agent                               | Interfaces built, need credentials                                      |
+| Object storage                                                     | Local disk by default; S3/MinIO driver included                         |
 
 An unconfigured integration is a first-class state, not an error. `/api/health`
 reports exactly which ones are live.
@@ -92,25 +92,25 @@ app on <http://localhost:3000> with every optional integration off.
   demo in the UI, and can be removed later with
   `npx tsx scripts/purge-demo.ts --confirm`.
 
-Sector names are seeded as *data*, not compiled in: an admin adds, renames or
+Sector names are seeded as _data_, not compiled in: an admin adds, renames or
 retires a zone from the admin panel, and the matcher picks it up immediately.
 
 ---
 
 ## Commands
 
-| Command | What it does |
-|---|---|
-| `npm run dev` | Development server |
-| `npm run build` | Production build (standalone output) |
-| `npm start` | Serve the production build |
-| `npm run verify` | typecheck → lint → the whole test suite |
-| `npm test` | Tests only |
-| `npm run smoke -- <url>` | Post-deploy browser check: pages render, CSP holds, the wizard responds |
-| `npm run acceptance -- <url>` | Drives the whole AC-repair scenario over HTTP against a running app, checking the database row behind every response |
-| `npm run db:seed` | Seed reference (and optionally demo) data |
-| `npm run db:reset` | Drop and recreate the schema — refuses to touch production |
-| `npx tsx scripts/purge-demo.ts --confirm` | Delete demo rows only |
+| Command                                   | What it does                                                                                                         |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `npm run dev`                             | Development server                                                                                                   |
+| `npm run build`                           | Production build (standalone output)                                                                                 |
+| `npm start`                               | Serve the production build                                                                                           |
+| `npm run verify`                          | typecheck → lint → the whole test suite                                                                              |
+| `npm test`                                | Tests only                                                                                                           |
+| `npm run smoke -- <url>`                  | Post-deploy browser check: pages render, CSP holds, the wizard responds                                              |
+| `npm run acceptance -- <url>`             | Drives the whole AC-repair scenario over HTTP against a running app, checking the database row behind every response |
+| `npm run db:seed`                         | Seed reference (and optionally demo) data                                                                            |
+| `npm run db:reset`                        | Drop and recreate the schema — refuses to touch production                                                           |
+| `npx tsx scripts/purge-demo.ts --confirm` | Delete demo rows only                                                                                                |
 
 The test suite needs a PostgreSQL database whose name contains `test`; it
 refuses to run otherwise, and creates `isbfix_test` if it can. Set
@@ -120,14 +120,14 @@ refuses to run otherwise, and creates `isbfix_test` if it can. Set
 
 ## Documentation
 
-| Document | Contents |
-|---|---|
+| Document                                     | Contents                                                                                  |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | How it is put together, the database schema, and why the load-bearing decisions were made |
-| [docs/API.md](docs/API.md) | Every endpoint, the response envelope, error codes, auth and rate limits |
-| [docs/openapi.yaml](docs/openapi.yaml) | Machine-readable spec for the customer- and provider-facing API |
-| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Production deployment, backups, logging, monitoring, rollback |
-| [docs/SECURITY.md](docs/SECURITY.md) | Threat model, what is enforced where, and what is deliberately not claimed |
-| [.env.example](.env.example) | Every environment variable, annotated |
+| [docs/API.md](docs/API.md)                   | Every endpoint, the response envelope, error codes, auth and rate limits                  |
+| [docs/openapi.yaml](docs/openapi.yaml)       | Machine-readable spec for the customer- and provider-facing API                           |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)     | Production deployment, backups, logging, monitoring, rollback                             |
+| [docs/SECURITY.md](docs/SECURITY.md)         | Threat model, what is enforced where, and what is deliberately not claimed                |
+| [.env.example](.env.example)                 | Every environment variable, annotated                                                     |
 
 ---
 

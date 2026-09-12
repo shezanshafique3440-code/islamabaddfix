@@ -14,7 +14,10 @@ import { Badge } from '@/components/ui/Badge';
 import { ProviderReviewPanel } from '@/components/admin/ProviderReviewPanel';
 import type { VerificationKind } from '@prisma/client';
 
-export const metadata: Metadata = { title: 'Provider review', robots: { index: false, follow: false } };
+export const metadata: Metadata = {
+  title: 'Provider review',
+  robots: { index: false, follow: false },
+};
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -46,7 +49,13 @@ export default async function AdminProviderDetailPage({ params }: Params) {
         availability: { orderBy: [{ dayOfWeek: 'asc' }, { startMinute: 'asc' }] },
         documents: {
           where: { deletedAt: null },
-          select: { id: true, originalName: true, mimeType: true, sizeBytes: true, createdAt: true },
+          select: {
+            id: true,
+            originalName: true,
+            mimeType: true,
+            sizeBytes: true,
+            createdAt: true,
+          },
         },
         _count: { select: { bookings: true, reviews: true } },
       },
@@ -66,7 +75,10 @@ export default async function AdminProviderDetailPage({ params }: Params) {
 
   return (
     <div className="space-y-6">
-      <Link href="/admin/providers" className="text-sm text-ink-600 hover:text-brand-700 hover:underline">
+      <Link
+        href="/admin/providers"
+        className="text-sm text-ink-600 hover:text-brand-700 hover:underline"
+      >
         ← Sab providers
       </Link>
 
@@ -85,9 +97,7 @@ export default async function AdminProviderDetailPage({ params }: Params) {
             <Rating value={provider.ratingAverage} count={provider.ratingCount} size="sm" />
             <span className="text-sm text-ink-600">{provider.completedJobs} jobs mukammal</span>
             <span className="text-sm text-ink-600">{provider._count.bookings} total bookings</span>
-            <span className="text-sm text-ink-600">
-              {formatDate(provider.createdAt)} se member
-            </span>
+            <span className="text-sm text-ink-600">{formatDate(provider.createdAt)} se member</span>
           </div>
         </div>
       </header>
@@ -113,10 +123,7 @@ export default async function AdminProviderDetailPage({ params }: Params) {
             <Row label="Business phone" value={provider.contactPhone} />
             <Row label="Account phone" value={provider.user.phone ?? '—'} />
             <Row label="Email" value={provider.user.email} />
-            <Row
-              label="Address"
-              value={provider.addressLine ?? '—'}
-            />
+            <Row label="Address" value={provider.addressLine ?? '—'} />
             <Row label="Sector" value={provider.sector ?? '—'} />
             <Row label="Tajurba" value={`${provider.yearsExperience} saal`} />
             <Row label="Service radius" value={`${provider.serviceRadiusKm} km`} />
@@ -129,10 +136,7 @@ export default async function AdminProviderDetailPage({ params }: Params) {
               }
             />
             <Row label="Max active jobs" value={String(provider.maxActiveJobs)} />
-            <Row
-              label="Location sharing"
-              value={provider.shareLiveLocation ? 'On' : 'Off'}
-            />
+            <Row label="Location sharing" value={provider.shareLiveLocation ? 'On' : 'Off'} />
           </dl>
           {provider.description ? (
             <div className="mt-4 border-t border-ink-100 pt-3">
@@ -264,7 +268,9 @@ export default async function AdminProviderDetailPage({ params }: Params) {
               return (
                 <li key={verification.id} className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-ink-900">{info?.en ?? verification.kind}</p>
+                    <p className="text-sm font-medium text-ink-900">
+                      {info?.en ?? verification.kind}
+                    </p>
                     <p className="text-xs leading-relaxed text-ink-500">{info?.help}</p>
                     {verification.reference ? (
                       <p className="mt-0.5 text-xs text-ink-600">Ref: {verification.reference}</p>

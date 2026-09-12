@@ -75,11 +75,9 @@ export const anthropicProvider: LlmProvider = {
 
       if (!response.ok) {
         const detail = await response.text();
-        throw new AppError(
-          'INTEGRATION_FAILED',
-          'AI assistant is waqt jawab nahi de saka.',
-          { context: { status: response.status, detail: detail.slice(0, 400) } },
-        );
+        throw new AppError('INTEGRATION_FAILED', 'AI assistant is waqt jawab nahi de saka.', {
+          context: { status: response.status, detail: detail.slice(0, 400) },
+        });
       }
 
       const json = (await response.json()) as {

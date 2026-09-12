@@ -69,10 +69,7 @@ export function StatusBadge({
   return (
     <Badge tone={tone} className={className}>
       <span
-        className={cn(
-          'h-1.5 w-1.5 rounded-full bg-current',
-          isLive && 'animate-pulse',
-        )}
+        className={cn('h-1.5 w-1.5 rounded-full bg-current', isLive && 'animate-pulse')}
         aria-hidden="true"
       />
       {label}
@@ -84,21 +81,17 @@ export function StatusBadge({
  * Verification badge. Only rendered from an APPROVED ProviderVerification row —
  * the copy deliberately says what was checked and nothing more.
  */
-export function VerifiedBadge({
-  label,
-  className,
-}: {
-  label: string;
-  className?: string;
-}) {
+export function VerifiedBadge({ label, className }: { label: string; className?: string }) {
   return (
     <span
-      className={cn(
-        'inline-flex items-center gap-1 text-xs font-medium text-brand-700',
-        className,
-      )}
+      className={cn('inline-flex items-center gap-1 text-xs font-medium text-brand-700', className)}
     >
-      <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 shrink-0" fill="currentColor" aria-hidden="true">
+      <svg
+        viewBox="0 0 16 16"
+        className="h-3.5 w-3.5 shrink-0"
+        fill="currentColor"
+        aria-hidden="true"
+      >
         <path
           fillRule="evenodd"
           d="M8 1.5 9.9 3l2.4-.1.6 2.3 1.9 1.4-1 2.2.4 2.4-2.3.8L10.4 14 8 13.2 5.6 14 4.1 12l-2.3-.8.4-2.4-1-2.2L3.1 5l.6-2.3L6.1 3 8 1.5Zm3 4.3-3.8 4.1-2.2-2 .8-.9 1.3 1.2 3-3.2.9.8Z"

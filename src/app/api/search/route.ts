@@ -16,7 +16,9 @@ export const GET = route(async (request) => {
   const { q, include } = parseQuery(request, querySchema);
 
   const [catalogue, providers] = await Promise.all([
-    include === 'providers' ? Promise.resolve({ categories: [], services: [] }) : searchCatalogue(q),
+    include === 'providers'
+      ? Promise.resolve({ categories: [], services: [] })
+      : searchCatalogue(q),
     include === 'catalogue'
       ? Promise.resolve({ items: [], pagination: { page: 1, perPage: 0, total: 0, totalPages: 1 } })
       : listPublicProviders({ search: q, perPage: 6 }),

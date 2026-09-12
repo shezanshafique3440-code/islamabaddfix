@@ -108,13 +108,13 @@ export const GET = route(async () => {
         sharesLocation: provider.shareLiveLocation,
         // Absent unless the provider consented and the ping is recent.
         liveLocation: shareable
-          ? { latitude: latest.latitude, longitude: latest.longitude, recordedAt: latest.recordedAt }
+          ? {
+              latitude: latest.latitude,
+              longitude: latest.longitude,
+              recordedAt: latest.recordedAt,
+            }
           : null,
-        locationStatus: !provider.shareLiveLocation
-          ? 'sharing_off'
-          : isFresh
-            ? 'live'
-            : 'stale',
+        locationStatus: !provider.shareLiveLocation ? 'sharing_off' : isFresh ? 'live' : 'stale',
         zones: provider.serviceAreas
           .map((area) => area.zone)
           .filter((zone) => zone.latitude != null && zone.longitude != null),

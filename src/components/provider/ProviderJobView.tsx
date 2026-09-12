@@ -54,8 +54,7 @@ export function ProviderJobView({
   const actions = booking.availableActions;
   const canQuote = actions.some((action) => action.to === 'QUOTE_PENDING');
   const pendingQuote = booking.quotes.find((quote) => quote.id === booking.pendingQuoteId) ?? null;
-  const hasCoordinates =
-    booking.address.latitude !== null && booking.address.longitude !== null;
+  const hasCoordinates = booking.address.latitude !== null && booking.address.longitude !== null;
 
   async function transition(action: string, label: string, extra?: Record<string, unknown>) {
     setBusy(action);
@@ -77,7 +76,10 @@ export function ProviderJobView({
 
   return (
     <div className="space-y-6 pb-6">
-      <Link href="/provider/jobs" className="text-sm text-ink-600 hover:text-brand-700 hover:underline">
+      <Link
+        href="/provider/jobs"
+        className="text-sm text-ink-600 hover:text-brand-700 hover:underline"
+      >
         ← Sab jobs
       </Link>
 
@@ -101,7 +103,9 @@ export function ProviderJobView({
 
       {!isAssigned ? (
         <div className="rounded-2xl border-2 border-brand-200 bg-brand-50/50 p-5">
-          <h2 className="text-[0.9375rem] font-semibold text-ink-900">Yeh job aap ko offer hui hai</h2>
+          <h2 className="text-[0.9375rem] font-semibold text-ink-900">
+            Yeh job aap ko offer hui hai
+          </h2>
           <p className="mt-1.5 text-sm text-ink-700">
             Qubool karne par customer ka poora address aur phone number aap ko dikh jayega.
           </p>
@@ -345,15 +349,11 @@ export function ProviderJobView({
                 {booking.pricing.finalTotalPaisa !== null ? 'Final total' : 'Approved total'}
               </dt>
               <dd className="font-medium text-ink-900">
-                {formatPaisa(
-                  booking.pricing.finalTotalPaisa ?? booking.pricing.approvedTotalPaisa,
-                )}
+                {formatPaisa(booking.pricing.finalTotalPaisa ?? booking.pricing.approvedTotalPaisa)}
               </dd>
             </div>
             <div className="flex justify-between gap-3">
-              <dt className="text-ink-600">
-                Platform commission ({commissionRateBp / 100}%)
-              </dt>
+              <dt className="text-ink-600">Platform commission ({commissionRateBp / 100}%)</dt>
               <dd className="text-ink-700">
                 −
                 {formatPaisa(
@@ -437,7 +437,10 @@ export function ProviderJobView({
         <ol className="mt-3 space-y-3">
           {booking.timeline.map((entry) => (
             <li key={entry.id} className="flex gap-3">
-              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-ink-300" aria-hidden="true" />
+              <span
+                className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-ink-300"
+                aria-hidden="true"
+              />
               <div>
                 <p className="text-sm font-medium text-ink-900">{entry.label}</p>
                 {entry.reason ? <p className="text-xs text-ink-500">{entry.reason}</p> : null}
@@ -578,7 +581,8 @@ function QuoteDialog({
   const customerTotal = subtotalPaisa + (isAdditional ? 0 : emergencyFeePaisa);
   const earnings = splitCommission(customerTotal, commissionRateBp);
 
-  const valid = lines.every((line) => line.label.trim().length >= 2 && Number(line.rupees) >= 0) &&
+  const valid =
+    lines.every((line) => line.label.trim().length >= 2 && Number(line.rupees) >= 0) &&
     subtotalPaisa > 0;
 
   return (
@@ -641,7 +645,9 @@ function QuoteDialog({
                   onChange={(event) =>
                     setLines((current) =>
                       current.map((entry, i) =>
-                        i === index ? { ...entry, kind: event.target.value as QuoteItemKind } : entry,
+                        i === index
+                          ? { ...entry, kind: event.target.value as QuoteItemKind }
+                          : entry,
                       ),
                     )
                   }

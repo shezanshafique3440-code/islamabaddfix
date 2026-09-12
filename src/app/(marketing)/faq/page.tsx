@@ -71,7 +71,9 @@ export default async function FaqPage() {
           a: 'Iska matlab hai ke humari team ne provider ka shanakhti document aur onboarding maloomat check ki hain, aur unka phone aur email confirm hua hai. Profile par sirf wohi badge dikhta hai jo waqai verify hua ho. Hum government licensing, insurance ya police background check ka dawa nahi karte.',
         },
         {
-          q: guaranteeEnabled ? `${guaranteeDays}-din guarantee kaise kaam karti hai?` : 'Guarantee available hai?',
+          q: guaranteeEnabled
+            ? `${guaranteeDays}-din guarantee kaise kaam karti hai?`
+            : 'Guarantee available hai?',
           a: guaranteeEnabled
             ? `Eligible services par kaam mukammal hone ke baad ${guaranteeDays} din tak, agar wohi masla wapis aa jaye to aap re-visit claim kar sakte hain. Har service cover nahi hoti — booking par saaf likha hota hai ke guarantee laagu hai ya nahi. Har claim ka jaiza ops team karti hai.`
             : 'Guarantee program is waqt band hai. Kaam se mutmain na hon to aap booking par dispute khol sakte hain.',

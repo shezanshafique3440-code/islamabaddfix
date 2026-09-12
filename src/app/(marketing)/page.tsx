@@ -60,8 +60,8 @@ export default async function HomePage() {
               <span className="text-brand-700">Baqi hum sambhal lenge.</span>
             </h1>
             <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-600 sm:text-lg">
-              {city} mein trusted home &amp; business services — verified professionals,
-              transparent quotes aur easy booking.
+              {city} mein trusted home &amp; business services — verified professionals, transparent
+              quotes aur easy booking.
             </p>
 
             <div className="mt-7 max-w-xl">
@@ -248,7 +248,11 @@ export default async function HomePage() {
               Naye customers, digital profile, booking management aur earnings dashboard — mehngi
               marketing ke baghair.
             </p>
-            <ButtonLink href="/provider-signup" size="lg" className="mt-6 bg-white text-ink-950 hover:bg-ink-100">
+            <ButtonLink
+              href="/provider-signup"
+              size="lg"
+              className="mt-6 bg-white text-ink-950 hover:bg-ink-100"
+            >
               Join Islamabad Fix
             </ButtonLink>
           </div>
@@ -262,7 +266,12 @@ export default async function HomePage() {
               'Earnings dashboard',
             ].map((benefit) => (
               <li key={benefit} className="flex items-center gap-2.5 text-sm text-ink-200">
-                <svg viewBox="0 0 20 20" className="h-4 w-4 shrink-0 text-brand-400" fill="currentColor" aria-hidden="true">
+                <svg
+                  viewBox="0 0 20 20"
+                  className="h-4 w-4 shrink-0 text-brand-400"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
                   <path
                     fillRule="evenodd"
                     d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.7-9.3-1.4-1.4L9 10.6 7.7 9.3l-1.4 1.4 2.7 2.7 4.7-4.7Z"

@@ -12,7 +12,15 @@ import { StepProvider } from './StepProvider';
 import { StepConfirm } from './StepConfirm';
 import { StepDone } from './StepDone';
 import { WizardProgress } from './WizardProgress';
-import type { BookingDraft, WizardCatalogue, WizardConfig, WizardStep, ZoneOption, AddressOption, PaymentMethodOption } from './types';
+import type {
+  BookingDraft,
+  WizardCatalogue,
+  WizardConfig,
+  WizardStep,
+  ZoneOption,
+  AddressOption,
+  PaymentMethodOption,
+} from './types';
 
 /**
  * Customer booking wizard.
@@ -176,10 +184,14 @@ export function BookingWizard({
         ) : null}
       </div>
 
-      <WizardProgress steps={STEP_ORDER} current={step} onSelect={(target) => {
-        // Only allow jumping back to a step already passed.
-        if (STEP_ORDER.indexOf(target) < stepIndex) setStep(target);
-      }} />
+      <WizardProgress
+        steps={STEP_ORDER}
+        current={step}
+        onSelect={(target) => {
+          // Only allow jumping back to a step already passed.
+          if (STEP_ORDER.indexOf(target) < stepIndex) setStep(target);
+        }}
+      />
 
       <div className="mt-6">
         {step === 'intake' ? (

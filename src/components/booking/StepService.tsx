@@ -38,17 +38,14 @@ export function StepService({
   );
 
   return (
-    <StepShell
-      title="Konsi service?"
-      description="Apni category chunein, phir us mein se service."
-    >
+    <StepShell title="Konsi service?" description="Apni category chunein, phir us mein se service.">
       <div className="grid gap-5 lg:grid-cols-[14rem_1fr]">
         {/* Categories */}
         <div>
           <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-500">
             Category
           </p>
-          <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-2 no-scrollbar lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0 lg:pb-0">
+          <div className="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1 pb-2 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0 lg:pb-0">
             {catalogue.map((entry) => {
               const active = entry.slug === category?.slug;
               return (
@@ -103,9 +100,7 @@ export function StepService({
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="text-sm font-semibold text-ink-900">{service.name}</span>
-                      {service.isEmergencyEnabled ? (
-                        <Badge tone="danger">Emergency</Badge>
-                      ) : null}
+                      {service.isEmergencyEnabled ? <Badge tone="danger">Emergency</Badge> : null}
                     </div>
                     {service.description ? (
                       <p className="mt-0.5 text-xs leading-relaxed text-ink-500">

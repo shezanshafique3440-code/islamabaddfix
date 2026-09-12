@@ -6,7 +6,10 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { MarkAllRead } from '@/components/account/MarkAllRead';
 import { formatRelative, cn } from '@/lib/utils';
 
-export const metadata: Metadata = { title: 'Notifications', robots: { index: false, follow: false } };
+export const metadata: Metadata = {
+  title: 'Notifications',
+  robots: { index: false, follow: false },
+};
 
 export default async function ProviderNotificationsPage() {
   const ctx = await requirePageRole(['PROVIDER'], '/provider/notifications');

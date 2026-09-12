@@ -195,9 +195,7 @@ export function OpsMap({
                       </li>
                     ))}
                     {entry.bookings.length > 6 ? (
-                      <li className="text-xs text-ink-500">
-                        +{entry.bookings.length - 6} aur
-                      </li>
+                      <li className="text-xs text-ink-500">+{entry.bookings.length - 6} aur</li>
                     ) : null}
                   </ul>
                 ) : (
@@ -244,7 +242,9 @@ export function OpsMap({
       )}
 
       <div className="rounded-xl bg-ink-50 p-4">
-        <p className="text-xs font-semibold uppercase tracking-wide text-ink-500">Location legend</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-ink-500">
+          Location legend
+        </p>
         <ul className="mt-2 flex flex-wrap gap-x-5 gap-y-1.5 text-xs text-ink-600">
           <li className="flex items-center gap-1.5">
             <LocationDot status="live" /> Live (30 min ke andar ping)

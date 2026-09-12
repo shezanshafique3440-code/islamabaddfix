@@ -102,7 +102,7 @@ export function BookingDetailView({
 
       {/* -------------------------------------------------- pending quote CTA */}
       {pendingQuote ? (
-        <section className="rounded-2xl border-2 border-warn-300 bg-warn-50 p-5">
+        <section className="border-warn-300 rounded-2xl border-2 bg-warn-50 p-5">
           <h2 className="text-title text-ink-950">
             {pendingQuote.isAdditional ? 'Extra charges ki approval chahiye' : 'Quote aa gaya'}
           </h2>
@@ -264,9 +264,7 @@ export function BookingDetailView({
                   count={booking.provider.ratingCount}
                   size="sm"
                 />
-                <span className="text-xs text-ink-500">
-                  {booking.provider.completedJobs} jobs
-                </span>
+                <span className="text-xs text-ink-500">{booking.provider.completedJobs} jobs</span>
                 {booking.provider.yearsExperience > 0 ? (
                   <span className="text-xs text-ink-500">
                     {booking.provider.yearsExperience} saal
@@ -315,9 +313,7 @@ export function BookingDetailView({
               {booking.pricing.emergencyFeePaisa > 0 ? (
                 <div className="flex justify-between gap-3">
                   <dt className="text-ink-600">Emergency fee</dt>
-                  <dd className="text-ink-800">
-                    {formatPaisa(booking.pricing.emergencyFeePaisa)}
-                  </dd>
+                  <dd className="text-ink-800">{formatPaisa(booking.pricing.emergencyFeePaisa)}</dd>
                 </div>
               ) : null}
               {booking.pricing.discountPaisa > 0 ? (
@@ -325,9 +321,7 @@ export function BookingDetailView({
                   <dt className="text-ink-600">
                     Discount {booking.pricing.promoCode ? `(${booking.pricing.promoCode})` : ''}
                   </dt>
-                  <dd className="text-brand-700">
-                    −{formatPaisa(booking.pricing.discountPaisa)}
-                  </dd>
+                  <dd className="text-brand-700">−{formatPaisa(booking.pricing.discountPaisa)}</dd>
                 </div>
               ) : null}
               <div className="flex justify-between gap-3 border-t border-ink-200 pt-2">
@@ -461,10 +455,8 @@ export function BookingDetailView({
             <>
               <p className="mt-1.5 text-sm text-brand-900/85">
                 Guarantee{' '}
-                {booking.guarantee.expiresAt
-                  ? formatDateTime(booking.guarantee.expiresAt)
-                  : ''}{' '}
-                tak active hai. Wohi masla wapis aaye to re-visit request karein.
+                {booking.guarantee.expiresAt ? formatDateTime(booking.guarantee.expiresAt) : ''} tak
+                active hai. Wohi masla wapis aaye to re-visit request karein.
               </p>
               {booking.guarantee.claims.length === 0 ? (
                 <Button variant="outline" className="mt-3" onClick={() => setDialog('guarantee')}>
@@ -528,7 +520,10 @@ export function BookingDetailView({
         <ol className="mt-3 space-y-3">
           {booking.timeline.map((entry) => (
             <li key={entry.id} className="flex gap-3">
-              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-ink-300" aria-hidden="true" />
+              <span
+                className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-ink-300"
+                aria-hidden="true"
+              />
               <div className="min-w-0">
                 <p className="text-sm font-medium text-ink-900">{entry.labelUr}</p>
                 {entry.reason ? <p className="text-xs text-ink-500">{entry.reason}</p> : null}
@@ -557,9 +552,7 @@ export function BookingDetailView({
         {reschedule ? (
           <RescheduleDialog
             bookingId={booking.id}
-            current={
-              booking.scheduledFor ? new Date(booking.scheduledFor).toISOString() : null
-            }
+            current={booking.scheduledFor ? new Date(booking.scheduledFor).toISOString() : null}
             remaining={reschedule.remaining}
             minLeadMinutes={reschedule.minLeadMinutes}
             maxLeadDays={reschedule.maxLeadDays}
@@ -770,9 +763,7 @@ function ReviewDialog({
                 await api.post(`/api/bookings/${bookingId}/review`, {
                   rating,
                   comment: comment.trim() || undefined,
-                  ...Object.fromEntries(
-                    Object.entries(scores).filter(([, value]) => value > 0),
-                  ),
+                  ...Object.fromEntries(Object.entries(scores).filter(([, value]) => value > 0)),
                 });
                 toast({ tone: 'success', title: 'Review ke liye shukriya!' });
                 onClose();

@@ -15,9 +15,7 @@ export const GET = route(async () => {
   });
   const coverageByZone = new Map(coverage.map((row) => [row.zoneId, row._count._all]));
 
-  return ok(
-    zones.map((zone) => ({ ...zone, providerCount: coverageByZone.get(zone.id) ?? 0 })),
-  );
+  return ok(zones.map((zone) => ({ ...zone, providerCount: coverageByZone.get(zone.id) ?? 0 })));
 });
 
 export const POST = route(async (request) => {

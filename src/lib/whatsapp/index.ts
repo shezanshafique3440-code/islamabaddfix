@@ -65,7 +65,8 @@ export function verifySubscription(params: URLSearchParams): { ok: boolean; chal
 
 // -------------------------------------------------------------- state machine
 
-export type IntakeStep = 'greeting' | 'service' | 'location' | 'description' | 'time' | 'confirm' | 'done';
+export type IntakeStep =
+  'greeting' | 'service' | 'location' | 'description' | 'time' | 'confirm' | 'done';
 
 export interface WhatsappIntakeState {
   step: IntakeStep;
@@ -119,8 +120,10 @@ export async function handleInboundMessage(message: InboundMessage): Promise<Int
     update: {},
   });
 
-  const state: WhatsappIntakeState =
-    (conversation.intakeState as WhatsappIntakeState | null) ?? { step: 'greeting', turns: 0 };
+  const state: WhatsappIntakeState = (conversation.intakeState as WhatsappIntakeState | null) ?? {
+    step: 'greeting',
+    turns: 0,
+  };
 
   await prisma.message.create({
     data: {
@@ -149,14 +152,12 @@ export async function handleInboundMessage(message: InboundMessage): Promise<Int
   return next;
 }
 
-async function advance(
-  state: WhatsappIntakeState,
-  text: string,
-): Promise<IntakeReply> {
+async function advance(state: WhatsappIntakeState, text: string): Promise<IntakeReply> {
   const turns = state.turns + 1;
   if (turns > MAX_TURNS) {
     return {
-      text: 'Yeh baat cheet lambi ho gayi hai. Behtar hai app par jaa kar booking mukammal karein: ' +
+      text:
+        'Yeh baat cheet lambi ho gayi hai. Behtar hai app par jaa kar booking mukammal karein: ' +
         `${env.NEXT_PUBLIC_APP_URL}/book`,
       state: { ...state, step: 'done', turns },
     };
@@ -242,8 +243,7 @@ async function advance(
 
     case 'description': {
       return {
-        text:
-          'Shukriya. Aap ko technician kab chahiye? (misal: "aaj shaam 5 baje", "kal subah", ya "jitni jaldi ho sake")',
+        text: 'Shukriya. Aap ko technician kab chahiye? (misal: "aaj shaam 5 baje", "kal subah", ya "jitni jaldi ho sake")',
         state: {
           ...state,
           step: 'time',
@@ -264,7 +264,13 @@ async function advance(
           'Ab is link par jaa kar booking confirm karein aur verified technicians dekhein — ' +
           'security ke liye final booking app hi se hoti hai:\n' +
           draft.url,
-        state: { ...state, step: 'done', preferredTime: trimmed, draftReference: draft.reference, turns },
+        state: {
+          ...state,
+          step: 'done',
+          preferredTime: trimmed,
+          draftReference: draft.reference,
+          turns,
+        },
         draftUrl: draft.url,
       };
     }
@@ -330,7 +336,10 @@ export async function sendWhatsappText(
       },
     );
     if (!response.ok) {
-      return { sent: false, reason: `WhatsApp ${response.status}: ${(await response.text()).slice(0, 200)}` };
+      return {
+        sent: false,
+        reason: `WhatsApp ${response.status}: ${(await response.text()).slice(0, 200)}`,
+      };
     }
     return { sent: true };
   } catch (error) {

@@ -165,7 +165,10 @@ export async function sendBookingMessage(params: {
     throw new AppError('VALIDATION_ERROR', 'Message khali nahi ho sakta.');
   }
   if (body.length > MAX_BODY) {
-    throw new AppError('VALIDATION_ERROR', `Message ${MAX_BODY} characters se lamba nahi ho sakta.`);
+    throw new AppError(
+      'VALIDATION_ERROR',
+      `Message ${MAX_BODY} characters se lamba nahi ho sakta.`,
+    );
   }
 
   const booking = await loadBooking(params.bookingId);

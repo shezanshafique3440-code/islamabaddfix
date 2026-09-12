@@ -68,9 +68,7 @@ export function StepConfirm({
   const [error, setError] = useState<string | null>(null);
 
   const zoneName =
-    address?.zoneName ??
-    zones.find((zone) => zone.id === draft.newAddress?.zoneId)?.name ??
-    null;
+    address?.zoneName ?? zones.find((zone) => zone.id === draft.newAddress?.zoneId)?.name ?? null;
 
   const guaranteeApplies = service?.guaranteeEligible ?? false;
 
@@ -120,8 +118,7 @@ export function StepConfirm({
       });
 
       const meta = result.meta as
-        | { providersNotified?: number; awaitingManualAssignment?: boolean }
-        | undefined;
+        { providersNotified?: number; awaitingManualAssignment?: boolean } | undefined;
 
       toast({ tone: 'success', title: `Booking confirm — ${result.data.reference}` });
       onCreated({
@@ -144,7 +141,10 @@ export function StepConfirm({
   }
 
   return (
-    <StepShell title="Booking review karein" description="Sab theek lag raha hai? Phir confirm karein.">
+    <StepShell
+      title="Booking review karein"
+      description="Sab theek lag raha hai? Phir confirm karein."
+    >
       <div className="space-y-5">
         <dl className="divide-y divide-ink-200 rounded-xl border border-ink-200">
           <Row label="Service">
@@ -225,9 +225,7 @@ export function StepConfirm({
                   checked={draft.paymentMethod === method.method}
                   onSelect={() => patch({ paymentMethod: method.method })}
                 >
-                  <span className="block text-sm font-semibold text-ink-900">
-                    {method.labelUr}
-                  </span>
+                  <span className="block text-sm font-semibold text-ink-900">{method.labelUr}</span>
                   <span className="mt-0.5 block text-xs text-ink-600">{method.description}</span>
                 </RadioCard>
               ))}
@@ -257,16 +255,14 @@ export function StepConfirm({
             {draft.isEmergency ? (
               <div className="flex items-center justify-between gap-3">
                 <dt className="text-ink-600">Emergency fee</dt>
-                <dd className="text-ink-800">
-                  {formatPaisa(config.defaultEmergencyFeePaisa)} se
-                </dd>
+                <dd className="text-ink-800">{formatPaisa(config.defaultEmergencyFeePaisa)} se</dd>
               </div>
             ) : null}
           </dl>
           <p className="mt-3 border-t border-ink-200 pt-2.5 text-xs leading-relaxed text-ink-600">
             Ab kuch charge nahi hoga. Technician muaina karke likhit quote bhejega — inspection,
-            labour aur parts alag alag. Aap approve karenge tab kaam shuru hoga, aur aapki ijazat
-            ke baghair koi extra charge nahi lagega.
+            labour aur parts alag alag. Aap approve karenge tab kaam shuru hoga, aur aapki ijazat ke
+            baghair koi extra charge nahi lagega.
           </p>
         </div>
 

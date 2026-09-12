@@ -62,9 +62,7 @@ export function IntegrationStatusList({
           label="Maps / geocoding"
           configured={maps.configured}
           note={
-            maps.configured
-              ? `Provider: ${maps.provider}`
-              : 'Manual address entry chal rahi hai'
+            maps.configured ? `Provider: ${maps.provider}` : 'Manual address entry chal rahi hai'
           }
         />
       </Panel>

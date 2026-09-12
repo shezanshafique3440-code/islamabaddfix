@@ -155,7 +155,13 @@ export async function getNotificationPreferences(userId: string) {
 
 export async function setNotificationPreferences(
   userId: string,
-  input: Partial<{ email: boolean; sms: boolean; whatsapp: boolean; push: boolean; marketing: boolean }>,
+  input: Partial<{
+    email: boolean;
+    sms: boolean;
+    whatsapp: boolean;
+    push: boolean;
+    marketing: boolean;
+  }>,
 ) {
   await prisma.notificationPreference.upsert({
     where: { userId },

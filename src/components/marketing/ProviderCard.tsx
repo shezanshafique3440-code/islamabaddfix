@@ -78,9 +78,7 @@ export function ProviderCard({
 
           <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
             <Rating value={provider.ratingAverage} count={provider.ratingCount} size="sm" />
-            <span className="text-xs text-ink-500">
-              {provider.completedJobs} jobs mukammal
-            </span>
+            <span className="text-xs text-ink-500">{provider.completedJobs} jobs mukammal</span>
             {provider.yearsExperience > 0 ? (
               <span className="text-xs text-ink-500">{provider.yearsExperience} saal tajurba</span>
             ) : null}
@@ -116,10 +114,7 @@ export function ProviderCard({
         ) : (
           <Stat label="Jawab" value="Naya" />
         )}
-        <Stat
-          label="Emergency"
-          value={provider.emergencyAvailable ? 'Available' : 'Nahi'}
-        />
+        <Stat label="Emergency" value={provider.emergencyAvailable ? 'Available' : 'Nahi'} />
       </dl>
 
       {provider.emergencyAvailable && provider.emergencyFeePaisa > 0 ? (
@@ -146,9 +141,7 @@ function Stat({
 }) {
   return (
     <div>
-      <dt className="text-[0.6875rem] font-medium uppercase tracking-wide text-ink-400">
-        {label}
-      </dt>
+      <dt className="text-[0.6875rem] font-medium uppercase tracking-wide text-ink-400">{label}</dt>
       <dd
         className={cn(
           'mt-0.5 truncate text-sm',

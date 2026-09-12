@@ -86,8 +86,7 @@ async function send<T>(
     method,
     headers: finalHeaders,
     credentials: 'same-origin',
-    body:
-      body === undefined ? undefined : isFormData ? (body as FormData) : JSON.stringify(body),
+    body: body === undefined ? undefined : isFormData ? (body as FormData) : JSON.stringify(body),
   });
 
   // An expired access token: refresh once, then replay the original request.

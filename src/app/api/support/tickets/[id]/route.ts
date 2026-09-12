@@ -98,7 +98,8 @@ export const POST = route(async (request, { params }: Params) => {
 /** Staff-only: assign and change status. */
 export const PATCH = route(async (request, { params }: Params) => {
   const ctx = await requireAuth();
-  if (!isStaff(ctx.role)) throw new AppError('FORBIDDEN', 'Sirf support team yeh change kar sakti hai.');
+  if (!isStaff(ctx.role))
+    throw new AppError('FORBIDDEN', 'Sirf support team yeh change kar sakti hai.');
   const { id } = await params;
   const input = await parseJson(request, updateTicketSchema);
 

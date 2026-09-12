@@ -29,7 +29,11 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     title,
     description,
     alternates: { canonical: `/services/detail/${service.slug}` },
-    openGraph: { title, description, url: `${env.NEXT_PUBLIC_APP_URL}/services/detail/${service.slug}` },
+    openGraph: {
+      title,
+      description,
+      url: `${env.NEXT_PUBLIC_APP_URL}/services/detail/${service.slug}`,
+    },
   };
 }
 

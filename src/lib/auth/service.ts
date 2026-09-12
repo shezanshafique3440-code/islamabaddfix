@@ -5,12 +5,7 @@ import { env } from '../env';
 import { AppError } from '../errors';
 import { AUDIT_ACTIONS, recordAudit } from '../audit';
 import { dummyVerify, hashPassword, verifyPassword } from './password';
-import {
-  generateRefreshToken,
-  hashRefreshToken,
-  newFamilyId,
-  signAccessToken,
-} from './tokens';
+import { generateRefreshToken, hashRefreshToken, newFamilyId, signAccessToken } from './tokens';
 
 export interface RequestMeta {
   ipAddress?: string | null;
@@ -185,9 +180,7 @@ export async function loginUser(
       where: { id: user.id },
       data: {
         failedLoginAttempts: shouldLock ? 0 : attempts,
-        lockedUntil: shouldLock
-          ? new Date(Date.now() + env.AUTH_LOCKOUT_MINUTES * 60_000)
-          : null,
+        lockedUntil: shouldLock ? new Date(Date.now() + env.AUTH_LOCKOUT_MINUTES * 60_000) : null,
       },
     });
     await recordAudit({

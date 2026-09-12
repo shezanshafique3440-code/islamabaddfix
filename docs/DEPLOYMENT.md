@@ -7,13 +7,13 @@ monitoring, and how to get back if a release goes wrong.
 
 ## 1. What you need
 
-| | Minimum | Comfortable |
-|---|---|---|
-| Node | 20.11 | 22 LTS |
-| PostgreSQL | 16 | 16, managed, with PITR |
-| Memory | 1 GB | 2 GB per app instance |
-| Object storage | local disk on a persistent volume | S3 or MinIO |
-| TLS | required — the session cookies are `Secure` and `__Host-` prefixed | |
+|                | Minimum                                                            | Comfortable            |
+| -------------- | ------------------------------------------------------------------ | ---------------------- |
+| Node           | 20.11                                                              | 22 LTS                 |
+| PostgreSQL     | 16                                                                 | 16, managed, with PITR |
+| Memory         | 1 GB                                                               | 2 GB per app instance  |
+| Object storage | local disk on a persistent volume                                  | S3 or MinIO            |
+| TLS            | required — the session cookies are `Secure` and `__Host-` prefixed |                        |
 
 The app is stateless apart from uploaded files, so it scales horizontally. Rate
 limiting is Postgres-backed precisely so it keeps working across instances.
@@ -105,7 +105,7 @@ ALLOW_DEMO_SEED=false npm run db:seed
 With `ALLOW_DEMO_SEED=false` the seed writes only the reference catalogue
 (8 categories, 42 services, 25 zones with centroids) and the administrator
 account from `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD`. Set those to real
-values *before* seeding, and change the password on first login.
+values _before_ seeding, and change the password on first login.
 
 The seed is idempotent and safe to re-run; it never resets the admin password on
 a re-run.
@@ -199,12 +199,12 @@ does not survive a restart.
 
 ### What to keep
 
-| Data | Retention | Why |
-|---|---|---|
-| Database dumps | 30 days rolling + 12 monthly | Recovery, and financial history |
-| Uploaded files | Same as the database, versioned | Evidence for disputes |
-| Audit log | 24 months minimum | It is the record of who did what |
-| Application logs | 30 days | Incident investigation |
+| Data             | Retention                       | Why                              |
+| ---------------- | ------------------------------- | -------------------------------- |
+| Database dumps   | 30 days rolling + 12 monthly    | Recovery, and financial history  |
+| Uploaded files   | Same as the database, versioned | Evidence for disputes            |
+| Audit log        | 24 months minimum               | It is the record of who did what |
+| Application logs | 30 days                         | Incident investigation           |
 
 Provider identity documents are personal data. Encrypt them at rest and in
 backup, restrict who can decrypt, and delete them when the retention period the
@@ -241,9 +241,18 @@ Better Stack — the choice matters less than the shipping.
 `GET /api/health` returns:
 
 ```json
-{ "status": "ok", "database": "up", "latencyMs": 3,
-  "integrations": { "ai": false, "maps": false, "email": false,
-                    "onlinePayments": false, "storage": "local" } }
+{
+  "status": "ok",
+  "database": "up",
+  "latencyMs": 3,
+  "integrations": {
+    "ai": false,
+    "maps": false,
+    "email": false,
+    "onlinePayments": false,
+    "storage": "local"
+  }
+}
 ```
 
 `status` is `ok` only when the database actually answered. Point your uptime
@@ -252,16 +261,16 @@ few hundred as a database problem.
 
 ### What to alert on
 
-| Signal | Threshold | Means |
-|---|---|---|
-| `/api/health` failing | 2 consecutive checks | The app or its database is down |
-| 5xx rate | > 1% over 5 minutes | Something broke in the last release |
-| p95 response time | > 2s | Database or a slow integration |
-| Login failures | sudden spike from few IPs | Credential stuffing |
-| `FILE_ACCESS_DENIED` audit rows | any cluster | Somebody probing for other people's documents |
-| Bookings with `awaitingManualAssignment` | growing | Not enough providers in a zone — an ops problem, not a bug |
-| Failed payment webhooks | any | Signature mismatch or a gateway change |
-| Disk on the storage volume | > 80% | Uploads will start failing |
+| Signal                                   | Threshold                 | Means                                                      |
+| ---------------------------------------- | ------------------------- | ---------------------------------------------------------- |
+| `/api/health` failing                    | 2 consecutive checks      | The app or its database is down                            |
+| 5xx rate                                 | > 1% over 5 minutes       | Something broke in the last release                        |
+| p95 response time                        | > 2s                      | Database or a slow integration                             |
+| Login failures                           | sudden spike from few IPs | Credential stuffing                                        |
+| `FILE_ACCESS_DENIED` audit rows          | any cluster               | Somebody probing for other people's documents              |
+| Bookings with `awaitingManualAssignment` | growing                   | Not enough providers in a zone — an ops problem, not a bug |
+| Failed payment webhooks                  | any                       | Signature mismatch or a gateway change                     |
+| Disk on the storage volume               | > 80%                     | Uploads will start failing                                 |
 
 The last two rows matter as much as the first: this system is honest about
 degradation, which means degradation shows up as data rather than as a crash.
@@ -338,16 +347,16 @@ Things the application cannot do for itself:
 Every integration is off until credentials exist, and turning one on is a
 configuration change and a restart — no code change, no migration.
 
-| Integration | Set | Effect |
-|---|---|---|
-| AI assistant | `AI_PROVIDER=anthropic\|openai`, `AI_API_KEY`, `AI_MODEL` | Intake stops saying "Rule-based" and starts saying "AI" |
-| Maps | `MAPS_PROVIDER`, `MAPS_API_KEY`, `NEXT_PUBLIC_MAPS_*` | Geocoding, map tiles and real distances; needs a rebuild for the public variables |
-| Email | `EMAIL_PROVIDER`, `EMAIL_API_KEY`, `EMAIL_FROM` | Notifications go out by email as well as in-app |
-| SMS | `SMS_PROVIDER`, `SMS_API_KEY`, `SMS_SENDER_ID` | SMS channel |
-| WhatsApp | `WHATSAPP_*` | Inbound booking by WhatsApp |
-| Voice | `VAPI_API_KEY`, `VAPI_WEBHOOK_SECRET` | Voice agent intake |
-| Payments | `PAYMENT_GATEWAY`, `PAYMENT_API_KEY`, `PAYMENT_WEBHOOK_SECRET` | Online payment becomes selectable |
-| S3 storage | `STORAGE_DRIVER=s3`, `STORAGE_*` | Uploads go to object storage |
+| Integration  | Set                                                            | Effect                                                                            |
+| ------------ | -------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| AI assistant | `AI_PROVIDER=anthropic\|openai`, `AI_API_KEY`, `AI_MODEL`      | Intake stops saying "Rule-based" and starts saying "AI"                           |
+| Maps         | `MAPS_PROVIDER`, `MAPS_API_KEY`, `NEXT_PUBLIC_MAPS_*`          | Geocoding, map tiles and real distances; needs a rebuild for the public variables |
+| Email        | `EMAIL_PROVIDER`, `EMAIL_API_KEY`, `EMAIL_FROM`                | Notifications go out by email as well as in-app                                   |
+| SMS          | `SMS_PROVIDER`, `SMS_API_KEY`, `SMS_SENDER_ID`                 | SMS channel                                                                       |
+| WhatsApp     | `WHATSAPP_*`                                                   | Inbound booking by WhatsApp                                                       |
+| Voice        | `VAPI_API_KEY`, `VAPI_WEBHOOK_SECRET`                          | Voice agent intake                                                                |
+| Payments     | `PAYMENT_GATEWAY`, `PAYMENT_API_KEY`, `PAYMENT_WEBHOOK_SECRET` | Online payment becomes selectable                                                 |
+| S3 storage   | `STORAGE_DRIVER=s3`, `STORAGE_*`                               | Uploads go to object storage                                                      |
 
 After adding one, check `/api/health` and the admin integrations panel: both
 report what is actually live, and neither will claim an integration works

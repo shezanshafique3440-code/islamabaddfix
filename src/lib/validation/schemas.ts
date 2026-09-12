@@ -331,11 +331,7 @@ export const decideGuaranteeClaimSchema = z.object({
 // ------------------------------------------------------------------- providers
 
 export const providerOnboardingSchema = z.object({
-  businessName: z
-    .string()
-    .trim()
-    .min(3, 'Business ya apna naam likhein.')
-    .max(120),
+  businessName: z.string().trim().min(3, 'Business ya apna naam likhein.').max(120),
   contactPhone: phoneSchema,
   headline: z.string().trim().max(140).optional(),
   description: z.string().trim().max(2000).optional(),

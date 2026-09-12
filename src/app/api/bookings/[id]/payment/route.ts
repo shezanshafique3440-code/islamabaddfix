@@ -95,13 +95,9 @@ export const PATCH = route(async (request, { params }: Params) => {
   });
   if (!payment) throw new AppError('NOT_FOUND', 'Payment record nahi mila.');
 
-  const canSettle =
-    isStaff(ctx.role) || (payment.method === 'CASH' && (isCustomer || isProvider));
+  const canSettle = isStaff(ctx.role) || (payment.method === 'CASH' && (isCustomer || isProvider));
   if (!canSettle) {
-    throw new AppError(
-      'FORBIDDEN',
-      'Yeh payment sirf ops team confirm kar sakti hai.',
-    );
+    throw new AppError('FORBIDDEN', 'Yeh payment sirf ops team confirm kar sakti hai.');
   }
 
   const settled = await settlePayment({

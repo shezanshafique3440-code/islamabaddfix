@@ -27,10 +27,7 @@ export default async function ProviderJobsPage({
 
   const query = await searchParams;
   const view = (TABS.find((tab) => tab.key === query.view)?.key ?? 'active') as
-    | 'offers'
-    | 'active'
-    | 'completed'
-    | 'all';
+    'offers' | 'active' | 'completed' | 'all';
   const page = Number(query.page ?? 1) || 1;
 
   const offers = view === 'offers' ? await getProviderOffers(ctx.providerId) : [];
@@ -47,7 +44,7 @@ export default async function ProviderJobsPage({
     <div>
       <h1 className="text-display-sm text-ink-950">Meri jobs</h1>
 
-      <nav aria-label="Job filters" className="mt-5 -mx-1 overflow-x-auto px-1 no-scrollbar">
+      <nav aria-label="Job filters" className="no-scrollbar -mx-1 mt-5 overflow-x-auto px-1">
         <div className="flex gap-1.5">
           {TABS.map((tab) => (
             <Link

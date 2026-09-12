@@ -144,7 +144,9 @@ export function SettingsEditor({
                             <span
                               className={cn(
                                 'absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform',
-                                currentValue === true ? 'translate-x-[1.375rem]' : 'translate-x-0.5',
+                                currentValue === true
+                                  ? 'translate-x-[1.375rem]'
+                                  : 'translate-x-0.5',
                               )}
                             />
                           </button>

@@ -7,14 +7,14 @@ importantly — what it does **not** claim to do.
 
 ## 1. What is worth protecting
 
-| Asset | Why it matters here |
-|---|---|
+| Asset                                     | Why it matters here                                                                                               |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
 | Customer home addresses and phone numbers | People are letting a stranger into their house. A leak is a physical-safety problem, not a privacy inconvenience. |
-| Provider identity documents | CNIC scans and bank details. Unrecoverable if leaked. |
-| Booking and payment records | The financial history of the business. |
-| The commission calculation | If a client could influence it, the platform's revenue would be advisory. |
-| Session cookies | A stolen session is a stolen account. |
-| The audit log | The record of who decided what. Useless if it can be edited. |
+| Provider identity documents               | CNIC scans and bank details. Unrecoverable if leaked.                                                             |
+| Booking and payment records               | The financial history of the business.                                                                            |
+| The commission calculation                | If a client could influence it, the platform's revenue would be advisory.                                         |
+| Session cookies                           | A stolen session is a stolen account.                                                                             |
+| The audit log                             | The record of who decided what. Useless if it can be edited.                                                      |
 
 ---
 
@@ -53,7 +53,7 @@ Three layers, and the last one is the one that counts.
 
 1. **Page layouts** call `requirePageAuth` / `requirePageRole` in the server
    component, redirecting to `/login?next=…` or `/403`. These are server-side
-   and real, but they guard *navigation* — the API is what actually holds data.
+   and real, but they guard _navigation_ — the API is what actually holds data.
 2. **Route handlers** call `requireAuth`, `requireProvider`, `requireRole` or
    `requirePermission`. Nothing reaches a domain function without passing one.
 3. **Domain functions re-check ownership** against the database. `createBooking`
@@ -73,7 +73,7 @@ being able to change what the platform earns or who is an administrator.
 
 ## 4. Data exposure
 
-**Booking visibility is staged along the job.** A provider who has been *offered*
+**Booking visibility is staged along the job.** A provider who has been _offered_
 a job sees the zone and nothing else — no street, no coordinates, no phone
 number. Those are released the moment they accept, which is the moment they have
 committed to turning up. One function decides this (`projectBooking`), and

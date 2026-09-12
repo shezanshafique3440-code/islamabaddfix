@@ -22,14 +22,11 @@ export function NewTicketForm({ bookings }: { bookings: Array<{ id: string; labe
         setLoading(true);
         setErrors({});
         try {
-          const result = await api.post<{ id: string; reference: string }>(
-            '/api/support/tickets',
-            {
-              subject: form.subject,
-              description: form.description,
-              bookingId: form.bookingId || undefined,
-            },
-          );
+          const result = await api.post<{ id: string; reference: string }>('/api/support/tickets', {
+            subject: form.subject,
+            description: form.description,
+            bookingId: form.bookingId || undefined,
+          });
           toast({ tone: 'success', title: `Ticket khul gaya — ${result.reference}` });
           router.push(`/account/support/${result.id}`);
         } catch (error) {

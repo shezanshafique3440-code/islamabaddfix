@@ -76,9 +76,7 @@ export function validateUpload(
     );
   }
 
-  const extension = file.name.includes('.')
-    ? file.name.split('.').pop()!.toLowerCase()
-    : '';
+  const extension = file.name.includes('.') ? file.name.split('.').pop()!.toLowerCase() : '';
   const validExtensions = EXTENSIONS[declared] ?? [];
   if (!validExtensions.includes(extension)) {
     throw new AppError(
@@ -92,7 +90,8 @@ export function validateUpload(
 }
 
 function assertMagicBytes(buffer: Buffer, declared: string): void {
-  const isoBmff = declared === 'video/mp4' || declared === 'video/quicktime' || declared === 'image/heic';
+  const isoBmff =
+    declared === 'video/mp4' || declared === 'video/quicktime' || declared === 'image/heic';
   const expected = isoBmff ? 'iso-bmff' : declared;
   const signature = SIGNATURES.find((s) => s.mime === expected);
   // No signature on file for this type: the MIME + extension checks stand alone.

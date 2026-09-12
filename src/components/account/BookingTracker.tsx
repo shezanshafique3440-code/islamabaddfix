@@ -64,7 +64,12 @@ export function BookingTracker({
                 )}
               >
                 {done ? (
-                  <svg viewBox="0 0 12 12" className="h-3 w-3" fill="currentColor" aria-hidden="true">
+                  <svg
+                    viewBox="0 0 12 12"
+                    className="h-3 w-3"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
                     <path d="M4.6 8.4 2.2 6l-.9.9 3.3 3.3 6-6-.9-.9-5.1 5.1Z" />
                   </svg>
                 ) : (

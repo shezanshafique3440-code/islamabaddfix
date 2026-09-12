@@ -7,7 +7,10 @@ import { Badge } from '@/components/ui/Badge';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { formatDate, formatRelative } from '@/lib/utils';
 
-export const metadata: Metadata = { title: 'Guarantee claims', robots: { index: false, follow: false } };
+export const metadata: Metadata = {
+  title: 'Guarantee claims',
+  robots: { index: false, follow: false },
+};
 
 const OPEN = ['SUBMITTED', 'UNDER_REVIEW', 'APPROVED', 'REVISIT_SCHEDULED'] as const;
 
@@ -95,9 +98,8 @@ export default async function AdminGuaranteesPage({
                       {claim.booking.provider ? ` · ${claim.booking.provider.businessName}` : ''}
                     </p>
                     <p className="mt-0.5 text-xs text-ink-500">
-                      Kaam{' '}
-                      {claim.booking.completedAt ? formatDate(claim.booking.completedAt) : '—'} ko
-                      mukammal · Guarantee{' '}
+                      Kaam {claim.booking.completedAt ? formatDate(claim.booking.completedAt) : '—'}{' '}
+                      ko mukammal · Guarantee{' '}
                       {claim.booking.guaranteeExpiresAt
                         ? formatDate(claim.booking.guaranteeExpiresAt)
                         : '—'}{' '}
