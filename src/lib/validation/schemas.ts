@@ -89,6 +89,32 @@ export const updateProfileSchema = z.object({
   phone: phoneSchema.optional(),
 });
 
+// ------------------------------------------------------- verification flows
+
+export const forgotPasswordSchema = z.object({
+  email: emailSchema,
+});
+
+export const resetPasswordSchema = z.object({
+  token: z.string().min(20, 'Reset link adhoora hai.').max(400),
+  newPassword: passwordSchema,
+});
+
+export const verifyEmailSchema = z.object({
+  token: z.string().min(20, 'Verification link adhoora hai.').max(400),
+});
+
+export const requestPhoneCodeSchema = z.object({
+  phone: phoneSchema.optional(),
+});
+
+export const confirmPhoneCodeSchema = z.object({
+  code: z
+    .string()
+    .trim()
+    .regex(/^\d{6}$/, 'Code chhe hindson ka hota hai.'),
+});
+
 // --------------------------------------------------------------------- address
 
 export const addressSchema = z.object({

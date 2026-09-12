@@ -38,6 +38,13 @@ export const AUDIT_ACTIONS = {
   LOGIN_SUCCEEDED: 'auth.login_succeeded',
   LOGIN_FAILED: 'auth.login_failed',
   TOKEN_REUSE_DETECTED: 'auth.token_reuse_detected',
+  PASSWORD_RESET_REQUESTED: 'auth.password_reset_requested',
+  PASSWORD_RESET_COMPLETED: 'auth.password_reset_completed',
+  EMAIL_VERIFIED: 'auth.email_verified',
+  PHONE_VERIFIED: 'auth.phone_verified',
+  ACCOUNT_DELETED: 'user.account_deleted',
+  DATA_EXPORTED: 'user.data_exported',
+  BOOKING_RESCHEDULED: 'booking.rescheduled',
 } as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[keyof typeof AUDIT_ACTIONS];

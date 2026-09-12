@@ -30,6 +30,12 @@ export const NOTIFICATION_EVENTS = {
   PROVIDER_REJECTED: 'provider.rejected',
   PROVIDER_SUSPENDED: 'provider.suspended',
   SUPPORT_TICKET_UPDATE: 'support.update',
+  PASSWORD_RESET: 'auth.password_reset',
+  PASSWORD_CHANGED: 'auth.password_changed',
+  EMAIL_VERIFICATION: 'auth.email_verification',
+  PHONE_VERIFICATION: 'auth.phone_verification',
+  BOOKING_RESCHEDULED: 'booking.rescheduled',
+  NEW_MESSAGE: 'booking.message',
 } as const;
 
 export type NotificationEvent = (typeof NOTIFICATION_EVENTS)[keyof typeof NOTIFICATION_EVENTS];

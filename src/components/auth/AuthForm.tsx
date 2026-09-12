@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { api, ApiError } from '@/lib/client/api';
 import { Button } from '@/components/ui/Button';
 import { Checkbox, TextInput } from '@/components/ui/Field';
@@ -17,7 +17,6 @@ interface AuthResult {
 type Errors = Record<string, string>;
 
 export function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const [errors, setErrors] = useState<Errors>({});
@@ -88,13 +87,12 @@ export function LoginForm() {
           Register karein
         </Link>
       </p>
-      <button
-        type="button"
-        onClick={() => router.push('/contact')}
-        className="w-full text-center text-sm text-ink-500 hover:text-ink-800 hover:underline"
+      <Link
+        href="/forgot-password"
+        className="block w-full text-center text-sm text-ink-500 hover:text-ink-800 hover:underline"
       >
-        Password bhool gaye? Support se rabta karein
-      </button>
+        Password bhool gaye?
+      </Link>
     </form>
   );
 }

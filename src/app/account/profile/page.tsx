@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { requirePageAuth } from '@/lib/auth/session';
 import { prisma } from '@/lib/db';
 import { ProfileForm } from '@/components/account/ProfileForm';
+import { VerificationPanel } from '@/components/account/VerificationPanel';
 import { formatDate } from '@/lib/utils';
 import { formatPaisa } from '@/lib/money';
 
@@ -41,6 +42,22 @@ export default async function ProfilePage() {
         <div className="mt-4">
           <ProfileForm
             initial={{ fullName: user.fullName, phone: user.phone ?? '', email: user.email }}
+            emailVerified={user.emailVerifiedAt !== null}
+            phoneVerified={user.phoneVerifiedAt !== null}
+          />
+        </div>
+      </section>
+
+      <section className="mt-5 rounded-2xl border border-ink-200 bg-white p-5">
+        <h2 className="text-[0.9375rem] font-semibold text-ink-900">Verification</h2>
+        <p className="mt-1 text-sm text-ink-600">
+          Verified contact se booking updates pohonchti hain aur technician aap tak rabta kar sakta
+          hai.
+        </p>
+        <div className="mt-4">
+          <VerificationPanel
+            email={user.email}
+            phone={user.phone}
             emailVerified={user.emailVerifiedAt !== null}
             phoneVerified={user.phoneVerifiedAt !== null}
           />

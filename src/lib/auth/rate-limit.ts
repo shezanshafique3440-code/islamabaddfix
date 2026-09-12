@@ -24,6 +24,13 @@ export const RATE_LIMITS = {
   // Changing a password requires the current one, so this endpoint is a
   // credential-guessing surface for anyone holding a stolen session.
   passwordChange: { name: 'auth:password', limit: 5, windowSeconds: 900 },
+  // Mailing a reset link to somebody else's address is a nuisance attack, so
+  // this is limited by address as well as by caller.
+  passwordReset: { name: 'auth:password_reset', limit: 5, windowSeconds: 900 },
+  verification: { name: 'auth:verification', limit: 6, windowSeconds: 900 },
+  // Guessing a six-digit code: the token's own attempt counter is the real
+  // ceiling, this stops somebody cycling through fresh codes to get more.
+  otpAttempt: { name: 'auth:otp', limit: 12, windowSeconds: 900 },
   bookingCreate: { name: 'booking:create', limit: 12, windowSeconds: 3600 },
   upload: { name: 'file:upload', limit: 40, windowSeconds: 3600 },
   aiIntake: { name: 'ai:intake', limit: 30, windowSeconds: 3600 },
