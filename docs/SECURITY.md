@@ -40,6 +40,35 @@ Both cookies are `httpOnly`, `SameSite=Lax`, and in production `Secure` with the
 `__Host-` prefix — which browsers only honour over HTTPS, so plain HTTP is
 broken rather than quietly insecure.
 
+**One-time secrets** — password reset, email confirmation, phone OTP and the
+two-factor challenge — are stored only as SHA-256, are single-use, expire in
+minutes to a day depending on the kind, and are superseded when a new one is
+issued, so tapping "resend" five times leaves one working secret rather than
+five. Phone codes carry an attempt counter and burn after five wrong guesses,
+because a six-digit secret does not survive unlimited attempts. Forgot-password
+answers identically for a registered address and an unknown one; anything else
+turns it into an account-existence oracle. Completing a reset revokes every
+session and clears any lockout.
+
+**A second factor** is available on staff accounts, which can approve providers,
+change the commission and issue refunds. TOTP per RFC 6238, implemented in this
+repository and checked against the RFC's own published test vectors. The secret
+is encrypted at rest with a key derived from `AUTH_SECRET` — it cannot be
+hashed, since it is the input to the calculation, so a stolen dump alone yields
+nothing usable. A spent 30-second step is refused, so a code read over somebody's
+shoulder is dead once the real user has finished with it. Ten single-use recovery
+codes, stored hashed and shown once, keep the factor from becoming a way to lock
+an administrator out of their own platform.
+
+A correct password on an enrolled account buys a five-minute, single-use
+challenge token and **nothing else** — no half-authorised cookie is ever set.
+That is why `loginUser` is split into a credential check and a session issue.
+
+It is opt-in per account rather than forced: mandating it before anybody has an
+authenticator app set up locks the first administrator out on day one. Making it
+available and documented is the product's job; making it mandatory is a policy
+decision for whoever runs the deployment.
+
 **CSRF** uses double-submit: a non-`httpOnly` token cookie must be echoed in the
 `x-csrf-token` header on every unsafe request, alongside an origin allow-list.
 Webhooks are exempt because they cannot carry a cookie; they authenticate by
@@ -89,6 +118,24 @@ customer sees neither.
 
 **Bank details** are stored as a SHA-256 hash plus the last four digits. The
 full IBAN is never written to the database.
+
+**Closing an account anonymises it.** Name, email, phone, addresses, uploaded
+media and a provider's bank details and last known position all go; booking and
+payment records stay, because the other party to the transaction has their own
+claim on that history and the accounts have to balance. It requires the current
+password — a session left open on a shared phone must not be enough for something
+irreversible — and is refused for staff accounts, since an administrator closing
+their own could lock everybody out.
+
+**Data export is built from explicit selects**, never a wildcard dump. An export
+that silently grows a column is how a password hash ends up in somebody's
+downloads folder; there is a test for exactly that, and for one customer's export
+never containing another's data.
+
+**Booking messages** are visible to the customer, the _assigned_ provider and
+staff. A provider who has only been offered the job is not in the thread — the
+privacy staging exists so that somebody who has not committed to turning up
+cannot ask for the address, and a chat window would be a way around it.
 
 **Uploads are deny-by-default.** The storage root is not web-served; every
 private file goes through `/api/files/[id]`, which calls `canReadFile` — a
@@ -237,22 +284,28 @@ Stating this precisely is itself a safety property.
 
 Honest list, in rough order of how much they would matter:
 
-1. **CSP allows inline scripts** (§7). Nonce-based CSP is the fix.
-2. **No two-factor authentication.** Sessions rotate and lock out, but a stolen
-   password is a stolen account until it is changed.
-3. **No email or phone verification flow.** The `ProviderVerification` rows and
-   the badge logic exist and are enforced; the send-a-code round trip needs an
-   email or SMS provider, and is deliberately not faked in the meantime.
-4. **Rate limiting is per-instance-shared but not distributed-lock-safe.** Two
-   instances can each admit a request at the boundary of a window. It bounds
-   abuse; it is not a precise quota.
-5. **No automated dependency scanning in CI.** `npm audit` currently reports two
-   advisories, both in development-only tooling (`@vitest/mocker`, and
-   `deepmerge-ts` under the Prisma CLI). Neither ships in the production image.
-6. **Audit log is append-only by convention, not by grant.** A database role
-   with write access could edit it. Restricting that at the role level is a
-   deployment task.
+1. **CSP allows inline scripts** (§7). Nonce-based CSP is the fix, at the cost
+   of making every page dynamic.
+2. **Two-factor is opt-in and staff-only.** Enforcing it for every staff account
+   is a one-line policy change once the team has authenticator apps set up;
+   offering it to customers is a larger piece of work and lower value.
+3. **Rate limiting is shared but not distributed-lock-safe.** Two instances can
+   each admit a request at the boundary of a window. It bounds abuse; it is not
+   a precise quota.
+4. **Audit log is append-only by convention, not by grant.** A database role with
+   write access could edit it. Restricting that at the role level is a deployment
+   task.
+5. **Account closure anonymises rather than erases**, and the stored objects
+   behind soft-deleted files are swept separately rather than at the moment of
+   closure — deliberately, so a dispute opened the day before does not lose its
+   evidence mid-investigation. The sweep is not yet automated.
+6. **`npm audit` reports two advisories**, both in development-only tooling
+   (`@vitest/mocker`, and `deepmerge-ts` under the Prisma CLI). Neither ships in
+   the production image; CI audits production dependencies only, for that reason.
 7. **No WAF or bot management.** Rate limits are the only volumetric defence.
+8. **Rotating `AUTH_SECRET` invalidates enrolled second factors**, because the
+   encryption key is derived from it. The recovery codes exist for exactly this
+   kind of day, and it is called out in the deployment guide.
 
 ---
 

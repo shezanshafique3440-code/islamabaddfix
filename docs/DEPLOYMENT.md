@@ -35,8 +35,11 @@ all of them absent and says so on `/api/health` and in the admin panel.
 
 **`AUTH_SECRET`.** Rotating it invalidates every access token immediately;
 refresh tokens are opaque database rows and survive, so users are not signed out
-— they simply refresh once. Never commit it, never reuse the development value,
-and never share it between environments.
+— they simply refresh once. It **also** derives the key that encrypts enrolled
+two-factor secrets, so rotating it means every staff member has to re-enrol.
+Their recovery codes exist for exactly that day, but plan the rotation rather
+than discovering it. Never commit it, never reuse the development value, and
+never share it between environments.
 
 **`NEXT_PUBLIC_*` variables are compiled into the browser bundle.** They must be
 correct at build time, not just at runtime, and they must never hold a secret.
@@ -313,7 +316,8 @@ If a migration itself is the problem:
 
 ### A release checklist
 
-- [ ] `npm run verify` green (typecheck, lint, 255 tests)
+- [ ] CI green on the branch (typecheck, lint, format, tests, build, audit)
+- [ ] `npm run verify` green locally
 - [ ] `npm run build` succeeds
 - [ ] Migration reviewed by a second person, and backwards-compatible
 - [ ] A fresh database backup exists and is less than an hour old
@@ -342,7 +346,27 @@ Things the application cannot do for itself:
 
 ---
 
-## 11. Adding an integration later
+## 11. Turning on a second factor for staff
+
+Two-factor is available to staff accounts and off until each person enrols. An
+administrator enrols from **Platform settings → Aapke account ki hifazat**: the
+page shows a setup key for an authenticator app, takes one code back to prove the
+app works, and then hands over ten recovery codes, once.
+
+Make it part of onboarding a new administrator rather than an afterthought — the
+admin panel can approve providers, change the commission and issue refunds.
+
+Two operational notes:
+
+- **Recovery codes are shown once.** The server keeps only hashes, so there is no
+  "show them again". If somebody loses both their phone and their codes, another
+  administrator has to clear the row for their user in `TwoFactorSecret`.
+- **Rotating `AUTH_SECRET` invalidates every enrolled secret** (§2). Everybody
+  re-enrols; their recovery codes are what gets them in to do it.
+
+---
+
+## 12. Adding an integration later
 
 Every integration is off until credentials exist, and turning one on is a
 configuration change and a restart — no code change, no migration.
@@ -357,6 +381,12 @@ configuration change and a restart — no code change, no migration.
 | Voice        | `VAPI_API_KEY`, `VAPI_WEBHOOK_SECRET`                          | Voice agent intake                                                                |
 | Payments     | `PAYMENT_GATEWAY`, `PAYMENT_API_KEY`, `PAYMENT_WEBHOOK_SECRET` | Online payment becomes selectable                                                 |
 | S3 storage   | `STORAGE_DRIVER=s3`, `STORAGE_*`                               | Uploads go to object storage                                                      |
+
+Email and SMS are worth adding first for a reason beyond notifications: without
+them, password reset and phone verification have no way to deliver anything, and
+the UI says so plainly rather than pretending. Outside production the token is
+handed back in the response so the flow is usable on a fresh checkout; in
+production it never is.
 
 After adding one, check `/api/health` and the admin integrations panel: both
 report what is actually live, and neither will claim an integration works

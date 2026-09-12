@@ -18,6 +18,12 @@ plainly instead of pretending to work.
 | Area                                                               | State                                                                   |
 | ------------------------------------------------------------------ | ----------------------------------------------------------------------- |
 | Customer booking (7-step wizard, intake → confirm)                 | Working end to end                                                      |
+| Password reset, email confirmation, phone OTP                      | Working                                                                 |
+| Customer ↔ technician messaging on a booking                       | Working                                                                 |
+| Rescheduling a visit                                               | Working                                                                 |
+| Printable receipts                                                 | Working                                                                 |
+| Two-factor authentication for staff                                | Working                                                                 |
+| Notification preferences, data export, account closure             | Working                                                                 |
 | Provider onboarding, admin verification, suspension                | Working                                                                 |
 | Matching engine (hard eligibility filters + tunable scoring)       | Working                                                                 |
 | Quotes, additional charges, customer approval                      | Working                                                                 |
@@ -47,8 +53,10 @@ reports exactly which ones are live.
 - **Vitest** — server tests against a real database, component tests in jsdom
 - Session auth: bcrypt + short-lived JWT access token + rotating opaque refresh
   token, all in `httpOnly` cookies, with CSRF double-submit
+- TOTP second factor for staff, implemented against RFC 6238 rather than taken
+  as a dependency
 
-No state management library, no charting library, no UI kit. Charts are
+No state management library, no charting library, no UI kit, no OTP library. Charts are
 hand-drawn SVG; the design system is ~700 lines of Tailwind and React.
 
 ---
@@ -108,6 +116,7 @@ retires a zone from the admin panel, and the matcher picks it up immediately.
 | `npm test`                                | Tests only                                                                                                           |
 | `npm run smoke -- <url>`                  | Post-deploy browser check: pages render, CSP holds, the wizard responds                                              |
 | `npm run acceptance -- <url>`             | Drives the whole AC-repair scenario over HTTP against a running app, checking the database row behind every response |
+| `npm run format`                          | Apply the repo's Prettier style (CI checks it)                                                                       |
 | `npm run db:seed`                         | Seed reference (and optionally demo) data                                                                            |
 | `npm run db:reset`                        | Drop and recreate the schema — refuses to touch production                                                           |
 | `npx tsx scripts/purge-demo.ts --confirm` | Delete demo rows only                                                                                                |
@@ -129,6 +138,11 @@ refuses to run otherwise, and creates `isbfix_test` if it can. Set
 | [docs/SECURITY.md](docs/SECURITY.md)         | Threat model, what is enforced where, and what is deliberately not claimed                |
 | [.env.example](.env.example)                 | Every environment variable, annotated                                                     |
 
+Continuous integration lives in [.github/workflows/ci.yml](.github/workflows/ci.yml):
+typecheck, lint, format check and the full suite against a real PostgreSQL
+service container, plus a production build and an audit of production
+dependencies, on every push.
+
 ---
 
 ## Things this product does not claim
@@ -146,7 +160,14 @@ These are deliberate, and they are enforced in code, not just in copy:
 - **Islamabad Fix is a marketplace.** Technicians are independent providers, not
   employees, and the legal copy says so.
 - **The Fix Guarantee is not universal.** It applies per service, its window is
-  frozen onto the booking at completion, and every claim is reviewed. Changing
+  frozen onto the booking at completion, and every claim is reviewed.
+- **Closing an account anonymises it; it does not erase the ledger.** Booking
+  and payment records stay, because the other party to the transaction has
+  their own claim on that history and the accounts have to balance. What goes
+  is everything that identifies the person.
+- **Notification preferences cannot switch off two things**: in-app delivery,
+  because a customer must be able to find out that a stranger is on the way to
+  their house, and security messages about their own account. Changing
   the platform setting later never reaches back into a job already done.
 
 ---

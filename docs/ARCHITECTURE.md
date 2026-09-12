@@ -132,6 +132,9 @@ money as integer paisa, and every timestamp in UTC.
 | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `User`                                      | One row per person. Role, bcrypt hash, lockout counters. Case-insensitive unique email (`lower(email)` unique index).                                                         |
 | `RefreshToken`                              | Opaque token stored as SHA-256, with `familyId` for rotation and reuse detection.                                                                                             |
+| `VerificationToken`                         | One-time secrets for password reset, email confirmation, phone OTP and the two-factor challenge. SHA-256 only, single-use, short-lived, attempt-counted.                      |
+| `TwoFactorSecret`                           | TOTP secret for a staff account, encrypted at rest; the highest spent 30-second step, so a code cannot be replayed; hashed single-use recovery codes.                         |
+| `NotificationPreference`                    | Per-channel delivery choices. In-app is absent on purpose — it is not a preference.                                                                                           |
 | `CustomerProfile` / `ProviderProfile`       | Role-specific data. Providers carry status, rating aggregates, response statistics, service radius, capacity, and bank details as a hash + last 4 digits — never a full IBAN. |
 | `ProviderVerification`                      | One row per check (`PHONE`, `EMAIL`, `IDENTITY_CNIC`, `PLATFORM_ONBOARDING`, `BANK_ACCOUNT`). A badge is shown only when its own row is `APPROVED`.                           |
 | `ProviderAvailability` / `ProviderLocation` | Weekly working windows; last known GPS fix (staff-only).                                                                                                                      |
@@ -161,8 +164,8 @@ money as integer paisa, and every timestamp in UTC.
 
 ### Supporting
 
-`Conversation` / `ConversationParticipant` / `Message` (threads for disputes and
-support), `SupportTicket`, `Notification`, `UploadedFile`, `AuditLog`,
+`Conversation` / `ConversationParticipant` / `Message` (threads on bookings,
+disputes and support tickets), `SupportTicket`, `Notification`, `UploadedFile`, `AuditLog`,
 `PromoCode`, `Setting`, `RateLimitHit`.
 
 ### Invariants enforced by the database itself
@@ -210,6 +213,13 @@ the customer approves or rejects, the job returns to the point it was
 interrupted — read from `BookingStatusHistory`, not guessed. Declining an
 optional upgrade does not un-schedule a visit or send a technician who is
 already on site back to the beginning.
+
+**A visit can be moved, but only before anybody sets off.** Either party may
+reschedule a booking in a pre-travel status; the other side is notified and the
+move is audited. It is capped at three, counted from the audit log rather than a
+column — the history is already the record. The alternative, cancel-and-rebook,
+loses the technician who already accepted, which is the worst outcome for
+everyone.
 
 **Completion requires an agreed price and no pending charges.**
 `completeBooking` refuses if `approvedTotalPaisa` is null, and refuses while any
@@ -269,6 +279,17 @@ from the admin panel without a deploy. Each candidate carries a per-signal
   imply each other by rank. `settings:write:financial` and `user:role:write` are
   `SUPER_ADMIN` only, so an ordinary administrator can run operations without
   being able to change what the platform earns or who is an administrator.
+- **One-time secrets**: password reset, email confirmation, phone OTP and the
+  two-factor challenge all go through `VerificationToken` — hashed, single-use,
+  short-lived, superseded on reissue, and attempt-counted so a six-digit code
+  cannot be ground down. Issue limits are per purpose: the delivered kinds are
+  capped tightly because issuing one messages somebody, while a challenge handed
+  back to a caller who already proved their password is not.
+- **Second factor**: TOTP (RFC 6238) for staff accounts, implemented in
+  `src/lib/auth/totp.ts` and checked against the RFC's own published vectors. A
+  correct password on an enrolled account buys a five-minute challenge token and
+  nothing else — no half-authorised cookie is ever set, which is why `loginUser`
+  is split into a credential check and a session issue.
 - **Rate limits**: a Postgres-backed sliding window, chosen over in-memory
   counters because the app is expected to run behind more than one instance.
   Applied to login (by IP _and_ by email), registration, refresh, password
@@ -351,20 +372,24 @@ refrigeration or structural work.
 
 ## 10. Testing
 
-| Suite                              | What it covers                                                                   |
-| ---------------------------------- | -------------------------------------------------------------------------------- |
-| `tests/money.test.ts`              | Paisa arithmetic, the commission split, rounding direction                       |
-| `tests/state-machine.test.ts`      | The transition table, per actor                                                  |
-| `tests/auth.test.ts`               | Registration, login, lockout, token rotation, family revocation, password change |
-| `tests/booking-flow.test.ts`       | Creation, offers, acceptance, quotes, additional charges, cancellation, reviews  |
-| `tests/provider-approval.test.ts`  | Onboarding, admin approval, badge honesty, suspension, public projection         |
-| `tests/matching.test.ts`           | Hard filters, scoring, offers, response statistics                               |
-| `tests/uploads.test.ts`            | MIME/extension/magic-byte validation, read authorization                         |
-| `tests/disputes.test.ts`           | Disputes, refunds, guarantee eligibility and decisions                           |
-| `tests/ai-safety.test.ts`          | Hazard detection, the output filter, the intake pipeline                         |
-| `tests/security.test.ts`           | Booking visibility, server-side money, credentials, permissions, rate limits     |
-| `tests/acceptance.test.ts`         | The full AC-repair scenario, seventeen steps, asserting database state at each   |
-| `tests/ui/booking-wizard.test.tsx` | Intake honesty, confirm-step promises, quote rendering                           |
+| Suite                              | What it covers                                                                                       |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `tests/money.test.ts`              | Paisa arithmetic, the commission split, rounding direction                                           |
+| `tests/state-machine.test.ts`      | The transition table, per actor                                                                      |
+| `tests/auth.test.ts`               | Registration, login, lockout, token rotation, family revocation, password change                     |
+| `tests/booking-flow.test.ts`       | Creation, offers, acceptance, quotes, additional charges, cancellation, reviews                      |
+| `tests/provider-approval.test.ts`  | Onboarding, admin approval, badge honesty, suspension, public projection                             |
+| `tests/matching.test.ts`           | Hard filters, scoring, offers, response statistics                                                   |
+| `tests/uploads.test.ts`            | MIME/extension/magic-byte validation, read authorization                                             |
+| `tests/disputes.test.ts`           | Disputes, refunds, guarantee eligibility and decisions                                               |
+| `tests/ai-safety.test.ts`          | Hazard detection, the output filter, the intake pipeline                                             |
+| `tests/security.test.ts`           | Booking visibility, server-side money, credentials, permissions, rate limits                         |
+| `tests/acceptance.test.ts`         | The full AC-repair scenario, seventeen steps, asserting database state at each                       |
+| `tests/verification.test.ts`       | Password reset, email confirmation, phone OTP — and that none of them leak whether an account exists |
+| `tests/two-factor.test.ts`         | TOTP against the RFC vectors, enrolment, replay refusal, recovery codes                              |
+| `tests/messaging.test.ts`          | Who can read a booking thread, who cannot, and when a visit may be moved                             |
+| `tests/account.test.ts`            | Notification preferences, data export, account closure                                               |
+| `tests/ui/booking-wizard.test.tsx` | Intake honesty, confirm-step promises, quote rendering                                               |
 
 Server tests run against a real PostgreSQL database — the behaviour under test
 lives partly in Postgres, so mocking it out would test nothing. The suite

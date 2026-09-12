@@ -44,6 +44,8 @@ tags:
   - name: Quotes and payment
   - name: Escalations
     description: Disputes and Fix Guarantee claims.
+  - name: Account
+    description: Delivery preferences, data export and account closure.
   - name: Provider
   - name: Files
   - name: Assistant
@@ -1279,6 +1281,440 @@ paths:
               schema: { $ref: '#/components/schemas/Success' }
         '422':
           description: '`VALIDATION_ERROR` — for example an emergency fee above the platform ceiling.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+
+  /auth/forgot-password:
+    post:
+      tags: [Authentication]
+      summary: Request a password reset link
+      description: |
+        Answers identically for a registered address and an unknown one.
+        Anything else makes this an account-existence oracle.
+
+        `delivered` reports whether a message actually left the building: with no
+        mail provider configured it is `false` and `notice` says why, rather than
+        showing "check your inbox" for a mail that was never sent.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email: { type: string, format: email }
+      responses:
+        '200':
+          description: Constant message; the caller learns nothing about the account.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          message: { type: string }
+                          delivered: { type: boolean }
+                          notice: { type: string, nullable: true }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /auth/reset-password:
+    get:
+      tags: [Authentication]
+      summary: Is this reset link still usable?
+      description: Lets the page fail before asking somebody to type a new password.
+      security: []
+      parameters:
+        - { in: query, name: token, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Whether the link is live.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          valid: { type: boolean }
+    post:
+      tags: [Authentication]
+      summary: Set a new password
+      description: |
+        Single-use token. Completing a reset revokes every session and clears any
+        lockout — if somebody needed this flow, the old sessions are exactly what
+        must not survive it.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token, newPassword]
+              properties:
+                token: { type: string }
+                newPassword: { type: string, minLength: 10 }
+      responses:
+        '200':
+          description: Password changed; sign in again.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+        '401':
+          description: '`TOKEN_EXPIRED` — spent, expired or forged.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+
+  /auth/verify-email:
+    put:
+      tags: [Authentication]
+      summary: Send the confirmation link
+      responses:
+        '200':
+          description: Sent, or an honest report that email is not configured.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+        '409':
+          description: '`CONFLICT` — already verified.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+    post:
+      tags: [Authentication]
+      summary: Confirm an email link
+      description: |
+        Unauthenticated by design: somebody opening the link from their mail
+        client may not be signed in there, and the token is the proof.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token]
+              properties:
+                token: { type: string }
+      responses:
+        '200':
+          description: Verified.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+
+  /auth/verify-phone:
+    put:
+      tags: [Authentication]
+      summary: Send a six-digit code
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phone: { type: string, description: Defaults to the number on the account. }
+      responses:
+        '200':
+          description: Sent, or an honest report that SMS is not configured.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+        '409':
+          description: '`PHONE_TAKEN` — another account has already proven this number.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+    post:
+      tags: [Authentication]
+      summary: Confirm a phone code
+      description: |
+        Five wrong guesses burn the code — a six-digit secret does not survive
+        unlimited attempts. A confirmed number earns the provider their PHONE
+        badge and nothing else.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [code]
+              properties:
+                code: { type: string, pattern: '^[0-9]{6}$' }
+      responses:
+        '200':
+          description: Verified.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+
+  /auth/two-factor:
+    get:
+      tags: [Authentication]
+      summary: Second-factor status for this account
+      responses:
+        '200':
+          description: Whether it is on, and how many recovery codes remain.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+    put:
+      tags: [Authentication]
+      summary: Begin enrolment
+      description: |
+        Staff accounts only. Returns the TOTP secret and the `otpauth://` URI
+        once — the server keeps only an encrypted copy. Nothing is enforced until
+        the code is confirmed, so an abandoned setup cannot lock anybody out.
+      responses:
+        '200':
+          description: Setup key and QR payload.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+        '403':
+          description: '`FORBIDDEN` — not a staff account.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+    patch:
+      tags: [Authentication]
+      summary: Confirm enrolment, or switch it off
+      description: |
+        Both need a current code. Confirming returns ten single-use recovery
+        codes, shown once and stored only as hashes.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action, code]
+              properties:
+                action: { type: string, enum: [confirm, disable] }
+                code: { type: string, description: A TOTP code, or a recovery code. }
+      responses:
+        '200':
+          description: Enabled (with recovery codes) or disabled.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+    post:
+      tags: [Authentication]
+      summary: Complete a sign-in waiting on a second factor
+      description: |
+        Unauthenticated by design: the challenge token *is* the proof that the
+        password was accepted, and no session exists yet. A spent 30-second step
+        is refused, so a code seen over somebody's shoulder is already dead.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [challengeToken, code]
+              properties:
+                challengeToken: { type: string }
+                code: { type: string }
+      responses:
+        '200':
+          description: Signed in; session cookies set.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+        '401':
+          description: '`INVALID_CREDENTIALS` — wrong, spent or expired.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /account/notifications:
+    get:
+      tags: [Account]
+      summary: Delivery preferences
+      description: |
+        In-app is not listed and cannot be switched off: a customer has to be
+        able to find out that a technician is on the way. Security messages about
+        the account itself ignore these settings too.
+      responses:
+        '200':
+          description: Current choices.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+    patch:
+      tags: [Account]
+      summary: Change delivery preferences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: boolean }
+                sms: { type: boolean }
+                whatsapp: { type: boolean }
+                push: { type: boolean }
+                marketing: { type: boolean, description: Opt-in, unlike the rest. }
+      responses:
+        '200':
+          description: Updated.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+
+  /account/export:
+    get:
+      tags: [Account]
+      summary: Download everything held about the caller
+      description: |
+        Built from explicit selects, never a wildcard dump — an export that
+        silently grows a column is how a password hash ends up in somebody's
+        downloads folder. File names are included; file contents are not.
+      responses:
+        '200':
+          description: A JSON file.
+          content:
+            application/json:
+              schema: { type: object }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /account/close:
+    get:
+      tags: [Account]
+      summary: What stands in the way of closing this account
+      responses:
+        '200':
+          description: Whether it can be closed, and why not.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+    post:
+      tags: [Account]
+      summary: Close the account
+      description: |
+        Anonymisation, not erasure. Name, email, phone, addresses, uploaded media
+        and a provider's bank details go; booking and payment records stay,
+        because the other party to the transaction has their own claim on that
+        history. Needs the current password. Refused while a job is live or a
+        finished one is unpaid, and refused outright for staff accounts.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [password]
+              properties:
+                password: { type: string }
+                reason: { type: string, maxLength: 500 }
+      responses:
+        '200':
+          description: Closed; every session revoked.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+        '409':
+          description: '`CONFLICT` — live or unpaid work stands in the way.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+
+  /bookings/{id}/messages:
+    parameters:
+      - { in: path, name: id, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [Bookings]
+      summary: The thread for a booking
+      description: |
+        Customer, assigned provider and staff only. A provider who has merely
+        been *offered* the job is not in the thread: the privacy staging exists
+        so that somebody who has not committed to turning up cannot ask for the
+        address, and a chat window would be a way around it. Reading marks it
+        read.
+      responses:
+        '200':
+          description: Messages, oldest first. Senders appear by first name only.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    post:
+      tags: [Bookings]
+      summary: Send a message
+      description: |
+        An attachment must be the sender's own and belong to this booking. The
+        thread closes on cancellation and stays open after completion, because
+        the guarantee window and any dispute both need it.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body: { type: string, maxLength: 2000 }
+                attachmentId: { type: string, format: uuid, nullable: true }
+      responses:
+        '201':
+          description: Sent; the other side is notified.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /bookings/{id}/reschedule:
+    parameters:
+      - { in: path, name: id, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [Bookings]
+      summary: How many moves this booking has left
+      responses:
+        '200':
+          description: Remaining moves.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+    post:
+      tags: [Bookings]
+      summary: Move the visit
+      description: |
+        Either party, while nobody has set off yet. The new time faces the same
+        lead-time window a new booking does, the other side is notified
+        immediately, and every move is audited. Capped at three; staff can go
+        past the cap, because that is what support is for. Refused on an
+        emergency, which is "now" by definition.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [scheduledFor]
+              properties:
+                scheduledFor: { type: string, format: date-time }
+                reason: { type: string, maxLength: 300 }
+      responses:
+        '200':
+          description: Moved.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+        '409':
+          description: '`INVALID_STATUS_TRANSITION` — already travelling — or the cap is spent.'
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Failure' }

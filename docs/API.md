@@ -58,53 +58,58 @@ by HMAC signature over the raw body instead.
 Exceeding a limit returns `429` with code `RATE_LIMITED` and a `Retry-After`
 header.
 
-| Endpoint                     | Limit                                  |
-| ---------------------------- | -------------------------------------- |
-| `POST /auth/login`           | 10 per 5 min, per IP **and** per email |
-| `POST /auth/register`        | 5 per hour                             |
-| `POST /auth/refresh`         | 60 per 5 min                           |
-| `POST /auth/password`        | 5 per 15 min                           |
-| `POST /bookings`             | 12 per hour                            |
-| `POST /files`                | 40 per hour                            |
-| `POST /ai/intake`            | 30 per hour                            |
-| `POST /bookings/{id}/review` | 20 per hour                            |
-| `POST /support/tickets`      | 10 per hour                            |
-| webhooks                     | 300 per minute                         |
+| Endpoint                                           | Limit                                    |
+| -------------------------------------------------- | ---------------------------------------- |
+| `POST /auth/login`                                 | 10 per 5 min, per IP **and** per email   |
+| `POST /auth/register`                              | 5 per hour                               |
+| `POST /auth/refresh`                               | 60 per 5 min                             |
+| `POST /auth/password`                              | 5 per 15 min                             |
+| `POST /auth/forgot-password`                       | 5 per 15 min, per IP **and** per address |
+| `PUT /auth/verify-email`, `PUT /auth/verify-phone` | 6 per 15 min                             |
+| `POST /auth/two-factor`, `PATCH /auth/two-factor`  | 12 per 15 min                            |
+| `POST /bookings/{id}/messages`                     | 60 per 10 min                            |
+| `GET /account/export`                              | 5 per day                                |
+| `POST /bookings`                                   | 12 per hour                              |
+| `POST /files`                                      | 40 per hour                              |
+| `POST /ai/intake`                                  | 30 per hour                              |
+| `POST /bookings/{id}/review`                       | 20 per hour                              |
+| `POST /support/tickets`                            | 10 per hour                              |
+| webhooks                                           | 300 per minute                           |
 
 ### Error codes
 
-| Code                                           | HTTP      | Meaning                                                       |
-| ---------------------------------------------- | --------- | ------------------------------------------------------------- |
-| `UNAUTHENTICATED`                              | 401       | No valid session                                              |
-| `INVALID_CREDENTIALS`                          | 401       | Wrong email or password (deliberately indistinguishable)      |
-| `TOKEN_EXPIRED` / `TOKEN_REUSED`               | 401       | Refresh failed; reuse revokes the whole token family          |
-| `ACCOUNT_LOCKED`                               | 423       | Too many failed logins                                        |
-| `ACCOUNT_DISABLED`                             | 403       | Account deactivated                                           |
-| `FORBIDDEN`                                    | 403       | Authenticated, not permitted                                  |
-| `EMAIL_TAKEN` / `PHONE_TAKEN`                  | 409       | Already registered                                            |
-| `VALIDATION_ERROR`                             | 422       | Body or query failed validation; see `fields`                 |
-| `NOT_FOUND`                                    | 404       | Missing — or present but not yours                            |
-| `CONFLICT`                                     | 409       | State conflict                                                |
-| `RATE_LIMITED`                                 | 429       | Slow down                                                     |
-| `PAYLOAD_TOO_LARGE`                            | 413       | File over the per-purpose ceiling                             |
-| `UNSUPPORTED_MEDIA_TYPE`                       | 415       | Type not allowed, or content does not match the declared type |
-| `INVALID_STATUS_TRANSITION`                    | 409       | Not legal for this actor from this status                     |
-| `BOOKING_NOT_AVAILABLE`                        | 409       | Already taken or withdrawn                                    |
-| `PROVIDER_NOT_VERIFIED`                        | 403       | Provider has not been approved                                |
-| `PROVIDER_SUSPENDED`                           | 403       | Provider suspended                                            |
-| `PROVIDER_AT_CAPACITY`                         | 409       | Provider at their own job ceiling                             |
-| `NO_PROVIDERS_AVAILABLE`                       | 404       | Nothing matched; the booking waits for manual assignment      |
-| `QUOTE_REQUIRED`                               | 409       | An approved price is needed first                             |
-| `QUOTE_NOT_PENDING`                            | 409       | Quote already decided, expired, or charges still pending      |
-| `REVIEW_ALREADY_EXISTS` / `REVIEW_NOT_ALLOWED` | 409 / 403 | One review per booking, customer only, after completion       |
-| `PAYMENT_ALREADY_SETTLED`                      | 409       | Payment already recorded                                      |
-| `GUARANTEE_NOT_ELIGIBLE` / `GUARANTEE_EXPIRED` | 409       | Not covered, or outside the frozen window                     |
-| `DISPUTE_ALREADY_OPEN`                         | 409       | One open dispute per booking                                  |
-| `CANCELLATION_NOT_ALLOWED`                     | 409       | Too late, or wrong status                                     |
-| `PROMO_INVALID`                                | 422       | Promo code rejected                                           |
-| `INTEGRATION_NOT_CONFIGURED`                   | 503       | Credentials absent — the honest state, not a failure          |
-| `INTEGRATION_FAILED`                           | 502       | The provider was called and did not co-operate                |
-| `INTERNAL_ERROR`                               | 500       | Unexpected; details stay server-side                          |
+| Code                                           | HTTP      | Meaning                                                                                                        |
+| ---------------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------- |
+| `UNAUTHENTICATED`                              | 401       | No valid session                                                                                               |
+| `INVALID_CREDENTIALS`                          | 401       | Wrong email or password (deliberately indistinguishable)                                                       |
+| `TOKEN_EXPIRED` / `TOKEN_REUSED`               | 401       | Refresh failed, or a reset/verification link is spent or expired; refresh-token reuse revokes the whole family |
+| `ACCOUNT_LOCKED`                               | 423       | Too many failed logins                                                                                         |
+| `ACCOUNT_DISABLED`                             | 403       | Account deactivated                                                                                            |
+| `FORBIDDEN`                                    | 403       | Authenticated, not permitted                                                                                   |
+| `EMAIL_TAKEN` / `PHONE_TAKEN`                  | 409       | Already registered                                                                                             |
+| `VALIDATION_ERROR`                             | 422       | Body or query failed validation; see `fields`                                                                  |
+| `NOT_FOUND`                                    | 404       | Missing — or present but not yours                                                                             |
+| `CONFLICT`                                     | 409       | State conflict                                                                                                 |
+| `RATE_LIMITED`                                 | 429       | Slow down                                                                                                      |
+| `PAYLOAD_TOO_LARGE`                            | 413       | File over the per-purpose ceiling                                                                              |
+| `UNSUPPORTED_MEDIA_TYPE`                       | 415       | Type not allowed, or content does not match the declared type                                                  |
+| `INVALID_STATUS_TRANSITION`                    | 409       | Not legal for this actor from this status                                                                      |
+| `BOOKING_NOT_AVAILABLE`                        | 409       | Already taken or withdrawn                                                                                     |
+| `PROVIDER_NOT_VERIFIED`                        | 403       | Provider has not been approved                                                                                 |
+| `PROVIDER_SUSPENDED`                           | 403       | Provider suspended                                                                                             |
+| `PROVIDER_AT_CAPACITY`                         | 409       | Provider at their own job ceiling                                                                              |
+| `NO_PROVIDERS_AVAILABLE`                       | 404       | Nothing matched; the booking waits for manual assignment                                                       |
+| `QUOTE_REQUIRED`                               | 409       | An approved price is needed first                                                                              |
+| `QUOTE_NOT_PENDING`                            | 409       | Quote already decided, expired, or charges still pending                                                       |
+| `REVIEW_ALREADY_EXISTS` / `REVIEW_NOT_ALLOWED` | 409 / 403 | One review per booking, customer only, after completion                                                        |
+| `PAYMENT_ALREADY_SETTLED`                      | 409       | Payment already recorded                                                                                       |
+| `GUARANTEE_NOT_ELIGIBLE` / `GUARANTEE_EXPIRED` | 409       | Not covered, or outside the frozen window                                                                      |
+| `DISPUTE_ALREADY_OPEN`                         | 409       | One open dispute per booking                                                                                   |
+| `CANCELLATION_NOT_ALLOWED`                     | 409       | Too late, or wrong status                                                                                      |
+| `PROMO_INVALID`                                | 422       | Promo code rejected                                                                                            |
+| `INTEGRATION_NOT_CONFIGURED`                   | 503       | Credentials absent — the honest state, not a failure                                                           |
+| `INTEGRATION_FAILED`                           | 502       | The provider was called and did not co-operate                                                                 |
+| `INTERNAL_ERROR`                               | 500       | Unexpected; details stay server-side                                                                           |
 
 ---
 
@@ -123,15 +128,20 @@ header.
 
 ## Authentication
 
-| Method  | Path             | Notes                                                                                      |
-| ------- | ---------------- | ------------------------------------------------------------------------------------------ |
-| `POST`  | `/auth/register` | `{ fullName, email, phone?, password, role?, acceptedTerms: true }`. Sets session cookies. |
-| `POST`  | `/auth/login`    | `{ email, password }`. Sets session cookies.                                               |
-| `POST`  | `/auth/refresh`  | Rotates the refresh token. Reuse of a rotated token revokes the family.                    |
-| `POST`  | `/auth/logout`   | Revokes this session and clears cookies.                                                   |
-| `GET`   | `/auth/me`       | Current user, role, and provider status if applicable.                                     |
-| `PATCH` | `/auth/me`       | `{ fullName?, phone? }`.                                                                   |
-| `POST`  | `/auth/password` | `{ currentPassword, newPassword }`. Revokes **every** session, including this one.         |
+| Method                     | Path                    | Notes                                                                                                                                    |
+| -------------------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `POST`                     | `/auth/register`        | `{ fullName, email, phone?, password, role?, acceptedTerms: true }`. Sets session cookies.                                               |
+| `POST`                     | `/auth/login`           | `{ email, password }`. Sets session cookies.                                                                                             |
+| `POST`                     | `/auth/refresh`         | Rotates the refresh token. Reuse of a rotated token revokes the family.                                                                  |
+| `POST`                     | `/auth/logout`          | Revokes this session and clears cookies.                                                                                                 |
+| `GET`                      | `/auth/me`              | Current user, role, and provider status if applicable.                                                                                   |
+| `PATCH`                    | `/auth/me`              | `{ fullName?, phone? }`.                                                                                                                 |
+| `POST`                     | `/auth/password`        | `{ currentPassword, newPassword }`. Revokes **every** session, including this one.                                                       |
+| `POST`                     | `/auth/forgot-password` | `{ email }`. Answers identically for a registered address and an unknown one.                                                            |
+| `GET`/`POST`               | `/auth/reset-password`  | `GET ?token=` checks a link is still live; `POST { token, newPassword }` uses it. Revokes every session.                                 |
+| `PUT`/`POST`               | `/auth/verify-email`    | `PUT` sends the link (needs a session); `POST { token }` confirms it — deliberately unauthenticated, because the token is the proof.     |
+| `PUT`/`POST`               | `/auth/verify-phone`    | `PUT { phone? }` sends a six-digit code; `POST { code }` confirms it.                                                                    |
+| `GET`/`PUT`/`PATCH`/`POST` | `/auth/two-factor`      | `GET` status · `PUT` begin enrolment · `PATCH { action, code }` confirm or disable · `POST { challengeToken, code }` complete a sign-in. |
 
 ---
 
@@ -148,17 +158,19 @@ header.
 
 ### Bookings
 
-| Method               | Path                       | Notes                                                                                    |
-| -------------------- | -------------------------- | ---------------------------------------------------------------------------------------- |
-| `GET`                | `/bookings`                | The caller's bookings. `status`, `page`, `perPage`.                                      |
-| `POST`               | `/bookings`                | Create. See below.                                                                       |
-| `GET`                | `/bookings/{id}`           | Detail, projected for the caller. A non-party gets `404`.                                |
-| `POST`               | `/bookings/{id}/cancel`    | `{ reason }`. Fee applied per the cancellation window; never charged when staff cancel.  |
-| `GET`/`POST`         | `/bookings/{id}/quotes`    | List quotes; `POST { quoteId, decision: "approve" \| "reject", reason? }` to decide one. |
-| `GET`/`POST`/`PATCH` | `/bookings/{id}/payment`   | Read the payment; record or settle one.                                                  |
-| `POST`/`PUT`/`PATCH` | `/bookings/{id}/review`    | One review per booking, after completion, customer only.                                 |
-| `GET`/`POST`         | `/bookings/{id}/dispute`   | Read or open a dispute.                                                                  |
-| `GET`/`POST`         | `/bookings/{id}/guarantee` | Read or submit a Fix Guarantee claim.                                                    |
+| Method               | Path                        | Notes                                                                                                                                 |
+| -------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET`                | `/bookings`                 | The caller's bookings. `status`, `page`, `perPage`.                                                                                   |
+| `POST`               | `/bookings`                 | Create. See below.                                                                                                                    |
+| `GET`                | `/bookings/{id}`            | Detail, projected for the caller. A non-party gets `404`.                                                                             |
+| `POST`               | `/bookings/{id}/cancel`     | `{ reason }`. Fee applied per the cancellation window; never charged when staff cancel.                                               |
+| `GET`/`POST`         | `/bookings/{id}/quotes`     | List quotes; `POST { quoteId, decision: "approve" \| "reject", reason? }` to decide one.                                              |
+| `GET`/`POST`/`PATCH` | `/bookings/{id}/payment`    | Read the payment; record or settle one.                                                                                               |
+| `POST`/`PUT`/`PATCH` | `/bookings/{id}/review`     | One review per booking, after completion, customer only.                                                                              |
+| `GET`/`POST`         | `/bookings/{id}/dispute`    | Read or open a dispute.                                                                                                               |
+| `GET`/`POST`         | `/bookings/{id}/guarantee`  | Read or submit a Fix Guarantee claim.                                                                                                 |
+| `GET`/`POST`         | `/bookings/{id}/messages`   | The thread with the technician. Customer, assigned provider and staff only; a provider who was merely _offered_ the job is not in it. |
+| `GET`/`POST`         | `/bookings/{id}/reschedule` | `GET` returns moves remaining; `POST { scheduledFor, reason? }` moves the visit. Pre-travel statuses only, capped at three.           |
 
 `POST /bookings` body:
 
@@ -196,6 +208,22 @@ shown a fake confirmation.
 | `POST`               | `/notifications/read`   | `{ ids?: [] }` — omit to mark all read.                                                                                        |
 | `GET`/`POST`         | `/support/tickets`      | List or open a ticket.                                                                                                         |
 | `GET`/`POST`/`PATCH` | `/support/tickets/{id}` | Read, reply, close.                                                                                                            |
+
+---
+
+### Account
+
+| Method        | Path                     | Notes                                                                                                 |
+| ------------- | ------------------------ | ----------------------------------------------------------------------------------------------------- |
+| `GET`/`PATCH` | `/account/notifications` | Per-channel delivery preferences. In-app is not listed: it cannot be switched off.                    |
+| `GET`         | `/account/export`        | Everything the platform holds about the caller, as a JSON download. Never includes the password hash. |
+| `GET`/`POST`  | `/account/close`         | `GET` lists what stands in the way; `POST { password, reason? }` closes the account.                  |
+
+Closing an account removes what identifies the person — name, email, phone,
+addresses, uploaded media, and a provider's bank details — and keeps booking and
+payment records, because the other party to the transaction has their own claim
+on that history. It is refused while a job is live or a finished one is unpaid,
+and refused outright for staff accounts.
 
 ---
 
