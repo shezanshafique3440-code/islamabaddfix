@@ -18,6 +18,7 @@ import { BookingTracker } from './BookingTracker';
 import { QuoteCard } from './QuoteCard';
 import { BookingChat } from '@/components/booking/BookingChat';
 import { RescheduleDialog } from '@/components/booking/RescheduleDialog';
+import Link from 'next/link';
 
 interface PaymentMethodOption {
   method: 'CASH' | 'BANK_TRANSFER' | 'ONLINE_GATEWAY';
@@ -544,6 +545,14 @@ export function BookingDetailView({
           <Button variant="outline" onClick={() => setDialog('cancel')}>
             Booking cancel karein
           </Button>
+        ) : null}
+        {booking.status === 'COMPLETED' || booking.status === 'REFUNDED' ? (
+          <Link
+            href={`/account/bookings/${booking.id}/receipt`}
+            className="inline-flex h-11 items-center rounded-xl border border-ink-300 px-4 text-sm font-medium text-ink-800 transition-colors hover:bg-ink-50"
+          >
+            Receipt dekhein
+          </Link>
         ) : null}
         {reschedule ? (
           <RescheduleDialog

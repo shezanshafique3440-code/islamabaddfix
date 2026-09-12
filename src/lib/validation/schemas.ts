@@ -115,6 +115,23 @@ export const confirmPhoneCodeSchema = z.object({
     .regex(/^\d{6}$/, 'Code chhe hindson ka hota hai.'),
 });
 
+// ------------------------------------------------------------------- account
+
+export const notificationPreferencesSchema = z
+  .object({
+    email: z.boolean(),
+    sms: z.boolean(),
+    whatsapp: z.boolean(),
+    push: z.boolean(),
+    marketing: z.boolean(),
+  })
+  .partial();
+
+export const closeAccountSchema = z.object({
+  password: z.string().min(1, 'Password likhein.'),
+  reason: z.string().trim().max(500).optional(),
+});
+
 // --------------------------------------------------------------------- address
 
 export const addressSchema = z.object({

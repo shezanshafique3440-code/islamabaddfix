@@ -11,6 +11,20 @@ import type { DeliveryTarget, NotificationChannelDriver, NotificationPayload } f
 export * from './events';
 export type { NotificationPayload } from './types';
 
+/**
+ * Events a preference cannot switch off.
+ *
+ * These tell somebody that their own account changed. A person who has turned
+ * off email is saying "stop telling me about bookings", not "let somebody reset
+ * my password quietly".
+ */
+const ALWAYS_DELIVER = new Set<string>([
+  'auth.password_reset',
+  'auth.password_changed',
+  'auth.email_verification',
+  'auth.phone_verification',
+]);
+
 const DRIVERS: Record<NotificationChannel, NotificationChannelDriver> = {
   IN_APP: inAppChannel,
   EMAIL: emailChannel,
@@ -42,7 +56,10 @@ export async function notify(payload: NotificationPayload): Promise<void> {
       fullName: user.fullName,
     };
     const channels = await resolveChannels(payload.channels);
-    await Promise.all(channels.map((channel) => deliver(DRIVERS[channel], target, payload)));
+    const allowed = ALWAYS_DELIVER.has(payload.event)
+      ? channels
+      : await applyPreferences(user.id, channels);
+    await Promise.all(allowed.map((channel) => deliver(DRIVERS[channel], target, payload)));
   } catch (error) {
     console.error('[notifications] dispatch failed', {
       event: payload.event,
@@ -91,6 +108,61 @@ async function resolveChannels(requested?: NotificationChannel[]): Promise<Notif
   });
   if (!requested) return enabledSet;
   return requested.filter((channel) => enabledSet.includes(channel));
+}
+
+/**
+ * Narrow the channel list to what this person has agreed to.
+ *
+ * In-app is never filtered: a customer has to be able to find out that their
+ * technician is on the way, and a product that can silently stop telling them
+ * is worse than one with no preferences at all. Absent row means the defaults,
+ * which are on for everything transactional.
+ */
+async function applyPreferences(
+  userId: string,
+  channels: NotificationChannel[],
+): Promise<NotificationChannel[]> {
+  const prefs = await prisma.notificationPreference.findUnique({ where: { userId } });
+  if (!prefs) return channels;
+
+  return channels.filter((channel) => {
+    switch (channel) {
+      case 'IN_APP':
+        return true;
+      case 'EMAIL':
+        return prefs.email;
+      case 'SMS':
+        return prefs.sms;
+      case 'WHATSAPP':
+        return prefs.whatsapp;
+      case 'PUSH':
+        return prefs.push;
+    }
+  });
+}
+
+/** Read a user's delivery choices, filling in the defaults when unset. */
+export async function getNotificationPreferences(userId: string) {
+  const prefs = await prisma.notificationPreference.findUnique({ where: { userId } });
+  return {
+    email: prefs?.email ?? true,
+    sms: prefs?.sms ?? true,
+    whatsapp: prefs?.whatsapp ?? true,
+    push: prefs?.push ?? true,
+    marketing: prefs?.marketing ?? false,
+  };
+}
+
+export async function setNotificationPreferences(
+  userId: string,
+  input: Partial<{ email: boolean; sms: boolean; whatsapp: boolean; push: boolean; marketing: boolean }>,
+) {
+  await prisma.notificationPreference.upsert({
+    where: { userId },
+    create: { userId, ...input },
+    update: input,
+  });
+  return getNotificationPreferences(userId);
 }
 
 async function deliver(

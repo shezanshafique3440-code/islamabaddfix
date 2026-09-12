@@ -229,6 +229,7 @@ model User {
   assignedTickets    SupportTicket[]           @relation("ticketAssignee")
   conversationParts  ConversationParticipant[]
   verificationTokens VerificationToken[]
+  notificationPrefs  NotificationPreference?
 
   @@index([role, isActive])
   @@index([createdAt])
@@ -260,6 +261,24 @@ model RefreshToken {
 /// database leak must not hand somebody a working reset link. Tokens are
 /// single-use (`consumedAt`), short-lived, and OTPs carry an attempt counter so
 /// a six-digit code cannot be brute-forced.
+/// Per-user delivery choices.
+///
+/// Only the optional channels are listed. In-app notification is not a
+/// preference: a customer has to be able to find out that their technician is
+/// on the way, and turning that off would make the product lie to them.
+/// Security messages (password changed, new sign-in) ignore this table too.
+model NotificationPreference {
+  userId    String   @id @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  email     Boolean  @default(true)
+  sms       Boolean  @default(true)
+  whatsapp  Boolean  @default(true)
+  push      Boolean  @default(true)
+  /// Marketing is opt-*in*, unlike everything else here.
+  marketing Boolean  @default(false)
+  updatedAt DateTime @updatedAt
+}
+
 model VerificationToken {
   id        String              @id @default(uuid()) @db.Uuid
   userId    String              @db.Uuid

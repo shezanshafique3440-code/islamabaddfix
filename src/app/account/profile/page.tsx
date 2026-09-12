@@ -3,6 +3,9 @@ import { requirePageAuth } from '@/lib/auth/session';
 import { prisma } from '@/lib/db';
 import { ProfileForm } from '@/components/account/ProfileForm';
 import { VerificationPanel } from '@/components/account/VerificationPanel';
+import { AccountControls, NotificationPreferences } from '@/components/account/AccountSettings';
+import { getNotificationPreferences } from '@/lib/notifications';
+import { closureBlockers } from '@/lib/account';
 import { formatDate } from '@/lib/utils';
 import { formatPaisa } from '@/lib/money';
 
@@ -11,7 +14,7 @@ export const metadata: Metadata = { title: 'Profile', robots: { index: false, fo
 export default async function ProfilePage() {
   const ctx = await requirePageAuth('/account/profile');
 
-  const [user, stats] = await Promise.all([
+  const [user, stats, preferences, blockers] = await Promise.all([
     prisma.user.findUniqueOrThrow({
       where: { id: ctx.user.id },
       select: {
@@ -30,6 +33,8 @@ export default async function ProfilePage() {
       where: { customerId: ctx.user.id, status: 'COMPLETED' },
       _sum: { finalTotalPaisa: true },
     }),
+    getNotificationPreferences(ctx.user.id),
+    closureBlockers(ctx.user.id),
   ]);
 
   return (
@@ -85,6 +90,16 @@ export default async function ProfilePage() {
       ) : null}
 
       <section className="mt-5 rounded-2xl border border-ink-200 bg-white p-5">
+        <h2 className="text-[0.9375rem] font-semibold text-ink-900">Ittila kaise chahiye</h2>
+        <p className="mt-1 text-sm text-ink-600">
+          Kis zariye se aap tak khabar pohonche, yeh aap tay karein.
+        </p>
+        <div className="mt-4">
+          <NotificationPreferences initial={preferences} />
+        </div>
+      </section>
+
+      <section className="mt-5 rounded-2xl border border-ink-200 bg-white p-5">
         <h2 className="text-[0.9375rem] font-semibold text-ink-900">Privacy</h2>
         <ul className="mt-3 space-y-2 text-sm leading-relaxed text-ink-600">
           <li>
@@ -94,6 +109,9 @@ export default async function ProfilePage() {
           <li>Reviews par sirf aapka pehla naam dikhta hai.</li>
           <li>Aap ki bheji hui tasveerein private storage mein rehti hain.</li>
         </ul>
+        <div className="mt-5 border-t border-ink-100 pt-5">
+          <AccountControls blockers={blockers} />
+        </div>
       </section>
     </div>
   );
