@@ -6,6 +6,7 @@ import { requirePageAuth } from '@/lib/auth/session';
 import { prisma } from '@/lib/db';
 import { isStaff } from '@/lib/auth/rbac';
 import { formatPaisa } from '@/lib/money';
+import { bookingTotals } from '@/lib/bookings/totals';
 import { formatDateTime } from '@/lib/utils';
 import { getSetting } from '@/lib/settings';
 import { PrintButton } from '@/components/account/PrintButton';
@@ -56,6 +57,7 @@ export default async function ReceiptPage({ params }: Params) {
       customerId: true,
       emergencyFeePaisa: true,
       discountPaisa: true,
+      membershipDiscountPaisa: true,
       finalTotalPaisa: true,
       approvedTotalPaisa: true,
       guaranteeEligible: true,
@@ -66,6 +68,7 @@ export default async function ReceiptPage({ params }: Params) {
       provider: { select: { businessName: true } },
       address: { select: { addressLine: true, city: true, zone: { select: { name: true } } } },
       promoCode: { select: { code: true } },
+      membership: { select: { plan: { select: { name: true } } } },
       quotes: {
         where: { status: 'APPROVED' },
         orderBy: { respondedAt: 'asc' },
@@ -98,7 +101,7 @@ export default async function ReceiptPage({ params }: Params) {
   if (booking.status !== 'COMPLETED' && booking.status !== 'REFUNDED') notFound();
 
   const supportEmail = await getSetting('platform.supportEmail');
-  const total = booking.finalTotalPaisa ?? booking.approvedTotalPaisa ?? 0;
+  const totals = bookingTotals(booking);
   const refunded = booking.payments.reduce((sum, payment) => sum + payment.refundedPaisa, 0);
 
   return (
@@ -206,13 +209,23 @@ export default async function ReceiptPage({ params }: Params) {
                 </td>
               </tr>
             ) : null}
-            {booking.discountPaisa > 0 ? (
+            {totals.promoDiscountPaisa > 0 ? (
               <tr>
                 <td className="py-2 pr-3 text-ink-800">
                   Discount{booking.promoCode ? ` (${booking.promoCode.code})` : ''}
                 </td>
                 <td className="py-2 text-right font-medium text-brand-700">
-                  −{formatPaisa(booking.discountPaisa)}
+                  −{formatPaisa(totals.promoDiscountPaisa)}
+                </td>
+              </tr>
+            ) : null}
+            {totals.membershipDiscountPaisa > 0 ? (
+              <tr>
+                <td className="py-2 pr-3 text-ink-800">
+                  Member benefit{booking.membership ? ` (${booking.membership.plan.name})` : ''}
+                </td>
+                <td className="py-2 text-right font-medium text-brand-700">
+                  −{formatPaisa(totals.membershipDiscountPaisa)}
                 </td>
               </tr>
             ) : null}
@@ -223,7 +236,7 @@ export default async function ReceiptPage({ params }: Params) {
                 Total
               </th>
               <td className="pt-3 text-right text-base font-bold text-ink-950">
-                {formatPaisa(total)}
+                {formatPaisa(totals.payablePaisa)}
               </td>
             </tr>
             {refunded > 0 ? (

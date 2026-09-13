@@ -321,14 +321,25 @@ export function BookingDetailView({
                   <dd className="text-brand-700">−{formatPaisa(booking.pricing.discountPaisa)}</dd>
                 </div>
               ) : null}
+              {booking.pricing.membershipDiscountPaisa > 0 ? (
+                <div className="flex justify-between gap-3">
+                  <dt className="text-ink-600">
+                    Member benefit{' '}
+                    {booking.pricing.membershipPlanName
+                      ? `(${booking.pricing.membershipPlanName})`
+                      : ''}
+                  </dt>
+                  <dd className="text-brand-700">
+                    −{formatPaisa(booking.pricing.membershipDiscountPaisa)}
+                  </dd>
+                </div>
+              ) : null}
               <div className="flex justify-between gap-3 border-t border-ink-200 pt-2">
                 <dt className="font-semibold text-ink-900">
                   {booking.pricing.finalTotalPaisa !== null ? 'Final total' : 'Approved total'}
                 </dt>
                 <dd className="text-lg font-bold text-ink-950">
-                  {formatPaisa(
-                    booking.pricing.finalTotalPaisa ?? booking.pricing.approvedTotalPaisa ?? 0,
-                  )}
+                  {formatPaisa(booking.pricing.payablePaisa)}
                 </dd>
               </div>
             </dl>
@@ -604,7 +615,7 @@ export function BookingDetailView({
         onClose={() => setDialog(null)}
         bookingId={booking.id}
         methods={paymentMethods}
-        amountPaisa={booking.pricing.finalTotalPaisa ?? booking.pricing.approvedTotalPaisa ?? 0}
+        amountPaisa={booking.pricing.payablePaisa}
         onDone={() => router.refresh()}
       />
     </div>

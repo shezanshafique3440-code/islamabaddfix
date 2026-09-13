@@ -48,6 +48,11 @@ export const AUDIT_ACTIONS = {
   TWO_FACTOR_ENABLED: 'auth.two_factor_enabled',
   TWO_FACTOR_DISABLED: 'auth.two_factor_disabled',
   TWO_FACTOR_RECOVERY_USED: 'auth.two_factor_recovery_used',
+  MEMBERSHIP_PLAN_CHANGED: 'membership.plan_changed',
+  MEMBERSHIP_PURCHASED: 'membership.purchased',
+  MEMBERSHIP_ACTIVATED: 'membership.activated',
+  MEMBERSHIP_CANCELLED: 'membership.cancelled',
+  MEMBERSHIP_EXPIRED: 'membership.expired',
 } as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[keyof typeof AUDIT_ACTIONS];

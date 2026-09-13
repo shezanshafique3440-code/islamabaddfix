@@ -389,7 +389,7 @@ export function ProviderOnboardingForm({
                             {service.name}
                           </span>
                           <span className="block text-xs text-ink-500">
-                            Market {formatPaisa(service.minPricePaisa)} se
+                            Market from {formatPaisa(service.minPricePaisa)}
                           </span>
                         </span>
                       </label>

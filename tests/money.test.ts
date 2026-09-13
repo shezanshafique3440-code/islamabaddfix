@@ -33,9 +33,9 @@ describe('money', () => {
 
   it('formats an open-ended range as "se"', () => {
     expect(formatPaisaRange(150_000, 800_000)).toBe('Rs. 1,500 – Rs. 8,000');
-    expect(formatPaisaRange(150_000, null)).toBe('Rs. 1,500 se');
+    expect(formatPaisaRange(150_000, null)).toBe('From Rs. 1,500');
     // A max at or below the min is not a range.
-    expect(formatPaisaRange(150_000, 150_000)).toBe('Rs. 1,500 se');
+    expect(formatPaisaRange(150_000, 150_000)).toBe('From Rs. 1,500');
   });
 
   it('splits commission at 10% of the example from the brief', () => {

@@ -22,6 +22,7 @@ interface Counts {
   guarantees: number;
   support: number;
   bookings: number;
+  memberships: number;
 }
 
 const GROUPS: NavGroup[] = [
@@ -55,6 +56,7 @@ const GROUPS: NavGroup[] = [
     label: 'Money & people',
     links: [
       { href: '/admin/payouts', label: 'Payouts' },
+      { href: '/admin/memberships', label: 'Memberships', countKey: 'memberships' },
       { href: '/admin/users', label: 'Users' },
       { href: '/admin/audit', label: 'Audit log' },
     ],

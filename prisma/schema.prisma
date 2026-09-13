@@ -195,6 +195,20 @@ enum PromoKind {
   FIXED_AMOUNT
 }
 
+enum MembershipStatus {
+  PENDING_PAYMENT
+  ACTIVE
+  EXPIRED
+  CANCELLED
+}
+
+enum MembershipBenefitKind {
+  DISCOUNT
+  EMERGENCY_FEE_WAIVER
+  GUARANTEE_EXTENSION
+  PRIORITY_MATCH
+}
+
 // ============================ identity ====================================
 
 model User {
@@ -231,6 +245,7 @@ model User {
   verificationTokens VerificationToken[]
   notificationPrefs  NotificationPreference?
   twoFactor          TwoFactorSecret?
+  memberships        Membership[]
 
   @@index([role, isActive])
   @@index([createdAt])
@@ -287,33 +302,33 @@ model NotificationPreference {
 /// AUTH_SECRET rather than sitting in plaintext. A stolen database dump alone
 /// then yields no working second factors.
 model TwoFactorSecret {
-  userId String @id @db.Uuid
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId             String    @id @db.Uuid
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   /// AES-256-GCM, base64, of the base32 TOTP secret.
-  secret String
+  secret             String
   /// Null until the user has proved they can read a code from their app.
-  confirmedAt DateTime?
+  confirmedAt        DateTime?
   /// Highest 30-second step already accepted, so a code cannot be replayed.
-  lastUsedStep BigInt?
+  lastUsedStep       BigInt?
   /// SHA-256 of each single-use recovery code. Removed as they are spent.
   recoveryCodeHashes String[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 }
 
 model VerificationToken {
-  id        String              @id @default(uuid()) @db.Uuid
-  userId    String              @db.Uuid
-  user      User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  purpose   VerificationPurpose
-  tokenHash String
+  id         String              @id @default(uuid()) @db.Uuid
+  userId     String              @db.Uuid
+  user       User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  purpose    VerificationPurpose
+  tokenHash  String
   /// The address or number the secret was sent to, so the UI can say where to
   /// look without re-reading the account.
-  sentTo    String?
-  expiresAt DateTime
+  sentTo     String?
+  expiresAt  DateTime
   consumedAt DateTime?
-  attempts  Int      @default(0)
-  createdAt DateTime @default(now())
+  attempts   Int                 @default(0)
+  createdAt  DateTime            @default(now())
 
   @@index([tokenHash])
   @@index([userId, purpose, consumedAt])
@@ -638,6 +653,12 @@ model Booking {
   promoCode         PromoCode? @relation(fields: [promoCodeId], references: [id], onDelete: SetNull)
   discountPaisa     Int        @default(0)
 
+  /// The membership in force when this booking completed, and what it saved.
+  /// Kept separate from promo discount so a receipt can show both lines.
+  membershipId            String?     @db.Uuid
+  membership              Membership? @relation(fields: [membershipId], references: [id], onDelete: SetNull)
+  membershipDiscountPaisa Int         @default(0)
+
   guaranteeEligible  Boolean   @default(false)
   guaranteeDays      Int       @default(0)
   guaranteeExpiresAt DateTime?
@@ -650,17 +671,18 @@ model Booking {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  statusHistory   BookingStatusHistory[]
-  quotes          Quote[]
-  payments        Payment[]
-  review          Review?
-  disputes        Dispute[]
-  guaranteeClaims GuaranteeClaim[]
-  files           UploadedFile[]         @relation("bookingFiles")
-  offers          BookingOffer[]
-  conversations   Conversation[]
-  supportTickets  SupportTicket[]
-  payoutItems     PayoutItem[]
+  statusHistory      BookingStatusHistory[]
+  quotes             Quote[]
+  payments           Payment[]
+  review             Review?
+  disputes           Dispute[]
+  guaranteeClaims    GuaranteeClaim[]
+  files              UploadedFile[]         @relation("bookingFiles")
+  offers             BookingOffer[]
+  conversations      Conversation[]
+  supportTickets     SupportTicket[]
+  payoutItems        PayoutItem[]
+  membershipBenefits MembershipBenefit[]
 
   @@index([customerId, status])
   @@index([providerId, status])
@@ -1063,6 +1085,128 @@ model PromoCode {
   bookings Booking[]
 
   @@index([isActive, endsAt])
+}
+
+// ========================== memberships ===================================
+
+/// A purchasable membership tier. Entirely admin-configurable: the benefits a
+/// tier grants are data, not code, so operations can launch or retire a tier
+/// without a deploy.
+model MembershipPlan {
+  id          String  @id @default(uuid()) @db.Uuid
+  code        String  @unique
+  name        String
+  tagline     String?
+  description String
+
+  pricePaisa Int
+  periodDays Int @default(365)
+
+  /// Discount on the service portion of a completed booking, in basis points.
+  discountBp              Int  @default(0)
+  maxDiscountPaisa        Int?
+  /// Extra guarantee days on top of whatever the booking already qualifies for.
+  guaranteeBonusDays      Int  @default(0)
+  /// Extra technicians notified in the first wave, on top of the platform
+  /// fan-out. This is what "priority" actually means here: nothing queues in
+  /// this system, so a wider first wave is the only honest way to be seen sooner.
+  priorityFanoutBonus     Int  @default(0)
+  /// Emergency visit fee waived up to this amount, per booking.
+  emergencyFeeWaiverPaisa Int  @default(0)
+
+  isActive  Boolean   @default(true)
+  sortOrder Int       @default(0)
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  memberships Membership[]
+
+  @@index([isActive, sortOrder])
+}
+
+/// One purchase of a plan by one customer.
+///
+/// Every benefit is snapshotted at purchase. Editing a plan must never change
+/// what an existing member already paid for, and a receipt written today has to
+/// still explain itself in a year.
+model Membership {
+  id        String         @id @default(uuid()) @db.Uuid
+  reference String         @unique
+  userId    String         @db.Uuid
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  planId    String         @db.Uuid
+  plan      MembershipPlan @relation(fields: [planId], references: [id], onDelete: Restrict)
+
+  status MembershipStatus @default(PENDING_PAYMENT)
+
+  pricePaisa              Int
+  periodDays              Int
+  discountBp              Int  @default(0)
+  maxDiscountPaisa        Int?
+  guaranteeBonusDays      Int  @default(0)
+  priorityFanoutBonus     Int  @default(0)
+  emergencyFeeWaiverPaisa Int  @default(0)
+
+  startsAt           DateTime?
+  endsAt             DateTime?
+  cancelledAt        DateTime?
+  cancellationReason String?
+
+  isDemo    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  payments MembershipPayment[]
+  benefits MembershipBenefit[]
+  bookings Booking[]
+
+  @@index([userId, status])
+  @@index([status, endsAt])
+}
+
+/// Payment for a membership. Separate from Payment, which is per booking —
+/// making bookingId nullable there would put a null check in every payment
+/// query in the product.
+model MembershipPayment {
+  id               String        @id @default(uuid()) @db.Uuid
+  membershipId     String        @db.Uuid
+  membership       Membership    @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+  method           PaymentMethod
+  status           PaymentStatus @default(PENDING)
+  amountPaisa      Int
+  refundedPaisa    Int           @default(0)
+  currency         String        @default("PKR")
+  providerKey      String?
+  externalRef      String?
+  /// Non-sensitive gateway metadata only. No PAN/CVV is ever stored.
+  metadata         Json?
+  paidAt           DateTime?
+  failureReason    String?
+  recordedByUserId String?       @db.Uuid
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@index([membershipId, status])
+  @@index([status, createdAt])
+}
+
+/// Ledger of benefits actually applied. Written in the same transaction that
+/// freezes a booking total, so a discount on a receipt can always be traced
+/// back to the membership that granted it.
+model MembershipBenefit {
+  id           String                @id @default(uuid()) @db.Uuid
+  membershipId String                @db.Uuid
+  membership   Membership            @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+  bookingId    String                @db.Uuid
+  booking      Booking               @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  kind         MembershipBenefitKind
+  amountPaisa  Int                   @default(0)
+  days         Int                   @default(0)
+  createdAt    DateTime              @default(now())
+
+  @@unique([bookingId, kind])
+  @@index([membershipId, createdAt])
 }
 
 /// Single-row-per-key platform configuration. Typed accessors and defaults

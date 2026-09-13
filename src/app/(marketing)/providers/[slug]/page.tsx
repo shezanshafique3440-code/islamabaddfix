@@ -186,7 +186,7 @@ export default async function ProviderProfilePage({ params }: Params) {
                     </div>
                     <div className="flex items-center gap-3">
                       <span className="text-sm font-semibold text-ink-900">
-                        {formatPaisa(service.startingPricePaisa)} se
+                        From {formatPaisa(service.startingPricePaisa)}
                       </span>
                       <ButtonLink
                         href={`/book?service=${service.slug}&provider=${provider.slug}`}
@@ -318,7 +318,7 @@ export default async function ProviderProfilePage({ params }: Params) {
 
             <div className="rounded-2xl border border-ink-200 bg-white p-5 text-sm">
               <h2 className="text-eyebrow uppercase text-ink-500">Platform par</h2>
-              <p className="mt-2 text-ink-700">{formatDate(provider.memberSince)} se</p>
+              <p className="mt-2 text-ink-700">Since {formatDate(provider.memberSince)}</p>
             </div>
           </aside>
         </div>

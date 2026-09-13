@@ -36,6 +36,8 @@ export const NOTIFICATION_EVENTS = {
   PHONE_VERIFICATION: 'auth.phone_verification',
   BOOKING_RESCHEDULED: 'booking.rescheduled',
   NEW_MESSAGE: 'booking.message',
+  MEMBERSHIP_ACTIVATED: 'membership.activated',
+  MEMBERSHIP_EXPIRING: 'membership.expiring',
 } as const;
 
 export type NotificationEvent = (typeof NOTIFICATION_EVENTS)[keyof typeof NOTIFICATION_EVENTS];

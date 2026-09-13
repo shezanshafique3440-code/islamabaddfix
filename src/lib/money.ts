@@ -26,9 +26,9 @@ export function formatPaisa(paisa: number, options?: { withSymbol?: boolean }): 
   return withSymbol ? `Rs. ${formatted}` : formatted;
 }
 
-/** "Rs. 1,500 – Rs. 4,000" or "Rs. 1,500 se" when there is no upper bound. */
+/** "Rs. 1,500 – Rs. 4,000", or "From Rs. 1,500" when there is no upper bound. */
 export function formatPaisaRange(minPaisa: number, maxPaisa?: number | null): string {
-  if (maxPaisa == null || maxPaisa <= minPaisa) return `${formatPaisa(minPaisa)} se`;
+  if (maxPaisa == null || maxPaisa <= minPaisa) return `From ${formatPaisa(minPaisa)}`;
   return `${formatPaisa(minPaisa)} – ${formatPaisa(maxPaisa)}`;
 }
 

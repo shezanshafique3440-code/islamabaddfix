@@ -253,7 +253,9 @@ export function StepConfirm({
             {draft.isEmergency ? (
               <div className="flex items-center justify-between gap-3">
                 <dt className="text-ink-600">Emergency fee</dt>
-                <dd className="text-ink-800">{formatPaisa(config.defaultEmergencyFeePaisa)} se</dd>
+                <dd className="text-ink-800">
+                  From {formatPaisa(config.defaultEmergencyFeePaisa)}
+                </dd>
               </div>
             ) : null}
           </dl>

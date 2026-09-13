@@ -348,15 +348,25 @@ export function ProviderJobView({
                 {formatPaisa(booking.pricing.finalTotalPaisa ?? booking.pricing.approvedTotalPaisa)}
               </dd>
             </div>
+            {/* A discount the customer was given comes off the platform's cut,
+                not the technician's — so it is shown, not hidden. */}
+            {booking.pricing.discountPaisa + booking.pricing.membershipDiscountPaisa > 0 ? (
+              <div className="flex justify-between gap-3">
+                <dt className="text-ink-600">Customer discounts</dt>
+                <dd className="text-ink-700">
+                  −
+                  {formatPaisa(
+                    booking.pricing.discountPaisa + booking.pricing.membershipDiscountPaisa,
+                  )}
+                </dd>
+              </div>
+            ) : null}
             <div className="flex justify-between gap-3">
               <dt className="text-ink-600">Platform commission ({commissionRateBp / 100}%)</dt>
               <dd className="text-ink-700">
                 −
                 {formatPaisa(
-                  splitCommission(
-                    booking.pricing.finalTotalPaisa ?? booking.pricing.approvedTotalPaisa,
-                    commissionRateBp,
-                  ).commissionPaisa,
+                  splitCommission(booking.pricing.payablePaisa, commissionRateBp).commissionPaisa,
                 )}
               </dd>
             </div>
@@ -365,10 +375,8 @@ export function ProviderJobView({
               <dd className="text-lg font-bold text-brand-700">
                 {formatPaisa(
                   booking.pricing.providerEarningsPaisa ??
-                    splitCommission(
-                      booking.pricing.finalTotalPaisa ?? booking.pricing.approvedTotalPaisa,
-                      commissionRateBp,
-                    ).providerEarningsPaisa,
+                    splitCommission(booking.pricing.payablePaisa, commissionRateBp)
+                      .providerEarningsPaisa,
                 )}
               </dd>
             </div>

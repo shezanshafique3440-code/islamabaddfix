@@ -5,6 +5,7 @@ import { bookingReference } from '../ids';
 import { getSetting } from '../settings';
 import { notify, notifyMany, NOTIFICATION_EVENTS } from '../notifications';
 import { createOffers, findMatchingProviders, recordOfferResponse } from '../matching/engine';
+import { activeBenefitsFor } from '../memberships';
 import { formatPaisa } from '../money';
 import { formatDateTime } from '../utils';
 import { transitionBooking } from './transition';
@@ -113,6 +114,11 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
 
   const promo = input.promoCode ? await resolvePromoCode(input.promoCode, input.customerId) : null;
 
+  // A member's request goes out to a wider first wave. Nothing queues in this
+  // system, so this — not a place in a line — is what priority actually means.
+  const benefits = await activeBenefitsFor(input.customerId);
+  const effectiveFanout = fanout + (benefits?.priorityFanoutBonus ?? 0);
+
   const booking = await prisma.$transaction(async (tx) => {
     const created = await tx.booking.create({
       data: {
@@ -212,13 +218,13 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
           : null,
       scheduledFor,
       urgency,
-      limit: fanout,
+      limit: effectiveFanout,
     });
 
     const offered = await createOffers({
       bookingId: booking.id,
       candidates,
-      limit: fanout,
+      limit: effectiveFanout,
       expiryMinutes: offerExpiry,
     });
     offeredProviderIds.push(...offered.map((o) => o.providerId));

@@ -58,6 +58,7 @@ export async function SiteFooter() {
               {[
                 { href: '/about', label: 'About us' },
                 { href: '/how-it-works', label: 'How it works' },
+                { href: '/membership', label: 'Membership' },
                 { href: '/provider-signup', label: 'Become a provider' },
                 { href: '/providers', label: 'Technicians' },
                 { href: '/contact', label: 'Contact us' },

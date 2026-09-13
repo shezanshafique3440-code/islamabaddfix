@@ -44,7 +44,9 @@ export type Permission =
   | 'analytics:read'
   | 'audit:read'
   | 'support:create'
-  | 'support:manage';
+  | 'support:manage'
+  | 'membership:buy'
+  | 'membership:manage';
 
 const PERMISSIONS: Record<Role, readonly Permission[]> = {
   CUSTOMER: [
@@ -54,6 +56,7 @@ const PERMISSIONS: Record<Role, readonly Permission[]> = {
     'dispute:create',
     'guarantee:create',
     'support:create',
+    'membership:buy',
   ],
   PROVIDER: [
     'booking:read:own',
@@ -82,6 +85,7 @@ const PERMISSIONS: Record<Role, readonly Permission[]> = {
     'audit:read',
     'support:manage',
     'support:create',
+    'membership:manage',
   ],
   SUPER_ADMIN: [
     'booking:read:any',
@@ -105,6 +109,7 @@ const PERMISSIONS: Record<Role, readonly Permission[]> = {
     'audit:read',
     'support:manage',
     'support:create',
+    'membership:manage',
   ],
 };
 

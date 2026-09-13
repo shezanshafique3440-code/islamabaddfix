@@ -41,6 +41,10 @@ export const RATE_LIMITS = {
   aiIntake: { name: 'ai:intake', limit: 30, windowSeconds: 3600 },
   review: { name: 'review:create', limit: 20, windowSeconds: 3600 },
   supportTicket: { name: 'support:create', limit: 10, windowSeconds: 3600 },
+  // A membership purchase creates a row an admin then has to look at. A few
+  // per day is a real customer changing their mind; more is someone filling the
+  // operations queue with junk.
+  membershipPurchase: { name: 'membership:purchase', limit: 6, windowSeconds: 86_400 },
   webhook: { name: 'webhook:inbound', limit: 300, windowSeconds: 60 },
 } as const satisfies Record<string, RateLimitRule>;
 

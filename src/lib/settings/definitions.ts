@@ -240,6 +240,37 @@ export const settingsSchema = {
     group: 'commerce',
   },
 
+  'memberships.enabled': {
+    schema: z.boolean(),
+    default: false,
+    label: 'Memberships enabled',
+    help: 'Shows the plans page and lets customers subscribe. Off by default — turn it on only once at least one plan is published.',
+    group: 'memberships',
+  },
+  'memberships.gracePeriodDays': {
+    schema: z.number().int().min(0).max(30),
+    default: 3,
+    label: 'Renewal grace period',
+    help: 'Days a lapsed membership keeps its benefits while a renewal is being paid.',
+    group: 'memberships',
+    unit: 'days',
+  },
+  'memberships.maxDiscountBp': {
+    schema: z.number().int().min(0).max(5000),
+    default: 2000, // 20%
+    label: 'Maximum plan discount',
+    help: 'Ceiling on what any plan may discount, in basis points. A guard against a mistyped plan.',
+    group: 'memberships',
+    unit: 'bp',
+  },
+  'memberships.maxFanoutBonus': {
+    schema: z.number().int().min(0).max(20),
+    default: 5,
+    label: 'Maximum priority bonus',
+    help: 'Ceiling on the extra technicians a plan may notify in the first wave.',
+    group: 'memberships',
+  },
+
   'providers.autoApprove': {
     schema: z.boolean(),
     default: false,
@@ -272,6 +303,7 @@ export const settingGroups = [
   'notifications',
   'ai',
   'providers',
+  'memberships',
 ] as const;
 export type SettingGroup = (typeof settingGroups)[number];
 

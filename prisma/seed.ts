@@ -705,6 +705,7 @@ async function main(): Promise<void> {
   const zones = await seedZones();
   const services = await seedCatalogue();
   await seedSettings();
+  await seedMembershipPlans();
 
   if (!ALLOW_DEMO) {
     console.info('\nALLOW_DEMO_SEED is not set to "true" — skipping demo data.');
@@ -849,6 +850,57 @@ async function seedSettings(): Promise<void> {
     }
   }
   console.info(`  settings: ${written} written, ${defaults.length - written} already set`);
+}
+
+/**
+ * Reference membership plans.
+ *
+ * Written as inactive, and `memberships.enabled` stays false: a plan is a
+ * commercial promise, so it goes live only when somebody decides it should,
+ * from the admin panel.
+ */
+async function seedMembershipPlans(): Promise<void> {
+  const plans = [
+    {
+      code: 'care',
+      name: 'Care',
+      tagline: 'For a household that calls us a few times a year',
+      description:
+        'Five percent off every completed booking, and two extra weeks of re-visit guarantee on the services that carry one.',
+      pricePaisa: 250_000,
+      periodDays: 365,
+      discountBp: 500,
+      maxDiscountPaisa: 150_000,
+      guaranteeBonusDays: 14,
+      priorityFanoutBonus: 1,
+      emergencyFeeWaiverPaisa: 0,
+      sortOrder: 1,
+    },
+    {
+      code: 'care-plus',
+      name: 'Care Plus',
+      tagline: 'For a household or small shop that calls us often',
+      description:
+        'Ten percent off every completed booking, a month of extra guarantee, part of the emergency call-out fee covered, and your request reaches more technicians at once.',
+      pricePaisa: 600_000,
+      periodDays: 365,
+      discountBp: 1000,
+      maxDiscountPaisa: 400_000,
+      guaranteeBonusDays: 30,
+      priorityFanoutBonus: 3,
+      emergencyFeeWaiverPaisa: 50_000,
+      sortOrder: 2,
+    },
+  ];
+
+  let written = 0;
+  for (const plan of plans) {
+    const existing = await prisma.membershipPlan.findUnique({ where: { code: plan.code } });
+    if (existing) continue;
+    await prisma.membershipPlan.create({ data: { ...plan, isActive: false } });
+    written += 1;
+  }
+  console.info(`  membership plans: ${written} written (inactive until published)`);
 }
 
 async function seedDemoProviders(

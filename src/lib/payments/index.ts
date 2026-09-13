@@ -3,6 +3,7 @@ import { prisma } from '../db';
 import { AppError } from '../errors';
 import { AUDIT_ACTIONS, recordAudit } from '../audit';
 import { getSetting } from '../settings';
+import { bookingTotals } from '../bookings/totals';
 import { cashProvider } from './providers/cash';
 import { bankTransferProvider } from './providers/bank-transfer';
 import { gatewayProvider } from './providers/gateway';
@@ -77,10 +78,11 @@ export async function initiatePayment(params: {
     );
   }
 
-  const amountPaisa = booking.finalTotalPaisa ?? booking.approvedTotalPaisa;
-  if (amountPaisa === null) {
+  if (booking.finalTotalPaisa === null && booking.approvedTotalPaisa === null) {
     throw new AppError('QUOTE_REQUIRED', 'A quote must be approved before payment.');
   }
+  // Discounts come off what the customer pays, not only off commission.
+  const amountPaisa = bookingTotals(booking).payablePaisa;
 
   const existing = await prisma.payment.findFirst({
     where: { bookingId: booking.id, status: { in: ['PAID', 'AUTHORIZED'] } },

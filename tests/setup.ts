@@ -36,7 +36,8 @@ export async function truncateAll(): Promise<void> {
     TRUNCATE TABLE
       "AuditLog", "Notification", "Message", "ConversationParticipant", "Conversation",
       "SupportTicket", "GuaranteeClaim", "Dispute", "Review", "PayoutItem", "Payout",
-      "Payment", "QuoteItem", "Quote", "BookingOffer", "BookingStatusHistory", "Booking",
+      "Payment", "QuoteItem", "Quote", "BookingOffer", "BookingStatusHistory",
+      "MembershipBenefit", "MembershipPayment", "Membership", "MembershipPlan", "Booking",
       "UploadedFile", "Address", "ServiceArea", "ProviderAvailability", "ProviderLocation",
       "ProviderService", "ProviderVerification", "ProviderProfile", "CustomerProfile",
       "RefreshToken", "User", "Service", "ServiceCategory", "ServiceZone", "PromoCode",

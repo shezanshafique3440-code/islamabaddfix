@@ -163,3 +163,56 @@ export async function setSettingValue(key: string, value: unknown): Promise<void
   });
   invalidateSettingsCache();
 }
+
+/**
+ * An active membership with real benefits, ready to be applied to a booking.
+ *
+ * Mirrors what `purchaseMembership` + `confirmMembershipPayment` would produce:
+ * benefits are snapshotted onto the membership row, not read back off the plan.
+ */
+export async function createMembership(options: {
+  userId: string;
+  discountBp?: number;
+  maxDiscountPaisa?: number | null;
+  guaranteeBonusDays?: number;
+  priorityFanoutBonus?: number;
+  emergencyFeeWaiverPaisa?: number;
+  status?: 'PENDING_PAYMENT' | 'ACTIVE' | 'EXPIRED' | 'CANCELLED';
+  startsAt?: Date;
+  endsAt?: Date;
+}) {
+  const id = unique();
+  const plan = await db.membershipPlan.create({
+    data: {
+      code: `plan-${id}`,
+      name: `Plan ${id}`,
+      description: 'Test plan with real benefits.',
+      pricePaisa: 500_000,
+      periodDays: 365,
+      discountBp: options.discountBp ?? 1000,
+      maxDiscountPaisa: options.maxDiscountPaisa ?? null,
+      guaranteeBonusDays: options.guaranteeBonusDays ?? 0,
+      priorityFanoutBonus: options.priorityFanoutBonus ?? 0,
+      emergencyFeeWaiverPaisa: options.emergencyFeeWaiverPaisa ?? 0,
+    },
+  });
+  const now = new Date();
+  const membership = await db.membership.create({
+    data: {
+      reference: `MEM-${id.toUpperCase().slice(-6)}`,
+      userId: options.userId,
+      planId: plan.id,
+      status: options.status ?? 'ACTIVE',
+      pricePaisa: plan.pricePaisa,
+      periodDays: plan.periodDays,
+      discountBp: plan.discountBp,
+      maxDiscountPaisa: plan.maxDiscountPaisa,
+      guaranteeBonusDays: plan.guaranteeBonusDays,
+      priorityFanoutBonus: plan.priorityFanoutBonus,
+      emergencyFeeWaiverPaisa: plan.emergencyFeeWaiverPaisa,
+      startsAt: options.startsAt ?? new Date(now.getTime() - 24 * 60 * 60 * 1000),
+      endsAt: options.endsAt ?? new Date(now.getTime() + 300 * 24 * 60 * 60 * 1000),
+    },
+  });
+  return { plan, membership };
+}

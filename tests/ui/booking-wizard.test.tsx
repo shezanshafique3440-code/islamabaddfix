@@ -355,7 +355,7 @@ describe('confirm step', () => {
     renderConfirm({ draft: { isEmergency: true, urgency: 'EMERGENCY' } });
 
     expect(screen.getByText('Emergency fee')).toBeInTheDocument();
-    expect(screen.getByText(/Rs\.\s*800 se/)).toBeInTheDocument();
+    expect(screen.getByText(/From Rs\.\s*800/)).toBeInTheDocument();
   });
 
   it('refuses to submit when no payment method is enabled', async () => {

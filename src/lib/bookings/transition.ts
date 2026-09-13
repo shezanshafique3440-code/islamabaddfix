@@ -4,6 +4,7 @@ import { AppError } from '../errors';
 import { AUDIT_ACTIONS, recordAudit } from '../audit';
 import { getSetting } from '../settings';
 import { splitCommission } from '../money';
+import { activeBenefitsFor, emergencyFeeWaiverPaisa, memberDiscountPaisa } from '../memberships';
 import { assertTransition, actorForRole, type Actor } from './state-machine';
 
 /**
@@ -124,10 +125,28 @@ export async function transitionBooking(input: TransitionInput): Promise<Transit
         );
       }
 
-      const gross = Math.max(0, finalTotal - booking.discountPaisa);
+      // Membership benefits are read from the member's own row and applied
+      // here, in the transaction that freezes the total. As with commission,
+      // nothing the client sends can influence what comes off the bill.
+      //
+      // The emergency fee is excluded from the discount base — that money is
+      // the technician's for turning out at night, not ours to discount. A plan
+      // can cover it separately through its waiver.
+      const benefits = await activeBenefitsFor(booking.customerId, tx);
+      const waivedEmergencyPaisa = emergencyFeeWaiverPaisa(benefits, booking.emergencyFeePaisa);
+      const discountBase = Math.max(
+        0,
+        finalTotal - booking.emergencyFeePaisa - booking.discountPaisa,
+      );
+      const { discountPaisa: memberDiscount } = memberDiscountPaisa(benefits, discountBase);
+      const membershipSavings = memberDiscount + waivedEmergencyPaisa;
+
+      const gross = Math.max(0, finalTotal - booking.discountPaisa - membershipSavings);
       const { commissionPaisa, providerEarningsPaisa } = splitCommission(gross, commissionRateBp);
 
       patch.finalTotalPaisa = finalTotal;
+      patch.membershipDiscountPaisa = membershipSavings;
+      if (benefits) patch.membership = { connect: { id: benefits.membershipId } };
       // Commission is computed here, server-side, and frozen onto the booking.
       patch.commissionRateBp = commissionRateBp;
       patch.commissionPaisa = commissionPaisa;
@@ -144,11 +163,50 @@ export async function transitionBooking(input: TransitionInput): Promise<Transit
       const eligible =
         guaranteeEnabled && serviceRow.guaranteeEligible && !excluded.includes(serviceRow.slug);
 
+      // A plan's bonus days extend an existing guarantee; they never create one
+      // on a service that is not covered. Selling cover on an excluded service
+      // would be exactly the kind of promise this product does not make.
+      const guaranteeDays = eligible ? days + (benefits?.guaranteeBonusDays ?? 0) : 0;
+
       patch.guaranteeEligible = eligible;
-      patch.guaranteeDays = eligible ? days : 0;
+      patch.guaranteeDays = guaranteeDays;
       patch.guaranteeExpiresAt = eligible
-        ? new Date(now.getTime() + days * 24 * 60 * 60 * 1000)
+        ? new Date(now.getTime() + guaranteeDays * 24 * 60 * 60 * 1000)
         : null;
+
+      // Ledger: what the membership actually paid out on this booking, so a
+      // line on a receipt can always be traced back to the plan that granted it.
+      if (benefits) {
+        const entries: Array<{
+          kind: 'DISCOUNT' | 'EMERGENCY_FEE_WAIVER' | 'GUARANTEE_EXTENSION';
+          amountPaisa: number;
+          days: number;
+        }> = [];
+        if (memberDiscount > 0) {
+          entries.push({ kind: 'DISCOUNT', amountPaisa: memberDiscount, days: 0 });
+        }
+        if (waivedEmergencyPaisa > 0) {
+          entries.push({
+            kind: 'EMERGENCY_FEE_WAIVER',
+            amountPaisa: waivedEmergencyPaisa,
+            days: 0,
+          });
+        }
+        if (eligible && benefits.guaranteeBonusDays > 0) {
+          entries.push({
+            kind: 'GUARANTEE_EXTENSION',
+            amountPaisa: 0,
+            days: benefits.guaranteeBonusDays,
+          });
+        }
+        for (const entry of entries) {
+          await tx.membershipBenefit.upsert({
+            where: { bookingId_kind: { bookingId: booking.id, kind: entry.kind } },
+            create: { membershipId: benefits.membershipId, bookingId: booking.id, ...entry },
+            update: { membershipId: benefits.membershipId, ...entry },
+          });
+        }
+      }
     }
 
     const updated = await tx.booking.update({ where: { id: booking.id }, data: patch });

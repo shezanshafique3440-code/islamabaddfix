@@ -8,6 +8,7 @@ const LINKS = [
   { href: '/account', label: 'My bookings', exact: true },
   { href: '/account/addresses', label: 'Addresses' },
   { href: '/account/notifications', label: 'Notifications', badgeKey: 'unread' },
+  { href: '/account/membership', label: 'Membership' },
   { href: '/account/support', label: 'Support' },
   { href: '/account/profile', label: 'Profile' },
 ];

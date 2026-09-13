@@ -5,6 +5,7 @@ import { isStaff } from '../auth/rbac';
 import type { AuthContext } from '../auth/session';
 import { fileUrl } from '../storage';
 import { maskPhone } from '../utils';
+import { bookingTotals } from './totals';
 import {
   ACTIVE_STATUSES,
   actorForRole,
@@ -89,6 +90,7 @@ const DETAIL_INCLUDE = {
   disputes: { orderBy: { createdAt: 'desc' as const } },
   guaranteeClaims: { orderBy: { createdAt: 'desc' as const } },
   promoCode: { select: { code: true, kind: true, value: true } },
+  membership: { select: { plan: { select: { name: true } } } },
 } satisfies Prisma.BookingInclude;
 
 type BookingDetailRow = Prisma.BookingGetPayload<{ include: typeof DETAIL_INCLUDE }>;
@@ -411,7 +413,11 @@ export function projectBooking(
       finalTotalPaisa: booking.finalTotalPaisa,
       emergencyFeePaisa: booking.emergencyFeePaisa,
       discountPaisa: booking.discountPaisa,
+      membershipDiscountPaisa: booking.membershipDiscountPaisa,
+      membershipPlanName: booking.membership?.plan.name ?? null,
       promoCode: booking.promoCode?.code ?? null,
+      // What the customer actually owes, after every discount.
+      payablePaisa: bookingTotals(booking).payablePaisa,
       // Commission is platform-internal; providers see their own earnings.
       commissionPaisa: viewer === 'ADMIN' ? booking.commissionPaisa : undefined,
       commissionRateBp: viewer === 'ADMIN' ? booking.commissionRateBp : undefined,

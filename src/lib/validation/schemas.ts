@@ -593,3 +593,46 @@ export const setUserActiveSchema = z.object({
   isActive: z.boolean(),
   reason: z.string().trim().min(4, 'Give a reason.').max(500),
 });
+
+// ------------------------------------------------------------------ memberships
+
+export const membershipPlanWriteSchema = z.object({
+  code: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .min(2)
+    .max(32)
+    .regex(/^[a-z0-9-]+$/, 'The code can only contain letters, digits and dashes.'),
+  name: z.string().trim().min(2, 'Enter at least 2 characters.').max(60),
+  tagline: z.string().trim().max(120).optional().nullable(),
+  description: z.string().trim().min(10, 'Enter at least 10 characters.').max(1000),
+  priceRupees: rupeesSchema,
+  periodDays: z.number().int().min(7, 'A plan must run for at least 7 days.').max(1095),
+  /** Percent, converted to basis points server-side. */
+  discountPercent: z.number().min(0).max(50).default(0),
+  maxDiscountRupees: rupeesSchema.optional().nullable(),
+  guaranteeBonusDays: z.number().int().min(0).max(365).default(0),
+  priorityFanoutBonus: z.number().int().min(0).max(20).default(0),
+  emergencyFeeWaiverRupees: rupeesSchema.default(0),
+  isActive: z.boolean().default(true),
+  sortOrder: z.number().int().min(0).max(1000).default(0),
+});
+
+export const membershipPurchaseSchema = z.object({
+  planId: uuidSchema,
+  method: z.enum(['CASH', 'BANK_TRANSFER', 'ONLINE_GATEWAY']),
+});
+
+export const membershipCancelSchema = z.object({
+  reason: z.string().trim().min(4, 'Give a reason.').max(500),
+});
+
+export const membershipConfirmSchema = z.object({
+  externalRef: z.string().trim().max(120).optional().nullable(),
+});
+
+export const adminMembershipQuerySchema = paginationSchema.extend({
+  status: z.enum(['PENDING_PAYMENT', 'ACTIVE', 'EXPIRED', 'CANCELLED']).optional(),
+  search: z.string().trim().max(120).optional(),
+});

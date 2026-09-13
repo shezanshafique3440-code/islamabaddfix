@@ -97,7 +97,9 @@ export default async function AdminProviderDetailPage({ params }: Params) {
             <Rating value={provider.ratingAverage} count={provider.ratingCount} size="sm" />
             <span className="text-sm text-ink-600">{provider.completedJobs} jobs completed</span>
             <span className="text-sm text-ink-600">{provider._count.bookings} total bookings</span>
-            <span className="text-sm text-ink-600">{formatDate(provider.createdAt)} se member</span>
+            <span className="text-sm text-ink-600">
+              Member since {formatDate(provider.createdAt)}
+            </span>
           </div>
         </div>
       </header>
@@ -176,7 +178,7 @@ export default async function AdminProviderDetailPage({ params }: Params) {
                     </span>
                   </span>
                   <span className="shrink-0 font-medium text-ink-900">
-                    {formatPaisa(entry.startingPricePaisa)} se
+                    From {formatPaisa(entry.startingPricePaisa)}
                   </span>
                 </li>
               ))}
