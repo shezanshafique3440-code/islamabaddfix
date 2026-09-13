@@ -7,7 +7,9 @@ import { Dialog } from '@/components/ui/Dialog';
 
 interface CallChannel {
   mode: 'masked' | 'direct';
-  dialNumber: string;
+  dialNumber: string | null;
+  ringsYouFirst: boolean;
+  callReference: string | null;
   counterpartName: string;
   numberIsReal: boolean;
   expiresInMinutes: number | null;
@@ -45,6 +47,8 @@ export function CallButton({
       setChannel({
         mode: 'direct',
         dialNumber: fallbackNumber,
+        ringsYouFirst: false,
+        callReference: null,
         counterpartName: 'your technician',
         numberIsReal: true,
         expiresInMinutes: null,
@@ -82,12 +86,16 @@ export function CallButton({
               <Button variant="outline" onClick={() => setChannel(null)}>
                 Close
               </Button>
-              <a
-                href={`tel:${channel.dialNumber.replace(/\s+/g, '')}`}
-                className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-brand-700 px-4 text-[0.9375rem] font-semibold text-white hover:bg-brand-800 dark:text-brand-50"
-              >
-                Dial {channel.dialNumber}
-              </a>
+              {/* In masked mode the platform rings the caller, so there is
+                  nothing to dial and offering a dial button would be a lie. */}
+              {channel.dialNumber ? (
+                <a
+                  href={`tel:${channel.dialNumber.replace(/\s+/g, '')}`}
+                  className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-brand-700 px-4 text-[0.9375rem] font-semibold text-white hover:bg-brand-800 dark:text-brand-50"
+                >
+                  Dial {channel.dialNumber}
+                </a>
+              ) : null}
             </>
           }
         >
@@ -103,9 +111,20 @@ export function CallButton({
             <p className="rounded-xl bg-ink-50 px-3.5 py-2.5 text-sm leading-relaxed text-ink-600">
               {channel.note}
             </p>
+            {channel.ringsYouFirst ? (
+              <p className="rounded-xl border border-brand-200 bg-brand-50 px-3.5 py-2.5 text-sm font-medium leading-relaxed text-brand-800">
+                Keep this phone to hand — the call is coming to you.
+              </p>
+            ) : null}
             {channel.expiresInMinutes !== null ? (
               <p className="text-xs text-ink-500">
                 The bridge stays open for {channel.expiresInMinutes} minutes.
+              </p>
+            ) : null}
+            {channel.callReference ? (
+              <p className="text-xs text-ink-500">
+                Call reference {channel.callReference} — quote it if you need to report a problem
+                with this call.
               </p>
             ) : null}
           </div>

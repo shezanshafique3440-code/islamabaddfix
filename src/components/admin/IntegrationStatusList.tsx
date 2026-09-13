@@ -36,7 +36,11 @@ export function IntegrationStatusList({
             key={channel.channel}
             label={CHANNEL_LABELS[channel.channel] ?? channel.channel}
             configured={channel.configured}
-            note={channel.configured ? undefined : 'Credentials are not set'}
+            note={
+              channel.configured
+                ? undefined
+                : (CHANNEL_HINTS[channel.channel] ?? 'Credentials are not set')
+            }
           />
         ))}
       </Panel>
@@ -114,6 +118,17 @@ export function IntegrationStatusList({
     </div>
   );
 }
+
+/**
+ * What each channel is actually waiting for. Push is the one an operator can
+ * satisfy on their own, so it says how rather than just what.
+ */
+const CHANNEL_HINTS: Record<string, string> = {
+  EMAIL: 'EMAIL_PROVIDER + EMAIL_API_KEY, or SMTP_URL',
+  SMS: 'SMS_PROVIDER + SMS_API_KEY (and SMS_GATEWAY_URL for a generic gateway)',
+  WHATSAPP: 'WHATSAPP_API_KEY + WHATSAPP_PHONE_NUMBER_ID',
+  PUSH: 'No account needed — run `npm run vapid:keys` and set VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY',
+};
 
 const CHANNEL_LABELS: Record<string, string> = {
   IN_APP: 'In-app',

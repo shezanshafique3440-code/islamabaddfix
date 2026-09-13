@@ -376,6 +376,13 @@ refrigeration or structural work.
 - **Mobile first.** Most of this market is on a mid-range Android phone on
   mobile data; layouts are built at 360px and up, with a bottom navigation bar
   on small screens.
+- **Web Push is implemented, not delegated.** RFC 8291 payload encryption and
+  RFC 8292 VAPID are written out in `src/lib/notifications/push/`, for the same
+  reason the TOTP implementation is: they are short, fully specified, and worth
+  being able to read. It is also the only integration in the product that needs
+  no account with anybody — the keypair is self-issued, so a deployment can turn
+  push on by itself. The tests prove it by decrypting the server's own output
+  with an independent implementation of the browser half.
 - **Every colour and every shadow is a CSS variable.** Components name a step
   (`bg-surface`, `text-ink-600`, `shadow-e2`), never a value, and `:root` /
   `.dark` in `globals.css` are the only places a value appears. That is what
@@ -384,7 +391,7 @@ refrigeration or structural work.
   is nearly invisible on a dark ground and a hairline top highlight is what
   actually reads as "raised" there.
 - **Motion is opt-in and reversible.** Sections reveal once as they scroll into
-  view (`components/ui/Reveal.tsx`); the markup ships *visible* and the hidden
+  view (`components/ui/Reveal.tsx`); the markup ships _visible_ and the hidden
   state is added by script before the first paint, so a dropped JavaScript chunk
   leaves a complete page rather than a column of blank space. Everything in the
   file — the reveal, the count-up on the trust figures, the drifting hero

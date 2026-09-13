@@ -407,18 +407,38 @@ Two operational notes:
 Every integration is off until credentials exist, and turning one on is a
 configuration change and a restart — no code change, no migration.
 
-| Integration  | Set                                                            | Effect                                                                            |
-| ------------ | -------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| AI assistant | `AI_PROVIDER=anthropic\|openai`, `AI_API_KEY`, `AI_MODEL`      | Intake stops saying "Rule-based" and starts saying "AI"                           |
-| Maps         | `MAPS_PROVIDER`, `MAPS_API_KEY`, `NEXT_PUBLIC_MAPS_*`          | Geocoding, map tiles and real distances; needs a rebuild for the public variables |
-| Email        | `EMAIL_PROVIDER`, `EMAIL_API_KEY`, `EMAIL_FROM`                | Notifications go out by email as well as in-app                                   |
-| SMS          | `SMS_PROVIDER`, `SMS_API_KEY`, `SMS_SENDER_ID`                 | SMS channel                                                                       |
-| WhatsApp     | `WHATSAPP_*`                                                   | Inbound booking by WhatsApp                                                       |
-| Voice        | `VAPI_API_KEY`, `VAPI_WEBHOOK_SECRET`                          | Voice agent intake                                                                |
-| Payments     | `PAYMENT_GATEWAY`, `PAYMENT_API_KEY`, `PAYMENT_WEBHOOK_SECRET` | Online payment becomes selectable                                                 |
-| S3 storage   | `STORAGE_DRIVER=s3`, `STORAGE_*`                               | Uploads go to object storage                                                      |
+| Integration  | Set                                                                                                           | Effect                                                                            |
+| ------------ | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| AI assistant | `AI_PROVIDER=anthropic\|openai`, `AI_API_KEY`, `AI_MODEL`                                                     | Intake stops saying "Rule-based" and starts saying "AI"                           |
+| Maps         | `MAPS_PROVIDER`, `MAPS_API_KEY`, `NEXT_PUBLIC_MAPS_*`                                                         | Geocoding, map tiles and real distances; needs a rebuild for the public variables |
+| Email        | `EMAIL_PROVIDER`, `EMAIL_API_KEY`, `EMAIL_FROM`                                                               | Notifications go out by email as well as in-app                                   |
+| SMS          | `SMS_PROVIDER=twilio\|generic`, `SMS_API_KEY`, plus `SMS_ACCOUNT_SID` (Twilio) or `SMS_GATEWAY_URL`           | SMS channel                                                                       |
+| Push         | `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT`                                                      | Browser notifications, with no account anywhere                                   |
+| WhatsApp     | `WHATSAPP_*`                                                                                                  | Inbound booking by WhatsApp                                                       |
+| Voice        | `VAPI_API_KEY`, `VAPI_WEBHOOK_SECRET`                                                                         | Voice agent intake                                                                |
+| Calling      | `CALLING_PROVIDER`, `CALLING_FROM_NUMBER`, provider credentials                                               | Masked calls between customer and technician                                      |
+| Payments     | `PAYMENT_GATEWAY`, `PAYMENT_API_KEY`, `PAYMENT_CHECKOUT_URL`, `PAYMENT_MERCHANT_ID`, `PAYMENT_WEBHOOK_SECRET` | Online payment becomes selectable                                                 |
+| S3 storage   | `STORAGE_DRIVER=s3`, `STORAGE_*`                                                                              | Uploads go to object storage                                                      |
 
-Email and SMS are worth adding first for a reason beyond notifications: without
+**Push is the one to turn on first**, because it costs nothing and needs nobody:
+
+```bash
+npm run vapid:keys      # prints the pair; put it in the environment and restart
+```
+
+The keys are self-issued — browsers accept them because the server signs a JWT
+with the private half, not because a provider granted them. Rotating the pair
+invalidates every existing subscription, since each browser is bound to the key
+it was given, so everyone has to re-enable notifications; plan it rather than
+discover it.
+
+**The online payment driver is a template.** It implements the signed
+hosted-checkout redirect that JazzCash, Easypaisa and Safepay share, and it is
+tested against a fake gateway — but the field names differ between real
+gateways, and nobody has run it against a sandbox. Treat the first real
+transaction as the integration test, and do it in sandbox mode.
+
+Email and SMS are worth adding next for a reason beyond notifications: without
 them, password reset and phone verification have no way to deliver anything, and
 the UI says so plainly rather than pretending. Outside production the token is
 handed back in the response so the flow is usable on a fresh checkout; in

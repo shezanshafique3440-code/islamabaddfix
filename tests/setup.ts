@@ -41,6 +41,7 @@ export async function truncateAll(): Promise<void> {
       "RecurringSchedule", "Booking",
       "UploadedFile", "Address", "ServiceArea", "ProviderAvailability", "ProviderLocation",
       "ProviderService", "ProviderVerification", "ProviderProfile", "CustomerProfile",
+      "PushSubscription",
       "RefreshToken", "User", "Service", "ServiceCategory", "ServiceZone", "PromoCode",
       "RateLimitHit", "Setting"
     RESTART IDENTITY CASCADE

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { Dialog } from '@/components/ui/Dialog';
 import { Checkbox, TextInput, Textarea } from '@/components/ui/Field';
 import { useToast } from '@/components/ui/Toast';
+import { PushToggle } from './PushToggle';
 
 interface Preferences {
   email: boolean;
@@ -19,7 +20,7 @@ const CHANNELS: Array<{ key: keyof Preferences; label: string; hint: string }> =
   { key: 'email', label: 'Email', hint: 'Booking confirmations, quotes and receipts.' },
   { key: 'sms', label: 'SMS', hint: 'Notice before the technician arrives.' },
   { key: 'whatsapp', label: 'WhatsApp', hint: 'The same updates on WhatsApp.' },
-  { key: 'push', label: 'Push', hint: 'Browser ya app notification.' },
+  { key: 'push', label: 'Push', hint: 'Updates in your browser, even when the site is closed.' },
   {
     key: 'marketing',
     label: 'Offers and new services',
@@ -55,18 +56,26 @@ export function NotificationPreferences({ initial }: { initial: Preferences }) {
   return (
     <div className="space-y-3">
       {CHANNELS.map((channel) => (
-        <Checkbox
-          key={channel.key}
-          checked={prefs[channel.key]}
-          disabled={saving === channel.key}
-          onChange={(event) => void toggle(channel.key, event.target.checked)}
-          label={
-            <span>
-              <span className="font-medium text-ink-900">{channel.label}</span>
-              <span className="mt-0.5 block text-xs text-ink-500">{channel.hint}</span>
-            </span>
-          }
-        />
+        <div key={channel.key}>
+          <Checkbox
+            checked={prefs[channel.key]}
+            disabled={saving === channel.key}
+            onChange={(event) => void toggle(channel.key, event.target.checked)}
+            label={
+              <span>
+                <span className="font-medium text-ink-900">{channel.label}</span>
+                <span className="mt-0.5 block text-xs text-ink-500">{channel.hint}</span>
+              </span>
+            }
+          />
+          {/* Wanting push and having granted it in this browser are two
+              different things, so the device-level control sits with it. */}
+          {channel.key === 'push' && prefs.push ? (
+            <div className="ml-7 mt-2.5">
+              <PushToggle />
+            </div>
+          ) : null}
+        </div>
       ))}
       <p className="border-t border-ink-100 pt-3 text-xs leading-relaxed text-ink-500">
         Essential booking notices always stay on inside the app — they cannot be turned off.

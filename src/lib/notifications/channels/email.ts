@@ -10,10 +10,12 @@ import { renderEmail } from '../templates';
 /**
  * Email delivery.
  *
- * Two backends behind one driver: Resend's HTTP API, and SMTP. SMTP is
- * declared but not implemented here because pulling nodemailer into the bundle
- * for a path nobody has configured yet is not worth it — it reports itself as
- * unconfigured rather than silently dropping mail.
+ * Two backends behind one driver: Resend's HTTP API for a hosted setup, and
+ * SMTP for everything else — a company mailbox, a VPS relay, or one of the
+ * local providers that offers nothing but SMTP.
+ *
+ * The SMTP module is imported lazily. It opens a connection pool, and a
+ * deployment on Resend should not pay for that just by importing this file.
  */
 export const emailChannel: NotificationChannelDriver = {
   channel: 'EMAIL',
@@ -59,9 +61,15 @@ export const emailChannel: NotificationChannelDriver = {
       }
     }
 
-    return {
-      status: 'SKIPPED_NOT_CONFIGURED',
-      reason: 'SMTP transport is declared but not implemented; use EMAIL_PROVIDER=resend.',
-    };
+    try {
+      const { sendViaSmtp } = await import('../transports/smtp');
+      const messageId = await sendViaSmtp({ to: target.email, subject, html, text });
+      return { status: 'SENT', providerRef: messageId };
+    } catch (error) {
+      return {
+        status: 'FAILED',
+        reason: error instanceof Error ? error.message.slice(0, 200) : 'Unknown SMTP error',
+      };
+    }
   },
 };

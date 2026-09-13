@@ -1,4 +1,5 @@
 import { execSync } from 'child_process';
+import { createECDH } from 'node:crypto';
 
 /**
  * Test database bootstrap.
@@ -21,6 +22,21 @@ export default function globalSetup(): void {
   }
 
   process.env.DATABASE_URL = url;
+
+  /*
+   * Web Push is the one integration the suite can genuinely exercise, because
+   * its keys are self-issued rather than granted by a provider. A throwaway
+   * pair is generated here — before any worker is forked and therefore before
+   * anything reads `src/lib/env.ts`, which parses the environment once on
+   * import. Generated rather than hardcoded so no private key, however inert,
+   * is ever committed.
+   */
+  const vapid = createECDH('prime256v1');
+  vapid.generateKeys();
+  process.env.VAPID_PUBLIC_KEY = vapid.getPublicKey().toString('base64url');
+  process.env.VAPID_PRIVATE_KEY = vapid.getPrivateKey().toString('base64url');
+  process.env.VAPID_SUBJECT = 'mailto:test@islamabadfix.pk';
+
   // `NODE_ENV` is typed read-only by next-env.d.ts; the tests genuinely do
   // need to set it before anything reads it.
   (process.env as Record<string, string>).NODE_ENV = 'test';

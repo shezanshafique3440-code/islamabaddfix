@@ -3,6 +3,7 @@ import { prisma } from '../db';
 import { AppError } from '../errors';
 import { env } from '../env';
 import { AUDIT_ACTIONS, recordAudit } from '../audit';
+import { placeBridgedCall } from './bridge';
 
 /**
  * Calling between a customer and their technician.
@@ -26,8 +27,15 @@ export type CallMode = 'masked' | 'direct';
 
 export interface CallChannel {
   mode: CallMode;
-  /** The number to dial. A platform number when masked, the party's when not. */
-  dialNumber: string;
+  /**
+   * The number to dial, when there is one to dial. Null in masked mode: the
+   * platform rings the caller instead, so there is nothing for them to tap.
+   */
+  dialNumber: string | null;
+  /** True when the platform is calling the user rather than the other way round. */
+  ringsYouFirst: boolean;
+  /** The provider's call reference, for support to trace a complaint. */
+  callReference: string | null;
   /** Who the customer is calling, for the UI. */
   counterpartName: string;
   /** True when the counterpart's real number is visible to the caller. */
@@ -119,6 +127,8 @@ export async function openCallChannel(params: {
     return {
       mode: 'direct',
       dialNumber: counterpartNumber,
+      ringsYouFirst: false,
+      callReference: null,
       counterpartName,
       numberIsReal: true,
       expiresInMinutes: null,
@@ -126,10 +136,29 @@ export async function openCallChannel(params: {
     };
   }
 
-  // A configured provider would be asked for a bridge here. Nothing on this
-  // deployment reaches that branch, so it is not written as if it were tested.
-  throw new AppError(
-    'INTEGRATION_NOT_CONFIGURED',
-    `${env.CALLING_PROVIDER} masking is selected but the bridge call is not implemented. Add your provider's call-session request in src/lib/calling.`,
-  );
+  // The caller's own number, which the provider rings first.
+  const callerNumber = callerIsCustomer
+    ? (booking.address.contactPhone ?? booking.customer.phone)
+    : booking.provider.contactPhone;
+
+  if (!callerNumber) {
+    throw new AppError(
+      'VALIDATION_ERROR',
+      'A masked call needs your own phone number on file. Add it to your profile first.',
+    );
+  }
+
+  const bridge = await placeBridgedCall(callerNumber, counterpartNumber);
+
+  return {
+    mode: 'masked',
+    // Nothing to dial: the phone is about to ring.
+    dialNumber: null,
+    ringsYouFirst: true,
+    callReference: bridge.reference,
+    counterpartName,
+    numberIsReal: false,
+    expiresInMinutes: null,
+    note: `Your phone will ring in a moment. Answer it and we will connect you to ${counterpartName}. Neither of you sees the other's number — both calls come from the platform number.`,
+  };
 }

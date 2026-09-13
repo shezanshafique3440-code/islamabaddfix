@@ -260,6 +260,7 @@ model User {
   twoFactor          TwoFactorSecret?
   memberships        Membership[]
   recurringSchedules RecurringSchedule[]
+  pushSubscriptions  PushSubscription[]
 
   @@index([role, isActive])
   @@index([createdAt])
@@ -307,6 +308,36 @@ model NotificationPreference {
   /// Marketing is opt-*in*, unlike everything else here.
   marketing Boolean  @default(false)
   updatedAt DateTime @updatedAt
+}
+
+/// A browser's Web Push subscription.
+///
+/// The endpoint is the push service's own URL (FCM, Mozilla, Apple) and is the
+/// natural identity here — one browser profile on one device produces one
+/// endpoint, and re-subscribing returns the same one. `p256dh` and `auth` are
+/// the keys that browser generated; they are useless without the endpoint and
+/// are not secrets of ours, so they are stored as the browser handed them over.
+///
+/// Rows are deleted rather than kept when the push service reports the
+/// subscription gone (404/410). A dead subscription that lingers is a delivery
+/// that fails forever on every notification.
+model PushSubscription {
+  id           String    @id @default(uuid()) @db.Uuid
+  userId       String    @db.Uuid
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  endpoint     String    @unique
+  p256dh       String
+  auth         String
+  /// Shown in the UI so someone can tell which device they are turning off.
+  userAgent    String?
+  createdAt    DateTime  @default(now())
+  lastUsedAt   DateTime?
+  /// Consecutive transport failures. Reset on success; used to retire a
+  /// subscription that is failing for a reason the push service does not
+  /// report as "gone".
+  failureCount Int       @default(0)
+
+  @@index([userId])
 }
 
 /// Second factor for staff accounts.

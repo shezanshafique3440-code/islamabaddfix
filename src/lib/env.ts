@@ -69,9 +69,23 @@ const schema = z.object({
   WHATSAPP_VERIFY_TOKEN: optionalString,
   WHATSAPP_APP_SECRET: optionalString,
 
-  SMS_PROVIDER: z.enum(['none', 'generic']).default('none'),
+  SMS_PROVIDER: z.enum(['none', 'generic', 'twilio']).default('none'),
   SMS_API_KEY: optionalString,
   SMS_SENDER_ID: z.string().default('ISBFIX'),
+  // Twilio needs an account SID alongside the auth token in SMS_API_KEY.
+  SMS_ACCOUNT_SID: optionalString,
+  /*
+   * The `generic` driver, for the Pakistani aggregators that each invent their
+   * own shape. The operator supplies the shape rather than the code guessing
+   * it: a URL with {key} {to} {text} {from} placeholders, and — for POST — a
+   * body template using the same placeholders.
+   */
+  SMS_GATEWAY_URL: optionalString,
+  SMS_GATEWAY_METHOD: z.enum(['GET', 'POST']).default('GET'),
+  SMS_GATEWAY_BODY: optionalString,
+  SMS_GATEWAY_CONTENT_TYPE: z.string().default('application/x-www-form-urlencoded'),
+  /** Extra headers, as `Name: value` pairs separated by newlines or `|`. */
+  SMS_GATEWAY_HEADERS: optionalString,
 
   VAPI_API_KEY: optionalString,
   VAPI_WEBHOOK_SECRET: optionalString,
@@ -79,12 +93,35 @@ const schema = z.object({
   PAYMENT_GATEWAY: z.enum(['none', 'generic']).default('none'),
   PAYMENT_API_KEY: optionalString,
   PAYMENT_WEBHOOK_SECRET: optionalString,
+  /*
+   * The `generic` driver posts a signed checkout request and follows the
+   * redirect the gateway answers with — the shape JazzCash, Easypaisa and
+   * Safepay all share. The endpoint and merchant id come from the gateway;
+   * without them the driver reports itself unconfigured rather than failing at
+   * the moment someone tries to pay.
+   */
+  PAYMENT_CHECKOUT_URL: optionalString,
+  PAYMENT_MERCHANT_ID: optionalString,
+  /** Signs the outgoing checkout request. Falls back to PAYMENT_API_KEY. */
+  PAYMENT_SIGNING_SECRET: optionalString,
 
   // Masked calling. With no provider the app hands over the real number it
   // already shares after acceptance, and labels it as such.
   CALLING_PROVIDER: z.enum(['none', 'twilio', 'vonage']).default('none'),
   CALLING_API_KEY: optionalString,
   CALLING_FROM_NUMBER: optionalString,
+  /** Twilio: the account SID that goes with the auth token above. */
+  CALLING_ACCOUNT_SID: optionalString,
+  /** Vonage: the Voice application id, and its PKCS#8 private key. */
+  CALLING_APPLICATION_ID: optionalString,
+  CALLING_PRIVATE_KEY: optionalString,
+
+  // Web Push (RFC 8292). The one integration that needs no account with
+  // anybody: generate the pair with `npm run vapid:keys` and it works.
+  VAPID_PUBLIC_KEY: optionalString,
+  VAPID_PRIVATE_KEY: optionalString,
+  // Who a push service should contact about this server. mailto: or https:.
+  VAPID_SUBJECT: optionalString,
 
   // Shared secret for the scheduled-job endpoints. Without it those endpoints
   // refuse every caller rather than running unauthenticated.
@@ -135,7 +172,11 @@ export const integrations = {
     provider: env.EMAIL_PROVIDER,
   },
   sms: {
-    configured: env.SMS_PROVIDER !== 'none' && Boolean(env.SMS_API_KEY),
+    // `generic` also needs the endpoint: a key with nowhere to send is not
+    // configured, however set it looks.
+    configured:
+      (env.SMS_PROVIDER === 'generic' && Boolean(env.SMS_API_KEY && env.SMS_GATEWAY_URL)) ||
+      (env.SMS_PROVIDER === 'twilio' && Boolean(env.SMS_API_KEY && env.SMS_ACCOUNT_SID)),
     provider: env.SMS_PROVIDER,
   },
   whatsapp: {
@@ -148,14 +189,26 @@ export const integrations = {
     inboundConfigured: Boolean(env.VAPI_WEBHOOK_SECRET),
   },
   onlinePayments: {
-    configured: env.PAYMENT_GATEWAY !== 'none' && Boolean(env.PAYMENT_API_KEY),
+    // A key with no endpoint cannot take a payment, so it is not "configured".
+    configured:
+      env.PAYMENT_GATEWAY !== 'none' &&
+      Boolean(env.PAYMENT_API_KEY && env.PAYMENT_CHECKOUT_URL && env.PAYMENT_MERCHANT_ID),
     provider: env.PAYMENT_GATEWAY,
   },
   calling: {
+    // Each provider needs more than an API key, and a half-configured bridge
+    // is worse than none: it would fail at the moment someone taps "Call".
     configured: Boolean(
-      env.CALLING_PROVIDER !== 'none' && env.CALLING_API_KEY && env.CALLING_FROM_NUMBER,
+      env.CALLING_FROM_NUMBER &&
+      ((env.CALLING_PROVIDER === 'twilio' && env.CALLING_API_KEY && env.CALLING_ACCOUNT_SID) ||
+        (env.CALLING_PROVIDER === 'vonage' &&
+          env.CALLING_APPLICATION_ID &&
+          env.CALLING_PRIVATE_KEY)),
     ),
     provider: env.CALLING_PROVIDER,
+  },
+  push: {
+    configured: Boolean(env.VAPID_PUBLIC_KEY && env.VAPID_PRIVATE_KEY),
   },
   cron: {
     configured: Boolean(env.CRON_SECRET),

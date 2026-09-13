@@ -133,7 +133,10 @@ export const api = {
   post: <T>(path: string, body?: unknown) => unwrap<T>(path, { method: 'POST', body }),
   put: <T>(path: string, body?: unknown) => unwrap<T>(path, { method: 'PUT', body }),
   patch: <T>(path: string, body?: unknown) => unwrap<T>(path, { method: 'PATCH', body }),
-  delete: <T>(path: string) => unwrap<T>(path, { method: 'DELETE' }),
+  // A body on DELETE is unusual but legal, and it is the honest shape when
+  // the thing being deleted is identified by something too long for a URL —
+  // a push endpoint, for instance.
+  delete: <T>(path: string, body?: unknown) => unwrap<T>(path, { method: 'DELETE', body }),
   upload: <T>(path: string, formData: FormData) =>
     unwrap<T>(path, { method: 'POST', body: formData }),
   /** Use when the response's `meta` (e.g. pagination) is needed. */
