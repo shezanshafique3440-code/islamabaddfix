@@ -234,6 +234,8 @@ export default async function AdminDashboardPage() {
             maps={mapsStatus()}
             whatsapp={{ ...integrations.whatsapp }}
             voice={{ ...integrations.voice }}
+            calling={{ ...integrations.calling }}
+            cron={{ ...integrations.cron }}
             storage={{ ...integrations.storage }}
           />
         </div>

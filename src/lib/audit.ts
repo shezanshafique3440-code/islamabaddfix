@@ -56,6 +56,7 @@ export const AUDIT_ACTIONS = {
   RECURRING_CREATED: 'recurring.created',
   RECURRING_STATUS_CHANGED: 'recurring.status_changed',
   RECURRING_RUN: 'recurring.run',
+  CALL_CHANNEL_OPENED: 'booking.call_opened',
 } as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[keyof typeof AUDIT_ACTIONS];

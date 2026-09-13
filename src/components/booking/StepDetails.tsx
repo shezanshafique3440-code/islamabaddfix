@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import Image from 'next/image';
 import { api, ApiError } from '@/lib/client/api';
 import { Badge } from '@/components/ui/Badge';
+import { PhotoAssessment } from './PhotoAssessment';
 import { useToast } from '@/components/ui/Toast';
 import { StepFooter, StepShell } from './WizardProgress';
 import type { BookingDraft, FlatService } from './types';
@@ -171,6 +172,15 @@ export function StepDetails({
             </p>
           ) : null}
 
+          {/* One assessment at a time: the first photo is the one people send of
+              the actual problem, and asking about every thumbnail would spend
+              model budget on pictures of a doorway. */}
+          {media.some((file) => file.mimeType.startsWith('image/')) ? (
+            <PhotoAssessment
+              fileId={media.find((file) => file.mimeType.startsWith('image/'))!.id}
+            />
+          ) : null}
+
           {media.length > 0 ? (
             <ul className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4">
               {media.map((file) => (
@@ -195,7 +205,7 @@ export function StepDetails({
                     type="button"
                     onClick={() => remove(file.id)}
                     className="absolute -right-1.5 -top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-ink-900 text-white shadow-sm hover:bg-alert-600"
-                    aria-label={`${file.originalName} hatayein`}
+                    aria-label={`Remove ${file.originalName}`}
                   >
                     <svg
                       viewBox="0 0 20 20"

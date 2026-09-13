@@ -14,6 +14,8 @@ export function IntegrationStatusList({
   maps,
   whatsapp,
   voice,
+  calling,
+  cron,
   storage,
 }: {
   notifications: Array<{ channel: string; configured: boolean }>;
@@ -22,6 +24,8 @@ export function IntegrationStatusList({
   maps: { configured: boolean; provider: string };
   whatsapp: { configured: boolean; inboundConfigured: boolean };
   voice: { configured: boolean; inboundConfigured: boolean };
+  calling: { configured: boolean; provider: string };
+  cron: { configured: boolean };
   storage: { driver: string; configured: boolean };
 }) {
   return (
@@ -82,6 +86,24 @@ export function IntegrationStatusList({
           label="Voice agent"
           configured={voice.configured}
           note={voice.configured ? undefined : 'VAPI_API_KEY is required'}
+        />
+        <StatusRow
+          label="Masked calling"
+          configured={calling.configured}
+          note={
+            calling.configured
+              ? `Provider: ${calling.provider}`
+              : 'The real number is handed over instead, and the UI says so'
+          }
+        />
+        <StatusRow
+          label="Scheduled jobs"
+          configured={cron.configured}
+          note={
+            cron.configured
+              ? 'POST /api/cron/recurring accepts the bearer secret'
+              : 'CRON_SECRET is not set — repeat visits will not generate on their own'
+          }
         />
         <StatusRow
           label={`Storage (${storage.driver})`}

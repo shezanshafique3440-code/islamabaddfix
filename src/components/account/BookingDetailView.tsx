@@ -16,9 +16,14 @@ import { formatPaisa } from '@/lib/money';
 import { formatDateTime, formatRelative } from '@/lib/utils';
 import { BookingTracker } from './BookingTracker';
 import { QuoteCard } from './QuoteCard';
+import { TechnicianTracker } from './TechnicianTracker';
+import { CallButton } from './CallButton';
 import { BookingChat } from '@/components/booking/BookingChat';
 import { RescheduleDialog } from '@/components/booking/RescheduleDialog';
 import Link from 'next/link';
+
+/** Statuses where a technician is actually travelling, so tracking is useful. */
+const TRACKABLE: string[] = ['ON_THE_WAY', 'ARRIVED', 'IN_PROGRESS'];
 
 interface PaymentMethodOption {
   method: 'CASH' | 'BANK_TRANSFER' | 'ONLINE_GATEWAY';
@@ -264,7 +269,7 @@ export function BookingDetailView({
                 <span className="text-xs text-ink-500">{booking.provider.completedJobs} jobs</span>
                 {booking.provider.yearsExperience > 0 ? (
                   <span className="text-xs text-ink-500">
-                    {booking.provider.yearsExperience} saal
+                    {booking.provider.yearsExperience} years
                   </span>
                 ) : null}
               </div>
@@ -275,12 +280,7 @@ export function BookingDetailView({
               </div>
             </div>
             {booking.provider.contactPhone ? (
-              <a
-                href={`tel:${booking.provider.contactPhone.replace(/\s+/g, '')}`}
-                className="inline-flex h-10 shrink-0 items-center gap-2 rounded-xl border border-ink-300 px-3.5 text-sm font-medium text-ink-800 hover:bg-ink-50"
-              >
-                📞 Call
-              </a>
+              <CallButton bookingId={booking.id} fallbackNumber={booking.provider.contactPhone} />
             ) : null}
           </div>
         </section>
@@ -291,6 +291,11 @@ export function BookingDetailView({
             As soon as a technician accepts, you will get a notification.
           </p>
         </section>
+      ) : null}
+
+      {/* ---------------------------------------------------------- tracking */}
+      {booking.provider && TRACKABLE.includes(booking.status) ? (
+        <TechnicianTracker bookingId={booking.id} technicianName={booking.provider.businessName} />
       ) : null}
 
       {/* ------------------------------------------------------------ pricing */}

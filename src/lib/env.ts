@@ -80,6 +80,12 @@ const schema = z.object({
   PAYMENT_API_KEY: optionalString,
   PAYMENT_WEBHOOK_SECRET: optionalString,
 
+  // Masked calling. With no provider the app hands over the real number it
+  // already shares after acceptance, and labels it as such.
+  CALLING_PROVIDER: z.enum(['none', 'twilio', 'vonage']).default('none'),
+  CALLING_API_KEY: optionalString,
+  CALLING_FROM_NUMBER: optionalString,
+
   // Shared secret for the scheduled-job endpoints. Without it those endpoints
   // refuse every caller rather than running unauthenticated.
   CRON_SECRET: optionalString,
@@ -144,6 +150,12 @@ export const integrations = {
   onlinePayments: {
     configured: env.PAYMENT_GATEWAY !== 'none' && Boolean(env.PAYMENT_API_KEY),
     provider: env.PAYMENT_GATEWAY,
+  },
+  calling: {
+    configured: Boolean(
+      env.CALLING_PROVIDER !== 'none' && env.CALLING_API_KEY && env.CALLING_FROM_NUMBER,
+    ),
+    provider: env.CALLING_PROVIDER,
   },
   cron: {
     configured: Boolean(env.CRON_SECRET),
