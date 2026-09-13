@@ -41,9 +41,19 @@ for (const path of PAGES) {
   if (!response || response.status() >= 400) {
     note(`${path}: HTTP ${response?.status() ?? 'no response'}`);
   }
-  const body = await page.locator('body').innerText();
-  if (body.trim().length < 200) note(`${path}: rendered almost nothing`);
-  console.log(`  ${path.padEnd(16)} ${response?.status() ?? '—'}  ${body.length} chars`);
+  // "Did it render?" as a fact about structure, not about how much copy the
+  // page happens to have. A login form is deliberately short; a character
+  // count fails it for being well written.
+  const rendered = await page.evaluate(() => ({
+    heading: document.querySelector('h1')?.textContent?.trim() ?? '',
+    interactive: document.querySelectorAll('a[href], button, input').length,
+    chars: document.body.innerText.trim().length,
+  }));
+  if (!rendered.heading) note(`${path}: no <h1> — the page did not render`);
+  if (rendered.interactive < 3) note(`${path}: nothing to interact with`);
+  console.log(
+    `  ${path.padEnd(16)} ${response?.status() ?? '—'}  ${String(rendered.chars).padStart(5)} chars  ${String(rendered.interactive).padStart(3)} controls  “${rendered.heading.slice(0, 32)}”`,
+  );
   await page.close();
 }
 
@@ -53,7 +63,7 @@ const page = await context.newPage();
 page.on('pageerror', (error) => note(`/book: uncaught — ${error.message}`));
 await page.goto(`${baseUrl}/book`, { waitUntil: 'networkidle' });
 await page.fill('#problem', 'AC chal raha hai lekin thandi hawa nahi aa rahi');
-await page.click('button:has-text("Yeh dekhein")');
+await page.click('button:has-text("Take a look")');
 await page.waitForSelector('text=/Rule-based|^AI$/', { timeout: 15_000 }).catch(() => {
   note('/book: the intake assistant never answered — the wizard is not wired up');
 });

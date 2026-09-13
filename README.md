@@ -123,6 +123,7 @@ retires a zone from the admin panel, and the matcher picks it up immediately.
 | `npm test`                                | Tests only                                                                                                           |
 | `npm run smoke -- <url>`                  | Post-deploy browser check: pages render, CSP holds, the wizard responds                                              |
 | `npm run acceptance -- <url>`             | Drives the whole AC-repair scenario over HTTP against a running app, checking the database row behind every response |
+| `npm run premium -- <url>`                | Drives memberships, repeat visits, tracking and calling over HTTP, including every refusal and honest-state path     |
 | `npm run format`                          | Apply the repo's Prettier style (CI checks it)                                                                       |
 | `npm run db:seed`                         | Seed reference (and optionally demo) data                                                                            |
 | `npm run db:reset`                        | Drop and recreate the schema — refuses to touch production                                                           |

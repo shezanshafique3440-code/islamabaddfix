@@ -423,7 +423,7 @@ Server tests run against a real PostgreSQL database — the behaviour under test
 lives partly in Postgres, so mocking it out would test nothing. The suite
 refuses to run unless the database name contains `test`.
 
-Two further checks run against a _deployed_ application rather than the code:
+Three further checks run against a _deployed_ application rather than the code:
 
 - `npm run smoke -- <url>` opens the real pages in Chromium, watches for CSP
   violations and page errors, and types into the booking wizard to confirm it
@@ -431,6 +431,11 @@ Two further checks run against a _deployed_ application rather than the code:
 - `npm run acceptance -- <url>` drives the whole AC-repair scenario over HTTP —
   registration, onboarding, admin approval, booking, quoting, the job, payment,
   review, guarantee claim — asserting the database row behind every response.
+- `npm run premium -- <url>` does the same for the commercial surfaces:
+  publishing a plan and having one above the ceiling refused, buying a
+  membership and confirming that nothing is charged until an administrator says
+  so, setting up a repeat visit, and every refusal on tracking and calling —
+  before acceptance, after closure, and to a stranger.
 
 They exist because "the button is wired up" is exactly the claim that is
 worthless when asserted in isolation.

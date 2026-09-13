@@ -152,12 +152,15 @@ r = await customer.call('/api/ai/intake', {
   body: { message: 'AC se chingari nikal rahi hai aur jalne ki bu aa rahi hai' },
 });
 check(
+  // The customer still types Roman Urdu — that is what hazard detection is for.
+  // What comes back is English, and it is the specific guidance, not a referral.
   '5. a hazard forces EMERGENCY and shows safety guidance',
-  r.json.data?.urgency === 'EMERGENCY' && /breaker band/i.test(r.json.data?.safetyNotice ?? ''),
+  r.json.data?.urgency === 'EMERGENCY' &&
+    /switch off the main breaker/i.test(r.json.data?.safetyNotice ?? ''),
 );
 check(
   '   the guidance is not replaced by a generic referral',
-  !/verified technician muaina kare/i.test(r.json.data?.reply ?? ''),
+  !/have a verified technician inspect it/i.test(r.json.data?.safetyNotice ?? ''),
 );
 
 // --- 6. provider registers and onboards -----------------------------------

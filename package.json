@@ -24,7 +24,8 @@
     "test:watch": "vitest",
     "verify": "npm run typecheck && npm run lint && npm run test",
     "smoke": "node scripts/smoke.mjs",
-    "acceptance": "node scripts/acceptance-e2e.mjs"
+    "acceptance": "node scripts/acceptance-e2e.mjs",
+    "premium": "node scripts/premium-e2e.mjs"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
