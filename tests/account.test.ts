@@ -327,9 +327,9 @@ describe('account closure', () => {
     });
 
     const blockers = await closureBlockers(customer.id);
-    expect(blockers.join(' ')).toMatch(/chal rahi hai/i);
+    expect(blockers.join(' ')).toMatch(/still under way/i);
     await expect(closeAccount({ userId: customer.id, password: PASSWORD })).rejects.toThrow(
-      /chal rahi hai/i,
+      /still under way/i,
     );
   });
 
@@ -354,7 +354,7 @@ describe('account closure', () => {
     });
 
     await expect(closeAccount({ userId: customer.id, password: PASSWORD })).rejects.toThrow(
-      /payment abhi baqi/i,
+      /not been paid/i,
     );
   });
 

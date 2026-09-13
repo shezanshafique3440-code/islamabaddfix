@@ -10,7 +10,6 @@ import {
   actorForRole,
   availableTransitions,
   humanStatus,
-  humanStatusUr,
   trackerIndex,
 } from './state-machine';
 
@@ -232,7 +231,6 @@ export function summarizeBooking(booking: BookingListRow) {
     reference: booking.reference,
     status: booking.status,
     statusLabel: humanStatus(booking.status),
-    statusLabelUr: humanStatusUr(booking.status),
     trackerStep: trackerIndex(booking.status),
     urgency: booking.urgency,
     isEmergency: booking.isEmergency,
@@ -325,7 +323,6 @@ export function projectBooking(
     reference: booking.reference,
     status: booking.status,
     statusLabel: humanStatus(booking.status),
-    statusLabelUr: humanStatusUr(booking.status),
     trackerStep: trackerIndex(booking.status),
     urgency: booking.urgency,
     isEmergency: booking.isEmergency,
@@ -505,7 +502,6 @@ export function projectBooking(
       fromStatus: entry.fromStatus,
       toStatus: entry.toStatus,
       label: humanStatus(entry.toStatus),
-      labelUr: humanStatusUr(entry.toStatus),
       reason: entry.reason,
       at: entry.createdAt,
     })),
@@ -514,7 +510,6 @@ export function projectBooking(
     availableActions: availableTransitions(booking.status, actor).map((rule) => ({
       to: rule.to,
       label: rule.label,
-      labelUr: rule.labelUr ?? rule.label,
     })),
 
     intakeSummary: booking.intakeSummary,

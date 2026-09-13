@@ -58,7 +58,7 @@ describe('provider onboarding', () => {
 
     await expect(
       upsertProviderProfile(await onboardingInput(customer.id, service.id, zone.id)),
-    ).rejects.toThrow(/provider account nahi/i);
+    ).rejects.toThrow(/not a provider account/i);
   });
 
   it('lands a new provider in PENDING_VERIFICATION with no approved badges', async () => {
@@ -130,7 +130,7 @@ describe('provider onboarding', () => {
 
     await expect(
       upsertProviderProfile(await onboardingInput(user.id, service.id, zone.id)),
-    ).rejects.toThrow(/available nahi/i);
+    ).rejects.toThrow(/selected services is unavailable/i);
   });
 
   it('caps the provider-set emergency fee at the platform maximum', async () => {
@@ -145,7 +145,7 @@ describe('provider onboarding', () => {
         emergencyAvailable: true,
         emergencyFeePaisa: 500_000,
       }),
-    ).rejects.toThrow(/maximum limit/i);
+    ).rejects.toThrow(/platform maximum/i);
   });
 });
 
@@ -245,7 +245,7 @@ describe('admin approval', () => {
 
     await expect(
       approveProvider({ providerId: profile.id, actorUserId: admin.id, actorRole: 'ADMIN' }),
-    ).rejects.toThrow(/services aur service areas/i);
+    ).rejects.toThrow(/services and service areas/i);
   });
 
   it('refuses to approve without an identity document when the setting demands one', async () => {
@@ -308,7 +308,7 @@ describe('admin approval', () => {
 
     await expect(
       approveProvider({ providerId: profile.id, actorUserId: admin.id, actorRole: 'ADMIN' }),
-    ).rejects.toThrow(/pehle se verified/i);
+    ).rejects.toThrow(/already verified/i);
   });
 
   it('records who approved the provider in the audit log', async () => {
@@ -461,7 +461,7 @@ describe('suspension', () => {
 
     await expect(
       reinstateProvider({ providerId: provider.id, actorUserId: admin.id, actorRole: 'ADMIN' }),
-    ).rejects.toThrow(/sirf suspended/i);
+    ).rejects.toThrow(/only a suspended provider/i);
   });
 });
 

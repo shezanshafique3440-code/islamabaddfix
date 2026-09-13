@@ -97,7 +97,7 @@ export function ProviderJobView({
               {formatRelative(booking.createdAt)}
             </p>
           </div>
-          <StatusBadge status={booking.status} label={booking.statusLabelUr} />
+          <StatusBadge status={booking.status} label={booking.statusLabel} />
         </div>
       </header>
 

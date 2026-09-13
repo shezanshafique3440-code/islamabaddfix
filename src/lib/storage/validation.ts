@@ -58,21 +58,21 @@ export function validateUpload(
   constraints: UploadConstraints,
 ): { mimeType: string } {
   if (file.size <= 0) {
-    throw new AppError('VALIDATION_ERROR', 'File khali hai.');
+    throw new AppError('VALIDATION_ERROR', 'The file is empty.');
   }
   if (file.size > constraints.maxBytes) {
     const mb = Math.round(constraints.maxBytes / (1024 * 1024));
-    throw new AppError('PAYLOAD_TOO_LARGE', `File ${mb} MB se bari nahi ho sakti.`);
+    throw new AppError('PAYLOAD_TOO_LARGE', `A file cannot be larger than ${mb} MB.`);
   }
   if (buffer.length !== file.size) {
-    throw new AppError('VALIDATION_ERROR', 'File size declared size se match nahi karta.');
+    throw new AppError('VALIDATION_ERROR', 'The file size does not match the size declared.');
   }
 
   const declared = file.type.toLowerCase().split(';')[0]!.trim();
   if (!constraints.allowedMimeTypes.includes(declared)) {
     throw new AppError(
       'UNSUPPORTED_MEDIA_TYPE',
-      `Yeh file type allowed nahi hai (${declared || 'unknown'}).`,
+      `That file type is not allowed (${declared || 'unknown'}).`,
     );
   }
 
@@ -81,7 +81,7 @@ export function validateUpload(
   if (!validExtensions.includes(extension)) {
     throw new AppError(
       'UNSUPPORTED_MEDIA_TYPE',
-      `File extension ".${extension}" is file type ke saath match nahi karta.`,
+      `The file extension ".${extension}" does not match that file type.`,
     );
   }
 
@@ -99,7 +99,7 @@ function assertMagicBytes(buffer: Buffer, declared: string): void {
   if (!matches(buffer, signature)) {
     throw new AppError(
       'UNSUPPORTED_MEDIA_TYPE',
-      'File ka content uske type se match nahi karta. Asli image ya video upload karein.',
+      'The file contents do not match its type. Please upload a real image or video.',
     );
   }
 }

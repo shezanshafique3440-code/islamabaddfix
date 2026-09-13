@@ -63,7 +63,7 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
   if (isEmergency && !emergencyEnabled) {
     throw new AppError(
       'BOOKING_NOT_AVAILABLE',
-      'Emergency booking is waqt band hai. Normal booking kar lein ya support se rabta karein.',
+      'Emergency booking is switched off right now. Please book a normal visit or contact support.',
     );
   }
 
@@ -72,12 +72,12 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
     include: { category: { select: { isActive: true, name: true } } },
   });
   if (!service || !service.category.isActive) {
-    throw new AppError('NOT_FOUND', 'Yeh service is waqt available nahi hai.');
+    throw new AppError('NOT_FOUND', 'This service is not available right now.');
   }
   if (isEmergency && !service.isEmergencyEnabled) {
     throw new AppError(
       'BOOKING_NOT_AVAILABLE',
-      'Is service ke liye emergency booking available nahi hai.',
+      'Emergency booking is not available for this service.',
     );
   }
 
@@ -87,13 +87,13 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
     where: { id: input.addressId, userId: input.customerId, deletedAt: null },
     include: { zone: { select: { id: true, isActive: true, name: true } } },
   });
-  if (!address) throw new AppError('NOT_FOUND', 'Yeh address aapke account mein nahi mila.');
+  if (!address) throw new AppError('NOT_FOUND', 'That address is not on your account.');
 
   const scheduledFor = input.scheduledFor ?? null;
   if (scheduledFor) {
     assertScheduleWindow(scheduledFor, { minLeadMinutes, maxLeadDays, isEmergency });
   } else if (!isEmergency) {
-    throw new AppError('VALIDATION_ERROR', 'Booking ke liye date aur time select karein.');
+    throw new AppError('VALIDATION_ERROR', 'Please choose a date and time for the visit.');
   }
 
   // Validate the chosen provider before creating anything.
@@ -252,11 +252,11 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
   await notify({
     event: NOTIFICATION_EVENTS.BOOKING_CREATED,
     userId: input.customerId,
-    title: `Booking confirm ho gayi — ${booking.reference}`,
+    title: `Booking confirmed — ${booking.reference}`,
     body:
       offeredProviderIds.length > 0
-        ? `${service.name} ki request bhej di gayi hai. Technician ke jawab ka intezar karein.`
-        : `${service.name} ki request mil gayi hai. Hum aapke liye technician dhoond rahe hain.`,
+        ? `Your ${service.name} request has been sent. We're waiting for the technician to respond.`
+        : `We have your ${service.name} request and we're finding a technician for you.`,
     href: `/account/bookings/${booking.id}`,
     data: { bookingId: booking.id, reference: booking.reference },
   });
@@ -282,14 +282,14 @@ export function assertScheduleWindow(
     throw new AppError(
       'VALIDATION_ERROR',
       options.isEmergency
-        ? 'Emergency ka time guzra hua nahi ho sakta.'
-        : `Booking kam az kam ${options.minLeadMinutes} minute baad ki honi chahiye.`,
+        ? 'An emergency cannot be scheduled in the past.'
+        : `A booking must be at least ${options.minLeadMinutes} minutes from now.`,
     );
   }
   if (scheduledFor.getTime() > latest) {
     throw new AppError(
       'VALIDATION_ERROR',
-      `Booking ${options.maxLeadDays} din se zyada aage ki nahi ho sakti.`,
+      `A booking cannot be more than ${options.maxLeadDays} days ahead.`,
     );
   }
 }
@@ -323,30 +323,30 @@ export async function assertProviderCanTake(params: {
   });
 
   if (!provider || !provider.user.isActive || provider.user.deletedAt) {
-    throw new AppError('NOT_FOUND', 'Yeh technician available nahi hai.');
+    throw new AppError('NOT_FOUND', 'That technician is not available.');
   }
   if (provider.status === 'SUSPENDED') {
-    throw new AppError('PROVIDER_SUSPENDED', 'Yeh technician is waqt suspended hai.');
+    throw new AppError('PROVIDER_SUSPENDED', 'That technician is currently suspended.');
   }
   if (provider.status !== 'VERIFIED') {
     throw new AppError(
       'PROVIDER_NOT_VERIFIED',
-      'Sirf verified technicians public bookings le sakte hain.',
+      'Only verified technicians can take public bookings.',
     );
   }
   if (provider.services.length === 0) {
-    throw new AppError('VALIDATION_ERROR', 'Yeh technician is service ko offer nahi karta.');
+    throw new AppError('VALIDATION_ERROR', 'That technician does not offer this service.');
   }
   if (params.zoneId && Array.isArray(provider.serviceAreas) && provider.serviceAreas.length === 0) {
-    throw new AppError('VALIDATION_ERROR', 'Yeh technician is area mein service nahi deta.');
+    throw new AppError('VALIDATION_ERROR', 'That technician does not cover this area.');
   }
   if (params.isEmergency && !provider.emergencyAvailable) {
-    throw new AppError('VALIDATION_ERROR', 'Yeh technician emergency service nahi deta.');
+    throw new AppError('VALIDATION_ERROR', 'That technician does not take emergency jobs.');
   }
   if (provider._count.bookings >= provider.maxActiveJobs) {
     throw new AppError(
       'PROVIDER_AT_CAPACITY',
-      'Is technician ke paas is waqt jagah nahi hai. Koi doosra chunein.',
+      'That technician is fully booked right now. Please choose another.',
     );
   }
 
@@ -371,14 +371,14 @@ export async function acceptBooking(params: {
       offers: { where: { providerId: params.providerId }, select: { id: true } },
     },
   });
-  if (!booking) throw new AppError('NOT_FOUND', 'Booking nahi mili.');
+  if (!booking) throw new AppError('NOT_FOUND', 'Booking not found.');
 
   // A provider may only accept a job they were actually offered.
   if (booking.offers.length === 0) {
-    throw new AppError('FORBIDDEN', 'Yeh job aap ko offer nahi hui thi.');
+    throw new AppError('FORBIDDEN', 'This job was not offered to you.');
   }
   if (booking.providerId && booking.providerId !== params.providerId) {
-    throw new AppError('BOOKING_NOT_AVAILABLE', 'Yeh job kisi doosre technician ne le li hai.');
+    throw new AppError('BOOKING_NOT_AVAILABLE', 'Another technician has already taken this job.');
   }
 
   await assertProviderCanTake({
@@ -418,7 +418,7 @@ export async function acceptBooking(params: {
     userId: booking.customerId,
     title: 'Technician ne booking qubool kar li',
     body: `${provider.businessName} aapki ${booking.service.name} booking le raha hai.${
-      booking.service.requiresInspection ? ' Muaina ke baad quote milega.' : ''
+      booking.service.requiresInspection ? ' You will get a quote after the inspection.' : ''
     }`,
     href: `/account/bookings/${booking.id}`,
     data: { bookingId: booking.id },
@@ -437,11 +437,11 @@ export async function declineBooking(params: {
     where: { id: params.bookingId },
     select: { id: true, status: true, providerId: true },
   });
-  if (!booking) throw new AppError('NOT_FOUND', 'Booking nahi mili.');
+  if (!booking) throw new AppError('NOT_FOUND', 'Booking not found.');
   if (booking.providerId === params.providerId) {
     throw new AppError(
       'CONFLICT',
-      'Yeh job aap ne pehle qubool kar li hai. Cancel karne ke liye cancel option istemal karein.',
+      'You have already accepted this job. Use cancel if you can no longer do it.',
     );
   }
 
@@ -478,12 +478,12 @@ export async function cancelBooking(params: {
     where: { id: params.bookingId },
     include: { service: { select: { name: true } }, provider: { select: { userId: true } } },
   });
-  if (!booking) throw new AppError('NOT_FOUND', 'Booking nahi mili.');
+  if (!booking) throw new AppError('NOT_FOUND', 'Booking not found.');
 
   if (!ACTIVE_STATUSES.includes(booking.status)) {
     throw new AppError(
       'CANCELLATION_NOT_ALLOWED',
-      'Yeh booking is status mein cancel nahi ho sakti.',
+      'This booking cannot be cancelled at this stage.',
     );
   }
 
@@ -515,7 +515,7 @@ export async function cancelBooking(params: {
 
   await notifyMany([...audience], {
     event: NOTIFICATION_EVENTS.BOOKING_CANCELLED,
-    title: `Booking cancel ho gayi — ${booking.reference}`,
+    title: `Booking cancelled — ${booking.reference}`,
     body: `${booking.service.name} ki booking cancel kar di gayi. Wajah: ${params.reason}${
       appliedFee > 0 ? ` Late cancellation fee: ${formatPaisa(appliedFee)}.` : ''
     }`,
@@ -536,16 +536,16 @@ async function resolvePromoCode(code: string, customerId: string) {
     (promo.startsAt && promo.startsAt > now) ||
     (promo.endsAt && promo.endsAt < now)
   ) {
-    throw new AppError('PROMO_INVALID', 'Yeh promo code valid nahi hai.');
+    throw new AppError('PROMO_INVALID', 'That promo code is not valid.');
   }
   if (promo.usageLimit !== null && promo.usageCount >= promo.usageLimit) {
-    throw new AppError('PROMO_INVALID', 'Is promo code ki limit khatam ho gayi hai.');
+    throw new AppError('PROMO_INVALID', 'That promo code has reached its limit.');
   }
   const used = await prisma.booking.count({
     where: { customerId, promoCodeId: promo.id, status: { not: 'CANCELLED' } },
   });
   if (used >= promo.perCustomerLimit) {
-    throw new AppError('PROMO_INVALID', 'Aap yeh promo code pehle istemal kar chuke hain.');
+    throw new AppError('PROMO_INVALID', 'You have already used this promo code.');
   }
   return promo;
 }

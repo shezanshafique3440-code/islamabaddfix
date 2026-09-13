@@ -115,7 +115,7 @@ export default async function AdminGuaranteesPage({
                           : 'warn'
                     }
                   >
-                    {GUARANTEE_STATUS_LABELS[claim.status].en}
+                    {GUARANTEE_STATUS_LABELS[claim.status]}
                   </Badge>
                 </div>
               </Link>

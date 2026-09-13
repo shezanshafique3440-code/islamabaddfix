@@ -118,7 +118,7 @@ describe('opening a dispute', () => {
           reason: 'POOR_SERVICE',
           description: 'Not my booking',
         }),
-      ).rejects.toThrow(/sirf booking ka customer/i);
+      ).rejects.toThrow(/only the customer on this booking/i);
     }
 
     expect(await db.dispute.count()).toBe(0);
@@ -140,7 +140,7 @@ describe('opening a dispute', () => {
         reason: 'DAMAGE',
         description: 'And they scratched the wall',
       }),
-    ).rejects.toThrow(/pehle se ek dispute khula/i);
+    ).rejects.toThrow(/already an open dispute/i);
   });
 
   it('allows a fresh dispute once the previous one is closed', async () => {
@@ -494,7 +494,7 @@ describe('guarantee claims', () => {
           raisedByUserId: userId,
           description: 'Not my booking',
         }),
-      ).rejects.toThrow(/sirf booking ka customer/i);
+      ).rejects.toThrow(/only the customer on this booking/i);
     }
   });
 
@@ -512,7 +512,7 @@ describe('guarantee claims', () => {
         raisedByUserId: customer.id,
         description: 'Still not fixed',
       }),
-    ).rejects.toThrow(/pehle se ek claim/i);
+    ).rejects.toThrow(/already a claim under review/i);
   });
 
   it('lets a customer claim again after a rejection', async () => {

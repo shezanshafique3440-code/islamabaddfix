@@ -113,8 +113,8 @@ export async function registerUser(
   });
   if (existing) {
     throw existing.email === email
-      ? new AppError('EMAIL_TAKEN', 'Yeh email pehle se registered hai. Login karein.')
-      : new AppError('PHONE_TAKEN', 'Yeh phone number pehle se registered hai.');
+      ? new AppError('EMAIL_TAKEN', 'That email is already registered. Please sign in.')
+      : new AppError('PHONE_TAKEN', 'That phone number is already registered.');
   }
 
   const passwordHash = await hashPassword(input.password);
@@ -165,19 +165,19 @@ export async function authenticateCredentials(
       ipAddress: meta.ipAddress,
       userAgent: meta.userAgent,
     });
-    throw new AppError('INVALID_CREDENTIALS', 'Email ya password ghalat hai.');
+    throw new AppError('INVALID_CREDENTIALS', 'Wrong email or password.');
   }
 
   if (user.lockedUntil && user.lockedUntil > new Date()) {
     const minutes = Math.ceil((user.lockedUntil.getTime() - Date.now()) / 60_000);
     throw new AppError(
       'ACCOUNT_LOCKED',
-      `Bohat zyada ghalat koshishein. Account ${minutes} minute ke liye locked hai.`,
+      `Too many failed attempts. This account is locked for ${minutes} minutes.`,
     );
   }
 
   if (!user.isActive || user.deletedAt) {
-    throw new AppError('ACCOUNT_DISABLED', 'Yeh account disabled hai. Support se rabta karein.');
+    throw new AppError('ACCOUNT_DISABLED', 'This account is disabled. Please contact support.');
   }
 
   const valid = await verifyPassword(input.password, user.passwordHash);
@@ -199,7 +199,7 @@ export async function authenticateCredentials(
       ipAddress: meta.ipAddress,
       userAgent: meta.userAgent,
     });
-    throw new AppError('INVALID_CREDENTIALS', 'Email ya password ghalat hai.');
+    throw new AppError('INVALID_CREDENTIALS', 'Wrong email or password.');
   }
 
   const fresh = await prisma.user.update({
@@ -247,7 +247,7 @@ export async function refreshSession(
     include: { user: true },
   });
 
-  if (!stored) throw new AppError('UNAUTHENTICATED', 'Session invalid hai. Dobara login karein.');
+  if (!stored) throw new AppError('UNAUTHENTICATED', 'Your session is no longer valid. Please sign in again.');
 
   if (stored.replacedById !== null || stored.revokedAt !== null) {
     await prisma.refreshToken.updateMany({
@@ -265,16 +265,16 @@ export async function refreshSession(
     });
     throw new AppError(
       'TOKEN_REUSED',
-      'Security ke liye yeh session khatam kar diya gaya. Dobara login karein.',
+      'This session was ended for your security. Please sign in again.',
     );
   }
 
   if (stored.expiresAt <= new Date()) {
-    throw new AppError('TOKEN_EXPIRED', 'Session expire ho gaya. Dobara login karein.');
+    throw new AppError('TOKEN_EXPIRED', 'Your session has expired. Please sign in again.');
   }
 
   if (!stored.user.isActive || stored.user.deletedAt) {
-    throw new AppError('ACCOUNT_DISABLED', 'Yeh account disabled hai.');
+    throw new AppError('ACCOUNT_DISABLED', 'This account is disabled.');
   }
 
   const { raw, hash } = generateRefreshToken();
@@ -342,7 +342,7 @@ export async function changePassword(
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) throw new AppError('NOT_FOUND', 'User nahi mila.');
   if (!(await verifyPassword(currentPassword, user.passwordHash))) {
-    throw new AppError('INVALID_CREDENTIALS', 'Mojooda password ghalat hai.');
+    throw new AppError('INVALID_CREDENTIALS', 'Your current password is wrong.');
   }
   await prisma.user.update({
     where: { id: userId },

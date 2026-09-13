@@ -225,7 +225,7 @@ export function StepConfirm({
                   checked={draft.paymentMethod === method.method}
                   onSelect={() => patch({ paymentMethod: method.method })}
                 >
-                  <span className="block text-sm font-semibold text-ink-900">{method.labelUr}</span>
+                  <span className="block text-sm font-semibold text-ink-900">{method.label}</span>
                   <span className="mt-0.5 block text-xs text-ink-600">{method.description}</span>
                 </RadioCard>
               ))}

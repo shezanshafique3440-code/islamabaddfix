@@ -61,7 +61,7 @@ export function paginated<T>(items: T[], pagination: PaginationMeta) {
 // -------------------------------------------------------------- error mapping
 
 function zodToAppError(error: ZodError): AppError {
-  return new AppError('VALIDATION_ERROR', 'Di gayi maloomat mukammal ya durust nahi hai.', {
+  return new AppError('VALIDATION_ERROR', 'Some of the details are missing or incorrect.', {
     fields: error.issues.map((issue) => ({
       path: issue.path.map(String).join('.') || '(root)',
       message: issue.message,
@@ -75,14 +75,14 @@ function prismaToAppError(error: Prisma.PrismaClientKnownRequestError): AppError
       const target = Array.isArray(error.meta?.target)
         ? (error.meta.target as string[]).join(', ')
         : String(error.meta?.target ?? 'field');
-      return new AppError('CONFLICT', `Yeh record pehle se mojood hai (${target}).`);
+      return new AppError('CONFLICT', `That record already exists (${target}).`);
     }
     case 'P2003':
-      return new AppError('CONFLICT', 'Related record mojood nahi hai.');
+      return new AppError('CONFLICT', 'A related record does not exist.');
     case 'P2025':
-      return new AppError('NOT_FOUND', 'Record nahi mila.');
+      return new AppError('NOT_FOUND', 'Record not found.');
     default:
-      return new AppError('INTERNAL_ERROR', 'Kuch ghalat ho gaya. Dobara koshish karein.', {
+      return new AppError('INTERNAL_ERROR', 'Something went wrong. Please try again.', {
         context: { prismaCode: error.code },
       });
   }
@@ -94,9 +94,9 @@ export function toAppError(error: unknown): AppError {
   if (error instanceof ZodError) return zodToAppError(error);
   if (error instanceof Prisma.PrismaClientKnownRequestError) return prismaToAppError(error);
   if (error instanceof Prisma.PrismaClientValidationError) {
-    return new AppError('VALIDATION_ERROR', 'Request data durust nahi hai.');
+    return new AppError('VALIDATION_ERROR', 'The request data is not valid.');
   }
-  return new AppError('INTERNAL_ERROR', 'Kuch ghalat ho gaya. Dobara koshish karein.');
+  return new AppError('INTERNAL_ERROR', 'Something went wrong. Please try again.');
 }
 
 /**
@@ -162,7 +162,7 @@ function guardRequest(request: Request): Response | null {
     const allowed = [url.origin, ...corsAllowedOrigins];
     if (!allowed.includes(origin)) {
       return fail(
-        new AppError('FORBIDDEN', 'Cross-origin request allowed nahi hai.', {
+        new AppError('FORBIDDEN', 'Cross-origin requests are not allowed.', {
           context: { origin },
         }),
       );
@@ -175,7 +175,7 @@ function guardRequest(request: Request): Response | null {
   if (cookieToken) {
     const headerToken = request.headers.get(CSRF_HEADER);
     if (!headerToken || headerToken !== cookieToken) {
-      return fail(new AppError('FORBIDDEN', 'CSRF token missing ya ghalat hai.'));
+      return fail(new AppError('FORBIDDEN', 'The CSRF token is missing or wrong.'));
     }
   }
   return null;
@@ -201,7 +201,7 @@ export async function parseJson<S extends ZodTypeAny>(
   try {
     body = await request.json();
   } catch {
-    throw new AppError('VALIDATION_ERROR', 'Request body valid JSON nahi hai.');
+    throw new AppError('VALIDATION_ERROR', 'The request body is not valid JSON.');
   }
   return schema.parse(body);
 }

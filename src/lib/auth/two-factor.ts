@@ -89,10 +89,10 @@ export async function beginTwoFactorEnrolment(params: {
   email: string;
 }): Promise<{ secret: string; uri: string }> {
   if (!isStaff(params.role)) {
-    throw new AppError('FORBIDDEN', 'Two-factor abhi sirf staff accounts ke liye hai.');
+    throw new AppError('FORBIDDEN', 'Two-factor is available on staff accounts only.');
   }
   if (await isTwoFactorEnabled(params.userId)) {
-    throw new AppError('CONFLICT', 'Two-factor pehle se on hai.');
+    throw new AppError('CONFLICT', 'Two-factor is already on.');
   }
 
   const secret = generateTotpSecret();
@@ -118,12 +118,12 @@ export async function confirmTwoFactorEnrolment(
   code: string,
 ): Promise<{ recoveryCodes: string[] }> {
   const row = await prisma.twoFactorSecret.findUnique({ where: { userId } });
-  if (!row) throw new AppError('NOT_FOUND', 'Pehle setup shuru karein.');
-  if (row.confirmedAt) throw new AppError('CONFLICT', 'Two-factor pehle se on hai.');
+  if (!row) throw new AppError('NOT_FOUND', 'Start the setup first.');
+  if (row.confirmedAt) throw new AppError('CONFLICT', 'Two-factor is already on.');
 
   const result = verifyTotp(decryptSecret(row.secret), code);
   if (!result.valid) {
-    throw new AppError('VALIDATION_ERROR', 'Code ghalat hai. App ka waqt check karein.');
+    throw new AppError('VALIDATION_ERROR', 'Wrong code. Check that your app\u2019s clock is correct.');
   }
 
   const recoveryCodes = generateRecoveryCodes();
@@ -192,7 +192,7 @@ export async function verifySecondFactor(userId: string, code: string): Promise<
 /** Turn it off. Needs a current code, so a hijacked session cannot do it. */
 export async function disableTwoFactor(userId: string, code: string): Promise<void> {
   if (!(await verifySecondFactor(userId, code))) {
-    throw new AppError('VALIDATION_ERROR', 'Code ghalat hai.');
+    throw new AppError('VALIDATION_ERROR', 'Wrong code.');
   }
   await prisma.twoFactorSecret.delete({ where: { userId } });
 

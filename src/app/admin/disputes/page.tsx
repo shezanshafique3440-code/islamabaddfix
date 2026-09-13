@@ -87,7 +87,7 @@ export default async function AdminDisputesPage({
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="font-mono text-xs text-ink-500">{dispute.reference}</span>
-                      <Badge tone="danger">{DISPUTE_REASON_LABELS[dispute.reason].en}</Badge>
+                      <Badge tone="danger">{DISPUTE_REASON_LABELS[dispute.reason]}</Badge>
                       {dispute._count.files > 0 ? (
                         <Badge tone="neutral">{dispute._count.files} evidence</Badge>
                       ) : null}
@@ -115,7 +115,7 @@ export default async function AdminDisputesPage({
                             : 'warn'
                       }
                     >
-                      {DISPUTE_STATUS_LABELS[dispute.status].en}
+                      {DISPUTE_STATUS_LABELS[dispute.status]}
                     </Badge>
                     {dispute.booking.finalTotalPaisa ? (
                       <span className="text-sm font-medium text-ink-900">

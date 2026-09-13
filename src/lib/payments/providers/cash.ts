@@ -12,7 +12,6 @@ export const cashProvider: PaymentProvider = {
   key: 'cash',
   method: 'CASH',
   label: 'Cash on Service',
-  labelUr: 'Kaam ke baad cash',
   description: 'Technician ko kaam mukammal hone par cash dein.',
   isConfigured: () => true,
   initialStatus: () => 'PENDING',

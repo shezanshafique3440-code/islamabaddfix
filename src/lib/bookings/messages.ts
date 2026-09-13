@@ -48,7 +48,7 @@ async function loadBooking(bookingId: string): Promise<Party> {
       provider: { select: { userId: true } },
     },
   });
-  if (!booking) throw new AppError('NOT_FOUND', 'Booking nahi mili.');
+  if (!booking) throw new AppError('NOT_FOUND', 'Booking not found.');
   return {
     customerId: booking.customerId,
     providerId: booking.providerId,
@@ -67,7 +67,7 @@ function assertParticipant(
   if (booking.customerId === viewer.userId) return 'CUSTOMER';
   if (viewer.providerId && booking.providerId === viewer.providerId) return 'PROVIDER';
   // 404 rather than 403: whether this booking exists is not this caller's business.
-  throw new AppError('NOT_FOUND', 'Booking nahi mili.');
+  throw new AppError('NOT_FOUND', 'Booking not found.');
 }
 
 /**
@@ -162,12 +162,12 @@ export async function sendBookingMessage(params: {
 }): Promise<BookingMessageView> {
   const body = params.body.trim();
   if (body.length === 0 && !params.attachmentId) {
-    throw new AppError('VALIDATION_ERROR', 'Message khali nahi ho sakta.');
+    throw new AppError('VALIDATION_ERROR', 'A message cannot be empty.');
   }
   if (body.length > MAX_BODY) {
     throw new AppError(
       'VALIDATION_ERROR',
-      `Message ${MAX_BODY} characters se lamba nahi ho sakta.`,
+      `A message cannot be longer than ${MAX_BODY} characters.`,
     );
   }
 
@@ -177,7 +177,7 @@ export async function sendBookingMessage(params: {
   // A cancelled job has nothing left to arrange. Completed ones stay open:
   // the guarantee window and any dispute both need this thread.
   if (booking.status === 'CANCELLED' || booking.status === 'REFUNDED') {
-    throw new AppError('CONFLICT', 'Yeh booking band ho chuki hai, message nahi bhej sakte.');
+    throw new AppError('CONFLICT', 'This booking is closed, so no new messages can be sent.');
   }
 
   // An attachment must be the sender's own, and must belong to this booking —
@@ -192,7 +192,7 @@ export async function sendBookingMessage(params: {
       },
       select: { id: true },
     });
-    if (!file) throw new AppError('NOT_FOUND', 'Attachment nahi mili.');
+    if (!file) throw new AppError('NOT_FOUND', 'Attachment not found.');
   }
 
   const conversationId = await getOrCreateBookingThread(params.bookingId);
@@ -234,7 +234,7 @@ export async function sendBookingMessage(params: {
         event: NOTIFICATION_EVENTS.NEW_MESSAGE,
         userId,
         title: `${senderName} ka message — ${booking.reference}`,
-        body: body.slice(0, 140) || 'Ek file bheji gayi hai.',
+        body: body.slice(0, 140) || 'Sent a file.',
         href:
           userId === booking.providerUserId
             ? `/provider/jobs/${params.bookingId}`

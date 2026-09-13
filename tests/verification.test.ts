@@ -150,7 +150,7 @@ describe('password reset', () => {
     });
 
     expect(await isResetTokenLive(token)).toBe(false);
-    await expect(resetPassword(token, 'BrandNewPass!2026')).rejects.toThrow(/kaam nahi karta/i);
+    await expect(resetPassword(token, 'BrandNewPass!2026')).rejects.toThrow(/no longer works/i);
   });
 
   it('refuses a token that is simply made up', async () => {
@@ -184,7 +184,7 @@ describe('password reset', () => {
     for (let attempt = 0; attempt < 5; attempt += 1) {
       await requestPasswordReset('flood@test.local');
     }
-    await expect(requestPasswordReset('flood@test.local')).rejects.toThrow(/bohat zyada/i);
+    await expect(requestPasswordReset('flood@test.local')).rejects.toThrow(/too many/i);
   });
 });
 
@@ -210,7 +210,7 @@ describe('email verification', () => {
 
   it('refuses to re-verify an address that is already done', async () => {
     const user = await createUser({ role: 'CUSTOMER' });
-    await expect(requestEmailVerification(user.id)).rejects.toThrow(/pehle se verify/i);
+    await expect(requestEmailVerification(user.id)).rejects.toThrow(/already verified/i);
   });
 
   it('will not carry proof across an address change', async () => {
@@ -220,7 +220,7 @@ describe('email verification', () => {
 
     await db.user.update({ where: { id: user.id }, data: { email: 'moved@test.local' } });
 
-    await expect(confirmEmailVerification(report.devToken!)).rejects.toThrow(/badal gaya/i);
+    await expect(confirmEmailVerification(report.devToken!)).rejects.toThrow(/address changed/i);
     const saved = await db.user.findUniqueOrThrow({ where: { id: user.id } });
     expect(saved.emailVerifiedAt).toBeNull();
   });
@@ -272,7 +272,7 @@ describe('phone verification', () => {
     const report = await requestPhoneVerification(user.id);
     const wrong = report.devToken === '000000' ? '111111' : '000000';
 
-    await expect(confirmPhoneVerification(user.id, wrong)).rejects.toThrow(/4 koshishein baqi/i);
+    await expect(confirmPhoneVerification(user.id, wrong)).rejects.toThrow(/4 attempts left/i);
     const saved = await db.user.findUniqueOrThrow({ where: { id: user.id } });
     expect(saved.phoneVerifiedAt).toBeNull();
   });
@@ -289,7 +289,7 @@ describe('phone verification', () => {
     // Even the correct code is now useless — a six-digit secret does not
     // survive unlimited guessing.
     await expect(confirmPhoneVerification(user.id, report.devToken!)).rejects.toThrow(
-      /muddat khatam/i,
+      /expired/i,
     );
   });
 
@@ -305,7 +305,7 @@ describe('phone verification', () => {
     });
 
     await expect(confirmPhoneVerification(user.id, report.devToken!)).rejects.toThrow(
-      /muddat khatam/i,
+      /expired/i,
     );
   });
 

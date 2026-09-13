@@ -56,14 +56,14 @@ export const getAuthContext = cache(async (): Promise<AuthContext | null> => {
 /** For API routes: throws instead of redirecting. */
 export async function requireAuth(): Promise<AuthContext> {
   const ctx = await getAuthContext();
-  if (!ctx) throw new AppError('UNAUTHENTICATED', 'Pehle login karein.');
+  if (!ctx) throw new AppError('UNAUTHENTICATED', 'Please sign in first.');
   return ctx;
 }
 
 export async function requireRole(...roles: Role[]): Promise<AuthContext> {
   const ctx = await requireAuth();
   if (!roles.includes(ctx.role)) {
-    throw new AppError('FORBIDDEN', 'Aap is section ke liye authorized nahi hain.', {
+    throw new AppError('FORBIDDEN', 'You are not authorised for this section.', {
       context: { required: roles, actual: ctx.role },
     });
   }
@@ -80,7 +80,7 @@ export async function requirePermission(permission: Permission): Promise<AuthCon
 export async function requireProvider(): Promise<AuthContext & { providerId: string }> {
   const ctx = await requireRole('PROVIDER');
   if (!ctx.providerId) {
-    throw new AppError('NOT_FOUND', 'Provider profile complete nahi hua. Onboarding poora karein.');
+    throw new AppError('NOT_FOUND', 'Your provider profile is incomplete. Please finish onboarding.');
   }
   return ctx as AuthContext & { providerId: string };
 }

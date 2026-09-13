@@ -38,9 +38,9 @@ export async function openDispute(params: {
       service: { select: { name: true } },
     },
   });
-  if (!booking) throw new AppError('NOT_FOUND', 'Booking nahi mili.');
+  if (!booking) throw new AppError('NOT_FOUND', 'Booking not found.');
   if (booking.customerId !== params.raisedByUserId) {
-    throw new AppError('FORBIDDEN', 'Sirf booking ka customer dispute khol sakta hai.');
+    throw new AppError('FORBIDDEN', 'Only the customer on this booking can open a dispute.');
   }
 
   const open = await prisma.dispute.findFirst({
@@ -58,7 +58,7 @@ export async function openDispute(params: {
     },
   });
   if (open) {
-    throw new AppError('DISPUTE_ALREADY_OPEN', 'Is booking par pehle se ek dispute khula hai.');
+    throw new AppError('DISPUTE_ALREADY_OPEN', 'There is already an open dispute on this booking.');
   }
 
   const dispute = await prisma.$transaction(async (tx) => {
@@ -114,8 +114,8 @@ export async function openDispute(params: {
 
   await notifyAdmins({
     event: NOTIFICATION_EVENTS.DISPUTE_OPENED,
-    title: `Naya dispute — ${dispute.reference}`,
-    body: `${booking.reference} (${booking.service.name}) par shikayat: ${DISPUTE_REASON_LABELS[params.reason].en}.`,
+    title: `New dispute — ${dispute.reference}`,
+    body: `Complaint on ${booking.reference} (${booking.service.name}): ${DISPUTE_REASON_LABELS[params.reason]}.`,
     href: `/admin/disputes/${dispute.id}`,
     data: { disputeId: dispute.id, bookingId: booking.id },
   });
@@ -124,8 +124,8 @@ export async function openDispute(params: {
     await notify({
       event: NOTIFICATION_EVENTS.DISPUTE_OPENED,
       userId: booking.provider.userId,
-      title: 'Booking par shikayat darj hui',
-      body: `${booking.reference} par customer ne shikayat ki hai. Ops team rabta karegi.`,
+      title: 'A complaint was raised on your job',
+      body: `The customer has raised a complaint on ${booking.reference}. The operations team will be in touch.`,
       href: `/provider/jobs/${booking.id}`,
       data: { disputeId: dispute.id, bookingId: booking.id },
     });
@@ -184,7 +184,7 @@ export async function resolveDispute(input: ResolveDisputeInput): Promise<{
       },
     },
   });
-  if (!dispute) throw new AppError('NOT_FOUND', 'Dispute nahi mila.');
+  if (!dispute) throw new AppError('NOT_FOUND', 'Dispute not found.');
 
   const isRefund = input.status === 'RESOLVED_REFUND' || input.status === 'RESOLVED_PARTIAL_REFUND';
 
@@ -196,7 +196,7 @@ export async function resolveDispute(input: ResolveDisputeInput): Promise<{
     if (!payment) {
       throw new AppError(
         'CONFLICT',
-        'Is booking par koi paid payment nahi hai, is liye refund record nahi ho sakta.',
+        'There is no paid payment on this booking, so a refund cannot be recorded.',
       );
     }
     const amount =
@@ -204,7 +204,7 @@ export async function resolveDispute(input: ResolveDisputeInput): Promise<{
         ? payment.amountPaisa - payment.refundedPaisa
         : (input.refundPaisa ?? 0);
     if (amount <= 0) {
-      throw new AppError('VALIDATION_ERROR', 'Partial refund ke liye valid amount dein.');
+      throw new AppError('VALIDATION_ERROR', 'Give a valid amount for a partial refund.');
     }
 
     const result = await refundPayment({
@@ -264,8 +264,8 @@ export async function resolveDispute(input: ResolveDisputeInput): Promise<{
     title: `Dispute update — ${dispute.reference}`,
     body:
       refundedPaisa > 0
-        ? `Faisla: ${DISPUTE_STATUS_LABELS[input.status].ur}. Refund: ${formatPaisa(refundedPaisa)}.`
-        : `Faisla: ${DISPUTE_STATUS_LABELS[input.status].ur}.`,
+        ? `Outcome: ${DISPUTE_STATUS_LABELS[input.status]}. Refund: ${formatPaisa(refundedPaisa)}.`
+        : `Outcome: ${DISPUTE_STATUS_LABELS[input.status]}.`,
     href: `/account/bookings/${dispute.booking.id}`,
     data: { disputeId: dispute.id },
   });
@@ -283,25 +283,25 @@ function isTerminal(status: DisputeStatus): boolean {
   );
 }
 
-export const DISPUTE_REASON_LABELS: Record<DisputeReason, { en: string; ur: string }> = {
-  TECHNICIAN_NO_SHOW: { en: 'Technician did not arrive', ur: 'Technician nahi aaya' },
-  POOR_SERVICE: { en: 'Poor service quality', ur: 'Kaam theek nahi hua' },
-  WRONG_PRICE: { en: 'Wrong price charged', ur: 'Ghalat qeemat li gayi' },
-  UNAUTHORIZED_CHARGE: { en: 'Unauthorized extra charge', ur: 'Bina ijazat extra charge' },
-  DAMAGE: { en: 'Damage caused', ur: 'Nuqsan hua' },
-  OTHER: { en: 'Other', ur: 'Koi aur wajah' },
+export const DISPUTE_REASON_LABELS: Record<DisputeReason, string> = {
+  TECHNICIAN_NO_SHOW: 'Technician did not arrive',
+  POOR_SERVICE: 'Poor service quality',
+  WRONG_PRICE: 'Wrong price charged',
+  UNAUTHORIZED_CHARGE: 'Unauthorized extra charge',
+  DAMAGE: 'Damage caused',
+  OTHER: 'Other',
 };
 
-export const DISPUTE_STATUS_LABELS: Record<DisputeStatus, { en: string; ur: string }> = {
-  OPEN: { en: 'Open', ur: 'Khula hai' },
-  UNDER_REVIEW: { en: 'Under review', ur: 'Jaiza liya ja raha hai' },
-  AWAITING_CUSTOMER: { en: 'Awaiting customer', ur: 'Customer ke jawab ka intezar' },
-  AWAITING_PROVIDER: { en: 'Awaiting provider', ur: 'Technician ke jawab ka intezar' },
-  RESOLVED_REFUND: { en: 'Resolved — full refund', ur: 'Poora refund' },
-  RESOLVED_PARTIAL_REFUND: { en: 'Resolved — partial refund', ur: 'Juzvi refund' },
-  RESOLVED_REVISIT: { en: 'Resolved — re-visit approved', ur: 'Dobara visit manzoor' },
-  RESOLVED_NO_ACTION: { en: 'Resolved — no action', ur: 'Koi karwai nahi' },
-  CLOSED: { en: 'Closed', ur: 'Band' },
+export const DISPUTE_STATUS_LABELS: Record<DisputeStatus, string> = {
+  OPEN: 'Open',
+  UNDER_REVIEW: 'Under review',
+  AWAITING_CUSTOMER: 'Awaiting customer',
+  AWAITING_PROVIDER: 'Awaiting provider',
+  RESOLVED_REFUND: 'Resolved — full refund',
+  RESOLVED_PARTIAL_REFUND: 'Resolved — partial refund',
+  RESOLVED_REVISIT: 'Resolved — re-visit approved',
+  RESOLVED_NO_ACTION: 'Resolved — no action',
+  CLOSED: 'Closed',
 };
 
 // ========================== guarantee claims ==============================
@@ -320,7 +320,7 @@ export async function submitGuaranteeClaim(params: {
 }): Promise<GuaranteeClaim> {
   const enabled = await getSetting('guarantee.enabled');
   if (!enabled) {
-    throw new AppError('GUARANTEE_NOT_ELIGIBLE', 'Guarantee program is waqt band hai.');
+    throw new AppError('GUARANTEE_NOT_ELIGIBLE', 'The guarantee programme is switched off right now.');
   }
 
   const booking = await prisma.booking.findUnique({
@@ -337,20 +337,20 @@ export async function submitGuaranteeClaim(params: {
       service: { select: { name: true } },
     },
   });
-  if (!booking) throw new AppError('NOT_FOUND', 'Booking nahi mili.');
+  if (!booking) throw new AppError('NOT_FOUND', 'Booking not found.');
   if (booking.customerId !== params.raisedByUserId) {
-    throw new AppError('FORBIDDEN', 'Sirf booking ka customer claim kar sakta hai.');
+    throw new AppError('FORBIDDEN', 'Only the customer on this booking can make a claim.');
   }
   if (!booking.guaranteeEligible) {
     throw new AppError(
       'GUARANTEE_NOT_ELIGIBLE',
-      'Is booking par service guarantee laagu nahi thi.',
+      'The service guarantee did not apply to this booking.',
     );
   }
   if (!booking.guaranteeExpiresAt || booking.guaranteeExpiresAt < new Date()) {
     throw new AppError(
       'GUARANTEE_EXPIRED',
-      `Guarantee ki muddat (${booking.guaranteeDays} din) khatam ho chuki hai.`,
+      `The guarantee window (${booking.guaranteeDays} days) has passed.`,
     );
   }
 
@@ -358,7 +358,7 @@ export async function submitGuaranteeClaim(params: {
     where: { bookingId: booking.id, status: { notIn: ['REJECTED', 'RESOLVED'] } },
   });
   if (existing) {
-    throw new AppError('CONFLICT', 'Is booking par pehle se ek claim zer-e-ghaur hai.');
+    throw new AppError('CONFLICT', 'There is already a claim under review on this booking.');
   }
 
   const claim = await prisma.$transaction(async (tx) => {
@@ -389,7 +389,7 @@ export async function submitGuaranteeClaim(params: {
   await notifyAdmins({
     event: NOTIFICATION_EVENTS.GUARANTEE_UPDATE,
     title: `Guarantee claim — ${claim.reference}`,
-    body: `${booking.reference} (${booking.service.name}) par re-visit claim aaya hai.`,
+    body: `A re-visit claim has come in on ${booking.reference} (${booking.service.name}).`,
     href: `/admin/guarantees/${claim.id}`,
     data: { claimId: claim.id, bookingId: booking.id },
   });
@@ -423,7 +423,7 @@ export async function decideGuaranteeClaim(params: {
       },
     },
   });
-  if (!claim) throw new AppError('NOT_FOUND', 'Claim nahi mila.');
+  if (!claim) throw new AppError('NOT_FOUND', 'Claim not found.');
 
   const defaultResponsibility = await getSetting('guarantee.providerResponsibleByDefault');
 
@@ -461,7 +461,7 @@ export async function decideGuaranteeClaim(params: {
   await notifyMany(audience, {
     event: NOTIFICATION_EVENTS.GUARANTEE_UPDATE,
     title: `Guarantee claim update — ${claim.reference}`,
-    body: `${claim.booking.reference}: claim ka status ab "${GUARANTEE_STATUS_LABELS[params.status].ur}" hai.`,
+    body: `${claim.booking.reference}: the claim is now "${GUARANTEE_STATUS_LABELS[params.status]}".`,
     href: `/account/bookings/${claim.booking.id}`,
     data: { claimId: claim.id },
   });
@@ -469,12 +469,12 @@ export async function decideGuaranteeClaim(params: {
   return updated;
 }
 
-export const GUARANTEE_STATUS_LABELS: Record<GuaranteeClaim['status'], { en: string; ur: string }> =
+export const GUARANTEE_STATUS_LABELS: Record<GuaranteeClaim['status'], string> =
   {
-    SUBMITTED: { en: 'Submitted', ur: 'Jama ho gaya' },
-    UNDER_REVIEW: { en: 'Under review', ur: 'Jaiza liya ja raha hai' },
-    APPROVED: { en: 'Approved', ur: 'Manzoor' },
-    REVISIT_SCHEDULED: { en: 'Re-visit scheduled', ur: 'Dobara visit ka time set' },
-    RESOLVED: { en: 'Resolved', ur: 'Hal ho gaya' },
-    REJECTED: { en: 'Rejected', ur: 'Manzoor nahi hua' },
+    SUBMITTED: 'Submitted',
+    UNDER_REVIEW: 'Under review',
+    APPROVED: 'Approved',
+    REVISIT_SCHEDULED: 'Re-visit scheduled',
+    RESOLVED: 'Resolved',
+    REJECTED: 'Rejected',
   };

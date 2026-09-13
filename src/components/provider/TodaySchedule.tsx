@@ -40,7 +40,7 @@ export function TodaySchedule({ jobs }: { jobs: BookingSummary[] }) {
                 <p className="mt-1 line-clamp-1 text-xs text-ink-500">{job.problemDescription}</p>
               </div>
               <div className="flex shrink-0 flex-col items-end gap-1.5">
-                <StatusBadge status={job.status} label={job.statusLabelUr} />
+                <StatusBadge status={job.status} label={job.statusLabel} />
                 {job.approvedTotalPaisa !== null ? (
                   <span className="text-sm font-semibold text-ink-900">
                     {formatPaisa(job.approvedTotalPaisa)}

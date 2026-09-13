@@ -35,13 +35,13 @@ const BLOCKED = new Set([
 
 export const passwordSchema = z
   .string()
-  .min(10, 'Password kam az kam 10 characters ka hona chahiye.')
-  .max(128, 'Password 128 characters se zyada nahi ho sakta.')
+  .min(10, 'A password must be at least 10 characters.')
+  .max(128, 'A password cannot be longer than 128 characters.')
   .refine((v) => /[a-z]/.test(v) && /[A-Z0-9]/.test(v), {
-    message: 'Password mein choti aur bari letters ya numbers dono hone chahiye.',
+    message: 'Use a mix of lower case and capitals or numbers.',
   })
   .refine((v) => !BLOCKED.has(v.toLowerCase()), {
-    message: 'Yeh password bohat aam hai. Koi mazboot password chunein.',
+    message: 'That password is too common. Please choose a stronger one.',
   });
 
 /**

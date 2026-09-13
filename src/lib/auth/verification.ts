@@ -89,13 +89,13 @@ function devEcho(token: string): Pick<DeliveryReport, 'devToken' | 'reason'> {
   if (env.NODE_ENV === 'production') {
     return {
       reason:
-        'Is deployment par email/SMS configured nahi hai, is liye code bheja nahi ja saka. Support se rabta karein.',
+        'Email and SMS are not configured on this deployment, so nothing could be sent. Please contact support.',
     };
   }
   return {
     devToken: token,
     reason:
-      'Email/SMS configured nahi hai — development mode mein token yahin dikhaya ja raha hai. Production mein aisa nahi hoga.',
+      'Email and SMS are not configured, so the token is shown here in development. This never happens in production.',
   };
 }
 
@@ -122,7 +122,7 @@ async function issue(params: {
   if (issuedThisHour >= ISSUE_LIMIT_PER_HOUR[params.purpose]) {
     throw new AppError(
       'RATE_LIMITED',
-      'Bohat zyada requests. Thori der baad dobara koshish karein.',
+      'Too many requests. Please try again shortly.',
     );
   }
 
@@ -159,11 +159,11 @@ async function consume(purpose: VerificationPurpose, raw: string, userId?: strin
   if (!token || token.consumedAt || token.expiresAt < new Date()) {
     throw new AppError(
       'TOKEN_EXPIRED',
-      'Yeh link ya code ab kaam nahi karta. Naya request karein.',
+      'This link or code no longer works. Please request a new one.',
     );
   }
   if (!token.user.isActive || token.user.deletedAt) {
-    throw new AppError('ACCOUNT_DISABLED', 'Yeh account active nahi hai.');
+    throw new AppError('ACCOUNT_DISABLED', 'This account is not active.');
   }
 
   await prisma.verificationToken.update({
@@ -236,8 +236,8 @@ export async function requestPasswordReset(
   await notify({
     event: NOTIFICATION_EVENTS.PASSWORD_RESET,
     userId: user.id,
-    title: 'Password reset karein',
-    body: `Password badalne ke liye yeh link kholein: ${link}\n\nYeh link ${TTL_MINUTES.PASSWORD_RESET} minute tak kaam karega. Agar aap ne request nahi kiya to is email ko nazarandaz karein — aapka password wahi rahega.`,
+    title: 'Reset your password',
+    body: `Open this link to set a new password: ${link}\n\nIt works for ${TTL_MINUTES.PASSWORD_RESET} minutes. If you did not ask for this, ignore this email — your password stays as it is.`,
     href: '/reset-password',
     channels: ['EMAIL'],
     data: { link },
@@ -276,8 +276,8 @@ export async function resetPassword(rawToken: string, newPassword: string): Prom
   await notify({
     event: NOTIFICATION_EVENTS.PASSWORD_CHANGED,
     userId: token.userId,
-    title: 'Aapka password badal diya gaya',
-    body: 'Agar yeh aap ne nahi kiya to foran support se rabta karein — aapke sab devices se logout kar diya gaya hai.',
+    title: 'Your password was changed',
+    body: 'If this was not you, contact support immediately. You have been signed out on every device.',
     href: '/login',
   });
 }
@@ -303,9 +303,9 @@ export async function requestEmailVerification(userId: string): Promise<Delivery
     where: { id: userId, isActive: true, deletedAt: null },
     select: { id: true, email: true, emailVerifiedAt: true },
   });
-  if (!user) throw new AppError('NOT_FOUND', 'User nahi mila.');
+  if (!user) throw new AppError('NOT_FOUND', 'User not found.');
   if (user.emailVerifiedAt) {
-    throw new AppError('CONFLICT', 'Yeh email pehle se verify ho chuki hai.');
+    throw new AppError('CONFLICT', 'This email is already verified.');
   }
 
   const raw = generateLinkToken();
@@ -319,8 +319,8 @@ export async function requestEmailVerification(userId: string): Promise<Delivery
   await notify({
     event: NOTIFICATION_EVENTS.EMAIL_VERIFICATION,
     userId: user.id,
-    title: 'Apni email verify karein',
-    body: `Email confirm karne ke liye yeh link kholein: ${link}`,
+    title: 'Verify your email',
+    body: `Open this link to confirm your email address: ${link}`,
     href: '/account/profile',
     channels: ['EMAIL'],
     data: { link },
@@ -337,7 +337,7 @@ export async function confirmEmailVerification(rawToken: string): Promise<{ user
   if (token.sentTo && token.user.email !== token.sentTo) {
     throw new AppError(
       'TOKEN_EXPIRED',
-      'Is link ke baad email address badal gaya hai. Naya verification request karein.',
+      'The email address changed after this link was sent. Please request a new one.',
     );
   }
 
@@ -367,14 +367,14 @@ export async function requestPhoneVerification(
     where: { id: userId, isActive: true, deletedAt: null },
     select: { id: true, phone: true, phoneVerifiedAt: true },
   });
-  if (!user) throw new AppError('NOT_FOUND', 'User nahi mila.');
+  if (!user) throw new AppError('NOT_FOUND', 'User not found.');
 
   const phone = phoneInput ? normalizePhone(phoneInput) : user.phone;
   if (!phone) {
-    throw new AppError('VALIDATION_ERROR', 'Pehle apna phone number add karein.');
+    throw new AppError('VALIDATION_ERROR', 'Add a phone number first.');
   }
   if (user.phoneVerifiedAt && phone === user.phone) {
-    throw new AppError('CONFLICT', 'Yeh number pehle se verify ho chuka hai.');
+    throw new AppError('CONFLICT', 'This number is already verified.');
   }
 
   // A number already proven by somebody else cannot be claimed here.
@@ -383,7 +383,7 @@ export async function requestPhoneVerification(
     select: { id: true },
   });
   if (taken) {
-    throw new AppError('PHONE_TAKEN', 'Yeh number kisi aur account par register hai.');
+    throw new AppError('PHONE_TAKEN', 'That number is registered to another account.');
   }
 
   const code = generateOtp();
@@ -397,7 +397,7 @@ export async function requestPhoneVerification(
     event: NOTIFICATION_EVENTS.PHONE_VERIFICATION,
     userId: user.id,
     title: 'Verification code',
-    body: `Islamabad Fix ka code: ${code}. Yeh ${TTL_MINUTES.PHONE_VERIFY} minute tak valid hai. Kisi ke saath share na karein.`,
+    body: `Your Islamabad Fix code is ${code}. It is valid for ${TTL_MINUTES.PHONE_VERIFY} minutes. Do not share it with anyone.`,
     channels: ['SMS'],
     data: { sentTo: phone },
   });
@@ -418,7 +418,7 @@ export async function confirmPhoneVerification(userId: string, code: string): Pr
     orderBy: { createdAt: 'desc' },
   });
   if (!live) {
-    throw new AppError('TOKEN_EXPIRED', 'Code ki muddat khatam ho gayi. Naya code mangwayein.');
+    throw new AppError('TOKEN_EXPIRED', 'That code has expired. Request a new one.');
   }
 
   if (!constantTimeEquals(live.tokenHash, hashSecret(code.trim()))) {
@@ -432,8 +432,8 @@ export async function confirmPhoneVerification(userId: string, code: string): Pr
     throw new AppError(
       'VALIDATION_ERROR',
       attempts >= MAX_OTP_ATTEMPTS
-        ? 'Bohat zyada ghalat koshishein. Naya code mangwayein.'
-        : `Code ghalat hai. ${MAX_OTP_ATTEMPTS - attempts} koshishein baqi hain.`,
+        ? 'Too many wrong attempts. Request a new code.'
+        : `Wrong code. ${MAX_OTP_ATTEMPTS - attempts} attempts left.`,
     );
   }
 

@@ -9,7 +9,6 @@ export const bankTransferProvider: PaymentProvider = {
   key: 'bank_transfer',
   method: 'BANK_TRANSFER',
   label: 'Bank transfer',
-  labelUr: 'Bank transfer',
   description: 'Bank ya mobile wallet se transfer karein; receipt confirm hone par settle hoga.',
   isConfigured: () => true,
   initialStatus: () => 'PENDING',

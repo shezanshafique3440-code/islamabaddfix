@@ -29,7 +29,6 @@ export async function availablePaymentMethods(): Promise<
   Array<{
     method: PaymentMethod;
     label: string;
-    labelUr: string;
     description: string;
   }>
 > {
@@ -40,7 +39,6 @@ export async function availablePaymentMethods(): Promise<
     .map((provider) => ({
       method: provider.method,
       label: provider.label,
-      labelUr: provider.labelUr,
       description: provider.description,
     }));
 }
@@ -64,31 +62,31 @@ export async function initiatePayment(params: {
       service: { select: { name: true } },
     },
   });
-  if (!booking) throw new AppError('NOT_FOUND', 'Booking nahi mili.');
+  if (!booking) throw new AppError('NOT_FOUND', 'Booking not found.');
 
   const enabled = await getSetting('payments.enabledMethods');
   if (!enabled.includes(params.method)) {
-    throw new AppError('VALIDATION_ERROR', 'Yeh payment method is waqt enabled nahi hai.');
+    throw new AppError('VALIDATION_ERROR', 'That payment method is not enabled right now.');
   }
 
   const provider = paymentProvider(params.method);
   if (!provider.isConfigured()) {
     throw new AppError(
       'INTEGRATION_NOT_CONFIGURED',
-      `${provider.label} is deployment par configured nahi hai.`,
+      `${provider.label} is not configured on this deployment.`,
     );
   }
 
   const amountPaisa = booking.finalTotalPaisa ?? booking.approvedTotalPaisa;
   if (amountPaisa === null) {
-    throw new AppError('QUOTE_REQUIRED', 'Payment se pehle quote approve hona zaroori hai.');
+    throw new AppError('QUOTE_REQUIRED', 'A quote must be approved before payment.');
   }
 
   const existing = await prisma.payment.findFirst({
     where: { bookingId: booking.id, status: { in: ['PAID', 'AUTHORIZED'] } },
   });
   if (existing) {
-    throw new AppError('PAYMENT_ALREADY_SETTLED', 'Is booking ki payment pehle se record hai.');
+    throw new AppError('PAYMENT_ALREADY_SETTLED', 'A payment is already recorded for this booking.');
   }
 
   const intent: ChargeIntent = {
@@ -150,12 +148,12 @@ export async function settlePayment(params: {
   note?: string;
 }): Promise<Payment> {
   const payment = await prisma.payment.findUnique({ where: { id: params.paymentId } });
-  if (!payment) throw new AppError('NOT_FOUND', 'Payment record nahi mila.');
+  if (!payment) throw new AppError('NOT_FOUND', 'Payment record not found.');
   if (payment.status === 'PAID') {
-    throw new AppError('PAYMENT_ALREADY_SETTLED', 'Yeh payment pehle se paid hai.');
+    throw new AppError('PAYMENT_ALREADY_SETTLED', 'This payment is already marked paid.');
   }
   if (payment.status === 'REFUNDED') {
-    throw new AppError('CONFLICT', 'Refunded payment ko paid nahi kiya ja sakta.');
+    throw new AppError('CONFLICT', 'A refunded payment cannot be marked paid.');
   }
 
   const updated = await prisma.payment.update({
@@ -192,16 +190,16 @@ export async function refundPayment(params: {
   actorRole: Role;
 }): Promise<{ payment: Payment; instructions?: string }> {
   const payment = await prisma.payment.findUnique({ where: { id: params.paymentId } });
-  if (!payment) throw new AppError('NOT_FOUND', 'Payment record nahi mila.');
+  if (!payment) throw new AppError('NOT_FOUND', 'Payment record not found.');
   if (payment.status !== 'PAID' && payment.status !== 'PARTIALLY_REFUNDED') {
-    throw new AppError('CONFLICT', 'Sirf paid payment refund ho sakti hai.');
+    throw new AppError('CONFLICT', 'Only a paid payment can be refunded.');
   }
 
   const remaining = payment.amountPaisa - payment.refundedPaisa;
   if (params.amountPaisa <= 0 || params.amountPaisa > remaining) {
     throw new AppError(
       'VALIDATION_ERROR',
-      'Refund amount available balance se zyada nahi ho sakta.',
+      'A refund cannot exceed the available balance.',
     );
   }
 

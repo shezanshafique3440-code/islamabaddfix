@@ -153,7 +153,7 @@ describe('two-factor enrolment', () => {
     });
     const wrong = currentTotp(secret) === '000000' ? '111111' : '000000';
 
-    await expect(confirmTwoFactorEnrolment(admin.id, wrong)).rejects.toThrow(/ghalat/i);
+    await expect(confirmTwoFactorEnrolment(admin.id, wrong)).rejects.toThrow(/wrong/i);
     expect(await isTwoFactorEnabled(admin.id)).toBe(false);
   });
 
@@ -192,7 +192,7 @@ describe('two-factor enrolment', () => {
 
     await expect(
       beginTwoFactorEnrolment({ userId: admin.id, role: 'ADMIN', email: admin.email }),
-    ).rejects.toThrow(/pehle se on/i);
+    ).rejects.toThrow(/already on/i);
   });
 });
 
@@ -268,7 +268,7 @@ describe('two-factor at sign-in', () => {
   it('needs a current code to switch off', async () => {
     const { admin, secret } = await enrolledAdmin();
 
-    await expect(disableTwoFactor(admin.id, '000000')).rejects.toThrow(/ghalat/i);
+    await expect(disableTwoFactor(admin.id, '000000')).rejects.toThrow(/wrong/i);
     expect(await isTwoFactorEnabled(admin.id)).toBe(true);
 
     await disableTwoFactor(admin.id, currentTotp(secret));

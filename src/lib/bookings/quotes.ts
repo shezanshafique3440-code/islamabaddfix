@@ -84,7 +84,7 @@ export async function submitQuote(params: {
     throw new AppError('VALIDATION_ERROR', 'Quote mein kam az kam ek item hona chahiye.');
   }
   if (params.items.length > MAX_ITEMS) {
-    throw new AppError('VALIDATION_ERROR', `Quote mein ${MAX_ITEMS} se zyada items nahi ho sakte.`);
+    throw new AppError('VALIDATION_ERROR', `A quote cannot have more than ${MAX_ITEMS} items.`);
   }
 
   const booking = await prisma.booking.findUnique({
@@ -94,14 +94,14 @@ export async function submitQuote(params: {
       customer: { select: { id: true } },
     },
   });
-  if (!booking) throw new AppError('NOT_FOUND', 'Booking nahi mili.');
+  if (!booking) throw new AppError('NOT_FOUND', 'Booking not found.');
   if (booking.providerId !== params.providerId) {
-    throw new AppError('FORBIDDEN', 'Yeh booking aap ko assign nahi hui.');
+    throw new AppError('FORBIDDEN', 'This booking is not assigned to you.');
   }
 
   const subtotalPaisa = sumItems(params.items);
   if (subtotalPaisa <= 0) {
-    throw new AppError('VALIDATION_ERROR', 'Quote ka total zero se zyada hona chahiye.');
+    throw new AppError('VALIDATION_ERROR', 'The quote total must be more than zero.');
   }
 
   // Additional charges are those raised after the customer already approved a
@@ -166,10 +166,10 @@ export async function submitQuote(params: {
   await notify({
     event: NOTIFICATION_EVENTS.QUOTE_RECEIVED,
     userId: booking.customerId,
-    title: isAdditional ? 'Extra charges ki approval chahiye' : 'Quote aa gaya',
+    title: isAdditional ? 'Extra charges need your approval' : 'Your quote is ready',
     body: isAdditional
-      ? `Technician ne ${formatPaisa(subtotalPaisa)} ke extra charges bheje hain. Approve karne tak kaam complete nahi hoga.`
-      : `${booking.service.name} ka quote: ${formatPaisa(subtotalPaisa)}. Details dekh kar approve ya reject karein.`,
+      ? `The technician has sent ${formatPaisa(subtotalPaisa)} in extra charges. The job cannot be completed until you approve them.`
+      : `Quote for ${booking.service.name}: ${formatPaisa(subtotalPaisa)}. Review the breakdown, then approve or decline.`,
     href: `/account/bookings/${booking.id}`,
     data: { bookingId: booking.id, quoteId: quote.id, subtotalPaisa },
   });
@@ -204,15 +204,15 @@ export async function approveQuote(params: {
       provider: { select: { userId: true, businessName: true } },
     },
   });
-  if (!quote) throw new AppError('NOT_FOUND', 'Quote nahi mila.');
+  if (!quote) throw new AppError('NOT_FOUND', 'Quote not found.');
   if (quote.booking.customerId !== params.customerUserId) {
-    throw new AppError('FORBIDDEN', 'Yeh quote aapki booking ka nahi hai.');
+    throw new AppError('FORBIDDEN', 'This quote does not belong to your booking.');
   }
   if (quote.status !== 'SUBMITTED') {
-    throw new AppError('QUOTE_NOT_PENDING', 'Yeh quote ab approve nahi kiya ja sakta.');
+    throw new AppError('QUOTE_NOT_PENDING', 'This quote can no longer be approved.');
   }
   if (quote.validUntil && quote.validUntil < new Date()) {
-    throw new AppError('QUOTE_NOT_PENDING', 'Is quote ki validity khatam ho gayi hai.');
+    throw new AppError('QUOTE_NOT_PENDING', 'This quote has expired.');
   }
 
   // Additional charges stack on the already-approved amount; an initial quote
@@ -268,8 +268,8 @@ export async function approveQuote(params: {
   await notify({
     event: NOTIFICATION_EVENTS.QUOTE_APPROVED,
     userId: quote.provider.userId,
-    title: 'Quote approve ho gaya',
-    body: `${quote.booking.reference}: customer ne ${formatPaisa(approvedTotalPaisa)} ka quote approve kar diya.`,
+    title: 'Quote approved',
+    body: `${quote.booking.reference}: the customer approved your ${formatPaisa(approvedTotalPaisa)} quote.`,
     href: `/provider/jobs/${quote.booking.id}`,
     data: { bookingId: quote.booking.id, quoteId: quote.id },
   });
@@ -292,12 +292,12 @@ export async function rejectQuote(params: {
       provider: { select: { userId: true } },
     },
   });
-  if (!quote) throw new AppError('NOT_FOUND', 'Quote nahi mila.');
+  if (!quote) throw new AppError('NOT_FOUND', 'Quote not found.');
   if (quote.booking.customerId !== params.customerUserId) {
-    throw new AppError('FORBIDDEN', 'Yeh quote aapki booking ka nahi hai.');
+    throw new AppError('FORBIDDEN', 'This quote does not belong to your booking.');
   }
   if (quote.status !== 'SUBMITTED') {
-    throw new AppError('QUOTE_NOT_PENDING', 'Yeh quote ab reject nahi kiya ja sakta.');
+    throw new AppError('QUOTE_NOT_PENDING', 'This quote can no longer be declined.');
   }
 
   const updated = await prisma.quote.update({
@@ -345,9 +345,9 @@ export async function rejectQuote(params: {
   await notify({
     event: NOTIFICATION_EVENTS.QUOTE_REJECTED,
     userId: quote.provider.userId,
-    title: 'Quote reject ho gaya',
+    title: 'Quote declined',
     body: `${quote.booking.reference}: customer ne quote reject kar diya.${
-      params.reason ? ` Wajah: ${params.reason}` : ' Aap naya quote bhej sakte hain.'
+      params.reason ? ` Reason: ${params.reason}` : ' You can send a revised quote.'
     }`,
     href: `/provider/jobs/${quote.booking.id}`,
     data: { bookingId: quote.booking.id, quoteId: quote.id },
@@ -374,20 +374,20 @@ export async function completeBooking(params: {
       quotes: { where: { status: 'SUBMITTED' }, select: { id: true } },
     },
   });
-  if (!booking) throw new AppError('NOT_FOUND', 'Booking nahi mili.');
+  if (!booking) throw new AppError('NOT_FOUND', 'Booking not found.');
   if (booking.providerId !== params.providerId) {
-    throw new AppError('FORBIDDEN', 'Yeh booking aap ko assign nahi hui.');
+    throw new AppError('FORBIDDEN', 'This booking is not assigned to you.');
   }
   if (booking.quotes.length > 0) {
     throw new AppError(
       'QUOTE_NOT_PENDING',
-      'Pehle customer ko pending charges approve karne dein, phir kaam complete karein.',
+      'Let the customer decide the pending charges first, then complete the job.',
     );
   }
   if (booking.approvedTotalPaisa === null) {
     throw new AppError(
       'QUOTE_REQUIRED',
-      'Kaam complete karne se pehle customer ka approve kiya hua quote zaroori hai.',
+      'A customer-approved quote is required before a job can be completed.',
     );
   }
 
@@ -404,9 +404,9 @@ export async function completeBooking(params: {
   await notify({
     event: NOTIFICATION_EVENTS.JOB_COMPLETED,
     userId: booking.customerId,
-    title: 'Kaam complete ho gaya',
+    title: 'Job completed',
     body: `${booking.service.name} mukammal. Total: ${formatPaisa(result.booking.finalTotalPaisa ?? 0)}.${
-      guaranteeDays > 0 ? ` ${guaranteeDays}-din ka service guarantee laagu hai.` : ''
+      guaranteeDays > 0 ? ` A ${guaranteeDays}-day service guarantee applies.` : ''
     } Payment record karein aur review dein.`,
     href: `/account/bookings/${booking.id}`,
     data: { bookingId: booking.id },
@@ -415,8 +415,8 @@ export async function completeBooking(params: {
   await notify({
     event: NOTIFICATION_EVENTS.REVIEW_REQUESTED,
     userId: booking.customerId,
-    title: 'Apna experience batayein',
-    body: 'Aapki rating doosre customers ko behtar technician chunne mein madad karti hai.',
+    title: 'Tell us how it went',
+    body: 'Your rating helps other customers choose the right technician.',
     href: `/account/bookings/${booking.id}?review=1`,
     data: { bookingId: booking.id },
   });

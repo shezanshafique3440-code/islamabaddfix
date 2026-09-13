@@ -19,8 +19,6 @@ export interface TransitionRule {
   actors: readonly Actor[];
   /** Short label used in the UI for the button that performs it. */
   label: string;
-  /** Roman Urdu label shown to the actor. */
-  labelUr?: string;
 }
 
 /**
@@ -34,34 +32,31 @@ export const TRANSITIONS: Record<BookingStatus, readonly TransitionRule[]> = {
   PENDING: [
     { to: 'PROVIDER_NOTIFIED', actors: ['SYSTEM', 'ADMIN'], label: 'Notify providers' },
     // Direct assignment when the customer picked a specific provider.
-    { to: 'ACCEPTED', actors: ['PROVIDER', 'ADMIN'], label: 'Accept', labelUr: 'Qubool karein' },
-    { to: 'CANCELLED', actors: ['CUSTOMER', 'ADMIN'], label: 'Cancel', labelUr: 'Cancel karein' },
+    { to: 'ACCEPTED', actors: ['PROVIDER', 'ADMIN'], label: 'Accept' },
+    { to: 'CANCELLED', actors: ['CUSTOMER', 'ADMIN'], label: 'Cancel' },
   ],
   PROVIDER_NOTIFIED: [
-    { to: 'ACCEPTED', actors: ['PROVIDER', 'ADMIN'], label: 'Accept', labelUr: 'Qubool karein' },
+    { to: 'ACCEPTED', actors: ['PROVIDER', 'ADMIN'], label: 'Accept' },
     // Re-fan-out to the next tranche of providers after declines/expiry.
     { to: 'PENDING', actors: ['SYSTEM', 'ADMIN'], label: 'Re-queue' },
-    { to: 'CANCELLED', actors: ['CUSTOMER', 'ADMIN'], label: 'Cancel', labelUr: 'Cancel karein' },
+    { to: 'CANCELLED', actors: ['CUSTOMER', 'ADMIN'], label: 'Cancel' },
   ],
   ACCEPTED: [
     {
       to: 'QUOTE_PENDING',
       actors: ['PROVIDER'],
       label: 'Submit quote',
-      labelUr: 'Quote bhejein',
     },
     // Services with a fixed published price skip quoting entirely.
     {
       to: 'SCHEDULED',
       actors: ['PROVIDER', 'ADMIN'],
       label: 'Confirm schedule',
-      labelUr: 'Time confirm karein',
     },
     {
       to: 'CANCELLED',
       actors: ['CUSTOMER', 'PROVIDER', 'ADMIN'],
       label: 'Cancel',
-      labelUr: 'Cancel karein',
     },
   ],
   QUOTE_PENDING: [
@@ -72,11 +67,10 @@ export const TRANSITIONS: Record<BookingStatus, readonly TransitionRule[]> = {
       to: 'QUOTE_APPROVED',
       actors: ['CUSTOMER', 'SYSTEM'],
       label: 'Approve quote',
-      labelUr: 'Quote approve karein',
     },
     // Rejecting an *initial* quote returns the job to ACCEPTED so the provider
     // may re-quote — there is no agreed price to protect.
-    { to: 'ACCEPTED', actors: ['CUSTOMER'], label: 'Reject quote', labelUr: 'Quote reject karein' },
+    { to: 'ACCEPTED', actors: ['CUSTOMER'], label: 'Reject quote' },
     // Resume points for a decided *additional* quote. A quote interrupts the job
     // wherever it was, and the decision has to put it back there: a technician
     // standing in the customer's kitchen when the extra part was declined is
@@ -88,13 +82,11 @@ export const TRANSITIONS: Record<BookingStatus, readonly TransitionRule[]> = {
       to: 'IN_PROGRESS',
       actors: ['PROVIDER', 'SYSTEM'],
       label: 'Resume job',
-      labelUr: 'Kaam jari rakhein',
     },
     {
       to: 'CANCELLED',
       actors: ['CUSTOMER', 'PROVIDER', 'ADMIN'],
       label: 'Cancel',
-      labelUr: 'Cancel karein',
     },
   ],
   QUOTE_APPROVED: [
@@ -102,7 +94,6 @@ export const TRANSITIONS: Record<BookingStatus, readonly TransitionRule[]> = {
       to: 'SCHEDULED',
       actors: ['PROVIDER', 'ADMIN', 'SYSTEM'],
       label: 'Confirm schedule',
-      labelUr: 'Time confirm karein',
     },
     // A technician already on site whose (revised or additional) quote was just
     // approved resumes work directly rather than re-walking the travel steps.
@@ -110,7 +101,6 @@ export const TRANSITIONS: Record<BookingStatus, readonly TransitionRule[]> = {
       to: 'IN_PROGRESS',
       actors: ['PROVIDER', 'SYSTEM'],
       label: 'Resume job',
-      labelUr: 'Kaam jari rakhein',
     },
     // Extra cost found after the price was agreed but before setting off. It
     // needs its own approval, exactly like one found mid-job.
@@ -118,55 +108,48 @@ export const TRANSITIONS: Record<BookingStatus, readonly TransitionRule[]> = {
       to: 'QUOTE_PENDING',
       actors: ['PROVIDER'],
       label: 'Request extra charges',
-      labelUr: 'Extra charges',
     },
     {
       to: 'CANCELLED',
       actors: ['CUSTOMER', 'PROVIDER', 'ADMIN'],
       label: 'Cancel',
-      labelUr: 'Cancel karein',
     },
   ],
   SCHEDULED: [
-    { to: 'ON_THE_WAY', actors: ['PROVIDER'], label: 'On the way', labelUr: 'Raste mein hoon' },
+    { to: 'ON_THE_WAY', actors: ['PROVIDER'], label: 'On the way' },
     // A technician already on site can start without the travel step.
-    { to: 'ARRIVED', actors: ['PROVIDER'], label: 'Arrived', labelUr: 'Pohonch gaya' },
+    { to: 'ARRIVED', actors: ['PROVIDER'], label: 'Arrived' },
     {
       to: 'QUOTE_PENDING',
       actors: ['PROVIDER'],
       label: 'Request extra charges',
-      labelUr: 'Extra charges',
     },
     {
       to: 'CANCELLED',
       actors: ['CUSTOMER', 'PROVIDER', 'ADMIN'],
       label: 'Cancel',
-      labelUr: 'Cancel karein',
     },
   ],
   ON_THE_WAY: [
-    { to: 'ARRIVED', actors: ['PROVIDER'], label: 'Arrived', labelUr: 'Pohonch gaya' },
+    { to: 'ARRIVED', actors: ['PROVIDER'], label: 'Arrived' },
     {
       to: 'CANCELLED',
       actors: ['CUSTOMER', 'PROVIDER', 'ADMIN'],
       label: 'Cancel',
-      labelUr: 'Cancel karein',
     },
   ],
   ARRIVED: [
-    { to: 'IN_PROGRESS', actors: ['PROVIDER'], label: 'Start job', labelUr: 'Kaam shuru karein' },
+    { to: 'IN_PROGRESS', actors: ['PROVIDER'], label: 'Start job' },
     // On-site inspection often reveals the real scope — allow a fresh quote.
     {
       to: 'QUOTE_PENDING',
       actors: ['PROVIDER'],
       label: 'Revise quote',
-      labelUr: 'Quote update karein',
     },
     {
       to: 'CANCELLED',
       actors: ['CUSTOMER', 'PROVIDER', 'ADMIN'],
       label: 'Cancel',
-      labelUr: 'Cancel karein',
     },
   ],
   IN_PROGRESS: [
@@ -174,30 +157,27 @@ export const TRANSITIONS: Record<BookingStatus, readonly TransitionRule[]> = {
       to: 'COMPLETED',
       actors: ['PROVIDER'],
       label: 'Complete job',
-      labelUr: 'Kaam complete karein',
     },
     // Additional charges discovered mid-job need customer approval first.
     {
       to: 'QUOTE_PENDING',
       actors: ['PROVIDER'],
       label: 'Request extra charges',
-      labelUr: 'Extra charges',
     },
-    { to: 'CANCELLED', actors: ['ADMIN'], label: 'Cancel', labelUr: 'Cancel karein' },
+    { to: 'CANCELLED', actors: ['ADMIN'], label: 'Cancel' },
   ],
   COMPLETED: [
     {
       to: 'DISPUTED',
       actors: ['CUSTOMER', 'ADMIN'],
       label: 'Raise dispute',
-      labelUr: 'Shikayat darj karein',
     },
-    { to: 'REFUNDED', actors: ['ADMIN'], label: 'Refund', labelUr: 'Refund karein' },
+    { to: 'REFUNDED', actors: ['ADMIN'], label: 'Refund' },
   ],
   DISPUTED: [
-    { to: 'COMPLETED', actors: ['ADMIN'], label: 'Close dispute', labelUr: 'Dispute band karein' },
-    { to: 'REFUNDED', actors: ['ADMIN'], label: 'Refund', labelUr: 'Refund karein' },
-    { to: 'CANCELLED', actors: ['ADMIN'], label: 'Cancel booking', labelUr: 'Booking cancel' },
+    { to: 'COMPLETED', actors: ['ADMIN'], label: 'Close dispute' },
+    { to: 'REFUNDED', actors: ['ADMIN'], label: 'Refund' },
+    { to: 'CANCELLED', actors: ['ADMIN'], label: 'Cancel booking' },
   ],
   CANCELLED: [],
   REFUNDED: [],
@@ -272,24 +252,24 @@ export function assertTransition(from: BookingStatus, to: BookingStatus, actor: 
   }
 }
 
-const STATUS_LABELS: Record<BookingStatus, { en: string; ur: string }> = {
-  PENDING: { en: 'Pending', ur: 'Intezar mein' },
-  PROVIDER_NOTIFIED: { en: 'Provider notified', ur: 'Technicians ko bheja gaya' },
-  ACCEPTED: { en: 'Accepted', ur: 'Qubool ho gaya' },
-  QUOTE_PENDING: { en: 'Quote sent', ur: 'Quote aa gaya' },
-  QUOTE_APPROVED: { en: 'Quote approved', ur: 'Quote approve ho gaya' },
-  SCHEDULED: { en: 'Scheduled', ur: 'Time confirm hai' },
-  ON_THE_WAY: { en: 'On the way', ur: 'Technician raste mein hai' },
-  ARRIVED: { en: 'Arrived', ur: 'Technician pohonch gaya' },
-  IN_PROGRESS: { en: 'In progress', ur: 'Kaam chal raha hai' },
-  COMPLETED: { en: 'Completed', ur: 'Kaam complete ho gaya' },
-  CANCELLED: { en: 'Cancelled', ur: 'Cancel ho gaya' },
-  DISPUTED: { en: 'Disputed', ur: 'Shikayat darj hai' },
-  REFUNDED: { en: 'Refunded', ur: 'Refund ho gaya' },
+/** What each status is called in the interface. */
+const STATUS_LABELS: Record<BookingStatus, string> = {
+  PENDING: 'Pending',
+  PROVIDER_NOTIFIED: 'Technicians notified',
+  ACCEPTED: 'Accepted',
+  QUOTE_PENDING: 'Quote sent',
+  QUOTE_APPROVED: 'Quote approved',
+  SCHEDULED: 'Scheduled',
+  ON_THE_WAY: 'On the way',
+  ARRIVED: 'Arrived',
+  IN_PROGRESS: 'In progress',
+  COMPLETED: 'Completed',
+  CANCELLED: 'Cancelled',
+  DISPUTED: 'Disputed',
+  REFUNDED: 'Refunded',
 };
 
-export const humanStatus = (status: BookingStatus): string => STATUS_LABELS[status].en;
-export const humanStatusUr = (status: BookingStatus): string => STATUS_LABELS[status].ur;
+export const humanStatus = (status: BookingStatus): string => STATUS_LABELS[status];
 
 /** Progress step (1-based) for the customer-facing tracker. */
 export const TRACKER_STEPS: readonly BookingStatus[] = [

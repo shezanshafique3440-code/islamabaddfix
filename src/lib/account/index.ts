@@ -33,7 +33,7 @@ async function blockers(userId: string): Promise<string[]> {
   });
   if (liveBookings > 0) {
     reasons.push(
-      `${liveBookings} booking abhi chal rahi hai. Pehle woh mukammal ya cancel karein.`,
+      `${liveBookings} booking(s) are still under way. Complete or cancel them first.`,
     );
   }
 
@@ -46,7 +46,7 @@ async function blockers(userId: string): Promise<string[]> {
     },
   });
   if (unpaid > 0) {
-    reasons.push(`${unpaid} mukammal booking ki payment abhi baqi hai.`);
+    reasons.push(`${unpaid} completed booking(s) have not been paid for yet.`);
   }
 
   const provider = await prisma.providerProfile.findUnique({
@@ -62,7 +62,7 @@ async function blockers(userId: string): Promise<string[]> {
       },
     });
     if (liveJobs > 0) {
-      reasons.push(`${liveJobs} job abhi aap ke paas hai. Pehle unhein mukammal karein.`);
+      reasons.push(`${liveJobs} job(s) are still under way with you. Finish them first.`);
     }
 
     const owed = await prisma.payoutItem.aggregate({
@@ -70,7 +70,7 @@ async function blockers(userId: string): Promise<string[]> {
       _sum: { netPaisa: true },
     });
     if ((owed._sum.netPaisa ?? 0) > 0) {
-      reasons.push('Aap ki payout abhi process ho rahi hai. Woh mukammal hone tak intezar karein.');
+      reasons.push('A payout is still being processed. Please wait until it completes.');
     }
   }
 
@@ -97,10 +97,10 @@ export async function closeAccount(params: {
     where: { id: params.userId, deletedAt: null },
     select: { id: true, passwordHash: true, email: true, role: true },
   });
-  if (!user) throw new AppError('NOT_FOUND', 'Account nahi mila.');
+  if (!user) throw new AppError('NOT_FOUND', 'Account not found.');
 
   if (!(await verifyPassword(params.password, user.passwordHash))) {
-    throw new AppError('INVALID_CREDENTIALS', 'Password ghalat hai.');
+    throw new AppError('INVALID_CREDENTIALS', 'Wrong password.');
   }
 
   // An administrator closing their own account could lock everybody out of the
@@ -108,7 +108,7 @@ export async function closeAccount(params: {
   if (user.role === 'ADMIN' || user.role === 'SUPER_ADMIN') {
     throw new AppError(
       'FORBIDDEN',
-      'Staff account khud band nahi kiya ja sakta. Kisi doosre admin se rabta karein.',
+      'A staff account cannot be closed by its own holder. Ask another administrator.',
     );
   }
 
@@ -329,7 +329,7 @@ export async function exportAccountData(userId: string): Promise<Record<string, 
 
   return {
     exportedAt: new Date().toISOString(),
-    note: 'Yeh Islamabad Fix par mojood aap ki maloomat hai. Password kabhi store nahi hota — sirf uska hash, jo yahan shamil nahi. Uploaded files ke naam shamil hain, files khud nahi.',
+    note: 'This is the information Islamabad Fix holds about you. Your password is never stored \u2014 only a hash of it, which is not included here. File names are listed; the files themselves are not.',
     account: user,
     notificationPreferences: await prisma.notificationPreference.findUnique({
       where: { userId },

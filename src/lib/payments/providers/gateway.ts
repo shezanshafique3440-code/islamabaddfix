@@ -17,7 +17,6 @@ export const gatewayProvider: PaymentProvider = {
   key: 'online_gateway',
   method: 'ONLINE_GATEWAY',
   label: 'Card / wallet',
-  labelUr: 'Card ya wallet se',
   description: 'Debit/credit card ya mobile wallet se online payment.',
   isConfigured: () => integrations.onlinePayments.configured,
   initialStatus: () => 'PENDING',

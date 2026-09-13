@@ -61,20 +61,20 @@ export async function rescheduleBooking(input: RescheduleInput): Promise<Booking
       provider: { select: { userId: true, businessName: true } },
     },
   });
-  if (!booking) throw new AppError('NOT_FOUND', 'Booking nahi mili.');
+  if (!booking) throw new AppError('NOT_FOUND', 'Booking not found.');
 
   const staff = isStaff(input.actorRole);
   const isCustomer = booking.customerId === input.actorUserId;
   const isProvider =
     input.actorProviderId !== undefined && booking.providerId === input.actorProviderId;
   if (!staff && !isCustomer && !isProvider) {
-    throw new AppError('NOT_FOUND', 'Booking nahi mili.');
+    throw new AppError('NOT_FOUND', 'Booking not found.');
   }
 
   if (!RESCHEDULABLE.includes(booking.status as (typeof RESCHEDULABLE)[number])) {
     throw new AppError(
       'INVALID_STATUS_TRANSITION',
-      'Technician nikal chuka hai ya kaam shuru ho gaya hai — ab time nahi badla ja sakta. Cancel ya support se rabta karein.',
+      'The technician has set off or the work has started, so the time can no longer be changed. Cancel it, or contact support.',
     );
   }
 
@@ -83,7 +83,7 @@ export async function rescheduleBooking(input: RescheduleInput): Promise<Booking
   if (booking.isEmergency) {
     throw new AppError(
       'CONFLICT',
-      'Emergency booking ka time nahi badla ja sakta. Cancel karke normal booking karein.',
+      'An emergency booking cannot be moved. Cancel it and book a normal visit instead.',
     );
   }
 
@@ -94,7 +94,7 @@ export async function rescheduleBooking(input: RescheduleInput): Promise<Booking
   assertScheduleWindow(input.scheduledFor, { minLeadMinutes, maxLeadDays, isEmergency: false });
 
   if (booking.scheduledFor && booking.scheduledFor.getTime() === input.scheduledFor.getTime()) {
-    throw new AppError('VALIDATION_ERROR', 'Yeh wohi waqt hai jo pehle se set hai.');
+    throw new AppError('VALIDATION_ERROR', 'The booking is already set to that time.');
   }
 
   // Count from the audit log rather than carrying a column: the history is
@@ -105,7 +105,7 @@ export async function rescheduleBooking(input: RescheduleInput): Promise<Booking
   if (!staff && previousMoves >= MAX_RESCHEDULES) {
     throw new AppError(
       'CONFLICT',
-      `Ek booking ${MAX_RESCHEDULES} baar se zyada reschedule nahi ho sakti. Support se rabta karein.`,
+      `A booking cannot be moved more than ${MAX_RESCHEDULES} times. Please contact support.`,
     );
   }
 
@@ -146,9 +146,9 @@ export async function rescheduleBooking(input: RescheduleInput): Promise<Booking
       notify({
         event: NOTIFICATION_EVENTS.BOOKING_RESCHEDULED,
         userId,
-        title: `Booking ka time badal gaya — ${booking.reference}`,
-        body: `${movedBy} ne ${booking.service.name} ka waqt ${when} kar diya hai.${
-          input.reason ? ` Wajah: ${input.reason}` : ''
+        title: `Visit moved — ${booking.reference}`,
+        body: `${movedBy} moved the ${booking.service.name} visit to ${when}.${
+          input.reason ? ` Reason: ${input.reason}` : ''
         }`,
         href:
           userId === booking.provider?.userId

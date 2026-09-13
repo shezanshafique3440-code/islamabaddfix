@@ -38,23 +38,23 @@ export async function createReview(input: CreateReviewInput): Promise<Review> {
       provider: { select: { userId: true, businessName: true } },
     },
   });
-  if (!booking) throw new AppError('NOT_FOUND', 'Booking nahi mili.');
+  if (!booking) throw new AppError('NOT_FOUND', 'Booking not found.');
   if (booking.customerId !== input.authorId) {
-    throw new AppError('REVIEW_NOT_ALLOWED', 'Sirf booking ka customer review de sakta hai.');
+    throw new AppError('REVIEW_NOT_ALLOWED', 'Only the customer on this booking can leave a review.');
   }
   if (booking.status !== 'COMPLETED') {
     throw new AppError(
       'REVIEW_NOT_ALLOWED',
-      'Review sirf mukammal booking ke baad diya ja sakta hai.',
+      'A review can only be left after the job is completed.',
     );
   }
   if (!booking.providerId) {
-    throw new AppError('REVIEW_NOT_ALLOWED', 'Is booking par koi technician assign nahi tha.');
+    throw new AppError('REVIEW_NOT_ALLOWED', 'No technician was assigned to this booking.');
   }
 
   const existing = await prisma.review.findUnique({ where: { bookingId: booking.id } });
   if (existing) {
-    throw new AppError('REVIEW_ALREADY_EXISTS', 'Aap is booking ka review pehle de chuke hain.');
+    throw new AppError('REVIEW_ALREADY_EXISTS', 'You have already reviewed this booking.');
   }
 
   const autoPublish = await getSetting('reviews.autoPublish');
@@ -106,9 +106,9 @@ export async function updateReview(params: {
   valueForMoney?: number;
 }): Promise<Review> {
   const review = await prisma.review.findUnique({ where: { id: params.reviewId } });
-  if (!review) throw new AppError('NOT_FOUND', 'Review nahi mila.');
+  if (!review) throw new AppError('NOT_FOUND', 'Review not found.');
   if (review.authorId !== params.authorId) {
-    throw new AppError('FORBIDDEN', 'Yeh review aapka nahi hai.');
+    throw new AppError('FORBIDDEN', 'This review is not yours.');
   }
 
   const windowHours = await getSetting('reviews.editWindowHours');
@@ -116,7 +116,7 @@ export async function updateReview(params: {
   if (Date.now() > deadline) {
     throw new AppError(
       'REVIEW_NOT_ALLOWED',
-      `Review sirf ${windowHours} ghante ke andar edit ho sakta hai.`,
+      `A review can only be edited within ${windowHours} hours.`,
     );
   }
 
@@ -156,14 +156,14 @@ export async function rateCustomer(params: {
     where: { id: params.bookingId },
     select: { id: true, providerId: true, status: true, customerId: true },
   });
-  if (!booking) throw new AppError('NOT_FOUND', 'Booking nahi mili.');
+  if (!booking) throw new AppError('NOT_FOUND', 'Booking not found.');
   if (booking.providerId !== params.providerId) {
-    throw new AppError('FORBIDDEN', 'Yeh booking aap ko assign nahi hui.');
+    throw new AppError('FORBIDDEN', 'This booking is not assigned to you.');
   }
   if (booking.status !== 'COMPLETED') {
     throw new AppError(
       'REVIEW_NOT_ALLOWED',
-      'Rating sirf mukammal booking ke baad di ja sakti hai.',
+      'A rating can only be given after the job is completed.',
     );
   }
 

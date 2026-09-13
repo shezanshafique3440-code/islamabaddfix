@@ -187,9 +187,11 @@ describe('acceptance: AC repair booking, start to finish', () => {
 
   it('step 7: completion is refused while the quote is unapproved', async () => {
     // This is the load-bearing rule: no work is billable without agreement.
+    // A quote is on the table but undecided, so the pending-charges guard is
+    // the one that fires; either way completion is refused.
     await expect(
       completeBooking({ bookingId, providerId, actorUserId: providerUserId }),
-    ).rejects.toThrow(/approve/i);
+    ).rejects.toThrow(/let the customer decide the pending charges/i);
 
     const booking = await db.booking.findUniqueOrThrow({ where: { id: bookingId } });
     expect(booking.status).toBe('QUOTE_PENDING');
@@ -334,7 +336,7 @@ describe('acceptance: AC repair booking, start to finish', () => {
 
   it('step 15: a second review on the same booking is refused', async () => {
     await expect(createReview({ bookingId, authorId: customerId, rating: 1 })).rejects.toThrow(
-      /pehle de chuke/i,
+      /already reviewed/i,
     );
 
     expect(await db.review.count({ where: { bookingId } })).toBe(1);

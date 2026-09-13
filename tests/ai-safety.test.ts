@@ -57,13 +57,13 @@ describe('hazard detection', () => {
     const gas = assessHazard('gas ki bu aa rahi hai');
     // Turn it off if safe, get out, call the emergency service — and explicitly
     // do not attempt the repair.
-    expect(gas.guidance).toMatch(/valve band/i);
-    expect(gas.guidance).toMatch(/bahar niklein/i);
+    expect(gas.guidance).toMatch(/turn the gas valve off/i);
+    expect(gas.guidance).toMatch(/get everyone outside/i);
     expect(gas.guidance).toMatch(/emergency services/i);
-    expect(gas.guidance).toMatch(/khud koi repair na karein/i);
+    expect(gas.guidance).toMatch(/do not attempt any repair yourself/i);
 
     const electrical = assessHazard('nanga wire khula hua hai');
-    expect(electrical.guidance).toMatch(/breaker band/i);
+    expect(electrical.guidance).toMatch(/main breaker/i);
     expect(electrical.guidance).toMatch(/qualified electrician/i);
 
     const injury = assessHazard('koi zakhmi ho gaya hai');
@@ -118,8 +118,8 @@ describe('assistant output filter', () => {
   });
 
   it('never claims certainty in the disclaimer it attaches', () => {
-    expect(DIAGNOSIS_DISCLAIMER).toMatch(/andaza/i);
-    expect(DIAGNOSIS_DISCLAIMER).toMatch(/final diagnosis nahi/i);
+    expect(DIAGNOSIS_DISCLAIMER).toMatch(/first guess/i);
+    expect(DIAGNOSIS_DISCLAIMER).toMatch(/not a final diagnosis/i);
   });
 
   it('instructs the model itself never to diagnose or give repair steps', () => {
@@ -162,7 +162,7 @@ describe('intake pipeline', () => {
     });
 
     expect(result.urgency).toBe('EMERGENCY');
-    expect(result.safetyNotice).toMatch(/valve band/i);
+    expect(result.safetyNotice).toMatch(/turn the gas valve off/i);
     // The safety guidance replaces the chatty reply rather than sitting under it.
     expect(result.reply).toBe(result.safetyNotice);
   });

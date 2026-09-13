@@ -60,7 +60,7 @@ describe('booking creation', () => {
         problemDescription: 'Trying to use somebody else address',
         scheduledFor: tomorrowAt(),
       }),
-    ).rejects.toThrow(/aapke account mein nahi/i);
+    ).rejects.toThrow(/not on your account/i);
 
     expect(await db.booking.count()).toBe(0);
   });
@@ -77,7 +77,7 @@ describe('booking creation', () => {
         problemDescription: 'Service was retired',
         scheduledFor: tomorrowAt(),
       }),
-    ).rejects.toThrow(/available nahi/i);
+    ).rejects.toThrow(/not available/i);
   });
 
   it('refuses a slot inside the minimum lead time', async () => {
@@ -92,7 +92,7 @@ describe('booking creation', () => {
         problemDescription: 'Booking too soon',
         scheduledFor: new Date(Date.now() + 10 * 60_000),
       }),
-    ).rejects.toThrow(/kam az kam/i);
+    ).rejects.toThrow(/at least/i);
   });
 
   it('refuses a slot beyond the maximum lead time', async () => {
@@ -110,7 +110,7 @@ describe('booking creation', () => {
         problemDescription: 'Booking too far ahead',
         scheduledFor: tooFar,
       }),
-    ).rejects.toThrow(/se zyada aage/i);
+    ).rejects.toThrow(/days ahead/i);
   });
 
   it('refuses an unverified provider for a public booking', async () => {
@@ -205,7 +205,7 @@ describe('booking creation', () => {
         providerId: provider.id,
         scheduledFor: tomorrowAt(),
       }),
-    ).rejects.toThrow(/offer nahi karta/i);
+    ).rejects.toThrow(/does not offer this service/i);
     void zone;
   });
 
@@ -277,7 +277,7 @@ describe('booking creation', () => {
         problemDescription: 'Not an emergency service',
         isEmergency: true,
       }),
-    ).rejects.toThrow(/emergency booking available nahi/i);
+    ).rejects.toThrow(/emergency booking is not available/i);
   });
 });
 
@@ -307,7 +307,7 @@ describe('offers and acceptance', () => {
         providerId: outsider.provider.id,
         actorUserId: outsider.user.id,
       }),
-    ).rejects.toThrow(/offer nahi hui/i);
+    ).rejects.toThrow(/was not offered to you/i);
   });
 
   it('gives the job to whoever accepts first and closes the other offers', async () => {
@@ -347,7 +347,7 @@ describe('offers and acceptance', () => {
         providerId: second.provider.id,
         actorUserId: second.user.id,
       }),
-    ).rejects.toThrow(/doosre technician/i);
+    ).rejects.toThrow(/already taken this job/i);
   });
 
   it('returns the booking to PENDING when every provider declines', async () => {
@@ -449,7 +449,7 @@ describe('quotes and additional charges', () => {
         actorUserId: other.user.id,
         items: [{ kind: 'LABOUR', label: 'Labour', unitPricePaisa: 50_000 }],
       }),
-    ).rejects.toThrow(/assign nahi hui/i);
+    ).rejects.toThrow(/not assigned to you/i);
   });
 
   it('supersedes an earlier undecided quote', async () => {
@@ -485,7 +485,7 @@ describe('quotes and additional charges', () => {
     });
 
     await expect(approveQuote({ quoteId: quote.id, customerUserId: stranger.id })).rejects.toThrow(
-      /aapki booking ka nahi/i,
+      /does not belong to your booking/i,
     );
   });
 
@@ -865,7 +865,7 @@ describe('reviews', () => {
 
     await expect(
       createReview({ bookingId: result.booking.id, authorId: stranger.id, rating: 1 }),
-    ).rejects.toThrow(/sirf booking ka customer/i);
+    ).rejects.toThrow(/only the customer on this booking/i);
   });
 
   it('averages multiple reviews across a provider', async () => {

@@ -62,9 +62,9 @@ export async function upsertProviderProfile(input: OnboardProviderInput): Promis
       providerProfile: { select: { id: true, status: true } },
     },
   });
-  if (!user) throw new AppError('NOT_FOUND', 'User nahi mila.');
+  if (!user) throw new AppError('NOT_FOUND', 'User not found.');
   if (user.role !== 'PROVIDER') {
-    throw new AppError('FORBIDDEN', 'Yeh account provider account nahi hai.');
+    throw new AppError('FORBIDDEN', 'This is not a provider account.');
   }
 
   const [maxEmergencyFee, autoApprove, requireCnic] = await Promise.all([
@@ -76,7 +76,7 @@ export async function upsertProviderProfile(input: OnboardProviderInput): Promis
   if (input.emergencyAvailable && (input.emergencyFeePaisa ?? 0) > maxEmergencyFee) {
     throw new AppError(
       'VALIDATION_ERROR',
-      'Emergency fee platform ki maximum limit se zyada nahi ho sakti.',
+      'The emergency fee cannot exceed the platform maximum.',
     );
   }
 
@@ -86,20 +86,20 @@ export async function upsertProviderProfile(input: OnboardProviderInput): Promis
     select: { id: true },
   });
   if (services.length !== input.services.length) {
-    throw new AppError('VALIDATION_ERROR', 'Ek ya zyada selected services available nahi hain.');
+    throw new AppError('VALIDATION_ERROR', 'One or more of the selected services is unavailable.');
   }
   const zones = await prisma.serviceZone.findMany({
     where: { id: { in: input.zoneIds }, isActive: true },
     select: { id: true },
   });
   if (zones.length !== input.zoneIds.length) {
-    throw new AppError('VALIDATION_ERROR', 'Ek ya zyada selected areas available nahi hain.');
+    throw new AppError('VALIDATION_ERROR', 'One or more of the selected areas is unavailable.');
   }
   if (input.services.length === 0) {
-    throw new AppError('VALIDATION_ERROR', 'Kam az kam ek service select karein.');
+    throw new AppError('VALIDATION_ERROR', 'Select at least one service.');
   }
   if (input.zoneIds.length === 0) {
-    throw new AppError('VALIDATION_ERROR', 'Kam az kam ek service area select karein.');
+    throw new AppError('VALIDATION_ERROR', 'Select at least one service area.');
   }
 
   const isNew = !user.providerProfile;
@@ -220,8 +220,8 @@ export async function upsertProviderProfile(input: OnboardProviderInput): Promis
   if (isNew) {
     await notifyAdmins({
       event: NOTIFICATION_EVENTS.PROVIDER_APPROVED,
-      title: 'Naya provider verification ke liye',
-      body: `${profile.businessName} ne onboarding mukammal kiya hai. Review darkar hai.`,
+      title: 'New provider awaiting verification',
+      body: `${profile.businessName} has completed onboarding and needs review.`,
       href: `/admin/providers/${profile.id}`,
       data: { providerId: profile.id },
     });
@@ -256,16 +256,16 @@ export async function approveProvider(params: {
       _count: { select: { services: true, serviceAreas: true } },
     },
   });
-  if (!provider) throw new AppError('NOT_FOUND', 'Provider nahi mila.');
+  if (!provider) throw new AppError('NOT_FOUND', 'Provider not found.');
   if (provider.status === 'VERIFIED') {
-    throw new AppError('CONFLICT', 'Yeh provider pehle se verified hai.');
+    throw new AppError('CONFLICT', 'This provider is already verified.');
   }
 
   // A verified provider must actually be bookable, or the badge is misleading.
   if (provider._count.services === 0 || provider._count.serviceAreas === 0) {
     throw new AppError(
       'CONFLICT',
-      'Approve karne se pehle provider ke services aur service areas set hone chahiye.',
+      'A provider needs services and service areas set before they can be approved.',
     );
   }
 
@@ -275,7 +275,7 @@ export async function approveProvider(params: {
     if (!identity || identity.status === 'NOT_SUBMITTED') {
       throw new AppError(
         'CONFLICT',
-        'Identity document submit nahi hua. Platform settings mein requirement badli ja sakti hai.',
+        'No identity document was submitted. The requirement can be changed in platform settings.',
       );
     }
   }
@@ -316,8 +316,8 @@ export async function approveProvider(params: {
   await notify({
     event: NOTIFICATION_EVENTS.PROVIDER_APPROVED,
     userId: provider.userId,
-    title: 'Aapka profile verify ho gaya',
-    body: 'Mubarak ho! Ab aap Islamabad Fix par jobs receive kar sakte hain.',
+    title: 'Your profile is verified',
+    body: 'Congratulations. You can now receive jobs on Islamabad Fix.',
     href: '/provider',
     data: { providerId: provider.id },
   });
@@ -335,7 +335,7 @@ export async function rejectProvider(params: {
     where: { id: params.providerId },
     select: { id: true, userId: true, businessName: true },
   });
-  if (!provider) throw new AppError('NOT_FOUND', 'Provider nahi mila.');
+  if (!provider) throw new AppError('NOT_FOUND', 'Provider not found.');
 
   const updated = await prisma.providerProfile.update({
     where: { id: provider.id },
@@ -354,8 +354,8 @@ export async function rejectProvider(params: {
   await notify({
     event: NOTIFICATION_EVENTS.PROVIDER_REJECTED,
     userId: provider.userId,
-    title: 'Profile verify nahi ho saka',
-    body: `Wajah: ${params.reason} Aap maloomat theek kar ke dobara submit kar sakte hain.`,
+    title: 'Your profile was not verified',
+    body: `Reason: ${params.reason} You can correct your details and submit again.`,
     href: '/provider/onboarding',
     data: { providerId: provider.id },
   });
@@ -378,7 +378,7 @@ export async function suspendProvider(params: {
     where: { id: params.providerId },
     select: { id: true, userId: true, businessName: true },
   });
-  if (!provider) throw new AppError('NOT_FOUND', 'Provider nahi mila.');
+  if (!provider) throw new AppError('NOT_FOUND', 'Provider not found.');
 
   const updated = await prisma.$transaction(async (tx) => {
     const saved = await tx.providerProfile.update({
@@ -406,8 +406,8 @@ export async function suspendProvider(params: {
   await notify({
     event: NOTIFICATION_EVENTS.PROVIDER_SUSPENDED,
     userId: provider.userId,
-    title: 'Aapka account suspend kar diya gaya',
-    body: `Wajah: ${params.reason} Support se rabta karein.`,
+    title: 'Your account has been suspended',
+    body: `Reason: ${params.reason} Please contact support.`,
     data: { providerId: provider.id },
   });
 
@@ -424,9 +424,9 @@ export async function reinstateProvider(params: {
     where: { id: params.providerId },
     select: { id: true, userId: true, status: true, verifiedAt: true },
   });
-  if (!provider) throw new AppError('NOT_FOUND', 'Provider nahi mila.');
+  if (!provider) throw new AppError('NOT_FOUND', 'Provider not found.');
   if (provider.status !== 'SUSPENDED') {
-    throw new AppError('CONFLICT', 'Sirf suspended provider reinstate ho sakta hai.');
+    throw new AppError('CONFLICT', 'Only a suspended provider can be reinstated.');
   }
 
   const updated = await prisma.providerProfile.update({
@@ -451,8 +451,8 @@ export async function reinstateProvider(params: {
   await notify({
     event: NOTIFICATION_EVENTS.PROVIDER_APPROVED,
     userId: provider.userId,
-    title: 'Aapka account dobara active hai',
-    body: 'Ab aap phir se jobs receive kar sakte hain.',
+    title: 'Your account is active again',
+    body: 'You can receive jobs again.',
     href: '/provider',
     data: { providerId: provider.id },
   });
@@ -520,40 +520,35 @@ export async function setVerification(params: {
   });
 }
 
-export const PROVIDER_STATUS_LABELS: Record<ProviderStatus, { en: string; ur: string }> = {
-  PENDING_VERIFICATION: { en: 'Pending verification', ur: 'Verification zer-e-ghaur' },
-  VERIFIED: { en: 'Verified', ur: 'Verified' },
-  REJECTED: { en: 'Rejected', ur: 'Manzoor nahi hua' },
-  SUSPENDED: { en: 'Suspended', ur: 'Suspend' },
+export const PROVIDER_STATUS_LABELS: Record<ProviderStatus, string> = {
+  PENDING_VERIFICATION: 'Pending verification',
+  VERIFIED: 'Verified',
+  REJECTED: 'Rejected',
+  SUSPENDED: 'Suspended',
 };
 
 export const VERIFICATION_LABELS: Record<
   VerificationKind,
-  { en: string; ur: string; help: string }
+  { en: string; help: string }
 > = {
   IDENTITY_CNIC: {
     en: 'Identity verified',
-    ur: 'Shanakht verified',
-    help: 'Provider ne CNIC document submit kiya jo team ne check kiya.',
+    help: 'The provider submitted a CNIC document and the team checked it.',
   },
   PHONE: {
     en: 'Phone verified',
-    ur: 'Phone verified',
-    help: 'Phone number confirm kiya gaya hai.',
+    help: 'The phone number has been confirmed.',
   },
   EMAIL: {
     en: 'Email verified',
-    ur: 'Email verified',
-    help: 'Email address confirm kiya gaya hai.',
+    help: 'The email address has been confirmed.',
   },
   PLATFORM_ONBOARDING: {
     en: 'Platform verified',
-    ur: 'Platform verified',
-    help: 'Islamabad Fix team ne onboarding maloomat ka jaiza liya.',
+    help: 'The Islamabad Fix team reviewed this provider\u2019s onboarding submission.',
   },
   BANK_ACCOUNT: {
     en: 'Payout account verified',
-    ur: 'Payout account verified',
-    help: 'Payout ke liye bank account confirm kiya gaya hai.',
+    help: 'The bank account for payouts has been confirmed.',
   },
 };

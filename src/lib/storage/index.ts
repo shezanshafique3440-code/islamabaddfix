@@ -15,7 +15,7 @@ const drivers: Record<string, StorageDriver> = { local: localDriver, s3: s3Drive
 
 export function storage(): StorageDriver {
   const driver = drivers[env.STORAGE_DRIVER];
-  if (!driver) throw new AppError('INTEGRATION_NOT_CONFIGURED', 'Storage driver unknown hai.');
+  if (!driver) throw new AppError('INTEGRATION_NOT_CONFIGURED', 'Unknown storage driver.');
   return driver;
 }
 

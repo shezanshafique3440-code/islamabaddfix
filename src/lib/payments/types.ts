@@ -50,7 +50,6 @@ export interface PaymentProvider {
   readonly key: string;
   readonly method: PaymentMethod;
   readonly label: string;
-  readonly labelUr: string;
   /** Short line shown next to the option at checkout. */
   readonly description: string;
   isConfigured(): boolean;

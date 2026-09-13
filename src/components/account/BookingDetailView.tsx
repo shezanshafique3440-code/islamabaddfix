@@ -23,7 +23,6 @@ import Link from 'next/link';
 interface PaymentMethodOption {
   method: 'CASH' | 'BANK_TRANSFER' | 'ONLINE_GATEWAY';
   label: string;
-  labelUr: string;
   description: string;
 }
 
@@ -94,7 +93,7 @@ export function BookingDetailView({
               {formatRelative(booking.createdAt)} banayi
             </p>
           </div>
-          <StatusBadge status={booking.status} label={booking.statusLabelUr} />
+          <StatusBadge status={booking.status} label={booking.statusLabel} />
         </div>
 
         <BookingTracker status={booking.status} step={booking.trackerStep} className="mt-6" />
@@ -525,7 +524,7 @@ export function BookingDetailView({
                 aria-hidden="true"
               />
               <div className="min-w-0">
-                <p className="text-sm font-medium text-ink-900">{entry.labelUr}</p>
+                <p className="text-sm font-medium text-ink-900">{entry.label}</p>
                 {entry.reason ? <p className="text-xs text-ink-500">{entry.reason}</p> : null}
                 <p className="text-xs text-ink-400">{formatDateTime(entry.at)}</p>
               </div>
@@ -1071,7 +1070,7 @@ function PaymentDialog({
             checked={method === option.method}
             onSelect={() => setMethod(option.method)}
           >
-            <span className="block text-sm font-semibold text-ink-900">{option.labelUr}</span>
+            <span className="block text-sm font-semibold text-ink-900">{option.label}</span>
             <span className="mt-0.5 block text-xs text-ink-600">{option.description}</span>
           </RadioCard>
         ))}

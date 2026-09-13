@@ -27,7 +27,6 @@ export interface AddressOption {
 export interface PaymentMethodOption {
   method: 'CASH' | 'BANK_TRANSFER' | 'ONLINE_GATEWAY';
   label: string;
-  labelUr: string;
   description: string;
 }
 

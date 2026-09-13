@@ -136,14 +136,14 @@ describe('booking messages', () => {
     // turning up cannot ask for the address. A chat window would be a way round it.
     await expect(
       listBookingMessages(booking.id, asProvider(other.user, other.provider.id)),
-    ).rejects.toThrow(/nahi mili/i);
+    ).rejects.toThrow(/not found/i);
     await expect(
       sendBookingMessage({
         bookingId: booking.id,
         viewer: asProvider(other.user, other.provider.id),
         body: 'Address kya hai?',
       }),
-    ).rejects.toThrow(/nahi mili/i);
+    ).rejects.toThrow(/not found/i);
   });
 
   it('lets staff read and post, because disputes land on them', async () => {
@@ -170,14 +170,14 @@ describe('booking messages', () => {
 
     await expect(
       sendBookingMessage({ bookingId: booking.id, viewer: asCustomer(customer), body: '   ' }),
-    ).rejects.toThrow(/khali/i);
+    ).rejects.toThrow(/empty/i);
     await expect(
       sendBookingMessage({
         bookingId: booking.id,
         viewer: asCustomer(customer),
         body: 'x'.repeat(2001),
       }),
-    ).rejects.toThrow(/lamba/i);
+    ).rejects.toThrow(/longer than/i);
   });
 
   it('closes the thread once the booking is cancelled', async () => {
@@ -186,7 +186,7 @@ describe('booking messages', () => {
 
     await expect(
       sendBookingMessage({ bookingId: booking.id, viewer: asCustomer(customer), body: 'Hello' }),
-    ).rejects.toThrow(/band ho chuki/i);
+    ).rejects.toThrow(/closed/i);
   });
 
   it('stays open after completion, because the guarantee window does', async () => {
@@ -225,7 +225,7 @@ describe('booking messages', () => {
         body: 'Dekhein',
         attachmentId: theirs.id,
       }),
-    ).rejects.toThrow(/attachment nahi mili/i);
+    ).rejects.toThrow(/attachment not found/i);
   });
 
   it('will not attach a file from a different booking', async () => {
@@ -261,7 +261,7 @@ describe('booking messages', () => {
         body: 'Dekhein',
         attachmentId: file.id,
       }),
-    ).rejects.toThrow(/attachment nahi mili/i);
+    ).rejects.toThrow(/attachment not found/i);
   });
 
   it('notifies the other side and nobody else', async () => {
@@ -378,7 +378,7 @@ describe('rescheduling', () => {
         actorRole: 'CUSTOMER',
         scheduledFor: inDays(2),
       }),
-    ).rejects.toThrow(/nahi mili/i);
+    ).rejects.toThrow(/not found/i);
 
     await expect(
       rescheduleBooking({
@@ -388,7 +388,7 @@ describe('rescheduling', () => {
         actorProviderId: other.provider.id,
         scheduledFor: inDays(2),
       }),
-    ).rejects.toThrow(/nahi mili/i);
+    ).rejects.toThrow(/not found/i);
   });
 
   it('refuses once the technician has set off', async () => {
@@ -430,7 +430,7 @@ describe('rescheduling', () => {
         actorRole: 'CUSTOMER',
         scheduledFor: new Date(Date.now() + 10 * 60_000),
       }),
-    ).rejects.toThrow(/kam az kam/i);
+    ).rejects.toThrow(/at least/i);
 
     await expect(
       rescheduleBooking({
@@ -439,7 +439,7 @@ describe('rescheduling', () => {
         actorRole: 'CUSTOMER',
         scheduledFor: inDays(60),
       }),
-    ).rejects.toThrow(/se zyada aage/i);
+    ).rejects.toThrow(/days ahead/i);
   });
 
   it('refuses a move to the time it is already at', async () => {
@@ -459,7 +459,7 @@ describe('rescheduling', () => {
         actorRole: 'CUSTOMER',
         scheduledFor: when,
       }),
-    ).rejects.toThrow(/wohi waqt/i);
+    ).rejects.toThrow(/already set to that time/i);
   });
 
   it('caps the moves, and says how many are left', async () => {
@@ -483,7 +483,7 @@ describe('rescheduling', () => {
         actorRole: 'CUSTOMER',
         scheduledFor: inDays(9),
       }),
-    ).rejects.toThrow(/se zyada reschedule nahi/i);
+    ).rejects.toThrow(/cannot be moved more than/i);
   });
 
   it('lets staff move it past the cap, because that is what support is for', async () => {

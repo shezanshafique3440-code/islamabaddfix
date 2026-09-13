@@ -86,7 +86,7 @@ describe('authentication', () => {
         { email: 'DUP@example.com', password: 'StrongPass123', fullName: 'Second' },
         meta,
       ),
-    ).rejects.toThrow(/pehle se registered/i);
+    ).rejects.toThrow(/already registered/i);
   });
 
   it('rejects a duplicate phone after normalisation', async () => {
@@ -110,7 +110,7 @@ describe('authentication', () => {
         },
         meta,
       ),
-    ).rejects.toThrow(/phone number pehle se/i);
+    ).rejects.toThrow(/phone number is already registered/i);
   });
 
   it('enforces the password policy', () => {
@@ -263,7 +263,7 @@ describe('authentication', () => {
     );
     await expect(
       changePassword(session.user.id, 'NotThePassword1', 'BrandNewPass456'),
-    ).rejects.toThrow(/ghalat/i);
+    ).rejects.toThrow(/wrong/i);
   });
 
   it('revokes all sessions on demand', async () => {

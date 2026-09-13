@@ -62,7 +62,7 @@ export function BookingList({
                   </div>
 
                   <div className="flex shrink-0 flex-col items-end gap-1.5">
-                    <StatusBadge status={booking.status} label={booking.statusLabelUr} />
+                    <StatusBadge status={booking.status} label={booking.statusLabel} />
                     {booking.finalTotalPaisa !== null ? (
                       <span className="text-sm font-semibold text-ink-900">
                         {formatPaisa(booking.finalTotalPaisa)}

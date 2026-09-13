@@ -118,7 +118,6 @@ const cashOnly: PaymentMethodOption[] = [
   {
     method: 'CASH',
     label: 'Cash',
-    labelUr: 'Cash — kaam ke baad',
     description: 'Technician ko kaam mukammal hone par cash dein.',
   },
 ];
@@ -228,7 +227,7 @@ describe('intake step', () => {
     );
     await user.click(screen.getByRole('button', { name: /yeh dekhein/i }));
 
-    expect(await screen.findByText(/keyword matching istemal hui/i)).toBeInTheDocument();
+    expect(await screen.findByText(/keyword matching was used/i)).toBeInTheDocument();
   });
 
   it('puts a safety warning in an alert region above everything else', async () => {

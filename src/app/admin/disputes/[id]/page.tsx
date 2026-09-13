@@ -64,10 +64,10 @@ export default async function AdminDisputeDetailPage({ params }: Params) {
       <header>
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="text-display-sm text-ink-950">
-            {DISPUTE_REASON_LABELS[dispute.reason].en}
+            {DISPUTE_REASON_LABELS[dispute.reason]}
           </h1>
           <Badge tone={dispute.status.startsWith('RESOLVED') ? 'success' : 'danger'}>
-            {DISPUTE_STATUS_LABELS[dispute.status].en}
+            {DISPUTE_STATUS_LABELS[dispute.status]}
           </Badge>
         </div>
         <p className="mt-1 text-sm text-ink-600">
