@@ -16,7 +16,7 @@ export function Logo({
 }) {
   return (
     <Link href={href} className={cn('group inline-flex items-center gap-2.5', className)}>
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[0.625rem] bg-brand-700 text-white shadow-sm transition-colors group-hover:bg-brand-800 dark:text-brand-50">
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-600 to-brand-800 text-white shadow-e1 ring-1 ring-inset ring-white/15 transition-all duration-200 group-hover:shadow-e2 dark:text-brand-50">
         <svg
           viewBox="0 0 24 24"
           className="h-[1.125rem] w-[1.125rem]"
@@ -27,7 +27,7 @@ export function Logo({
         </svg>
       </span>
       <span className="flex flex-col leading-none">
-        <span className="text-[0.9375rem] font-bold tracking-tight text-ink-900">
+        <span className="font-display text-base font-bold tracking-tight text-ink-900">
           Islamabad<span className="text-brand-700">Fix</span>
         </span>
         {showTagline ? (

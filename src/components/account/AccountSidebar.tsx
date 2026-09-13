@@ -31,9 +31,11 @@ export function AccountSidebar({ unread }: { unread: number }) {
               href={link.href}
               aria-current={active ? 'page' : undefined}
               className={cn(
-                'flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-colors',
+                'relative flex items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all duration-150',
+                // The active row gets a brand rule down its left edge as well
+                // as a tint: on a dark ground the tint alone is almost nothing.
                 active
-                  ? 'bg-brand-50 text-brand-800'
+                  ? 'bg-brand-50 text-brand-800 shadow-e1 before:absolute before:inset-y-2 before:left-0 before:w-0.5 before:rounded-full before:bg-brand-600'
                   : 'text-ink-600 hover:bg-ink-100 hover:text-ink-900',
               )}
             >
@@ -50,7 +52,7 @@ export function AccountSidebar({ unread }: { unread: number }) {
         <div className="pt-3">
           <Link
             href="/book"
-            className="flex h-10 items-center justify-center rounded-xl bg-brand-700 text-sm font-semibold text-white hover:bg-brand-800 dark:text-brand-50"
+            className="flex h-11 items-center justify-center rounded-xl bg-brand-700 text-sm font-semibold text-white shadow-e1 transition-all hover:bg-brand-800 hover:shadow-e2 dark:text-brand-50"
           >
             + New booking
           </Link>

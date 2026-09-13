@@ -12,11 +12,13 @@ import { cn } from '@/lib/utils';
 
 const CONTROL =
   'w-full rounded-xl border bg-surface px-3.5 text-[0.9375rem] text-ink-900 ' +
-  'placeholder:text-ink-500 transition-colors ' +
+  'placeholder:text-ink-500 transition-[border-color,box-shadow] duration-150 ' +
   'disabled:cursor-not-allowed disabled:bg-ink-50 disabled:text-ink-500';
 
-const CONTROL_OK = 'border-ink-300 hover:border-ink-400 focus:border-brand-600';
-const CONTROL_ERROR = 'border-alert-400 hover:border-alert-500 focus:border-alert-600';
+const CONTROL_OK =
+  'border-ink-300 hover:border-ink-400 focus:border-brand-600 focus:shadow-[0_0_0_3px_rgb(var(--c-brand-500)/0.16)]';
+const CONTROL_ERROR =
+  'border-alert-400 hover:border-alert-500 focus:border-alert-600 focus:shadow-[0_0_0_3px_rgb(var(--c-alert-500)/0.16)]';
 
 interface FieldShellProps {
   label: string;

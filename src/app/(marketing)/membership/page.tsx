@@ -47,36 +47,53 @@ export default async function MembershipPage() {
                 return (
                   <section
                     key={plan.id}
-                    className="flex flex-col rounded-2xl border border-ink-200 bg-surface p-6 transition-shadow hover:shadow-card"
+                    className="group relative flex flex-col overflow-hidden rounded-3xl border border-ink-200 bg-surface p-7 transition-all duration-200 ease-spring hover:-translate-y-1 hover:border-brand-300 hover:shadow-e3"
                   >
-                    <h2 className="text-title text-ink-950">{plan.name}</h2>
+                    {/* A brand rule along the top edge, and a wash behind the
+                        price. Decoration only — the plan itself is whatever the
+                        admin configured. */}
+                    <span
+                      aria-hidden="true"
+                      className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-brand-500 via-brand-600 to-brand-800"
+                    />
+                    <span
+                      aria-hidden="true"
+                      className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-[radial-gradient(circle,rgb(var(--c-brand-400)/0.16)_0%,transparent_70%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                    />
+
+                    <h2 className="relative text-title text-ink-950">{plan.name}</h2>
                     {plan.tagline ? (
-                      <p className="mt-1 text-sm text-ink-600">{plan.tagline}</p>
+                      <p className="relative mt-1 text-sm text-ink-600">{plan.tagline}</p>
                     ) : null}
 
-                    <p className="mt-5 text-3xl font-bold tracking-tight text-ink-950">
+                    <p className="relative mt-6 font-display text-4xl font-bold tracking-tight text-ink-950">
                       {formatPaisa(plan.pricePaisa)}
-                      <span className="ml-1.5 text-sm font-medium text-ink-500">
+                      <span className="ml-1.5 font-sans text-sm font-medium text-ink-500">
                         / {plan.periodDays} days
                       </span>
                     </p>
 
-                    <p className="mt-4 text-sm leading-relaxed text-ink-700">{plan.description}</p>
+                    <p className="relative mt-4 text-sm leading-relaxed text-ink-700">
+                      {plan.description}
+                    </p>
 
                     {benefits.length > 0 ? (
-                      <ul className="mt-5 space-y-2.5 border-t border-ink-100 pt-5 text-sm text-ink-700">
+                      <ul className="relative mt-6 flex-1 space-y-3 border-t border-ink-100 pt-6 text-sm text-ink-700">
                         {benefits.map((benefit) => (
-                          <li key={benefit} className="flex gap-2.5">
-                            <span aria-hidden="true" className="text-brand-600">
+                          <li key={benefit} className="flex gap-3">
+                            <span
+                              aria-hidden="true"
+                              className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-100 text-[0.625rem] font-bold text-brand-700"
+                            >
                               ✓
                             </span>
-                            <span>{benefit}</span>
+                            <span className="leading-relaxed">{benefit}</span>
                           </li>
                         ))}
                       </ul>
                     ) : null}
 
-                    <div className="mt-6 pt-1">
+                    <div className="relative mt-7 pt-1">
                       <ButtonLink href={`/account/membership?plan=${plan.code}`} fullWidth>
                         Choose {plan.name}
                       </ButtonLink>
@@ -89,7 +106,7 @@ export default async function MembershipPage() {
             {/* What a membership is not. Stated here rather than in the small
                 print, because a discount card is exactly the kind of product
                 people expect to be quietly disappointed by. */}
-            <section className="mt-12 rounded-2xl border border-ink-200 bg-ink-50/60 p-6">
+            <section className="mt-14 rounded-3xl border border-ink-200 bg-surface-sunken p-7 sm:p-8">
               <h2 className="text-title text-ink-950">What a membership does not do</h2>
               <ul className="mt-3 space-y-2 text-sm leading-relaxed text-ink-700">
                 <li>

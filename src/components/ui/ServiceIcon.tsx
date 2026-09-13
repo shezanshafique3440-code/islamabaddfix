@@ -62,7 +62,7 @@ export function ServiceIconTile({
   return (
     <span
       className={cn(
-        'flex shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-700',
+        'flex shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-50 to-brand-100 text-brand-700 ring-1 ring-inset ring-brand-200',
         box,
         className,
       )}

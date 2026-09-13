@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 
 const LINKS = [
   { href: '/provider', label: 'Today’s work', exact: true },
-  { href: '/provider/jobs', label: 'Sab jobs', badge: 'offers' },
+  { href: '/provider/jobs', label: 'All jobs', badge: 'offers' },
   { href: '/provider/earnings', label: 'Earnings' },
   { href: '/provider/reviews', label: 'Reviews' },
   { href: '/provider/notifications', label: 'Notifications', badge: 'unread' },
@@ -40,9 +40,9 @@ export function ProviderSidebar({
               href={link.href}
               aria-current={active ? 'page' : undefined}
               className={cn(
-                'flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-colors',
+                'relative flex items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all duration-150',
                 active
-                  ? 'bg-brand-50 text-brand-800'
+                  ? 'bg-brand-50 text-brand-800 shadow-e1 before:absolute before:inset-y-2 before:left-0 before:w-0.5 before:rounded-full before:bg-brand-600'
                   : 'text-ink-600 hover:bg-ink-100 hover:text-ink-900',
               )}
             >

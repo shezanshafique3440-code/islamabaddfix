@@ -509,7 +509,7 @@ check('    no card data anywhere on the row', !/cardNumber|cvv|pan/i.test(JSON.s
 // --- 20. review --------------------------------------------------------------
 r = await customer.call(`/api/bookings/${bookingId}/review`, {
   method: 'POST',
-  body: { rating: 5, comment: 'Waqt par aaye, kaam saaf kiya.', punctuality: 5, valueForMoney: 4 },
+  body: { rating: 5, comment: 'Arrived on time and did a clean job.', punctuality: 5, valueForMoney: 4 },
 });
 check('20. review accepted', r.status === 201 || r.status === 200, describe(r));
 const refreshed = await db.providerProfile.findUniqueOrThrow({ where: { id: providerRow.id } });

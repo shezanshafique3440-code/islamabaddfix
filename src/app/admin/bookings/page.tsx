@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 export const metadata: Metadata = { title: 'Bookings', robots: { index: false, follow: false } };
 
 const TABS = [
-  { key: 'all', label: 'Sab' },
+  { key: 'all', label: 'All' },
   { key: 'active', label: 'In progress' },
   { key: 'completed', label: 'Completed' },
   { key: 'disputed', label: 'Disputed' },

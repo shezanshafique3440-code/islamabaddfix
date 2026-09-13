@@ -346,7 +346,7 @@ export async function rejectQuote(params: {
     event: NOTIFICATION_EVENTS.QUOTE_REJECTED,
     userId: quote.provider.userId,
     title: 'Quote declined',
-    body: `${quote.booking.reference}: customer ne quote reject kar diya.${
+    body: `${quote.booking.reference}: the customer declined the quote.${
       params.reason ? ` Reason: ${params.reason}` : ' You can send a revised quote.'
     }`,
     href: `/provider/jobs/${quote.booking.id}`,

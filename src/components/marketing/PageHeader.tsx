@@ -1,7 +1,13 @@
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
-/** Shared page header for the marketing surface, with optional breadcrumbs. */
+/**
+ * Shared page header for the marketing surface, with optional breadcrumbs.
+ *
+ * Carries a quieter version of the home page's hero treatment — one brand wash
+ * and the same grain — so an inner page reads as the same product rather than as
+ * a plain document that happens to share a nav bar.
+ */
 export function PageHeader({
   eyebrow,
   title,
@@ -18,8 +24,17 @@ export function PageHeader({
   className?: string;
 }) {
   return (
-    <div className={cn('border-b border-ink-200 bg-ink-50/60', className)}>
-      <div className="mx-auto max-w-content px-4 py-10 sm:px-6 sm:py-12">
+    <div
+      className={cn(
+        'relative isolate overflow-hidden border-b border-ink-200 bg-surface-sunken',
+        className,
+      )}
+    >
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute -left-[6%] -top-[60%] h-[26rem] w-[26rem] rounded-full bg-[radial-gradient(circle,rgb(var(--c-brand-400)/calc(0.18*var(--wash-strength)))_0%,transparent_70%)] blur-2xl" />
+        <div className="grain absolute inset-0" />
+      </div>
+      <div className="mx-auto max-w-content px-4 py-12 sm:px-6 sm:py-14">
         {breadcrumbs && breadcrumbs.length > 0 ? (
           <nav aria-label="Breadcrumb" className="mb-3">
             <ol className="flex flex-wrap items-center gap-1.5 text-sm text-ink-500">
@@ -41,8 +56,13 @@ export function PageHeader({
 
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-2xl">
-            {eyebrow ? <p className="text-eyebrow uppercase text-brand-700">{eyebrow}</p> : null}
-            <h1 className="mt-1.5 text-display-sm text-ink-950 sm:text-display">{title}</h1>
+            {eyebrow ? (
+              <p className="flex items-center gap-2.5 text-eyebrow uppercase text-brand-700">
+                <span aria-hidden="true" className="h-px w-6 bg-brand-400" />
+                {eyebrow}
+              </p>
+            ) : null}
+            <h1 className="mt-2.5 text-display-sm text-ink-950 sm:text-display">{title}</h1>
             {description ? (
               <p className="mt-3 text-sm leading-relaxed text-ink-600 sm:text-base">
                 {description}

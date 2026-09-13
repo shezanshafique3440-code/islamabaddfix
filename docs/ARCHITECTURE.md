@@ -376,6 +376,20 @@ refrigeration or structural work.
 - **Mobile first.** Most of this market is on a mid-range Android phone on
   mobile data; layouts are built at 360px and up, with a bottom navigation bar
   on small screens.
+- **Every colour and every shadow is a CSS variable.** Components name a step
+  (`bg-surface`, `text-ink-600`, `shadow-e2`), never a value, and `:root` /
+  `.dark` in `globals.css` are the only places a value appears. That is what
+  makes a whole second theme possible without touching a component — and the
+  dark elevation steps are restated rather than reused, because a drop shadow
+  is nearly invisible on a dark ground and a hairline top highlight is what
+  actually reads as "raised" there.
+- **Motion is opt-in and reversible.** Sections reveal once as they scroll into
+  view (`components/ui/Reveal.tsx`); the markup ships *visible* and the hidden
+  state is added by script before the first paint, so a dropped JavaScript chunk
+  leaves a complete page rather than a column of blank space. Everything in the
+  file — the reveal, the count-up on the trust figures, the drifting hero
+  washes, the press-in on buttons — is switched off under
+  `prefers-reduced-motion`.
 - **One language, written properly.** The interface is English. It used to be
   Roman Urdu — Urdu words in the Latin alphabet — which is a dialect of neither:
   it excludes readers who know Urdu script, reads as an error to English

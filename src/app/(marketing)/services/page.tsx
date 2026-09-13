@@ -7,7 +7,7 @@ import { formatPaisaRange } from '@/lib/money';
 import { PageHeader } from '@/components/marketing/PageHeader';
 
 export const metadata: Metadata = {
-  title: 'Sab services',
+  title: 'All services',
   description:
     'Every service available on Islamabad Fix — AC, electrical, plumbing, cleaning, carpentry, painting, appliances and security. Verified technicians and transparent quotes.',
   alternates: { canonical: '/services' },
@@ -27,7 +27,7 @@ export default async function ServicesPage() {
       />
 
       <div className="mx-auto max-w-content px-4 pb-16 sm:px-6">
-        <div className="space-y-10">
+        <div className="space-y-14">
           {catalogue.map((category) => (
             <section key={category.slug} aria-labelledby={`cat-${category.slug}`}>
               <div className="flex items-start gap-3.5">
@@ -54,7 +54,7 @@ export default async function ServicesPage() {
                   <li key={service.slug}>
                     <Link
                       href={`/services/detail/${service.slug}`}
-                      className="group flex h-full flex-col rounded-xl border border-ink-200 bg-surface p-4 transition-all hover:border-brand-300 hover:shadow-card"
+                      className="group flex h-full flex-col rounded-2xl border border-ink-200 bg-surface p-4 transition-all duration-200 ease-spring hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-e2"
                     >
                       <span className="flex items-start justify-between gap-2">
                         <span className="text-sm font-semibold text-ink-900 group-hover:text-brand-700">

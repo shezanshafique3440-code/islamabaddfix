@@ -56,7 +56,7 @@ export default async function AdminAuditPage({
               : 'rounded-lg border border-ink-200 px-3 py-1.5 text-xs font-medium text-ink-600 hover:bg-ink-50'
           }
         >
-          Sab ({total})
+          All ({total})
         </Link>
         {actions.slice(0, 14).map((entry) => (
           <Link

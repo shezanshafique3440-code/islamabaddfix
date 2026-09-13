@@ -89,7 +89,7 @@ export default async function AdminUsersPage({
             !role ? 'bg-contrast text-contrast-fg' : 'text-ink-600 hover:bg-ink-100',
           )}
         >
-          Sab
+          All
         </Link>
         {ROLES.map((entry) => (
           <Link

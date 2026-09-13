@@ -80,7 +80,7 @@ export function ProviderJobView({
         href="/provider/jobs"
         className="text-sm text-ink-600 hover:text-brand-700 hover:underline"
       >
-        ← Sab jobs
+        ← All jobs
       </Link>
 
       {/* -------------------------------------------------------------- header */}

@@ -17,7 +17,7 @@ const TABS = [
   { key: 'completed', label: 'Completed' },
   { key: 'cancelled', label: 'Cancelled' },
   { key: 'disputed', label: 'Disputes' },
-  { key: 'all', label: 'Sab' },
+  { key: 'all', label: 'All' },
 ] as const;
 
 type Scope = (typeof TABS)[number]['key'];

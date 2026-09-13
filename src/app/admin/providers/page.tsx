@@ -16,7 +16,7 @@ const TABS = [
   { key: 'VERIFIED', label: 'Verified' },
   { key: 'SUSPENDED', label: 'Suspended' },
   { key: 'REJECTED', label: 'Rejected' },
-  { key: 'ALL', label: 'Sab' },
+  { key: 'ALL', label: 'All' },
 ] as const;
 
 export default async function AdminProvidersPage({

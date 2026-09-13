@@ -239,7 +239,7 @@ export function StepConfirm({
         </div>
 
         {/* Price expectation */}
-        <div className="rounded-xl border border-ink-200 bg-ink-50/60 p-4">
+        <div className="rounded-xl border border-ink-200 bg-surface-sunken p-4">
           <p className="text-sm font-semibold text-ink-900">Estimated price</p>
           <dl className="mt-2.5 space-y-1.5 text-sm">
             {service ? (

@@ -7,10 +7,11 @@ type Size = 'sm' | 'md' | 'lg';
 
 const VARIANTS: Record<Variant, string> = {
   primary:
-    'bg-brand-700 text-white dark:text-brand-50 hover:bg-brand-800 active:bg-brand-900 shadow-sm',
+    'bg-brand-700 text-white dark:text-brand-50 hover:bg-brand-800 active:bg-brand-900 shadow-e1 hover:shadow-e2',
   secondary:
-    'bg-contrast text-contrast-fg hover:bg-contrast-hover active:bg-contrast-active shadow-sm',
-  outline: 'border border-ink-300 bg-surface text-ink-900 hover:bg-ink-50 active:bg-ink-100',
+    'bg-contrast text-contrast-fg hover:bg-contrast-hover active:bg-contrast-active shadow-e1 hover:shadow-e2',
+  outline:
+    'border border-ink-300 bg-surface text-ink-900 shadow-e1 hover:border-ink-400 hover:bg-ink-50 hover:shadow-e2 active:bg-ink-100',
   ghost: 'text-ink-700 hover:bg-ink-100 active:bg-ink-200',
   danger:
     // Red is the one hue where neither a light nor a dark foreground clears AA
@@ -18,9 +19,9 @@ const VARIANTS: Record<Variant, string> = {
     // red — a low step, because the ramp inverts — and keeps its white text.
     // A bright red with dark text passes too, but reads as a warning chip
     // rather than something you are about to do.
-    'bg-alert-600 text-white hover:bg-alert-700 active:bg-alert-700 shadow-sm dark:bg-alert-300 dark:hover:bg-alert-400',
+    'bg-alert-600 text-white hover:bg-alert-700 active:bg-alert-700 shadow-e1 hover:shadow-e2 dark:bg-alert-300 dark:hover:bg-alert-400',
   success:
-    'bg-brand-600 text-white dark:text-brand-50 hover:bg-brand-700 active:bg-brand-800 shadow-sm',
+    'bg-brand-600 text-white dark:text-brand-50 hover:bg-brand-700 active:bg-brand-800 shadow-e1 hover:shadow-e2',
 };
 
 const SIZES: Record<Size, string> = {
@@ -32,7 +33,7 @@ const SIZES: Record<Size, string> = {
 
 const BASE =
   'inline-flex items-center justify-center font-semibold ' +
-  'transition-[background-color,border-color,color,transform] duration-150 ' +
+  'transition-[background-color,border-color,color,transform,box-shadow] duration-150 ' +
   // A 2% dip under the finger. Small enough to read as physical rather than
   // bouncy, and switched off entirely under prefers-reduced-motion.
   'press active:scale-[0.98] ' +

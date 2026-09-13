@@ -55,7 +55,7 @@ export default async function AdminTicketPage({ params }: Params) {
         href="/admin/support"
         className="text-sm text-ink-600 hover:text-brand-700 hover:underline"
       >
-        ← Sab tickets
+        ← All tickets
       </Link>
 
       <header className="flex flex-wrap items-start justify-between gap-3">

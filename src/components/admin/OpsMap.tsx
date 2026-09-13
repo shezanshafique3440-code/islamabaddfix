@@ -102,7 +102,7 @@ export function OpsMap({
       <div className="flex flex-wrap items-center gap-2">
         {(
           [
-            { value: 'all', label: `Sab (${bookings.length})` },
+            { value: 'all', label: `All (${bookings.length})` },
             {
               value: 'emergency',
               label: `Emergency (${bookings.filter((b) => b.isEmergency).length})`,

@@ -156,7 +156,7 @@ export function StepIntake({
               </div>
             ) : null}
 
-            <div className="rounded-xl border border-ink-200 bg-ink-50/60 p-4">
+            <div className="rounded-xl border border-ink-200 bg-surface-sunken p-4">
               <div className="flex items-start justify-between gap-3">
                 <p className="text-sm leading-relaxed text-ink-800">{result.reply}</p>
                 <Badge tone={result.source === 'llm' ? 'info' : 'neutral'} className="shrink-0">

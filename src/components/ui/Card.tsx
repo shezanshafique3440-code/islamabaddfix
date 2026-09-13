@@ -20,7 +20,8 @@ export function Card({
     <Component
       className={cn(
         'rounded-2xl border border-ink-200 bg-surface',
-        interactive && 'transition-shadow duration-150 hover:shadow-lift',
+        interactive &&
+          'transition-all duration-200 ease-spring hover:-translate-y-0.5 hover:border-ink-300 hover:shadow-e2',
         className,
       )}
     >
@@ -69,7 +70,7 @@ export function CardFooter({
   children: React.ReactNode;
 }) {
   return (
-    <div className={cn('border-t border-ink-200 bg-ink-50/60 px-5 py-3', className)}>
+    <div className={cn('border-t border-ink-200 bg-surface-sunken px-5 py-3', className)}>
       {children}
     </div>
   );

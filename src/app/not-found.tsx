@@ -20,7 +20,7 @@ export default function NotFound() {
           <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
             <ButtonLink href="/">Home</ButtonLink>
             <ButtonLink href="/services" variant="outline">
-              Sab services
+              All services
             </ButtonLink>
           </div>
           <p className="mt-5 text-sm text-ink-500">

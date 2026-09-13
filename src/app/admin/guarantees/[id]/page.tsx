@@ -53,7 +53,7 @@ export default async function AdminGuaranteeDetailPage({ params }: Params) {
         href="/admin/guarantees"
         className="text-sm text-ink-600 hover:text-brand-700 hover:underline"
       >
-        ← Sab claims
+        ← All claims
       </Link>
 
       <header>

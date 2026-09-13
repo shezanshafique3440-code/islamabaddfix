@@ -25,7 +25,7 @@ export function BottomNav({ items, badge }: { items: NavItem[]; badge?: Record<s
   return (
     <nav
       aria-label="Bottom navigation"
-      className="fixed inset-x-0 bottom-0 z-30 border-t border-ink-200 bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden"
+      className="fixed inset-x-0 bottom-0 z-30 border-t border-ink-200 bg-surface/85 pb-[env(safe-area-inset-bottom)] shadow-[0_-1px_16px_-8px_rgb(20_24_26/0.25)] backdrop-blur-xl md:hidden"
     >
       <ul className="flex">
         {items.map((item) => {

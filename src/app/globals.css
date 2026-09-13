@@ -45,7 +45,7 @@
     --c-ink-200: 216 221 224;
     --c-ink-300: 182 191 196;
     --c-ink-400: 141 154 161;
-    --c-ink-500: 103 117 124;
+    --c-ink-500: 100 114 121;
     --c-ink-600: 87 100 107;
     --c-ink-700: 71 82 87;
     --c-ink-800: 61 70 74;
@@ -99,6 +99,24 @@
     --c-chart-1: 15 134 99;
     --c-chart-2: 109 40 217;
     --c-chart-3: 180 83 9;
+
+    /*
+     * Elevation. Two shadows per step — a tight contact shadow that anchors the
+     * edge and a wide ambient one that gives it a room to sit in. One blurred
+     * shadow alone always reads as a sticker.
+     */
+    --shadow-e1: 0 1px 2px -1px rgb(20 24 26 / 0.06), 0 2px 6px -1px rgb(20 24 26 / 0.05);
+    --shadow-e2: 0 2px 4px -2px rgb(20 24 26 / 0.06), 0 8px 20px -6px rgb(20 24 26 / 0.1);
+    --shadow-e3: 0 4px 8px -4px rgb(20 24 26 / 0.07), 0 18px 36px -12px rgb(20 24 26 / 0.14);
+    --shadow-e4: 0 8px 16px -8px rgb(20 24 26 / 0.1), 0 32px 64px -20px rgb(20 24 26 / 0.2);
+    --shadow-glow:
+      0 0 0 1px rgb(var(--c-brand-200) / 0.9), 0 8px 28px -8px rgb(var(--c-brand-600) / 0.28);
+    --shadow-inset: inset 0 1px 0 0 rgb(255 255 255 / 0.6);
+
+    /* Strength of the hero washes and the page grain, tuned per theme. */
+    --wash-strength: 1;
+    --grain-opacity: 0.035;
+    --hairline-top: rgb(255 255 255 / 0.7);
   }
 
   .dark {
@@ -182,11 +200,37 @@
     --c-chart-1: 52 199 149;
     --c-chart-2: 167 139 250;
     --c-chart-3: 240 161 60;
+
+    /*
+     * On a dark ground a drop shadow barely registers, so each step goes much
+     * deeper and gains a hairline top highlight. That highlight is what actually
+     * reads as "raised" in the dark — the shadow only separates it from below.
+     */
+    --shadow-e1: 0 1px 2px -1px rgb(0 0 0 / 0.5), 0 2px 6px -1px rgb(0 0 0 / 0.4);
+    --shadow-e2: 0 2px 4px -2px rgb(0 0 0 / 0.5), 0 10px 24px -6px rgb(0 0 0 / 0.55);
+    --shadow-e3: 0 4px 8px -4px rgb(0 0 0 / 0.5), 0 22px 44px -12px rgb(0 0 0 / 0.65);
+    --shadow-e4: 0 8px 16px -8px rgb(0 0 0 / 0.55), 0 40px 72px -20px rgb(0 0 0 / 0.75);
+    --shadow-glow:
+      0 0 0 1px rgb(var(--c-brand-400) / 0.55), 0 10px 34px -10px rgb(var(--c-brand-500) / 0.45);
+    --shadow-inset: inset 0 1px 0 0 rgb(255 255 255 / 0.06);
+
+    --wash-strength: 0.5;
+    --grain-opacity: 0.05;
+    --hairline-top: rgb(255 255 255 / 0.08);
   }
 
   html {
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+    /* Anchored headings clear the sticky header instead of hiding under it. */
+    scroll-padding-top: 5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
   }
 
   body {
@@ -195,13 +239,55 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* Visible focus for keyboard users, suppressed for mouse clicks. */
+  /*
+   * Headings take the display face and slightly tighter optical settings. Set
+   * once here so no component has to remember to ask for it.
+   */
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display;
+    font-feature-settings: 'ss01';
+  }
+
+  /*
+   * Focus ring. Two rings rather than one: a white (or surface) halo under the
+   * brand ring so it stays visible on a brand-coloured button, where a single
+   * green ring on green is invisible.
+   */
   :focus-visible {
-    @apply outline-none ring-2 ring-brand-600 ring-offset-2;
+    @apply outline-none ring-2 ring-brand-600 ring-offset-2 ring-offset-surface;
   }
 
   ::selection {
-    @apply bg-brand-100 text-brand-900;
+    @apply bg-brand-200 text-brand-950;
+  }
+
+  /*
+   * Scrollbars. Left as real scrollbars — hiding them costs discoverability —
+   * but thinned and coloured so a long admin table does not put a chrome-grey
+   * slab down the side of a dark page.
+   */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--c-ink-300)) transparent;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: rgb(var(--c-ink-300));
+    border: 3px solid transparent;
+    background-clip: content-box;
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(var(--c-ink-400));
   }
 
   /*
@@ -278,15 +364,97 @@
     display: none;
   }
 
+  /*
+   * Film grain.
+   *
+   * A flat wash of colour at this size bands visibly on cheap panels, which is
+   * most phones in this market. An inline SVG fractal noise at ~4% breaks the
+   * banding up and costs no network request. Pointer-events off so it never
+   * sits between a finger and a button.
+   */
+  .grain::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: var(--grain-opacity);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /*
+   * A fine grid, fading out downwards. Two repeating linear gradients plus a
+   * mask — no image, and it inherits the ink ramp so it thins out on dark.
+   */
+  .grid-lines {
+    background-image:
+      linear-gradient(to right, rgb(var(--c-ink-300) / 0.4) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(var(--c-ink-300) / 0.4) 1px, transparent 1px);
+    background-size: 56px 56px;
+    -webkit-mask-image: radial-gradient(75% 70% at 50% 0%, #000 0%, transparent 100%);
+    mask-image: radial-gradient(75% 70% at 50% 0%, #000 0%, transparent 100%);
+  }
+
+  /* A heading that fades from ink into brand across its own glyphs. */
+  .text-gradient {
+    background-image: linear-gradient(
+      100deg,
+      rgb(var(--c-brand-800)) 0%,
+      rgb(var(--c-brand-600)) 45%,
+      rgb(var(--c-brand-800)) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* The hairline of light along the top edge of a raised surface. */
+  .edge-light {
+    box-shadow: inset 0 1px 0 0 var(--hairline-top);
+  }
+
+  /*
+   * Reveal on scroll.
+   *
+   * The element is laid out normally and only its paint is deferred, so nothing
+   * moves and no height is unknown — which is what makes this safe for content
+   * above the fold and for a crawler that never fires the observer. If the
+   * script never runs, `.reveal` is simply never added and everything is
+   * visible; the hidden state is opt-in from JS, not the default.
+   */
+  .reveal-init {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  .reveal-in {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 620ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 620ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
   /* Respect users who ask for less motion. */
   @media (prefers-reduced-motion: reduce) {
     .animate-fade-in,
     .animate-slide-up,
     .animate-slide-in-right,
+    .animate-drift,
+    .animate-drift-slow,
+    .animate-ping,
+    .animate-pulse,
     .skeleton::after,
     .theme-switching,
     .theme-switching * {
       animation: none !important;
+      transition: none !important;
+    }
+
+    /* Revealed content simply is revealed. */
+    .reveal-init,
+    .reveal-in {
+      opacity: 1 !important;
+      transform: none !important;
       transition: none !important;
     }
 

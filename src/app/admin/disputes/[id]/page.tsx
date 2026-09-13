@@ -58,7 +58,7 @@ export default async function AdminDisputeDetailPage({ params }: Params) {
         href="/admin/disputes"
         className="text-sm text-ink-600 hover:text-brand-700 hover:underline"
       >
-        ← Sab disputes
+        ← All disputes
       </Link>
 
       <header>

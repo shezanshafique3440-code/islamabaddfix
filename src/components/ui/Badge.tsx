@@ -17,11 +17,14 @@ export function Badge({
   className,
   children,
   dot,
+  live,
 }: {
   tone?: Tone;
   className?: string;
   children: React.ReactNode;
   dot?: boolean;
+  /** A dot with one expanding ring behind it, for a genuinely live state. */
+  live?: boolean;
 }) {
   return (
     <span
@@ -31,7 +34,14 @@ export function Badge({
         className,
       )}
     >
-      {dot ? <span className="h-1.5 w-1.5 rounded-full bg-current" aria-hidden="true" /> : null}
+      {live ? (
+        <span className="relative flex h-1.5 w-1.5" aria-hidden="true">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-60" />
+          <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-current" />
+        </span>
+      ) : dot ? (
+        <span className="h-1.5 w-1.5 rounded-full bg-current" aria-hidden="true" />
+      ) : null}
       {children}
     </span>
   );

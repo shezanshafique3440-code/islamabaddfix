@@ -61,10 +61,10 @@ export function ProblemSearch({ className }: { className?: string }) {
             onChange={(event) => setValue(event.target.value)}
             placeholder="The AC is not working..."
             autoComplete="off"
-            className="h-14 w-full rounded-xl border border-ink-300 bg-surface pl-12 pr-4 text-[0.9375rem] text-ink-900 shadow-sm placeholder:text-ink-500 hover:border-ink-400 focus:border-brand-600"
+            className="h-14 w-full rounded-xl border border-ink-300 bg-surface pl-12 pr-4 text-[0.9375rem] text-ink-900 shadow-e1 transition-shadow placeholder:text-ink-500 hover:border-ink-400 focus:border-brand-600 focus:shadow-glow"
           />
         </div>
-        <Button type="submit" size="lg" loading={submitting} className="h-14 sm:px-7">
+        <Button type="submit" size="lg" loading={submitting} className="h-14 shadow-e2 sm:px-7">
           Find a service
         </Button>
       </form>
@@ -79,7 +79,7 @@ export function ProblemSearch({ className }: { className?: string }) {
               setValue(example);
               submit(example);
             }}
-            className="rounded-full border border-ink-200 bg-surface px-3 py-1 text-xs text-ink-600 transition-colors hover:border-brand-300 hover:bg-brand-50 hover:text-brand-800"
+            className="rounded-full border border-ink-200 bg-surface px-3 py-1.5 text-xs text-ink-600 transition-all duration-150 hover:-translate-y-px hover:border-brand-300 hover:bg-brand-50 hover:text-brand-800 hover:shadow-e1"
           >
             {example}
           </button>

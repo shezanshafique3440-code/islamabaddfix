@@ -81,7 +81,7 @@ export function ProviderFilters({
           onChange={(event) => apply({ categorySlug: event.target.value || null })}
           className={selectClass}
         >
-          <option value="">Sab categories</option>
+          <option value="">All categories</option>
           {categories.map((category) => (
             <option key={category.slug} value={category.slug}>
               {category.name}
@@ -95,7 +95,7 @@ export function ProviderFilters({
           onChange={(event) => apply({ zoneSlug: event.target.value || null })}
           className={selectClass}
         >
-          <option value="">Sab areas</option>
+          <option value="">All areas</option>
           {zones.map((zone) => (
             <option key={zone.slug} value={zone.slug}>
               {zone.name}

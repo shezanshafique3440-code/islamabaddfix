@@ -66,6 +66,12 @@ reports exactly which ones are live.
 No state management library, no charting library, no UI kit, no OTP library. Charts are
 hand-drawn SVG; the design system is ~700 lines of Tailwind and React.
 
+One webfont, on headings only: a single variable cut of Plus Jakarta Sans, latin
+subset, self-hosted by `next/font` and preloaded at about 28KB, with a
+metric-matched fallback so nothing shifts while it loads. Body copy — which is
+almost all the text on a page — still comes from the system stack at zero cost,
+which is the part that actually matters on a mobile connection.
+
 ---
 
 ## Running it locally

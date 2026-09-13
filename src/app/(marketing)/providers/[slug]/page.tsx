@@ -76,8 +76,12 @@ export default async function ProviderProfilePage({ params }: Params) {
         dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
 
-      <div className="border-b border-ink-200 bg-ink-50/60">
-        <div className="mx-auto max-w-content px-4 py-10 sm:px-6">
+      <div className="relative isolate overflow-hidden border-b border-ink-200 bg-surface-sunken">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+          <div className="absolute -left-[6%] -top-[70%] h-[28rem] w-[28rem] rounded-full bg-[radial-gradient(circle,rgb(var(--c-brand-400)/calc(0.18*var(--wash-strength)))_0%,transparent_70%)] blur-2xl" />
+          <div className="grain absolute inset-0" />
+        </div>
+        <div className="mx-auto max-w-content px-4 py-12 sm:px-6">
           <nav aria-label="Breadcrumb" className="mb-4 text-sm text-ink-500">
             <Link href="/providers" className="hover:text-brand-700 hover:underline">
               Technicians

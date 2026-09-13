@@ -56,8 +56,8 @@ export function Dialog({
         if (event.target === ref.current) onClose();
       }}
       className={cn(
-        'w-[calc(100%-2rem)] rounded-2xl border border-ink-200 bg-surface p-0 shadow-pop',
-        'backdrop:bg-scrim/40 backdrop:backdrop-blur-sm',
+        'w-[calc(100%-2rem)] rounded-3xl border border-ink-200 bg-surface p-0 shadow-e4',
+        'backdrop:bg-scrim/50 backdrop:backdrop-blur-md',
         'open:animate-slide-up',
         widths,
       )}
@@ -72,7 +72,7 @@ export function Dialog({
         ) : null}
       </div>
       {children ? <div className="px-5 pb-5">{children}</div> : null}
-      <div className="flex flex-col-reverse gap-2 border-t border-ink-200 bg-ink-50/60 px-5 py-3 sm:flex-row sm:justify-end">
+      <div className="flex flex-col-reverse gap-2 border-t border-ink-200 bg-surface-sunken px-5 py-3 sm:flex-row sm:justify-end">
         {footer ?? (
           <Button variant="outline" onClick={onClose}>
             Close

@@ -14,7 +14,7 @@ const TABS = [
   { key: 'offers', label: 'New requests' },
   { key: 'active', label: 'In progress' },
   { key: 'completed', label: 'Completed' },
-  { key: 'all', label: 'Sab' },
+  { key: 'all', label: 'All' },
 ] as const;
 
 export default async function ProviderJobsPage({

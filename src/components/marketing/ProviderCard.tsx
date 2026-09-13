@@ -54,11 +54,17 @@ export function ProviderCard({
   return (
     <div
       className={cn(
-        'flex flex-col gap-4 rounded-2xl border border-ink-200 bg-surface p-4 transition-shadow hover:shadow-lift sm:p-5',
+        'group/card relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-ink-200 bg-surface p-4 transition-all duration-200 ease-spring hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-e2 sm:p-5',
         className,
       )}
     >
-      <div className="flex items-start gap-3.5">
+      {/* A brand wash behind the header row, on hover only. */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-[radial-gradient(70%_100%_at_20%_0%,rgb(var(--c-brand-400)/0.12)_0%,transparent_100%)] opacity-0 transition-opacity duration-300 group-hover/card:opacity-100"
+      />
+
+      <div className="relative flex items-start gap-3.5">
         <Avatar name={provider.businessName} url={provider.photoUrl} />
 
         <div className="min-w-0 flex-1">
@@ -89,14 +95,14 @@ export function ProviderCard({
       </div>
 
       {badges.length > 0 ? (
-        <div className="flex flex-wrap gap-x-3 gap-y-1">
+        <div className="relative flex flex-wrap gap-x-3 gap-y-1">
           {badges.map((badge) => (
             <VerifiedBadge key={badge.kind} label={badge.label} />
           ))}
         </div>
       ) : null}
 
-      <dl className="grid grid-cols-2 gap-x-4 gap-y-2 border-t border-ink-100 pt-3 text-sm sm:grid-cols-4">
+      <dl className="relative grid grid-cols-2 gap-x-4 gap-y-2 border-t border-ink-100 pt-3 text-sm sm:grid-cols-4">
         {provider.startingPricePaisa !== undefined ? (
           <Stat label="From" value={formatPaisa(provider.startingPricePaisa)} emphasis />
         ) : null}
@@ -125,7 +131,7 @@ export function ProviderCard({
         </Badge>
       ) : null}
 
-      {action ? <div className="pt-1">{action}</div> : null}
+      {action ? <div className="relative pt-1">{action}</div> : null}
     </div>
   );
 }
@@ -188,7 +194,7 @@ export function Avatar({
     <span
       aria-hidden="true"
       className={cn(
-        'flex shrink-0 items-center justify-center rounded-full bg-brand-100 font-bold text-brand-800',
+        'flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand-50 to-brand-200 font-display font-bold text-brand-800 ring-1 ring-inset ring-brand-200',
         box,
       )}
     >

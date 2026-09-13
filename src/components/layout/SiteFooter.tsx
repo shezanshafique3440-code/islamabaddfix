@@ -25,8 +25,12 @@ export async function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-20 border-t border-ink-200 bg-ink-50/60">
-      <div className="mx-auto max-w-content px-4 py-12 sm:px-6">
+    <footer className="relative isolate mt-24 overflow-hidden border-t border-ink-200 bg-surface-sunken">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute -bottom-40 left-1/2 h-[30rem] w-[46rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgb(var(--c-brand-400)/calc(0.14*var(--wash-strength)))_0%,transparent_70%)] blur-2xl" />
+        <div className="grain absolute inset-0" />
+      </div>
+      <div className="mx-auto max-w-content px-4 py-14 sm:px-6">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-1">
             <Logo showTagline />

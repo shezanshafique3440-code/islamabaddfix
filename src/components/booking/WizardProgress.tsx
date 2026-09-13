@@ -51,7 +51,7 @@ export function WizardProgress({
           aria-label="Booking progress"
         >
           <div
-            className="h-full rounded-full bg-brand-600 transition-[width] duration-300"
+            className="h-full rounded-full bg-gradient-to-r from-brand-500 to-brand-700 transition-[width] duration-500 ease-spring"
             style={{ width: `${percent}%` }}
           />
         </div>
@@ -79,8 +79,8 @@ export function WizardProgress({
                 <span
                   className={cn(
                     'flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[0.625rem]',
-                    isDone && 'bg-brand-600 text-white dark:text-brand-50',
-                    isCurrent && 'bg-contrast text-contrast-fg',
+                    isDone && 'bg-brand-600 text-white shadow-e1 dark:text-brand-50',
+                    isCurrent && 'bg-contrast text-contrast-fg shadow-e1 ring-2 ring-brand-500/25',
                     !isDone && !isCurrent && 'bg-ink-200 text-ink-500',
                   )}
                 >
@@ -137,7 +137,7 @@ export function StepFooter({
             type="button"
             onClick={onNext}
             disabled={nextDisabled || loading}
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-brand-700 px-5 text-[0.9375rem] font-semibold text-white transition-colors hover:bg-brand-800 disabled:pointer-events-none disabled:opacity-50 dark:text-brand-50"
+            className="press inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-brand-700 px-5 text-[0.9375rem] font-semibold text-white shadow-e1 transition-all hover:bg-brand-800 hover:shadow-e2 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 dark:text-brand-50"
           >
             {loading ? (
               <svg
@@ -193,7 +193,7 @@ export function StepShell({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-ink-200 bg-surface p-5 sm:p-6">
+    <section className="rounded-3xl border border-ink-200 bg-surface p-5 shadow-e1 sm:p-7">
       <h2 className="text-title text-ink-950">{title}</h2>
       {description ? (
         <p className="mt-1.5 text-sm leading-relaxed text-ink-600">{description}</p>

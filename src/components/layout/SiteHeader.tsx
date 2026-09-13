@@ -3,6 +3,7 @@ import { getAuthContext } from '@/lib/auth/session';
 import { homeForRole } from '@/lib/auth/rbac';
 import { countUnread } from '@/lib/notifications';
 import { ButtonLink } from '@/components/ui/Button';
+import { HeaderShell } from './HeaderShell';
 import { Logo } from './Logo';
 import { MobileMenu } from './MobileMenu';
 import { ThemeToggle } from './ThemeToggle';
@@ -23,7 +24,7 @@ export async function SiteHeader() {
   const unread = ctx ? await countUnread(ctx.user.id) : 0;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-ink-200 bg-surface/90 backdrop-blur-md">
+    <HeaderShell>
       <div className="mx-auto flex h-16 max-w-content items-center gap-6 px-4 sm:px-6">
         <Logo />
 
@@ -32,7 +33,7 @@ export async function SiteHeader() {
             <Link
               key={link.href}
               href={link.href}
-              className="rounded-lg px-3 py-2 text-sm font-medium text-ink-600 transition-colors hover:bg-ink-100 hover:text-ink-900"
+              className="relative rounded-lg px-3 py-2 text-sm font-medium text-ink-600 transition-colors after:absolute after:inset-x-3 after:bottom-1 after:h-px after:origin-left after:scale-x-0 after:bg-brand-600 after:transition-transform after:duration-200 hover:text-ink-900 hover:after:scale-x-100"
             >
               {link.label}
             </Link>
@@ -85,6 +86,6 @@ export async function SiteHeader() {
           unread={unread}
         />
       </div>
-    </header>
+    </HeaderShell>
   );
 }

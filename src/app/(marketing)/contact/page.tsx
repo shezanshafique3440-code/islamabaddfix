@@ -48,7 +48,7 @@ export default async function ContactPage() {
           </a>
         </div>
 
-        <div className="mt-8 rounded-2xl border border-ink-200 bg-ink-50/60 p-6">
+        <div className="mt-8 rounded-2xl border border-ink-200 bg-surface-sunken p-6">
           <h2 className="text-title text-ink-950">Support ticket</h2>
           <p className="mt-2 text-sm leading-relaxed text-ink-600">
             Is the problem about a booking? Open a ticket — you can pick the booking in it, attach

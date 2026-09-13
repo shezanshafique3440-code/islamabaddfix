@@ -46,7 +46,7 @@ export default async function TicketPage({ params }: Params) {
         href="/account/support"
         className="text-sm text-ink-600 hover:text-brand-700 hover:underline"
       >
-        ← Sab tickets
+        ← All tickets
       </Link>
 
       <div className="mt-3 flex flex-wrap items-start justify-between gap-3">

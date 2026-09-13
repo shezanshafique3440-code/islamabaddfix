@@ -79,7 +79,7 @@ export default async function AdminProviderDetailPage({ params }: Params) {
         href="/admin/providers"
         className="text-sm text-ink-600 hover:text-brand-700 hover:underline"
       >
-        ← Sab providers
+        ← All providers
       </Link>
 
       <header className="flex flex-wrap items-start gap-4">

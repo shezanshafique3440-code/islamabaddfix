@@ -1,8 +1,27 @@
 import type { Metadata, Viewport } from 'next';
+import { Plus_Jakarta_Sans } from 'next/font/google';
 import { env } from '@/lib/env';
 import { ToastProvider } from '@/components/ui/Toast';
 import { THEME_INIT_SCRIPT } from '@/components/layout/ThemeToggle';
 import './globals.css';
+
+/**
+ * The one webfont on the site.
+ *
+ * Headings only, latin only, and the variable axis rather than three static
+ * cuts — so the whole thing is a single file of roughly forty kilobytes, served
+ * from this origin by next/font rather than from Google. `adjustFontFallback`
+ * generates a metric-matched local fallback, so the pre-swap paint occupies the
+ * same space and nothing jumps when the real face lands. Body copy stays on the
+ * system stack, which is still where nearly all the text on a page is.
+ */
+const display = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  variable: '--font-display',
+  display: 'swap',
+  preload: true,
+  fallback: ['ui-sans-serif', 'system-ui', 'Segoe UI', 'sans-serif'],
+});
 
 const APP_NAME = 'Islamabad Fix';
 const TAGLINE = 'Tell us the problem. We will handle the rest.';
@@ -56,7 +75,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={display.variable} suppressHydrationWarning>
       <head>
         {/*
          * Applies the stored theme before the first paint. Without this, every
