@@ -80,6 +80,10 @@ const schema = z.object({
   PAYMENT_API_KEY: optionalString,
   PAYMENT_WEBHOOK_SECRET: optionalString,
 
+  // Shared secret for the scheduled-job endpoints. Without it those endpoints
+  // refuse every caller rather than running unauthenticated.
+  CRON_SECRET: optionalString,
+
   SEED_ADMIN_EMAIL: z.string().email().default('admin@islamabadfix.pk'),
   SEED_ADMIN_PASSWORD: z.string().min(10).default('ChangeMe!Admin123'),
   ALLOW_DEMO_SEED: bool(false),
@@ -140,6 +144,9 @@ export const integrations = {
   onlinePayments: {
     configured: env.PAYMENT_GATEWAY !== 'none' && Boolean(env.PAYMENT_API_KEY),
     provider: env.PAYMENT_GATEWAY,
+  },
+  cron: {
+    configured: Boolean(env.CRON_SECRET),
   },
   storage: {
     driver: env.STORAGE_DRIVER,

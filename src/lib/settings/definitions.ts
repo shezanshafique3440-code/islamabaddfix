@@ -240,6 +240,29 @@ export const settingsSchema = {
     group: 'commerce',
   },
 
+  'recurring.enabled': {
+    schema: z.boolean(),
+    default: true,
+    label: 'Repeat visits enabled',
+    help: 'Lets customers set up a standing arrangement, e.g. cleaning every second week.',
+    group: 'booking',
+  },
+  'recurring.leadDays': {
+    schema: z.number().int().min(1).max(30),
+    default: 3,
+    label: 'Repeat visit lead time',
+    help: 'How many days before each occurrence the booking is created, so a technician can be matched in time.',
+    group: 'booking',
+    unit: 'days',
+  },
+  'recurring.maxPerCustomer': {
+    schema: z.number().int().min(1).max(50),
+    default: 5,
+    label: 'Repeat visits per customer',
+    help: 'How many standing arrangements one customer may have running at once.',
+    group: 'booking',
+  },
+
   'memberships.enabled': {
     schema: z.boolean(),
     default: false,

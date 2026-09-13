@@ -636,3 +636,43 @@ export const adminMembershipQuerySchema = paginationSchema.extend({
   status: z.enum(['PENDING_PAYMENT', 'ACTIVE', 'EXPIRED', 'CANCELLED']).optional(),
   search: z.string().trim().max(120).optional(),
 });
+
+// ------------------------------------------------------------- repeat visits
+
+export const recurringCreateSchema = z
+  .object({
+    serviceId: uuidSchema,
+    addressId: uuidSchema,
+    providerId: uuidSchema.optional().nullable(),
+    frequency: z.enum(['WEEKLY', 'FORTNIGHTLY', 'MONTHLY', 'QUARTERLY']),
+    intervalCount: z.number().int().min(1).max(12).default(1),
+    /** Minutes past local midnight, e.g. 600 = 10:00. */
+    timeOfDayMinutes: z.number().int().min(0).max(1439),
+    dayOfWeek: z.number().int().min(0).max(6).optional().nullable(),
+    /** Capped at 28 so every month actually has the day. */
+    dayOfMonth: z.number().int().min(1).max(28).optional().nullable(),
+    problemDescription: z
+      .string()
+      .trim()
+      .min(10, 'Describe the problem in at least 10 characters.')
+      .max(3000),
+    customerNotes: z.string().trim().max(600).optional().nullable(),
+    startsOn: dateSchema.optional().nullable(),
+    maxOccurrences: z.number().int().min(1).max(200).optional().nullable(),
+    endsAt: dateSchema.optional().nullable(),
+  })
+  .refine(
+    (data) =>
+      data.frequency === 'MONTHLY' || data.frequency === 'QUARTERLY' || data.dayOfWeek !== null,
+    { message: 'Choose a day of the week.', path: ['dayOfWeek'] },
+  )
+  .refine(
+    (data) =>
+      (data.frequency !== 'MONTHLY' && data.frequency !== 'QUARTERLY') || data.dayOfMonth !== null,
+    { message: 'Choose a day of the month.', path: ['dayOfMonth'] },
+  );
+
+export const recurringStatusSchema = z.object({
+  status: z.enum(['ACTIVE', 'PAUSED', 'ENDED']),
+  reason: z.string().trim().max(500).optional().nullable(),
+});

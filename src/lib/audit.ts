@@ -53,6 +53,9 @@ export const AUDIT_ACTIONS = {
   MEMBERSHIP_ACTIVATED: 'membership.activated',
   MEMBERSHIP_CANCELLED: 'membership.cancelled',
   MEMBERSHIP_EXPIRED: 'membership.expired',
+  RECURRING_CREATED: 'recurring.created',
+  RECURRING_STATUS_CHANGED: 'recurring.status_changed',
+  RECURRING_RUN: 'recurring.run',
 } as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[keyof typeof AUDIT_ACTIONS];

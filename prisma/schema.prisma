@@ -202,6 +202,19 @@ enum MembershipStatus {
   CANCELLED
 }
 
+enum RecurrenceFrequency {
+  WEEKLY
+  FORTNIGHTLY
+  MONTHLY
+  QUARTERLY
+}
+
+enum RecurringScheduleStatus {
+  ACTIVE
+  PAUSED
+  ENDED
+}
+
 enum MembershipBenefitKind {
   DISCOUNT
   EMERGENCY_FEE_WAIVER
@@ -246,6 +259,7 @@ model User {
   notificationPrefs  NotificationPreference?
   twoFactor          TwoFactorSecret?
   memberships        Membership[]
+  recurringSchedules RecurringSchedule[]
 
   @@index([role, isActive])
   @@index([createdAt])
@@ -413,16 +427,17 @@ model ProviderProfile {
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
-  verifications ProviderVerification[]
-  services      ProviderService[]
-  serviceAreas  ServiceArea[]
-  availability  ProviderAvailability[]
-  locations     ProviderLocation[]
-  bookings      Booking[]
-  quotes        Quote[]
-  reviews       Review[]               @relation("providerReviews")
-  documents     UploadedFile[]         @relation("providerDocuments")
-  payouts       Payout[]
+  verifications      ProviderVerification[]
+  services           ProviderService[]
+  serviceAreas       ServiceArea[]
+  availability       ProviderAvailability[]
+  locations          ProviderLocation[]
+  bookings           Booking[]
+  quotes             Quote[]
+  reviews            Review[]               @relation("providerReviews")
+  documents          UploadedFile[]         @relation("providerDocuments")
+  payouts            Payout[]
+  recurringSchedules RecurringSchedule[]
 
   @@index([status, city])
   @@index([status, emergencyAvailable])
@@ -521,8 +536,9 @@ model Service {
   createdAt             DateTime        @default(now())
   updatedAt             DateTime        @updatedAt
 
-  providerServices ProviderService[]
-  bookings         Booking[]
+  providerServices   ProviderService[]
+  bookings           Booking[]
+  recurringSchedules RecurringSchedule[]
 
   @@unique([categoryId, name])
   @@index([isActive, categoryId])
@@ -598,7 +614,8 @@ model Address {
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
 
-  bookings Booking[]
+  bookings           Booking[]
+  recurringSchedules RecurringSchedule[]
 
   @@index([userId, deletedAt])
 }
@@ -652,6 +669,10 @@ model Booking {
   promoCodeId       String?    @db.Uuid
   promoCode         PromoCode? @relation(fields: [promoCodeId], references: [id], onDelete: SetNull)
   discountPaisa     Int        @default(0)
+
+  /// Set when this booking was generated from a standing arrangement.
+  recurringScheduleId String?            @db.Uuid
+  recurringSchedule   RecurringSchedule? @relation(fields: [recurringScheduleId], references: [id], onDelete: SetNull)
 
   /// The membership in force when this booking completed, and what it saved.
   /// Kept separate from promo discount so a receipt can show both lines.
@@ -1227,4 +1248,61 @@ model RateLimitHit {
   createdAt DateTime @default(now())
 
   @@index([bucket, createdAt])
+}
+
+// ========================== recurring work ================================
+
+/// A standing arrangement: "clean the office every second Tuesday".
+///
+/// Deliberately not a booking. It generates real bookings a few days ahead of
+/// each occurrence, which then go through the ordinary matching, quote and
+/// approval flow — a recurring job is never pre-approved or pre-priced.
+model RecurringSchedule {
+  id         String           @id @default(uuid()) @db.Uuid
+  reference  String           @unique
+  customerId String           @db.Uuid
+  customer   User             @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  serviceId  String           @db.Uuid
+  service    Service          @relation(fields: [serviceId], references: [id], onDelete: Restrict)
+  addressId  String           @db.Uuid
+  address    Address          @relation(fields: [addressId], references: [id], onDelete: Restrict)
+  /// Preferred technician. Advisory: if they cannot take it, matching runs.
+  providerId String?          @db.Uuid
+  provider   ProviderProfile? @relation(fields: [providerId], references: [id], onDelete: SetNull)
+
+  frequency        RecurrenceFrequency
+  /// Every N periods: 2 with WEEKLY is fortnightly-by-another-name, and MONTHLY
+  /// with 3 is quarterly. Kept separate from `frequency` so both read clearly.
+  intervalCount    Int                 @default(1)
+  /// Minutes past local midnight for the visit, e.g. 600 = 10:00.
+  timeOfDayMinutes Int
+  /// 0 (Sunday) - 6, for weekly-family schedules.
+  dayOfWeek        Int?
+  /// 1-28, for monthly-family schedules. Capped at 28 so every month has one.
+  dayOfMonth       Int?
+
+  problemDescription String
+  customerNotes      String?
+
+  status             RecurringScheduleStatus @default(ACTIVE)
+  /// When the next occurrence should happen. Advanced after each generation.
+  nextOccurrenceAt   DateTime
+  lastGeneratedAt    DateTime?
+  occurrencesCreated Int                     @default(0)
+  /// Optional stopping conditions. Null on both means "until cancelled".
+  maxOccurrences     Int?
+  endsAt             DateTime?
+
+  pausedAt    DateTime?
+  endedAt     DateTime?
+  endedReason String?
+
+  isDemo    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  bookings Booking[]
+
+  @@index([customerId, status])
+  @@index([status, nextOccurrenceAt])
 }

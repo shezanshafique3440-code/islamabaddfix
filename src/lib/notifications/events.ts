@@ -38,6 +38,8 @@ export const NOTIFICATION_EVENTS = {
   NEW_MESSAGE: 'booking.message',
   MEMBERSHIP_ACTIVATED: 'membership.activated',
   MEMBERSHIP_EXPIRING: 'membership.expiring',
+  RECURRING_PAUSED: 'recurring.paused',
+  RECURRING_ENDED: 'recurring.ended',
 } as const;
 
 export type NotificationEvent = (typeof NOTIFICATION_EVENTS)[keyof typeof NOTIFICATION_EVENTS];

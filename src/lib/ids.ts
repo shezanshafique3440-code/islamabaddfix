@@ -21,6 +21,7 @@ export const disputeReference = () => `DSP-${randomCode(6)}`;
 export const guaranteeReference = () => `GUA-${randomCode(6)}`;
 export const ticketReference = () => `SUP-${randomCode(6)}`;
 export const membershipReference = () => `MEM-${randomCode(6)}`;
+export const recurringReference = () => `RPT-${randomCode(6)}`;
 
 export const uuid = () => randomUUID();
 
