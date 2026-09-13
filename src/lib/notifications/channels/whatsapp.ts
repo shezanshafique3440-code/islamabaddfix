@@ -21,11 +21,11 @@ export const whatsappChannel: NotificationChannelDriver = {
     if (!integrations.whatsapp.configured) {
       return {
         status: 'SKIPPED_NOT_CONFIGURED',
-        reason: 'WHATSAPP_API_KEY / WHATSAPP_PHONE_NUMBER_ID set nahi hai.',
+        reason: 'WHATSAPP_API_KEY / WHATSAPP_PHONE_NUMBER_ID is not set.',
       };
     }
     if (!target.phone) {
-      return { status: 'FAILED', reason: 'Recipient ka phone number mojood nahi hai.' };
+      return { status: 'FAILED', reason: 'The recipient has no phone number on file.' };
     }
 
     try {

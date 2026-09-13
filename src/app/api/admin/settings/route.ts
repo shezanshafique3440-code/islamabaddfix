@@ -37,12 +37,12 @@ export const PATCH = route(async (request) => {
   const input = await parseJson(request, settingWriteSchema);
 
   if (!settingKeys.includes(input.key as SettingKey)) {
-    throw new AppError('VALIDATION_ERROR', `Setting "${input.key}" mojood nahi hai.`);
+    throw new AppError('VALIDATION_ERROR', `Setting "${input.key}" does not exist.`);
   }
   const key = input.key as SettingKey;
 
   if (FINANCIAL_KEYS.includes(key) && !can(ctx.role, 'settings:write:financial')) {
-    throw new AppError('FORBIDDEN', 'Yeh financial setting sirf super admin badal sakta hai.');
+    throw new AppError('FORBIDDEN', 'Only a super admin can change this financial setting.');
   }
 
   const previous = (await getAllSettings())[key];

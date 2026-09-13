@@ -135,8 +135,8 @@ export function ProviderOnboardingForm({
     if (!profile) {
       toast({
         tone: 'error',
-        title: 'Pehle profile save karein',
-        description: 'Photo upload karne ke liye profile mojood hona zaroori hai.',
+        title: 'Save your profile first',
+        description: 'A profile must exist before you can upload a photo.',
       });
       return;
     }
@@ -147,12 +147,12 @@ export function ProviderOnboardingForm({
     try {
       const result = await api.upload<{ url: string }>('/api/files', formData);
       setPhotoUrl(result.url);
-      toast({ tone: 'success', title: 'Photo update ho gayi' });
+      toast({ tone: 'success', title: 'Photo updated' });
       router.refresh();
     } catch (error) {
       toast({
         tone: 'error',
-        title: 'Photo upload nahi hui',
+        title: 'Photo not uploaded',
         description: error instanceof ApiError ? error.message : undefined,
       });
     } finally {
@@ -164,7 +164,7 @@ export function ProviderOnboardingForm({
     const file = files?.[0];
     if (!file) return;
     if (!profile) {
-      toast({ tone: 'error', title: 'Pehle profile save karein' });
+      toast({ tone: 'error', title: 'Save your profile first' });
       return;
     }
     setUploadingDoc(true);
@@ -176,13 +176,13 @@ export function ProviderOnboardingForm({
       setDocuments((current) => [...current, { id: result.id, name: result.originalName }]);
       toast({
         tone: 'success',
-        title: 'Document upload ho gaya',
-        description: 'Sirf aap aur ops team isay dekh sakte hain.',
+        title: 'Document uploaded',
+        description: 'Only you and the ops team can see this.',
       });
     } catch (error) {
       toast({
         tone: 'error',
-        title: 'Document upload nahi hua',
+        title: 'Document not uploaded',
         description: error instanceof ApiError ? error.message : undefined,
       });
     } finally {
@@ -254,19 +254,19 @@ export function ProviderOnboardingForm({
   return (
     <form onSubmit={submit} className="space-y-6" noValidate>
       {/* ------------------------------------------------------------- basics */}
-      <Section title="Aap ke baare mein">
+      <Section title="About you">
         <div className="space-y-4">
           <TextInput
-            label="Business ya apna naam"
+            label="Business or your own name"
             required
             value={form.businessName}
             onChange={(event) => setForm((f) => ({ ...f, businessName: event.target.value }))}
-            placeholder="Misal: Ali Electric Services"
+            placeholder="For example: Ali Electric Services"
             error={errors.businessName}
-            hint="Yeh naam customers ko dikhta hai."
+            hint="This name is shown to customers."
           />
           <TextInput
-            label="Rabta number"
+            label="Contact number"
             required
             type="tel"
             inputMode="tel"
@@ -274,26 +274,26 @@ export function ProviderOnboardingForm({
             onChange={(event) => setForm((f) => ({ ...f, contactPhone: event.target.value }))}
             placeholder="0300 1234567"
             error={errors.contactPhone}
-            hint="Customer ko sirf booking qubool karne ke baad dikhta hai."
+            hint="The customer sees this only after accepting the booking."
           />
           <TextInput
-            label="Ek line mein apna kaam"
+            label="Your work in one line"
             value={form.headline}
             onChange={(event) => setForm((f) => ({ ...f, headline: event.target.value }))}
-            placeholder="AC aur electrical ka 12 saal ka tajurba"
+            placeholder="12 years of AC and electrical experience"
             error={errors.headline}
           />
           <Textarea
-            label="Tafseel"
+            label="Details"
             rows={4}
             value={form.description}
             onChange={(event) => setForm((f) => ({ ...f, description: event.target.value }))}
-            placeholder="Aap kya kaam karte hain, kaunse brands, kya guarantee dete hain..."
+            placeholder="What you work on, which brands, what you guarantee…"
             error={errors.description}
           />
           <div className="grid gap-4 sm:grid-cols-2">
             <TextInput
-              label="Tajurba (saal)"
+              label="Experience (years)"
               type="number"
               min={0}
               max={60}
@@ -309,17 +309,14 @@ export function ProviderOnboardingForm({
               value={form.serviceRadiusKm}
               onChange={(event) => setForm((f) => ({ ...f, serviceRadiusKm: event.target.value }))}
               error={errors.serviceRadiusKm}
-              hint="Is se zyada door ki jobs nahi aayengi."
+              hint="Jobs farther than this will not be sent to you."
             />
           </div>
         </div>
       </Section>
 
       {/* -------------------------------------------------------------- photo */}
-      <Section
-        title="Profile photo"
-        description="Asli tasveer trust barhati hai. Yeh public hoti hai."
-      >
+      <Section title="Profile photo" description="A real photo builds trust. This one is public.">
         <div className="flex items-center gap-4">
           {photoUrl ? (
             <Image
@@ -345,7 +342,7 @@ export function ProviderOnboardingForm({
             />
             {!profile ? (
               <p className="mt-1.5 text-xs text-ink-500">
-                Pehle profile save karein, phir photo upload kar sakenge.
+                Save your profile first, then you can upload a photo.
               </p>
             ) : null}
           </div>
@@ -354,8 +351,8 @@ export function ProviderOnboardingForm({
 
       {/* ----------------------------------------------------------- services */}
       <Section
-        title="Aap kaunsi services karte hain?"
-        description="Service select karein aur apna starting rate likhein. Final qeemat aap ke quote se tay hoti hai."
+        title="Which services do you offer?"
+        description="Select a service and enter your starting rate. The final price is set by your quote."
       >
         {errors.services ? (
           <p role="alert" className="mb-3 text-sm text-alert-600">
@@ -427,8 +424,8 @@ export function ProviderOnboardingForm({
 
       {/* -------------------------------------------------------------- areas */}
       <Section
-        title="Aap kahan kaam karte hain?"
-        description="Sirf inhi areas ki jobs aap ko offer hongi."
+        title="Where do you work?"
+        description="Only jobs in these areas will be offered to you."
       >
         {errors.zoneIds ? (
           <p role="alert" className="mb-3 text-sm text-alert-600">
@@ -462,14 +459,11 @@ export function ProviderOnboardingForm({
             );
           })}
         </div>
-        <p className="mt-3 text-xs text-ink-500">{zoneIds.length} area chune gaye</p>
+        <p className="mt-3 text-xs text-ink-500">{zoneIds.length} area(s) selected</p>
       </Section>
 
       {/* ------------------------------------------------------------- hours */}
-      <Section
-        title="Working hours"
-        description="Matching mein aap ke waqt ka khayal rakha jata hai."
-      >
+      <Section title="Working hours" description="Matching respects your working hours.">
         <ul className="space-y-2">
           {DAY_NAMES.map((dayName, day) => {
             const window = availability[day]!;
@@ -534,7 +528,7 @@ export function ProviderOnboardingForm({
                     </select>
                   </div>
                 ) : (
-                  <span className="text-sm text-ink-400">Chhutti</span>
+                  <span className="text-sm text-ink-400">Day off</span>
                 )}
               </li>
             );
@@ -545,11 +539,11 @@ export function ProviderOnboardingForm({
       {/* ---------------------------------------------------------- emergency */}
       <Section
         title="Emergency service"
-        description="Emergency jobs raat ya chhutti mein bhi aa sakti hain."
+        description="Emergency jobs can come at night or on holidays too."
       >
         <div className="space-y-4">
           <Checkbox
-            label="Main emergency calls leta hoon"
+            label="I take emergency calls"
             checked={form.emergencyAvailable}
             onChange={(event) =>
               setForm((f) => ({ ...f, emergencyAvailable: event.target.checked }))
@@ -565,7 +559,7 @@ export function ProviderOnboardingForm({
                 setForm((f) => ({ ...f, emergencyFeeRupees: event.target.value }))
               }
               error={errors.emergencyFeeRupees}
-              hint={`Platform ki maximum limit ${formatPaisa(limits.maxEmergencyFeePaisa)} hai. Yeh fee customer ko booking se pehle dikhayi jati hai.`}
+              hint={`The platform maximum is ${formatPaisa(limits.maxEmergencyFeePaisa)}. This fee is shown to the customer before booking.`}
             />
           ) : null}
         </div>
@@ -574,23 +568,23 @@ export function ProviderOnboardingForm({
       {/* ------------------------------------------------------ verification */}
       <Section
         title="Verification"
-        description="In maloomat ka jaiza ops team karti hai. Verification status aap khud tabdeel nahi kar sakte."
+        description="These details are reviewed by the ops team. You cannot change your verification status yourself."
       >
         <div className="space-y-4">
           <TextInput
-            label="CNIC ke aakhri 4 hindse"
+            label="Last 4 digits of the CNIC"
             value={form.cnicReference}
             onChange={(event) => setForm((f) => ({ ...f, cnicReference: event.target.value }))}
             placeholder="1234"
             maxLength={6}
             error={errors.cnicReference}
-            hint="Poora CNIC number na likhein — hum poora number store nahi karte."
+            hint="Do not enter the full CNIC number — we do not store the full number."
             required={limits.requireCnic}
           />
 
           <div>
             <p className="mb-1.5 text-sm font-medium text-ink-800">
-              Shanakhti document{limits.requireCnic ? ' (zaroori)' : ' (optional)'}
+              Identity document{limits.requireCnic ? ' (required)' : ' (optional)'}
             </p>
             <input
               type="file"
@@ -600,7 +594,7 @@ export function ProviderOnboardingForm({
               className="block w-full text-sm text-ink-600 file:mr-3 file:h-10 file:cursor-pointer file:rounded-xl file:border-0 file:bg-ink-900 file:px-4 file:text-sm file:font-semibold file:text-white hover:file:bg-ink-800 disabled:opacity-50"
             />
             <p className="mt-1.5 text-xs text-ink-500">
-              🔒 Yeh document sirf aap aur ops team dekh sakti hai. Customers kabhi nahi.
+              🔒 Only you and the ops team can see this document. Never customers.
             </p>
             {documents.length > 0 ? (
               <ul className="mt-2 space-y-1">
@@ -616,7 +610,7 @@ export function ProviderOnboardingForm({
           {profile ? (
             <div className="rounded-xl bg-ink-50 p-3.5">
               <p className="text-xs font-semibold uppercase tracking-wide text-ink-500">
-                Mojooda status
+                Current status
               </p>
               <ul className="mt-2 space-y-1.5">
                 {profile.verifications.map((verification) => (
@@ -639,10 +633,10 @@ export function ProviderOnboardingForm({
                       {verification.status === 'APPROVED'
                         ? 'Verified'
                         : verification.status === 'SUBMITTED'
-                          ? 'Review mein'
+                          ? 'Under review'
                           : verification.status === 'REJECTED'
-                            ? 'Manzoor nahi'
-                            : 'Baqi hai'}
+                            ? 'Not approved'
+                            : 'Outstanding'}
                     </Badge>
                   </li>
                 ))}
@@ -655,7 +649,7 @@ export function ProviderOnboardingForm({
       {/* -------------------------------------------------------------- payout */}
       <Section
         title="Payout account"
-        description="Payout record ke liye. Hum poora IBAN store nahi karte — sirf aakhri 4 hindse aur ek hash."
+        description="For the payout record. We do not store the full IBAN — only the last 4 digits and a hash."
       >
         <div className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
@@ -680,8 +674,8 @@ export function ProviderOnboardingForm({
             error={errors.bankIban}
             hint={
               profile?.bankIbanMasked
-                ? `Mojooda: ${profile.bankIbanMasked}. Badalne ke liye naya IBAN likhein.`
-                : 'PK se shuru hone wala valid IBAN.'
+                ? `Current: ${profile.bankIbanMasked}. Enter a new IBAN to change it.`
+                : 'A valid IBAN starting with PK.'
             }
           />
         </div>
@@ -692,7 +686,7 @@ export function ProviderOnboardingForm({
           checked={form.acceptedTerms}
           onChange={(event) => setForm((f) => ({ ...f, acceptedTerms: event.target.checked }))}
           error={errors.acceptedTerms}
-          label="Main provider terms se ittefaq karta/karti hoon aur tasdeeq karta/karti hoon ke di gayi maloomat durust hai."
+          label="I agree to the provider terms and confirm that the information given is accurate."
         />
       ) : null}
 
@@ -703,12 +697,12 @@ export function ProviderOnboardingForm({
             {profile ? ` · Status: ${profile.status}` : ''}
           </p>
           <Button type="submit" loading={loading} disabled={!canSubmit}>
-            {profile ? 'Profile update karein' : 'Profile submit karein'}
+            {profile ? 'Update profile' : 'Submit profile'}
           </Button>
         </div>
         {!canSubmit ? (
           <p className="mt-2 text-xs text-ink-500">
-            Naam, phone, kam az kam ek service aur ek area zaroori hain.
+            Name, phone, at least one service and one area are required.
           </p>
         ) : null}
       </div>
@@ -738,7 +732,7 @@ function Section({
 
 function verificationLabel(kind: string): string {
   const labels: Record<string, string> = {
-    IDENTITY_CNIC: 'Shanakht (CNIC)',
+    IDENTITY_CNIC: 'Identity (CNIC)',
     PHONE: 'Phone',
     EMAIL: 'Email',
     PLATFORM_ONBOARDING: 'Platform review',

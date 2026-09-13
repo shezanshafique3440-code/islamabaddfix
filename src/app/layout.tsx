@@ -4,9 +4,9 @@ import { ToastProvider } from '@/components/ui/Toast';
 import './globals.css';
 
 const APP_NAME = 'Islamabad Fix';
-const TAGLINE = 'Problem batao. Baqi hum sambhal lenge.';
+const TAGLINE = 'Tell us the problem. We will handle the rest.';
 const DESCRIPTION =
-  'Islamabad mein trusted home & business services — verified professionals, transparent quotes aur easy booking. AC, plumbing, electrical, cleaning, carpenter, appliances aur CCTV.';
+  'Trusted home and business services in Islamabad — verified professionals, transparent quotes and easy booking. AC, plumbing, electrical, cleaning, carpentry, appliances and CCTV.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -57,7 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-brand-700 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
         >
-          Main content par jayein
+          Skip to main content
         </a>
         <ToastProvider>{children}</ToastProvider>
       </body>

@@ -29,7 +29,7 @@ export default async function ProviderSettingsPage() {
   return (
     <div className="max-w-2xl">
       <h1 className="text-display-sm text-ink-950">Settings</h1>
-      <p className="mt-1 text-sm text-ink-600">Availability, capacity aur privacy controls.</p>
+      <p className="mt-1 text-sm text-ink-600">Availability, capacity and privacy controls.</p>
       <div className="mt-6">
         <ProviderSettingsForm
           initial={{

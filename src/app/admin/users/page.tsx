@@ -61,7 +61,7 @@ export default async function AdminUsersPage({
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-display-sm text-ink-950">Users</h1>
-          <p className="mt-1 text-sm text-ink-600">{users.length} users dikhaye ja rahe hain</p>
+          <p className="mt-1 text-sm text-ink-600">Showing {users.length} users</p>
         </div>
         <form className="flex gap-2" action="/admin/users">
           {role ? <input type="hidden" name="role" value={role} /> : null}
@@ -69,14 +69,14 @@ export default async function AdminUsersPage({
             name="search"
             defaultValue={query.search ?? ''}
             placeholder="Naam, email ya phone"
-            aria-label="Users dhoondein"
+            aria-label="Search users"
             className="h-10 w-56 rounded-xl border border-ink-300 px-3.5 text-sm"
           />
           <button
             type="submit"
             className="h-10 rounded-xl bg-ink-900 px-4 text-sm font-semibold text-white hover:bg-ink-800"
           >
-            Dhoondein
+            Search
           </button>
         </form>
       </header>
@@ -157,7 +157,7 @@ export default async function AdminUsersPage({
                   </Td>
                   <Td className="text-right text-ink-700">{user._count.bookingsAsCustomer}</Td>
                   <Td className="text-xs text-ink-500">
-                    {user.lastLoginAt ? formatRelative(user.lastLoginAt) : 'Kabhi nahi'}
+                    {user.lastLoginAt ? formatRelative(user.lastLoginAt) : 'Never'}
                   </Td>
                   <Td className="text-xs text-ink-500">{formatDate(user.createdAt)}</Td>
                   <Td>
@@ -176,7 +176,7 @@ export default async function AdminUsersPage({
           </table>
         </div>
       ) : (
-        <EmptyState className="mt-5" title="Koi user nahi mila" />
+        <EmptyState className="mt-5" title="No users found" />
       )}
     </div>
   );

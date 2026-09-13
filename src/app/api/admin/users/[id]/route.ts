@@ -19,14 +19,14 @@ export const PATCH = route(async (request, { params }: Params) => {
   const input = await parseJson(request, changeRoleSchema);
 
   if (id === ctx.user.id) {
-    throw new AppError('FORBIDDEN', 'Apna role khud tabdeel nahi kiya ja sakta.');
+    throw new AppError('FORBIDDEN', 'You cannot change your own role.');
   }
 
   const target = await prisma.user.findFirst({
     where: { id, deletedAt: null },
     select: { id: true, role: true, email: true, providerProfile: { select: { id: true } } },
   });
-  if (!target) throw new AppError('NOT_FOUND', 'User nahi mila.');
+  if (!target) throw new AppError('NOT_FOUND', 'User not found.');
 
   // Moving someone to PROVIDER without a profile leaves them unable to work;
   // they must complete onboarding, which the role change permits.
@@ -59,18 +59,18 @@ export const POST = route(async (request, { params }: Params) => {
   const input = await parseJson(request, setUserActiveSchema);
 
   if (id === ctx.user.id) {
-    throw new AppError('FORBIDDEN', 'Apna account khud disable nahi kiya ja sakta.');
+    throw new AppError('FORBIDDEN', 'You cannot disable your own account.');
   }
 
   const target = await prisma.user.findFirst({
     where: { id, deletedAt: null },
     select: { id: true, role: true },
   });
-  if (!target) throw new AppError('NOT_FOUND', 'User nahi mila.');
+  if (!target) throw new AppError('NOT_FOUND', 'User not found.');
 
   // Only a SUPER_ADMIN may disable another staff account.
   if ((target.role === 'ADMIN' || target.role === 'SUPER_ADMIN') && ctx.role !== 'SUPER_ADMIN') {
-    throw new AppError('FORBIDDEN', 'Admin account sirf super admin disable kar sakta hai.');
+    throw new AppError('FORBIDDEN', 'Only a super admin can disable an admin account.');
   }
 
   const user = await prisma.user.update({

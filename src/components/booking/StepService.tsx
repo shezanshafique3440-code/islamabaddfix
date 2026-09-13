@@ -38,7 +38,7 @@ export function StepService({
   );
 
   return (
-    <StepShell title="Konsi service?" description="Apni category chunein, phir us mein se service.">
+    <StepShell title="Which service?" description="Pick your category, then the service within it.">
       <div className="grid gap-5 lg:grid-cols-[14rem_1fr]">
         {/* Categories */}
         <div>
@@ -109,7 +109,7 @@ export function StepService({
                     ) : null}
                     <p className="mt-1.5 text-xs text-ink-500">
                       {service.requiresInspection
-                        ? 'Muaina ke baad quote'
+                        ? 'Quote after inspection'
                         : `Andazan ${service.estimatedMinutes} min`}
                     </p>
                   </div>
@@ -125,8 +125,8 @@ export function StepService({
           </div>
 
           <p className="mt-3 text-xs leading-relaxed text-ink-500">
-            Yeh sirf andaza hain. Final qeemat technician ke muaina aur likhit quote se tay hogi,
-            jise aap approve ya reject karenge.
+            These are estimates only. The final price is set by the technician’s inspection and
+            written quote, which you approve or reject.
           </p>
         </div>
       </div>

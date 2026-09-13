@@ -24,7 +24,7 @@ export function MarkAllRead() {
         }
       }}
     >
-      Sab read mark karein
+      Mark all as read
     </Button>
   );
 }

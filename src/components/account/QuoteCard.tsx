@@ -5,12 +5,12 @@ import { formatDateTime } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 
 const ITEM_LABELS: Record<QuoteItemKind, string> = {
-  INSPECTION: 'Muaina',
-  LABOUR: 'Mazdoori',
+  INSPECTION: 'Inspection',
+  LABOUR: 'Labour',
   PARTS: 'Parts',
   EMERGENCY_FEE: 'Emergency fee',
-  TRAVEL: 'Aane jane ka kharcha',
-  OTHER: 'Deegar',
+  TRAVEL: 'Travel',
+  OTHER: 'Other',
 };
 
 interface QuoteView {
@@ -82,7 +82,7 @@ export function QuoteCard({
       </div>
 
       <table className="mt-3 w-full text-sm">
-        <caption className="sr-only">Quote ki tafseel</caption>
+        <caption className="sr-only">Quote details</caption>
         <tbody className="divide-y divide-ink-100">
           {quote.items.map((item) => (
             <tr key={item.id}>

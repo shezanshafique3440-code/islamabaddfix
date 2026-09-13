@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function VerifyEmailPage() {
   return (
     <div>
-      <h1 className="text-display-sm text-ink-950">Email verify kar rahe hain</h1>
+      <h1 className="text-display-sm text-ink-950">Verifying your email</h1>
       <div className="mt-7">
         <Suspense fallback={<Skeleton className="h-40 rounded-xl" />}>
           <VerifyEmailView />

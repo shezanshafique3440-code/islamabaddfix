@@ -23,11 +23,11 @@ async function loadParty(bookingId: string, ctx: Awaited<ReturnType<typeof requi
       provider: { select: { userId: true } },
     },
   });
-  if (!booking) throw new AppError('NOT_FOUND', 'Booking nahi mili.');
+  if (!booking) throw new AppError('NOT_FOUND', 'Booking not found.');
   const isCustomer = booking.customerId === ctx.user.id;
   const isProvider = ctx.providerId !== undefined && booking.providerId === ctx.providerId;
   if (!isCustomer && !isProvider && !isStaff(ctx.role)) {
-    throw new AppError('NOT_FOUND', 'Booking nahi mili.');
+    throw new AppError('NOT_FOUND', 'Booking not found.');
   }
   return { booking, isCustomer, isProvider };
 }
@@ -51,7 +51,7 @@ export const POST = route(async (request, { params }: Params) => {
   const { id } = await params;
   const { booking, isCustomer } = await loadParty(id, ctx);
   if (!isCustomer && !isStaff(ctx.role)) {
-    throw new AppError('FORBIDDEN', 'Payment method sirf customer chun sakta hai.');
+    throw new AppError('FORBIDDEN', 'Only the customer can choose the payment method.');
   }
 
   const input = await parseJson(request, initiatePaymentSchema);
@@ -93,11 +93,11 @@ export const PATCH = route(async (request, { params }: Params) => {
   const payment = await prisma.payment.findFirst({
     where: { id: input.paymentId, bookingId: booking.id },
   });
-  if (!payment) throw new AppError('NOT_FOUND', 'Payment record nahi mila.');
+  if (!payment) throw new AppError('NOT_FOUND', 'Payment record not found.');
 
   const canSettle = isStaff(ctx.role) || (payment.method === 'CASH' && (isCustomer || isProvider));
   if (!canSettle) {
-    throw new AppError('FORBIDDEN', 'Yeh payment sirf ops team confirm kar sakti hai.');
+    throw new AppError('FORBIDDEN', 'Only the ops team can confirm this payment.');
   }
 
   const settled = await settlePayment({
@@ -115,8 +115,8 @@ export const PATCH = route(async (request, { params }: Params) => {
     await notify({
       event: NOTIFICATION_EVENTS.PAYMENT_RECORDED,
       userId,
-      title: 'Payment record ho gayi',
-      body: `${booking.reference}: ${formatPaisa(settled.amountPaisa)} paid mark kar diya gaya.`,
+      title: 'Payment recorded',
+      body: `${booking.reference}: ${formatPaisa(settled.amountPaisa)} marked as paid.`,
       href: `/account/bookings/${booking.id}`,
       data: { bookingId: booking.id, paymentId: settled.id },
     });

@@ -29,7 +29,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const category = await getCategoryBySlug(slug);
-  if (!category) return { title: 'Service nahi mili' };
+  if (!category) return { title: 'Service not found' };
 
   const title = `${category.name} Islamabad — verified technicians`;
   const description =
@@ -131,7 +131,7 @@ export default async function CategoryPage({ params }: Params) {
                   </p>
                   <p className="mt-0.5 text-xs text-ink-400">
                     {service.requiresInspection
-                      ? 'Final qeemat muaina ke baad'
+                      ? 'Final price after inspection'
                       : `Andazan ${service.estimatedMinutes} minute`}
                   </p>
                   <ButtonLink
@@ -140,7 +140,7 @@ export default async function CategoryPage({ params }: Params) {
                     size="sm"
                     className="mt-4"
                   >
-                    Book karein
+                    Book now
                   </ButtonLink>
                 </div>
               </li>
@@ -155,14 +155,14 @@ export default async function CategoryPage({ params }: Params) {
                 {category.name} technicians
               </h2>
               <p className="mt-1 text-sm text-ink-600">
-                Verified professionals jo yeh services offer karte hain.
+                Verified professionals who offer these services.
               </p>
             </div>
             <Link
               href={`/providers?categorySlug=${category.slug}`}
               className="text-sm font-medium text-brand-700 hover:underline"
             >
-              Sab dekhein →
+              View all →
             </Link>
           </div>
 
@@ -179,7 +179,7 @@ export default async function CategoryPage({ params }: Params) {
                       size="sm"
                       fullWidth
                     >
-                      Is technician se book karein
+                      Book this technician
                     </ButtonLink>
                   }
                 />
@@ -188,9 +188,9 @@ export default async function CategoryPage({ params }: Params) {
           ) : (
             <EmptyState
               className="mt-5"
-              title="Is category mein abhi koi verified technician nahi"
-              description="Hum is area mein providers add kar rahe hain. Aap phir bhi request bhej sakte hain — ops team manually technician assign karegi."
-              action={{ label: 'Request bhejein', href: `/book?category=${category.slug}` }}
+              title="No verified technician in this category yet"
+              description="We are still adding providers in this area. You can still send a request — the ops team will assign a technician manually."
+              action={{ label: 'Send request', href: `/book?category=${category.slug}` }}
             />
           )}
         </section>

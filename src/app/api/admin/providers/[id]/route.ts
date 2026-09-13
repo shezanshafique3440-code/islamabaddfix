@@ -49,7 +49,7 @@ export const GET = route(async (_request, { params }: Params) => {
       _count: { select: { bookings: true, reviews: true } },
     },
   });
-  if (!provider) throw new AppError('NOT_FOUND', 'Provider nahi mila.');
+  if (!provider) throw new AppError('NOT_FOUND', 'Provider not found.');
 
   const { bankIbanHash: _hash, ...safe } = provider;
   return ok({
@@ -73,12 +73,12 @@ export const POST = route(async (request, { params }: Params) => {
       return ok({ status: provider.status });
     }
     case 'reject': {
-      if (!input.reason) throw new AppError('VALIDATION_ERROR', 'Reject karne ki wajah likhein.');
+      if (!input.reason) throw new AppError('VALIDATION_ERROR', 'Give a reason for rejecting.');
       const provider = await rejectProvider({ providerId: id, ...actor, reason: input.reason });
       return ok({ status: provider.status });
     }
     case 'suspend': {
-      if (!input.reason) throw new AppError('VALIDATION_ERROR', 'Suspend karne ki wajah likhein.');
+      if (!input.reason) throw new AppError('VALIDATION_ERROR', 'Give a reason for suspending.');
       await requirePermission('provider:suspend');
       const provider = await suspendProvider({ providerId: id, ...actor, reason: input.reason });
       return ok({ status: provider.status });

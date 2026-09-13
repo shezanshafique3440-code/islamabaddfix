@@ -54,12 +54,12 @@ function EmailRow({ email, verified }: { email: string; verified: boolean }) {
       const response = await api.put<SendResult>('/api/auth/verify-email', {});
       setResult(response);
       if (response.delivered) {
-        toast({ tone: 'success', title: 'Verification link bhej diya', description: email });
+        toast({ tone: 'success', title: 'Verification link sent', description: email });
       }
     } catch (caught) {
       toast({
         tone: 'error',
-        title: caught instanceof ApiError ? caught.message : 'Link bhej nahi sake.',
+        title: caught instanceof ApiError ? caught.message : 'We could not send the link.',
       });
     } finally {
       setLoading(false);
@@ -77,7 +77,7 @@ function EmailRow({ email, verified }: { email: string; verified: boolean }) {
           <Badge tone="success">✓ Verified</Badge>
         ) : (
           <Button size="sm" variant="outline" onClick={send} loading={loading}>
-            Verification link bhejein
+            Send verification link
           </Button>
         )}
       </div>
@@ -86,17 +86,17 @@ function EmailRow({ email, verified }: { email: string; verified: boolean }) {
         <div className="mt-3 space-y-2">
           {result.delivered ? (
             <p className="text-sm text-ink-600">
-              Link bhej diya gaya. Inbox aur spam folder dekhein — 24 ghante tak valid hai.
+              Link sent. Check your inbox and spam folder — it is valid for 24 hours.
             </p>
           ) : result.notice ? (
-            <NotConfiguredNotice feature="Email bhejna" detail={result.notice} />
+            <NotConfiguredNotice feature="Sending email" detail={result.notice} />
           ) : null}
           {result.devToken ? (
             <a
               href={`/verify-email?token=${encodeURIComponent(result.devToken)}`}
               className="block break-all text-sm font-medium text-brand-700 underline"
             >
-              Development: verification link kholein
+              Development: open verification link
             </a>
           ) : null}
         </div>
@@ -121,9 +121,9 @@ function PhoneRow({ phone, verified }: { phone: string | null; verified: boolean
       const response = await api.put<SendResult>('/api/auth/verify-phone', {});
       setResult(response);
       setStage('code');
-      if (response.delivered) toast({ tone: 'success', title: 'Code bhej diya' });
+      if (response.delivered) toast({ tone: 'success', title: 'Code sent' });
     } catch (caught) {
-      setError(caught instanceof ApiError ? caught.message : 'Code bhej nahi sake.');
+      setError(caught instanceof ApiError ? caught.message : 'We could not send the code.');
     } finally {
       setLoading(false);
     }
@@ -137,9 +137,9 @@ function PhoneRow({ phone, verified }: { phone: string | null; verified: boolean
       await api.post('/api/auth/verify-phone', { code });
       setDone(true);
       setStage('idle');
-      toast({ tone: 'success', title: 'Number verify ho gaya' });
+      toast({ tone: 'success', title: 'Number verified' });
     } catch (caught) {
-      setError(caught instanceof ApiError ? caught.message : 'Code check nahi kar sake.');
+      setError(caught instanceof ApiError ? caught.message : 'We could not check the code.');
     } finally {
       setLoading(false);
     }
@@ -150,25 +150,23 @@ function PhoneRow({ phone, verified }: { phone: string | null; verified: boolean
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="text-sm font-semibold text-ink-900">Phone number</p>
-          <p className="mt-0.5 truncate text-sm text-ink-600">
-            {phone ?? 'Abhi koi number add nahi kiya'}
-          </p>
+          <p className="mt-0.5 truncate text-sm text-ink-600">{phone ?? 'No number added yet'}</p>
         </div>
         {done ? (
           <Badge tone="success">✓ Verified</Badge>
         ) : phone ? (
           <Button size="sm" variant="outline" onClick={send} loading={loading && stage === 'idle'}>
-            {stage === 'code' ? 'Naya code bhejein' : 'Code bhejein'}
+            {stage === 'code' ? 'Send a new code' : 'Send code'}
           </Button>
         ) : (
-          <Badge tone="neutral">Pehle number add karein</Badge>
+          <Badge tone="neutral">Add a number first</Badge>
         )}
       </div>
 
       {!done && stage === 'code' ? (
         <div className="mt-3 space-y-3">
           {result && !result.delivered && result.notice ? (
-            <NotConfiguredNotice feature="SMS bhejna" detail={result.notice} />
+            <NotConfiguredNotice feature="Sending SMS" detail={result.notice} />
           ) : null}
           {result?.devToken ? (
             <p className="rounded-lg border border-ink-200 bg-ink-50 px-3 py-2 text-sm text-ink-700">
@@ -178,7 +176,7 @@ function PhoneRow({ phone, verified }: { phone: string | null; verified: boolean
 
           <form onSubmit={confirm} className="flex flex-wrap items-end gap-2">
             <TextInput
-              label="6-hindson ka code"
+              label="6-digit code"
               value={code}
               onChange={(event) => setCode(event.target.value.replace(/\D/g, '').slice(0, 6))}
               inputMode="numeric"
@@ -187,10 +185,10 @@ function PhoneRow({ phone, verified }: { phone: string | null; verified: boolean
               className="w-40"
             />
             <Button type="submit" loading={loading} disabled={code.length !== 6}>
-              Verify karein
+              Verify
             </Button>
           </form>
-          <p className="text-xs text-ink-500">Code 10 minute tak valid hai.</p>
+          <p className="text-xs text-ink-500">The code is valid for 10 minutes.</p>
         </div>
       ) : null}
 

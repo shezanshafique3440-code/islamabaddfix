@@ -76,7 +76,7 @@ export function CatalogueManager({ categories }: { categories: CategoryRow[] }) 
 
   return (
     <div>
-      <Button onClick={() => setCategoryDialog('new')}>+ Nayi category</Button>
+      <Button onClick={() => setCategoryDialog('new')}>+ New category</Button>
 
       <div className="mt-5 space-y-4">
         {categories.map((category) => (
@@ -167,7 +167,7 @@ export function CatalogueManager({ categories }: { categories: CategoryRow[] }) 
                 ))}
               </ul>
             ) : (
-              <p className="p-4 text-sm text-ink-500">Is category mein koi service nahi.</p>
+              <p className="p-4 text-sm text-ink-500">No services in this category.</p>
             )}
           </section>
         ))}
@@ -200,9 +200,9 @@ export function CatalogueManager({ categories }: { categories: CategoryRow[] }) 
       <ConfirmDialog
         open={deleting !== null}
         onClose={() => setDeleting(null)}
-        title={`"${deleting?.name}" delete karein?`}
-        description="Yeh soft delete hai — record barqarar rahega aur purani bookings theek rahengi. Live bookings hone par delete refuse ho jayega."
-        confirmLabel="Delete karein"
+        title={`Delete “${deleting?.name}”?`}
+        description="This is a soft delete — the record is kept and past bookings stay intact. The delete is refused if there are live bookings."
+        confirmLabel="Delete"
         destructive
         loading={busy}
         onConfirm={async () => {
@@ -214,13 +214,13 @@ export function CatalogueManager({ categories }: { categories: CategoryRow[] }) 
                 ? `/api/admin/catalogue/categories/${deleting.id}`
                 : `/api/admin/catalogue/services/${deleting.id}`,
             );
-            toast({ tone: 'success', title: 'Delete ho gaya' });
+            toast({ tone: 'success', title: 'Deleted' });
             setDeleting(null);
             router.refresh();
           } catch (error) {
             toast({
               tone: 'error',
-              title: 'Delete nahi ho saka',
+              title: 'Could not delete',
               description: error instanceof ApiError ? error.message : undefined,
             });
           } finally {
@@ -260,11 +260,11 @@ function CategoryDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      title={category ? 'Category edit karein' : 'Nayi category'}
+      title={category ? 'Edit category' : 'New category'}
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={loading}>
-            Band karein
+            Close
           </Button>
           <Button
             loading={loading}
@@ -285,7 +285,7 @@ function CategoryDialog({
                 if (category)
                   await api.patch(`/api/admin/catalogue/categories/${category.id}`, payload);
                 else await api.post('/api/admin/catalogue/categories', payload);
-                toast({ tone: 'success', title: 'Save ho gaya' });
+                toast({ tone: 'success', title: 'Saved' });
                 onDone();
               } catch (error) {
                 if (error instanceof ApiError) {
@@ -297,7 +297,7 @@ function CategoryDialog({
               }
             }}
           >
-            Save karein
+            Save
           </Button>
         </>
       }
@@ -337,7 +337,7 @@ function CategoryDialog({
           />
         </div>
         <Checkbox
-          label="Active (customers ko dikhe)"
+          label="Active (visible to customers)"
           checked={form.isActive}
           onChange={(event) => setForm((f) => ({ ...f, isActive: event.target.checked }))}
         />
@@ -393,12 +393,12 @@ function ServiceDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      title={service ? 'Service edit karein' : 'Nayi service'}
+      title={service ? 'Edit service' : 'New service'}
       size="lg"
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={loading}>
-            Band karein
+            Close
           </Button>
           <Button
             loading={loading}
@@ -422,7 +422,7 @@ function ServiceDialog({
                 if (service)
                   await api.patch(`/api/admin/catalogue/services/${service.id}`, payload);
                 else await api.post('/api/admin/catalogue/services', payload);
-                toast({ tone: 'success', title: 'Save ho gaya' });
+                toast({ tone: 'success', title: 'Saved' });
                 onDone();
               } catch (error) {
                 if (error instanceof ApiError) {
@@ -434,7 +434,7 @@ function ServiceDialog({
               }
             }}
           >
-            Save karein
+            Save
           </Button>
         </>
       }
@@ -459,7 +459,7 @@ function ServiceDialog({
           error={errors.name}
         />
         <Textarea
-          label="Tafseel"
+          label="Details"
           rows={2}
           value={form.description}
           onChange={(event) => setForm((f) => ({ ...f, description: event.target.value }))}
@@ -481,10 +481,10 @@ function ServiceDialog({
             value={form.maxPriceRupees}
             onChange={(event) => setForm((f) => ({ ...f, maxPriceRupees: event.target.value }))}
             error={errors.maxPriceRupees}
-            hint="Khali chhorein to open-ended"
+            hint="Leave blank for open-ended"
           />
           <TextInput
-            label="Andazan minute"
+            label="Estimated minutes"
             type="number"
             min={15}
             value={form.estimatedMinutes}
@@ -493,11 +493,11 @@ function ServiceDialog({
           />
         </div>
         <p className="rounded-xl bg-ink-50 px-3.5 py-2.5 text-xs leading-relaxed text-ink-600">
-          Yeh ranges sirf customers ko andaza dene ke liye hain. Charge hone wali qeemat provider ke
-          quote se aati hai.
+          These ranges only give customers an idea. The price actually charged comes from the
+          provider’s quote.
         </p>
         <Checkbox
-          label="Muaina zaroori hai (quote muaina ke baad)"
+          label="Inspection required (quote follows inspection)"
           checked={form.requiresInspection}
           onChange={(event) => setForm((f) => ({ ...f, requiresInspection: event.target.checked }))}
         />

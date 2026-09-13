@@ -79,7 +79,7 @@ export function NotConfiguredNotice({
         />
       </svg>
       <div className="min-w-0 text-sm">
-        <p className="font-semibold text-warn-700">{feature} configure nahi hua</p>
+        <p className="font-semibold text-warn-700">{feature} is not configured</p>
         {detail ? <p className="mt-0.5 leading-relaxed text-warn-700/90">{detail}</p> : null}
       </div>
     </div>

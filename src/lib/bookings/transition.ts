@@ -74,7 +74,7 @@ export async function transitionBooking(input: TransitionInput): Promise<Transit
       SELECT "id", "status" FROM "Booking" WHERE "id" = ${input.bookingId}::uuid FOR UPDATE
     `;
     const current = locked[0];
-    if (!current) throw new AppError('NOT_FOUND', 'Booking nahi mili.');
+    if (!current) throw new AppError('NOT_FOUND', 'Booking not found.');
 
     const booking = await tx.booking.findUniqueOrThrow({
       where: { id: input.bookingId },
@@ -101,12 +101,12 @@ export async function transitionBooking(input: TransitionInput): Promise<Transit
     if (input.to === 'ACCEPTED' && !booking.providerId && !patch.provider) {
       throw new AppError(
         'INVALID_STATUS_TRANSITION',
-        'Booking accept karne ke liye provider assign hona zaroori hai.',
+        'A provider must be assigned before the booking can be accepted.',
       );
     }
 
     if (input.to === 'SCHEDULED' && !booking.scheduledFor && !patch.scheduledFor) {
-      throw new AppError('VALIDATION_ERROR', 'Schedule confirm karne ke liye time zaroori hai.');
+      throw new AppError('VALIDATION_ERROR', 'A time is required to confirm the schedule.');
     }
 
     if (input.to === 'COMPLETED') {
@@ -120,7 +120,7 @@ export async function transitionBooking(input: TransitionInput): Promise<Transit
       if (finalTotal === null) {
         throw new AppError(
           'QUOTE_REQUIRED',
-          'Kaam complete karne se pehle customer ka approve kiya hua quote zaroori hai.',
+          'The customer’s approved quote is required before the work can be completed.',
         );
       }
 

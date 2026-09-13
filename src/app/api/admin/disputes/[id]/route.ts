@@ -47,7 +47,7 @@ export const GET = route(async (_request, { params }: Params) => {
       },
     },
   });
-  if (!dispute) throw new AppError('NOT_FOUND', 'Dispute nahi mila.');
+  if (!dispute) throw new AppError('NOT_FOUND', 'Dispute not found.');
 
   return ok({
     ...dispute,
@@ -65,7 +65,7 @@ export const POST = route(async (request, { params }: Params) => {
   const input = await parseJson(request, resolveDisputeSchema);
 
   if (input.status === 'RESOLVED_PARTIAL_REFUND' && input.refundRupees === undefined) {
-    throw new AppError('VALIDATION_ERROR', 'Partial refund ke liye amount likhein.');
+    throw new AppError('VALIDATION_ERROR', 'Enter an amount for a partial refund.');
   }
   if (input.status === 'RESOLVED_REFUND' || input.status === 'RESOLVED_PARTIAL_REFUND') {
     await requirePermission('payment:refund');

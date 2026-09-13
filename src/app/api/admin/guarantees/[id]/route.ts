@@ -34,7 +34,7 @@ export const GET = route(async (_request, { params }: Params) => {
       },
     },
   });
-  if (!claim) throw new AppError('NOT_FOUND', 'Claim nahi mila.');
+  if (!claim) throw new AppError('NOT_FOUND', 'Claim not found.');
 
   return ok({
     ...claim,
@@ -52,7 +52,7 @@ export const POST = route(async (request, { params }: Params) => {
   const input = await parseJson(request, decideGuaranteeClaimSchema);
 
   if (input.status === 'REVISIT_SCHEDULED' && !input.revisitScheduledFor) {
-    throw new AppError('VALIDATION_ERROR', 'Re-visit ke liye date aur time chunein.');
+    throw new AppError('VALIDATION_ERROR', 'Pick a date and time for the re-visit.');
   }
 
   const claim = await decideGuaranteeClaim({

@@ -55,7 +55,7 @@ export async function verifyAccessToken(token: string): Promise<AccessTokenClaim
       algorithms: ['HS256'],
     });
     if (typeof payload.sub !== 'string' || typeof payload.role !== 'string') {
-      throw new AppError('UNAUTHENTICATED', 'Session invalid hai. Dobara login karein.');
+      throw new AppError('UNAUTHENTICATED', 'Invalid session. Please sign in again.');
     }
     return payload as AccessTokenClaims;
   } catch (error) {
@@ -63,7 +63,7 @@ export async function verifyAccessToken(token: string): Promise<AccessTokenClaim
     const expired = error instanceof Error && error.name === 'JWTExpired';
     throw new AppError(
       expired ? 'TOKEN_EXPIRED' : 'UNAUTHENTICATED',
-      expired ? 'Session expire ho gaya.' : 'Session invalid hai. Dobara login karein.',
+      expired ? 'Your session has expired.' : 'Invalid session. Please sign in again.',
     );
   }
 }

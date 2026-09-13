@@ -61,7 +61,7 @@ export const PUT = route(async (request) => {
     status: profile.status,
     message:
       profile.status === 'VERIFIED'
-        ? 'Profile update ho gaya.'
-        : 'Profile jama ho gaya. Team review kar ke aap ko batayegi.',
+        ? 'Profile updated.'
+        : 'Profile submitted. The team will review it and get back to you.',
   });
 });

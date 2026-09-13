@@ -271,7 +271,7 @@ export async function getBookingDetailFor(bookingId: string, ctx: AuthContext) {
     where: { id: bookingId, deletedAt: null },
     include: DETAIL_INCLUDE,
   });
-  if (!booking) throw new AppError('NOT_FOUND', 'Booking nahi mili.');
+  if (!booking) throw new AppError('NOT_FOUND', 'Booking not found.');
 
   const isCustomer = booking.customerId === ctx.user.id;
   const isAssignedProvider = ctx.providerId !== undefined && booking.providerId === ctx.providerId;
@@ -287,7 +287,7 @@ export async function getBookingDetailFor(bookingId: string, ctx: AuthContext) {
       : false;
 
   if (!isCustomer && !isAssignedProvider && !staff && !wasOffered) {
-    throw new AppError('NOT_FOUND', 'Booking nahi mili.');
+    throw new AppError('NOT_FOUND', 'Booking not found.');
   }
 
   const viewer = staff

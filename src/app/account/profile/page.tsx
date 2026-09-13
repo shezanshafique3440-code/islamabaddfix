@@ -40,10 +40,10 @@ export default async function ProfilePage() {
   return (
     <div className="max-w-2xl">
       <h1 className="text-display-sm text-ink-950">Profile</h1>
-      <p className="mt-1 text-sm text-ink-600">Apni maloomat aur account settings.</p>
+      <p className="mt-1 text-sm text-ink-600">Your details and account settings.</p>
 
       <section className="mt-6 rounded-2xl border border-ink-200 bg-white p-5">
-        <h2 className="text-[0.9375rem] font-semibold text-ink-900">Maloomat</h2>
+        <h2 className="text-[0.9375rem] font-semibold text-ink-900">Details</h2>
         <div className="mt-4">
           <ProfileForm
             initial={{ fullName: user.fullName, phone: user.phone ?? '', email: user.email }}
@@ -56,8 +56,7 @@ export default async function ProfilePage() {
       <section className="mt-5 rounded-2xl border border-ink-200 bg-white p-5">
         <h2 className="text-[0.9375rem] font-semibold text-ink-900">Verification</h2>
         <p className="mt-1 text-sm text-ink-600">
-          Verified contact se booking updates pohonchti hain aur technician aap tak rabta kar sakta
-          hai.
+          A verified contact means booking updates reach you and the technician can get in touch.
         </p>
         <div className="mt-4">
           <VerificationPanel
@@ -71,13 +70,13 @@ export default async function ProfilePage() {
 
       {user.customerProfile ? (
         <section className="mt-5 rounded-2xl border border-ink-200 bg-white p-5">
-          <h2 className="text-[0.9375rem] font-semibold text-ink-900">Aapka record</h2>
+          <h2 className="text-[0.9375rem] font-semibold text-ink-900">Your record</h2>
           <dl className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
             <Stat label="Total bookings" value={String(user.customerProfile.totalBookings)} />
-            <Stat label="Mukammal" value={String(user.customerProfile.completedBookings)} />
+            <Stat label="Completed" value={String(user.customerProfile.completedBookings)} />
             <Stat label="Cancelled" value={String(user.customerProfile.cancelledBookings)} />
             <Stat
-              label="Kharch"
+              label="Spent"
               value={stats._sum.finalTotalPaisa ? formatPaisa(stats._sum.finalTotalPaisa) : 'Rs. 0'}
             />
           </dl>
@@ -88,10 +87,8 @@ export default async function ProfilePage() {
       ) : null}
 
       <section className="mt-5 rounded-2xl border border-ink-200 bg-white p-5">
-        <h2 className="text-[0.9375rem] font-semibold text-ink-900">Ittila kaise chahiye</h2>
-        <p className="mt-1 text-sm text-ink-600">
-          Kis zariye se aap tak khabar pohonche, yeh aap tay karein.
-        </p>
+        <h2 className="text-[0.9375rem] font-semibold text-ink-900">How you want to be notified</h2>
+        <p className="mt-1 text-sm text-ink-600">You decide how we reach you.</p>
         <div className="mt-4">
           <NotificationPreferences initial={preferences} />
         </div>
@@ -101,11 +98,10 @@ export default async function ProfilePage() {
         <h2 className="text-[0.9375rem] font-semibold text-ink-900">Privacy</h2>
         <ul className="mt-3 space-y-2 text-sm leading-relaxed text-ink-600">
           <li>
-            Aapka poora address aur phone number technician ko sirf job qubool karne ke baad milta
-            hai.
+            Your full address and phone number reach the technician only after they accept the job.
           </li>
-          <li>Reviews par sirf aapka pehla naam dikhta hai.</li>
-          <li>Aap ki bheji hui tasveerein private storage mein rehti hain.</li>
+          <li>Only your first name appears on reviews.</li>
+          <li>The photos you send stay in private storage.</li>
         </ul>
         <div className="mt-5 border-t border-ink-100 pt-5">
           <AccountControls blockers={blockers} />

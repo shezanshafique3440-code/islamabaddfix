@@ -24,15 +24,15 @@ export default async function AdminSettingsPage() {
       <header>
         <h1 className="text-display-sm text-ink-950">Platform settings</h1>
         <p className="mt-1 text-sm text-ink-600">
-          Business rules yahan rehte hain, code mein nahi — commission, guarantee, matching weights
-          aur booking policy sab yahan se badalte hain.
+          Business rules live here, not in code — commission, guarantee, matching weights and
+          booking policy are all changed from here.
         </p>
       </header>
 
       {/* An account that can issue refunds and approve providers deserves more
           than a password. */}
       <section className="mt-6 rounded-2xl border border-ink-200 bg-white p-5">
-        <h2 className="text-[0.9375rem] font-semibold text-ink-900">Aapke account ki hifazat</h2>
+        <h2 className="text-[0.9375rem] font-semibold text-ink-900">Protecting your account</h2>
         <div className="mt-4">
           <TwoFactorPanel initial={twoFactor} email={ctx.user.email} />
         </div>

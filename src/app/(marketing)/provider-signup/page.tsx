@@ -5,9 +5,9 @@ import { getSetting } from '@/lib/settings';
 import { prisma } from '@/lib/db';
 
 export const metadata: Metadata = {
-  title: 'Provider banein — apna service business grow karein',
+  title: 'Become a provider — grow your service business',
   description:
-    'Islamabad mein apna service business grow karein. Naye customers, digital profile, booking management aur earnings dashboard — mehngi marketing ke baghair.',
+    'Grow your service business in Islamabad. New customers, a digital profile, booking management and an earnings dashboard — without expensive marketing.',
   alternates: { canonical: '/provider-signup' },
 };
 
@@ -31,26 +31,26 @@ export default async function ProviderSignupPage() {
         />
         <div className="relative mx-auto max-w-content px-4 py-14 sm:px-6 sm:py-20">
           <div className="max-w-2xl">
-            <p className="text-eyebrow uppercase text-brand-700">Providers ke liye</p>
+            <p className="text-eyebrow uppercase text-brand-700">For providers</p>
             <h1 className="mt-2.5 text-display-sm text-ink-950 sm:text-display">
-              {city} mein apna service business grow karein.
+              Grow your service business in {city}.
             </h1>
             <p className="mt-4 text-base leading-relaxed text-ink-600 sm:text-lg">
-              Aap ka kaam acha hai — bas customers tak pohanchne ka zariya chahiye. Islamabad Fix
-              par apni profile banayein, jobs receive karein aur apni earnings track karein.
+              Your work is good — you just need a way to reach customers. Build your profile on
+              Islamabad Fix, receive jobs and track your earnings.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
               <ButtonLink href="/register?role=provider" size="lg">
                 Join Islamabad Fix
               </ButtonLink>
-              <ButtonLink href="#kaise" variant="outline" size="lg">
-                Kaise kaam karta hai
+              <ButtonLink href="#how" variant="outline" size="lg">
+                How it works
               </ButtonLink>
             </div>
             <p className="mt-4 text-sm text-ink-500">
-              Pehle se account hai?{' '}
+              Already have an account?{' '}
               <Link href="/login" className="font-medium text-brand-700 hover:underline">
-                Login karein
+                Sign in
               </Link>
             </p>
           </div>
@@ -60,33 +60,33 @@ export default async function ProviderSignupPage() {
       <div className="mx-auto max-w-content px-4 py-14 sm:px-6">
         <section aria-labelledby="benefits">
           <h2 id="benefits" className="text-display-sm text-ink-950">
-            Aap ko kya milta hai
+            What you get
           </h2>
           <ul className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
-                title: 'Zyada customers',
-                body: 'Log Islamabad mein service dhoondte waqt aapki profile dekhte hain — jaan-pehchan ki zaroorat nahi.',
+                title: 'More customers',
+                body: 'People see your profile when they search for a service in Islamabad — no contacts needed.',
               },
               {
                 title: 'Digital profile',
-                body: 'Aapki rating, mukammal jobs, tajurba aur verification badges ek jagah — aapka online sarmaya.',
+                body: 'Your rating, completed jobs, experience and verification badges in one place — your reputation, online.',
               },
               {
                 title: 'Booking management',
-                body: 'Aaj ki jobs, address, masla, tasveerein aur time — sab ek dashboard par.',
+                body: 'Today’s jobs, the address, the problem, photos and the time — all on one dashboard.',
               },
               {
-                title: 'Likhit quotes',
-                body: 'Inspection, labour aur parts alag likh kar quote bhejein. Approve hone par hi kaam shuru.',
+                title: 'Written quotes',
+                body: 'Send the quote with inspection, labour and parts listed separately. Work starts only after approval.',
               },
               {
                 title: 'Earnings dashboard',
-                body: 'Aaj, is hafte aur is mahine ki kamai, commission aur pending payout saaf dikhte hain.',
+                body: 'Today’s, this week’s and this month’s earnings, commission and pending payout, all clearly shown.',
               },
               {
                 title: 'Reviews',
-                body: 'Acha kaam reviews banata hai, aur reviews aap ko matching mein oopar laate hain.',
+                body: 'Good work earns reviews, and reviews move you up in matching.',
               },
             ].map((benefit) => (
               <li key={benefit.title}>
@@ -97,25 +97,25 @@ export default async function ProviderSignupPage() {
           </ul>
         </section>
 
-        <section id="kaise" className="mt-16 scroll-mt-20">
-          <h2 className="text-display-sm text-ink-950">Shuru kaise karein</h2>
+        <section id="how" className="mt-16 scroll-mt-20">
+          <h2 className="text-display-sm text-ink-950">How to get started</h2>
           <ol className="mt-7 space-y-6">
             {[
               {
-                title: 'Account banayein',
-                body: 'Naam, phone aur email se provider account banayein.',
+                title: 'Create account',
+                body: 'Create a provider account with your name, phone and email.',
               },
               {
-                title: 'Profile mukammal karein',
-                body: 'Apni services aur starting rates, service areas, working hours aur tajurba daalein. Shanakhti document bhi attach karein.',
+                title: 'Complete your profile',
+                body: 'Add your services and starting rates, service areas, working hours and experience. Attach an identity document as well.',
               },
               {
-                title: 'Review ka intezar karein',
-                body: 'Humari team aapki maloomat check karti hai. Approve hone tak aapki profile customers ko nahi dikhti — is se badge ka matlab barqarar rehta hai.',
+                title: 'Wait for review',
+                body: 'Our team checks your details. Until you are approved, your profile is not shown to customers — that is what keeps the badge meaningful.',
               },
               {
-                title: 'Jobs receive karein',
-                body: 'Approve hone ke baad aap ko matching jobs offer hoti hain. Accept karein, muaina karein, quote bhejein aur kaam mukammal karein.',
+                title: 'Receive jobs',
+                body: 'Once you are approved, matching jobs are offered to you. Accept, inspect, send a quote and complete the work.',
               },
             ].map((step, index) => (
               <li key={step.title} className="flex gap-4">
@@ -133,26 +133,24 @@ export default async function ProviderSignupPage() {
 
         <section className="mt-16 grid gap-6 lg:grid-cols-2">
           <div className="rounded-2xl border border-ink-200 bg-white p-6">
-            <h2 className="text-title text-ink-950">Kharcha kitna hai</h2>
+            <h2 className="text-title text-ink-950">What it costs</h2>
             <p className="mt-3 text-sm leading-relaxed text-ink-700">
-              Profile banane ya listing ki koi fee nahi. Platform sirf mukammal booking par{' '}
+              No fee to build a profile or to be listed. The platform takes{' '}
               <strong className="font-semibold text-ink-900">
                 {commissionBp / 100}% commission
               </strong>{' '}
-              leta hai, jo aapki earning se katta hai. Kaam na ho to kuch bhi nahi.
+              on completed bookings only, out of your earnings. No work, nothing to pay.
             </p>
             <p className="mt-3 text-xs leading-relaxed text-ink-500">
-              Commission rate platform settings mein rakha jata hai aur har booking par mukammal
-              hone ke waqt ka rate freeze ho jata hai — baad mein rate badle to purani bookings par
-              asar nahi hota.
+              The commission rate is held in platform settings, and each booking freezes the rate in
+              force at the time it completes — a later change to the rate does not affect bookings
+              already done.
             </p>
           </div>
 
           <div className="rounded-2xl border border-ink-200 bg-white p-6">
-            <h2 className="text-title text-ink-950">Kaunsi services?</h2>
-            <p className="mt-3 text-sm text-ink-700">
-              In categories mein providers ki zaroorat hai:
-            </p>
+            <h2 className="text-title text-ink-950">Which services?</h2>
+            <p className="mt-3 text-sm text-ink-700">We need providers in these categories:</p>
             <div className="mt-3 flex flex-wrap gap-1.5">
               {categories.map((category) => (
                 <span
@@ -167,10 +165,9 @@ export default async function ProviderSignupPage() {
         </section>
 
         <div className="mt-14 rounded-2xl bg-ink-950 p-8 text-center text-white">
-          <h2 className="text-display-sm">Shuru karne ke liye tayyar hain?</h2>
+          <h2 className="text-display-sm">Ready to get started?</h2>
           <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-ink-300">
-            Account banane mein do minute lagte hain. Profile mukammal karne ke baad review shuru ho
-            jati hai.
+            Creating an account takes two minutes. Review starts once your profile is complete.
           </p>
           <ButtonLink
             href="/register?role=provider"

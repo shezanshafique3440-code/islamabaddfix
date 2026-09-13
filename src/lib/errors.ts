@@ -110,16 +110,15 @@ export class AppError extends Error {
 }
 
 /** Convenience constructors for the codes used most often. */
-export const notFound = (what = 'Resource') =>
-  new AppError('NOT_FOUND', `${what} nahi mila. (${what} not found.)`);
-export const forbidden = (message = 'Aap is action ke liye authorized nahi hain.') =>
+export const notFound = (what = 'Resource') => new AppError('NOT_FOUND', `${what} not found.`);
+export const forbidden = (message = 'You are not authorised to do that.') =>
   new AppError('FORBIDDEN', message);
-export const unauthenticated = (message = 'Pehle login karein.') =>
+export const unauthenticated = (message = 'Please sign in first.') =>
   new AppError('UNAUTHENTICATED', message);
 export const validationError = (message: string, fields?: FieldError[]) =>
   new AppError('VALIDATION_ERROR', message, { fields });
 export const notConfigured = (integration: string) =>
   new AppError(
     'INTEGRATION_NOT_CONFIGURED',
-    `${integration} abhi configured nahi hai. (${integration} is not configured on this deployment.)`,
+    `${integration} is not configured on this deployment.`,
   );

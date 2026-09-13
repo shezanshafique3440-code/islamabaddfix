@@ -15,14 +15,14 @@ import { AUDIT_ACTIONS, recordAudit } from '@/lib/audit';
  */
 export async function POST(request: Request) {
   if (!integrations.onlinePayments.configured) {
-    return NextResponse.json({ error: 'Payment gateway configured nahi hai.' }, { status: 503 });
+    return NextResponse.json({ error: 'The payment gateway is not configured.' }, { status: 503 });
   }
 
   const rawBody = await request.text();
   const provider = paymentProvider('ONLINE_GATEWAY');
   const verification = provider.verifyWebhook?.(rawBody, request.headers) ?? {
     valid: false,
-    reason: 'Is provider ke liye webhook verification implement nahi hui.',
+    reason: 'Webhook verification is not implemented for this provider.',
   };
   if (!verification.valid) {
     console.warn('[webhook:payment] rejected', { reason: verification.reason });

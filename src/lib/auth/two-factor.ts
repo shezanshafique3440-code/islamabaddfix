@@ -123,7 +123,10 @@ export async function confirmTwoFactorEnrolment(
 
   const result = verifyTotp(decryptSecret(row.secret), code);
   if (!result.valid) {
-    throw new AppError('VALIDATION_ERROR', 'Wrong code. Check that your app\u2019s clock is correct.');
+    throw new AppError(
+      'VALIDATION_ERROR',
+      'Wrong code. Check that your app\u2019s clock is correct.',
+    );
   }
 
   const recoveryCodes = generateRecoveryCodes();

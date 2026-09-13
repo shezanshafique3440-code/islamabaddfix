@@ -32,7 +32,7 @@ export function Logo({
         </span>
         {showTagline ? (
           <span className="mt-0.5 text-[0.6875rem] font-medium text-ink-500">
-            Problem batao. Baqi hum sambhal lenge.
+            Tell us the problem. We will handle the rest.
           </span>
         ) : null}
       </span>

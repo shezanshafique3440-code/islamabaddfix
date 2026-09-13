@@ -1,23 +1,23 @@
 const STEPS = [
   {
     number: '1',
-    title: 'Problem batao',
-    description: 'Service select karo aur issue describe karo. Tasveer bhej sakein to behtar.',
+    title: 'Tell us the problem',
+    description: 'Select a service and describe the issue. A photo helps if you can send one.',
   },
   {
     number: '2',
-    title: 'Technician choose karo',
-    description: 'Verified professionals ki rating, jobs aur rates compare karo.',
+    title: 'Choose a technician',
+    description: 'Compare verified professionals by rating, jobs and rates.',
   },
   {
     number: '3',
-    title: 'Book karo',
-    description: 'Time confirm karo aur quote approve karne ke baad kaam shuru.',
+    title: 'Book now',
+    description: 'Confirm the time, and work begins once you approve the quote.',
   },
   {
     number: '4',
     title: 'Problem solve',
-    description: 'Technician aaye, kaam mukammal kare, phir aap payment aur review karein.',
+    description: 'The technician arrives, completes the work, then you pay and leave a review.',
   },
 ];
 

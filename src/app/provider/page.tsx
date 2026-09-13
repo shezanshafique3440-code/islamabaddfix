@@ -11,7 +11,7 @@ import { JobOfferList } from '@/components/provider/JobOfferList';
 import { TodaySchedule } from '@/components/provider/TodaySchedule';
 
 export const metadata: Metadata = {
-  title: 'Aaj ka kaam',
+  title: 'Today’s work',
   robots: { index: false, follow: false },
 };
 
@@ -34,22 +34,22 @@ export default async function ProviderTodayPage() {
   return (
     <div className="space-y-8">
       <header>
-        <h1 className="text-display-sm text-ink-950">Aaj ka kaam</h1>
+        <h1 className="text-display-sm text-ink-950">Today’s work</h1>
         <p className="mt-1 text-sm text-ink-600">
           {jobs.length === 0
-            ? 'Aaj koi job scheduled nahi hai.'
-            : `Aaj ${jobs.length} job${jobs.length === 1 ? '' : 's'} hain.`}
+            ? 'No jobs are scheduled for today.'
+            : `${jobs.length} job${jobs.length === 1 ? '' : 's'} scheduled for today.`}
         </p>
       </header>
 
       {/* Today's numbers first — this is what a technician checks on their phone. */}
       <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Stat label="Aaj ki kamai" value={formatPaisa(earnings.today.earningsPaisa)} />
-        <Stat label="Is hafte" value={formatPaisa(earnings.week.earningsPaisa)} />
+        <Stat label="Earned today" value={formatPaisa(earnings.today.earningsPaisa)} />
+        <Stat label="This week" value={formatPaisa(earnings.week.earningsPaisa)} />
         <Stat
           label="Rating"
           value={ratings.ratingAverage ? `${ratings.ratingAverage.toFixed(1)} ★` : '—'}
-          hint={ratings.ratingCount > 0 ? `${ratings.ratingCount} reviews` : 'Koi review nahi'}
+          hint={ratings.ratingCount > 0 ? `${ratings.ratingCount} reviews` : 'No reviews'}
         />
         <Stat label="Total jobs" value={String(ratings.completedJobs)} />
       </dl>
@@ -58,17 +58,17 @@ export default async function ProviderTodayPage() {
         <section aria-labelledby="offers-heading">
           <div className="flex items-center justify-between gap-3">
             <h2 id="offers-heading" className="text-title text-ink-950">
-              Nayi job requests ({offers.length})
+              New job requests ({offers.length})
             </h2>
             <Link
               href="/provider/jobs?view=offers"
               className="text-sm font-medium text-brand-700 hover:underline"
             >
-              Sab dekhein →
+              View all →
             </Link>
           </div>
           <p className="mt-1 text-sm text-ink-600">
-            Jitni jaldi jawab denge, utna hi behtar aap ki ranking hogi.
+            The faster you respond, the better your ranking.
           </p>
           <div className="mt-4">
             <JobOfferList offers={offers.slice(0, 3)} />
@@ -78,18 +78,18 @@ export default async function ProviderTodayPage() {
 
       <section aria-labelledby="today-heading">
         <h2 id="today-heading" className="text-title text-ink-950">
-          Aaj ka schedule
+          Today’s schedule
         </h2>
         <div className="mt-4">
           {jobs.length > 0 ? (
             <TodaySchedule jobs={jobs.map(summarizeBooking)} />
           ) : (
             <EmptyState
-              title="Aaj koi job nahi"
+              title="No jobs today"
               description={
                 offers.length > 0
-                  ? 'Oopar di gayi requests qubool karke apna din bharein.'
-                  : 'Nayi requests aane par aap ko notification milega.'
+                  ? 'Accept the requests above to fill your day.'
+                  : 'You will be notified when new requests arrive.'
               }
             />
           )}
@@ -100,17 +100,16 @@ export default async function ProviderTodayPage() {
         <section className="rounded-2xl border border-ink-200 bg-white p-5">
           <h2 className="text-[0.9375rem] font-semibold text-ink-900">Pending payout</h2>
           <p className="mt-1.5 text-sm text-ink-600">
-            {earnings.pendingPayout.jobs} mukammal job(s) ki{' '}
             <strong className="font-semibold text-ink-900">
               {formatPaisa(earnings.pendingPayout.earningsPaisa)}
             </strong>{' '}
-            abhi kisi payout mein shamil nahi hui.
+            from {earnings.pendingPayout.jobs} completed job(s) is not in a payout yet.
           </p>
           <Link
             href="/provider/earnings"
             className="mt-3 inline-block text-sm font-medium text-brand-700 hover:underline"
           >
-            Earnings dekhein →
+            View earnings →
           </Link>
         </section>
       ) : null}

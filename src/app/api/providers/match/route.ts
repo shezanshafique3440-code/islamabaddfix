@@ -22,11 +22,11 @@ export const POST = route(async (request) => {
     where: { id: input.serviceId, isActive: true, deletedAt: null },
     select: { id: true, isEmergencyEnabled: true, name: true },
   });
-  if (!service) throw new AppError('NOT_FOUND', 'Service available nahi hai.');
+  if (!service) throw new AppError('NOT_FOUND', 'This service is not available.');
   if (input.isEmergency && !service.isEmergencyEnabled) {
     throw new AppError(
       'BOOKING_NOT_AVAILABLE',
-      'Is service ke liye emergency booking available nahi hai.',
+      'Emergency booking is not available for this service.',
     );
   }
 
@@ -39,7 +39,7 @@ export const POST = route(async (request) => {
       where: { id: input.addressId, userId: ctx.user.id, deletedAt: null },
       select: { zoneId: true, latitude: true, longitude: true },
     });
-    if (!address) throw new AppError('NOT_FOUND', 'Address nahi mila.');
+    if (!address) throw new AppError('NOT_FOUND', 'Address not found.');
     zoneId = address.zoneId;
     if (address.latitude != null && address.longitude != null) {
       location = { latitude: address.latitude, longitude: address.longitude };

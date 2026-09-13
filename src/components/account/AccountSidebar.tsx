@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 const LINKS = [
-  { href: '/account', label: 'Meri bookings', exact: true },
+  { href: '/account', label: 'My bookings', exact: true },
   { href: '/account/addresses', label: 'Addresses' },
   { href: '/account/notifications', label: 'Notifications', badgeKey: 'unread' },
   { href: '/account/support', label: 'Support' },
@@ -50,7 +50,7 @@ export function AccountSidebar({ unread }: { unread: number }) {
             href="/book"
             className="flex h-10 items-center justify-center rounded-xl bg-brand-700 text-sm font-semibold text-white hover:bg-brand-800"
           >
-            + Nayi booking
+            + New booking
           </Link>
         </div>
       </nav>

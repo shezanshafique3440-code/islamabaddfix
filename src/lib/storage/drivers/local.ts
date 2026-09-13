@@ -45,7 +45,7 @@ export const localDriver: StorageDriver = {
       );
       return { body, contentType: contentType.trim() };
     } catch {
-      throw new AppError('NOT_FOUND', 'File storage mein nahi mili.');
+      throw new AppError('NOT_FOUND', 'The file was not found in storage.');
     }
   },
 

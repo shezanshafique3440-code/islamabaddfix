@@ -11,17 +11,17 @@ export function renderEmail(
   payload: NotificationPayload,
 ): { subject: string; html: string; text: string } {
   const url = payload.href ? new URL(payload.href, env.NEXT_PUBLIC_APP_URL).toString() : undefined;
-  const firstName = target.fullName.split(/\s+/)[0] ?? 'ji';
+  const firstName = target.fullName.split(/\s+/)[0] ?? 'there';
 
   const text = [
-    `Assalam-o-alaikum ${firstName},`,
+    `Hello ${firstName},`,
     '',
     payload.body,
     url ? `\nDetails: ${url}` : '',
     '',
     '—',
     'Islamabad Fix',
-    'Problem batao. Baqi hum sambhal lenge.',
+    'Tell us the problem. We will handle the rest.',
   ]
     .filter((line) => line !== undefined)
     .join('\n');
@@ -36,16 +36,16 @@ export function renderEmail(
     </div>
     <div style="padding:24px;">
       <h1 style="margin:0 0 12px;font-size:19px;line-height:1.3;font-weight:650;letter-spacing:-0.015em;">${escapeHtml(payload.title)}</h1>
-      <p style="margin:0 0 8px;font-size:14px;color:#57646b;">Assalam-o-alaikum ${escapeHtml(firstName)},</p>
+      <p style="margin:0 0 8px;font-size:14px;color:#57646b;">Hello ${escapeHtml(firstName)},</p>
       <p style="margin:0 0 20px;font-size:15px;line-height:1.6;">${escapeHtml(payload.body)}</p>
       ${
         url
-          ? `<a href="${escapeHtml(url)}" style="display:inline-block;background:#0b6b51;color:#ffffff;text-decoration:none;padding:11px 20px;border-radius:9px;font-size:14px;font-weight:600;">Details dekhein</a>`
+          ? `<a href="${escapeHtml(url)}" style="display:inline-block;background:#0b6b51;color:#ffffff;text-decoration:none;padding:11px 20px;border-radius:9px;font-size:14px;font-weight:600;">View details</a>`
           : ''
       }
     </div>
     <div style="padding:16px 24px;border-top:1px solid #eef0f1;background:#f7f8f8;">
-      <p style="margin:0;font-size:12px;color:#8d9aa1;">Problem batao. Baqi hum sambhal lenge.</p>
+      <p style="margin:0;font-size:12px;color:#8d9aa1;">Tell us the problem. We will handle the rest.</p>
     </div>
   </div>
 </body></html>`;

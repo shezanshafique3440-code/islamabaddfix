@@ -65,7 +65,7 @@ export function ProviderJobView({
     } catch (error) {
       toast({
         tone: 'error',
-        title: 'Kaam nahi ho saka',
+        title: 'The work could not be completed',
         description: error instanceof ApiError ? error.message : undefined,
       });
     } finally {
@@ -104,21 +104,21 @@ export function ProviderJobView({
       {!isAssigned ? (
         <div className="rounded-2xl border-2 border-brand-200 bg-brand-50/50 p-5">
           <h2 className="text-[0.9375rem] font-semibold text-ink-900">
-            Yeh job aap ko offer hui hai
+            This job has been offered to you
           </h2>
           <p className="mt-1.5 text-sm text-ink-700">
-            Qubool karne par customer ka poora address aur phone number aap ko dikh jayega.
+            Once you accept, the customer’s full address and phone number become visible to you.
           </p>
           <div className="mt-4 flex flex-col gap-2 sm:flex-row">
             <Button
               variant="success"
               loading={busy === 'accept'}
-              onClick={() => transition('accept', 'Job qubool kar li')}
+              onClick={() => transition('accept', 'Job accepted')}
             >
-              Qubool karein
+              Accept
             </Button>
             <Button variant="outline" onClick={() => setDialog('decline')}>
-              Nahi kar sakta
+              Not allowed
             </Button>
           </div>
         </div>
@@ -128,11 +128,9 @@ export function ProviderJobView({
       {pendingQuote ? (
         <div className="rounded-2xl border border-warn-200 bg-warn-50 p-5">
           <h2 className="text-[0.9375rem] font-semibold text-warn-700">
-            Quote customer ke paas hai
+            The quote is with the customer
           </h2>
-          <p className="mt-1 text-sm text-ink-700">
-            Customer approve karega tab aage kaam ho sakega.
-          </p>
+          <p className="mt-1 text-sm text-ink-700">Work can continue once the customer approves.</p>
           <QuoteCard quote={pendingQuote} className="mt-3" />
         </div>
       ) : null}
@@ -140,13 +138,11 @@ export function ProviderJobView({
       {/* ------------------------------------------------------------- action */}
       {isAssigned && actions.length > 0 ? (
         <section className="rounded-2xl border border-ink-200 bg-white p-5">
-          <h2 className="text-[0.9375rem] font-semibold text-ink-900">Ab kya karna hai?</h2>
+          <h2 className="text-[0.9375rem] font-semibold text-ink-900">What to do next</h2>
           <div className="mt-3 flex flex-wrap gap-2">
             {canQuote ? (
               <Button onClick={() => setDialog('quote')}>
-                {booking.pricing.approvedTotalPaisa !== null
-                  ? 'Extra charges bhejein'
-                  : 'Quote bhejein'}
+                {booking.pricing.approvedTotalPaisa !== null ? 'Send extra charges' : 'Send quote'}
               </Button>
             ) : null}
 
@@ -154,42 +150,42 @@ export function ProviderJobView({
               <Button
                 variant="outline"
                 loading={busy === 'confirm_schedule'}
-                onClick={() => transition('confirm_schedule', 'Time confirm ho gaya')}
+                onClick={() => transition('confirm_schedule', 'Time confirmed')}
               >
-                Time confirm karein
+                Confirm time
               </Button>
             ) : null}
 
             {actions.some((action) => action.to === 'ON_THE_WAY') ? (
               <Button
                 loading={busy === 'on_the_way'}
-                onClick={() => transition('on_the_way', 'Customer ko bata diya')}
+                onClick={() => transition('on_the_way', 'Customer notified')}
               >
-                Raste mein hoon
+                I am on the way
               </Button>
             ) : null}
 
             {actions.some((action) => action.to === 'ARRIVED') ? (
               <Button
                 loading={busy === 'arrived'}
-                onClick={() => transition('arrived', 'Pohonchne ki ittila bhej di')}
+                onClick={() => transition('arrived', 'Arrival notification sent')}
               >
-                Pohonch gaya
+                Arrived
               </Button>
             ) : null}
 
             {actions.some((action) => action.to === 'IN_PROGRESS') ? (
               <Button
                 loading={busy === 'start'}
-                onClick={() => transition('start', 'Kaam shuru ho gaya')}
+                onClick={() => transition('start', 'Work started')}
               >
-                Kaam shuru karein
+                Start the work
               </Button>
             ) : null}
 
             {actions.some((action) => action.to === 'COMPLETED') ? (
               <Button variant="success" onClick={() => setDialog('complete')}>
-                Kaam complete karein
+                Complete the work
               </Button>
             ) : null}
 
@@ -210,7 +206,7 @@ export function ProviderJobView({
 
           {booking.pricing.approvedTotalPaisa === null && !canQuote ? (
             <p className="mt-3 text-xs text-ink-500">
-              Kaam complete karne se pehle customer ka approve kiya hua quote zaroori hai.
+              The customer’s approved quote is required before the work can be completed.
             </p>
           ) : null}
         </section>
@@ -219,10 +215,10 @@ export function ProviderJobView({
       {/* -------------------------------------------------------- job details */}
       <section className="rounded-2xl border border-ink-200 bg-white">
         <div className="border-b border-ink-200 px-5 py-4">
-          <h2 className="text-[0.9375rem] font-semibold text-ink-900">Job ki tafseel</h2>
+          <h2 className="text-[0.9375rem] font-semibold text-ink-900">Job details</h2>
         </div>
         <dl className="divide-y divide-ink-100">
-          <Row label="Masla">
+          <Row label="Problem">
             <p className="whitespace-pre-line">{booking.problemDescription}</p>
             {booking.customerNotes ? (
               <p className="mt-1.5 rounded-lg bg-warn-50 px-3 py-2 text-xs text-warn-700">
@@ -231,7 +227,7 @@ export function ProviderJobView({
             ) : null}
           </Row>
 
-          <Row label="Waqt">
+          <Row label="Time">
             {booking.scheduledFor ? (
               <>
                 {formatDateTime(booking.scheduledFor)}
@@ -240,7 +236,7 @@ export function ProviderJobView({
                 </span>
               </>
             ) : (
-              <span className="text-ink-500">Foran / tay nahi</span>
+              <span className="text-ink-500">Immediate / not set</span>
             )}
           </Row>
 
@@ -256,7 +252,7 @@ export function ProviderJobView({
                 </a>
               ) : (
                 <p className="mt-0.5 text-xs text-ink-500">
-                  {booking.customer.phone} — qubool karne par poora number milega
+                  {booking.customer.phone} — the full number appears once you accept
                 </p>
               )
             ) : null}
@@ -288,14 +284,14 @@ export function ProviderJobView({
               <>
                 <p className="font-medium">{booking.address.zone?.name ?? booking.address.city}</p>
                 <p className="mt-0.5 text-xs text-ink-500">
-                  Poora address job qubool karne ke baad dikhega.
+                  The full address appears once you accept the job.
                 </p>
               </>
             )}
           </Row>
 
           {booking.media.length > 0 ? (
-            <Row label="Tasveerein">
+            <Row label="Photos">
               <ul className="flex flex-wrap gap-2">
                 {booking.media.map((file) => (
                   <li key={file.id}>
@@ -332,7 +328,7 @@ export function ProviderJobView({
                 {JSON.stringify(booking.intakeSummary, null, 2)}
               </pre>
               <p className="mt-1 text-xs text-ink-500">
-                Customer ke bataye masle ka andaza — final diagnosis nahi.
+                An estimate based on what the customer described — not a final diagnosis.
               </p>
             </Row>
           ) : null}
@@ -342,7 +338,7 @@ export function ProviderJobView({
       {/* ------------------------------------------------------- money for me */}
       {booking.pricing.approvedTotalPaisa !== null ? (
         <section className="rounded-2xl border border-ink-200 bg-white p-5">
-          <h2 className="text-[0.9375rem] font-semibold text-ink-900">Paise ka hisaab</h2>
+          <h2 className="text-[0.9375rem] font-semibold text-ink-900">The money</h2>
           <dl className="mt-3 space-y-1.5 text-sm">
             <div className="flex justify-between gap-3">
               <dt className="text-ink-600">
@@ -365,7 +361,7 @@ export function ProviderJobView({
               </dd>
             </div>
             <div className="flex justify-between gap-3 border-t border-ink-200 pt-2">
-              <dt className="font-semibold text-ink-900">Aapki kamai</dt>
+              <dt className="font-semibold text-ink-900">Your earnings</dt>
               <dd className="text-lg font-bold text-brand-700">
                 {formatPaisa(
                   booking.pricing.providerEarningsPaisa ??
@@ -379,7 +375,8 @@ export function ProviderJobView({
           </dl>
           {booking.pricing.finalTotalPaisa === null ? (
             <p className="mt-2 text-xs text-ink-500">
-              Yeh andaza hai. Commission kaam mukammal hone ke waqt ke rate par freeze hota hai.
+              This is an estimate. Commission is frozen at the rate in force when the work is
+              completed.
             </p>
           ) : null}
         </section>
@@ -410,11 +407,11 @@ export function ProviderJobView({
 
           {booking.review.providerRatingOfCustomer ? (
             <p className="mt-3 border-t border-ink-100 pt-3 text-sm text-ink-600">
-              Aap ne customer ko {booking.review.providerRatingOfCustomer} star diye.
+              You gave this customer {booking.review.providerRatingOfCustomer} stars.
             </p>
           ) : booking.status === 'COMPLETED' ? (
             <Button variant="outline" size="sm" className="mt-3" onClick={() => setDialog('rate')}>
-              Customer ko rate karein
+              Rate the customer
             </Button>
           ) : null}
         </section>
@@ -422,11 +419,11 @@ export function ProviderJobView({
         <section className="rounded-2xl border border-ink-200 bg-white p-5">
           <h2 className="text-[0.9375rem] font-semibold text-ink-900">Feedback</h2>
           <p className="mt-1 text-sm text-ink-600">
-            Customer ne abhi review nahi diya. Aap customer ko rate kar sakte hain — yeh sirf ops
-            team dekhti hai.
+            The customer has not left a review yet. You can rate the customer — only the ops team
+            sees it.
           </p>
           <Button variant="outline" size="sm" className="mt-3" onClick={() => setDialog('rate')}>
-            Customer ko rate karein
+            Rate the customer
           </Button>
         </section>
       ) : null}
@@ -459,7 +456,7 @@ export function ProviderJobView({
           {reschedule ? (
             <div className="mb-4 flex flex-wrap items-center gap-3 rounded-xl border border-ink-200 bg-white px-4 py-3">
               <p className="flex-1 text-sm text-ink-600">
-                Is waqt nahi pohonch sakte? Customer ko bata kar time badal lein.
+                Cannot make it right now? Let the customer know and reschedule.
               </p>
               <RescheduleDialog
                 bookingId={booking.id}
@@ -533,11 +530,11 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
 // ------------------------------------------------------------------ dialogs
 
 const ITEM_KINDS: Array<{ value: QuoteItemKind; label: string }> = [
-  { value: 'INSPECTION', label: 'Muaina' },
-  { value: 'LABOUR', label: 'Mazdoori' },
+  { value: 'INSPECTION', label: 'Inspection' },
+  { value: 'LABOUR', label: 'Labour' },
   { value: 'PARTS', label: 'Parts' },
-  { value: 'TRAVEL', label: 'Aane jane ka kharcha' },
-  { value: 'OTHER', label: 'Deegar' },
+  { value: 'TRAVEL', label: 'Travel' },
+  { value: 'OTHER', label: 'Other' },
 ];
 
 /**
@@ -566,8 +563,8 @@ function QuoteDialog({
 }) {
   const { toast } = useToast();
   const [lines, setLines] = useState<QuoteLine[]>([
-    { kind: 'INSPECTION', label: 'Muaina', quantity: 1, rupees: '500' },
-    { kind: 'LABOUR', label: 'Mazdoori', quantity: 1, rupees: '' },
+    { kind: 'INSPECTION', label: 'Inspection', quantity: 1, rupees: '500' },
+    { kind: 'LABOUR', label: 'Labour', quantity: 1, rupees: '' },
   ]);
   const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
@@ -589,17 +586,17 @@ function QuoteDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      title={isAdditional ? 'Extra charges bhejein' : 'Quote bhejein'}
+      title={isAdditional ? 'Send extra charges' : 'Send quote'}
       description={
         isAdditional
-          ? 'Yeh customer ki alag approval maangega. Approve hone tak kaam complete nahi ho sakta.'
-          : 'Har cheez alag likhein — customer ko saaf dikhna chahiye ke woh kis cheez ke paise de raha hai.'
+          ? 'This asks the customer for separate approval. The job cannot be completed until they approve.'
+          : 'List each item separately — the customer should see clearly what they are paying for.'
       }
       size="lg"
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={loading}>
-            Band karein
+            Close
           </Button>
           <Button
             loading={loading}
@@ -616,12 +613,12 @@ function QuoteDialog({
                   })),
                   notes: notes.trim() || undefined,
                 });
-                toast({ tone: 'success', title: 'Quote customer ko bhej diya' });
+                toast({ tone: 'success', title: 'Quote sent to the customer' });
                 onDone();
               } catch (error) {
                 toast({
                   tone: 'error',
-                  title: 'Quote nahi gaya',
+                  title: 'Quote not sent',
                   description: error instanceof ApiError ? error.message : undefined,
                 });
               } finally {
@@ -629,7 +626,7 @@ function QuoteDialog({
               }
             }}
           >
-            Quote bhejein
+            Send quote
           </Button>
         </>
       }
@@ -640,7 +637,7 @@ function QuoteDialog({
             <li key={index} className="rounded-xl border border-ink-200 p-3">
               <div className="grid gap-3 sm:grid-cols-[9rem_1fr_5rem_7rem]">
                 <Select
-                  label="Qism"
+                  label="Type"
                   value={line.kind}
                   onChange={(event) =>
                     setLines((current) =>
@@ -659,7 +656,7 @@ function QuoteDialog({
                   ))}
                 </Select>
                 <TextInput
-                  label="Tafseel"
+                  label="Details"
                   value={line.label}
                   onChange={(event) =>
                     setLines((current) =>
@@ -668,10 +665,10 @@ function QuoteDialog({
                       ),
                     )
                   }
-                  placeholder="Misal: capacitor"
+                  placeholder="For example: capacitor"
                 />
                 <TextInput
-                  label="Tadad"
+                  label="Quantity"
                   type="number"
                   min={1}
                   value={String(line.quantity)}
@@ -706,7 +703,7 @@ function QuoteDialog({
                   onClick={() => setLines((current) => current.filter((_, i) => i !== index))}
                   className="mt-2 text-xs font-medium text-alert-600 hover:underline"
                 >
-                  Yeh line hatayein
+                  Remove this line
                 </button>
               ) : null}
             </li>
@@ -724,7 +721,7 @@ function QuoteDialog({
             ])
           }
         >
-          + Line add karein
+          + Add a line
         </Button>
 
         <Textarea
@@ -732,7 +729,7 @@ function QuoteDialog({
           rows={2}
           value={notes}
           onChange={(event) => setNotes(event.target.value)}
-          placeholder="Misal: parts ki warranty 3 mahine."
+          placeholder="For example: 3 months warranty on parts."
         />
 
         <div className="rounded-xl bg-ink-50 p-4">
@@ -743,12 +740,12 @@ function QuoteDialog({
             </div>
             {!isAdditional && emergencyFeePaisa > 0 ? (
               <div className="flex justify-between gap-3">
-                <dt className="text-ink-600">Emergency fee (pehle bataya gaya)</dt>
+                <dt className="text-ink-600">Emergency fee (quoted upfront)</dt>
                 <dd className="text-ink-700">{formatPaisa(emergencyFeePaisa)}</dd>
               </div>
             ) : null}
             <div className="flex justify-between gap-3 border-t border-ink-200 pt-1.5">
-              <dt className="font-semibold text-ink-900">Customer dega</dt>
+              <dt className="font-semibold text-ink-900">Customer pays</dt>
               <dd className="font-bold text-ink-950">{formatPaisa(customerTotal)}</dd>
             </div>
             <div className="flex justify-between gap-3">
@@ -756,7 +753,7 @@ function QuoteDialog({
               <dd className="text-ink-700">−{formatPaisa(earnings.commissionPaisa)}</dd>
             </div>
             <div className="flex justify-between gap-3">
-              <dt className="font-semibold text-ink-900">Aapki kamai</dt>
+              <dt className="font-semibold text-ink-900">Your earnings</dt>
               <dd className="font-bold text-brand-700">
                 {formatPaisa(earnings.providerEarningsPaisa)}
               </dd>
@@ -800,7 +797,7 @@ function CompleteDialog({
       } catch (error) {
         toast({
           tone: 'error',
-          title: `"${file.name}" upload nahi hui`,
+          title: `Could not upload “${file.name}”`,
           description: error instanceof ApiError ? error.message : undefined,
         });
       }
@@ -813,12 +810,12 @@ function CompleteDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      title="Kaam complete karein"
-      description="Complete karne par customer ko payment aur review ke liye kaha jayega."
+      title="Complete the work"
+      description="On completion the customer is asked for payment and a review."
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={loading}>
-            Band karein
+            Close
           </Button>
           <Button
             variant="success"
@@ -830,12 +827,12 @@ function CompleteDialog({
                   action: 'complete',
                   notes: notes.trim() || undefined,
                 });
-                toast({ tone: 'success', title: 'Kaam complete mark ho gaya' });
+                toast({ tone: 'success', title: 'Work marked complete' });
                 onDone();
               } catch (error) {
                 toast({
                   tone: 'error',
-                  title: 'Complete nahi ho saka',
+                  title: 'Could not complete',
                   description: error instanceof ApiError ? error.message : undefined,
                 });
               } finally {
@@ -843,7 +840,7 @@ function CompleteDialog({
               }
             }}
           >
-            Complete karein
+            Complete
           </Button>
         </>
       }
@@ -851,7 +848,7 @@ function CompleteDialog({
       <div className="space-y-4">
         <div>
           <p className="mb-1.5 text-sm font-medium text-ink-800">
-            Kaam ki tasveerein <span className="text-ink-400">(recommended)</span>
+            Photos of the work <span className="text-ink-400">(recommended)</span>
           </p>
           <input
             type="file"
@@ -862,23 +859,23 @@ function CompleteDialog({
             className="block w-full text-sm text-ink-600 file:mr-3 file:h-10 file:cursor-pointer file:rounded-xl file:border-0 file:bg-ink-900 file:px-4 file:text-sm file:font-semibold file:text-white hover:file:bg-ink-800 disabled:opacity-50"
           />
           <p className="mt-1.5 text-xs text-ink-500">
-            Completion photos dispute ki soorat mein aap ke haq mein sabooot banti hain.
+            Completion photos become evidence in your favour if there is a dispute.
           </p>
           {uploading ? (
             <p className="mt-1 text-sm text-ink-600" aria-live="polite">
-              Upload ho rahi hai...
+              Uploading...
             </p>
           ) : uploaded > 0 ? (
-            <p className="mt-1 text-sm text-brand-700">{uploaded} tasveer upload ho gayi</p>
+            <p className="mt-1 text-sm text-brand-700">{uploaded} photo(s) uploaded</p>
           ) : null}
         </div>
 
         <Textarea
-          label="Kaam ke notes (optional)"
+          label="Work notes (optional)"
           rows={3}
           value={notes}
           onChange={(event) => setNotes(event.target.value)}
-          placeholder="Kya kiya, kaunsa part badla, koi hidayat customer ke liye..."
+          placeholder="What you did, which part you replaced, any instructions for the customer..."
         />
       </div>
     </Dialog>
@@ -905,12 +902,12 @@ function RateCustomerDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      title="Customer ko rate karein"
-      description="Yeh rating sirf ops team dekhti hai — doosre customers ko nahi dikhti."
+      title="Rate the customer"
+      description="Only the ops team sees this rating — other customers do not."
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={loading}>
-            Band karein
+            Close
           </Button>
           <Button
             loading={loading}
@@ -922,12 +919,12 @@ function RateCustomerDialog({
                   rating,
                   comment: comment.trim() || undefined,
                 });
-                toast({ tone: 'success', title: 'Rating record ho gayi' });
+                toast({ tone: 'success', title: 'Rating recorded' });
                 onDone();
               } catch (error) {
                 toast({
                   tone: 'error',
-                  title: 'Rating nahi gayi',
+                  title: 'Rating not submitted',
                   description: error instanceof ApiError ? error.message : undefined,
                 });
               } finally {
@@ -935,7 +932,7 @@ function RateCustomerDialog({
               }
             }}
           >
-            Rating dein
+            Leave a rating
           </Button>
         </>
       }
@@ -943,7 +940,7 @@ function RateCustomerDialog({
       <div className="space-y-4">
         <RatingInput
           name="customerRating"
-          label="Customer ka rawayya kaisa tha?"
+          label="How was the customer to deal with?"
           value={rating}
           onChange={setRating}
         />
@@ -952,7 +949,7 @@ function RateCustomerDialog({
           rows={3}
           value={comment}
           onChange={(event) => setComment(event.target.value)}
-          placeholder="Misal: address theek tha, waqt par mila."
+          placeholder="For example: the address was correct, met on time."
         />
       </div>
     </Dialog>
@@ -978,11 +975,11 @@ function DeclineJobDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      title="Job decline karein?"
+      title="Decline this job?"
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={loading}>
-            Rehne dein
+            Leave it
           </Button>
           <Button
             variant="danger"
@@ -994,12 +991,12 @@ function DeclineJobDialog({
                   action: 'decline',
                   reason: reason.trim() || undefined,
                 });
-                toast({ tone: 'info', title: 'Job decline kar di' });
+                toast({ tone: 'info', title: 'Job declined' });
                 onDone();
               } catch (error) {
                 toast({
                   tone: 'error',
-                  title: 'Decline nahi ho saki',
+                  title: 'Could not decline',
                   description: error instanceof ApiError ? error.message : undefined,
                 });
               } finally {
@@ -1007,13 +1004,13 @@ function DeclineJobDialog({
               }
             }}
           >
-            Decline karein
+            Decline
           </Button>
         </>
       }
     >
       <Textarea
-        label="Wajah (optional)"
+        label="Reason (optional)"
         rows={3}
         value={reason}
         onChange={(event) => setReason(event.target.value)}

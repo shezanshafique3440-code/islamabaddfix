@@ -49,7 +49,7 @@ export function StepDetails({
     if (!fileList || fileList.length === 0) return;
     const remaining = MAX_FILES - media.length;
     if (remaining <= 0) {
-      toast({ tone: 'error', title: `Zyada se zyada ${MAX_FILES} files.` });
+      toast({ tone: 'error', title: `Up to ${MAX_FILES} files.` });
       return;
     }
 
@@ -66,7 +66,7 @@ export function StepDetails({
       } catch (error) {
         toast({
           tone: 'error',
-          title: `"${file.name}" upload nahi hui`,
+          title: `Could not upload “${file.name}”`,
           description: error instanceof ApiError ? error.message : undefined,
         });
       }
@@ -89,53 +89,55 @@ export function StepDetails({
 
   return (
     <StepShell
-      title="Thori si tafseel"
-      description="Jitna tafseel se batayenge, technician utna hi tayyar aayega."
+      title="A little detail"
+      description="The more detail you give, the better prepared the technician arrives."
     >
       <div className="space-y-5">
         {service ? (
           <div className="flex flex-wrap items-center gap-2 rounded-xl bg-ink-50 px-3.5 py-2.5">
             <span className="text-sm font-medium text-ink-900">{service.name}</span>
             <span className="text-xs text-ink-500">{service.categoryName}</span>
-            {service.requiresInspection ? <Badge tone="neutral">Muaina ke baad quote</Badge> : null}
+            {service.requiresInspection ? (
+              <Badge tone="neutral">Quote after inspection</Badge>
+            ) : null}
           </div>
         ) : null}
 
         <div>
           <label htmlFor="problem-detail" className="mb-1.5 block text-sm font-medium text-ink-800">
-            Masla tafseel se
+            The problem in detail
           </label>
           <textarea
             id="problem-detail"
             value={draft.problem}
             onChange={(event) => patch({ problem: event.target.value })}
             rows={4}
-            placeholder="Kab se masla hai? Kya awaz aati hai? Pehle kabhi repair hui?"
+            placeholder="How long has this been happening? What sound does it make? Has it been repaired before?"
             className="w-full rounded-xl border border-ink-300 bg-white px-3.5 py-2.5 text-[0.9375rem] leading-relaxed text-ink-900 placeholder:text-ink-400 hover:border-ink-400 focus:border-brand-600"
           />
           <p className="mt-1 text-xs text-ink-500">
             {draft.problem.trim().length < 10
-              ? 'Kam az kam 10 characters likhein.'
+              ? 'Enter at least 10 characters.'
               : `${draft.problem.trim().length} characters`}
           </p>
         </div>
 
         <div>
           <label htmlFor="notes" className="mb-1.5 block text-sm font-medium text-ink-800">
-            Technician ke liye koi hidayat? <span className="text-ink-400">(optional)</span>
+            Any instructions for the technician? <span className="text-ink-400">(optional)</span>
           </label>
           <input
             id="notes"
             value={draft.customerNotes}
             onChange={(event) => patch({ customerNotes: event.target.value })}
-            placeholder="Misal: gate par ghanti kharab hai, phone kar lein."
+            placeholder="For example: the doorbell at the gate is broken, please call."
             className="h-11 w-full rounded-xl border border-ink-300 bg-white px-3.5 text-[0.9375rem] text-ink-900 placeholder:text-ink-400 hover:border-ink-400 focus:border-brand-600"
           />
         </div>
 
         <div>
           <p className="mb-1.5 text-sm font-medium text-ink-800">
-            Tasveer ya chhoti video <span className="text-ink-400">(optional)</span>
+            A photo or short video <span className="text-ink-400">(optional)</span>
           </p>
 
           {isSignedIn ? (
@@ -150,22 +152,22 @@ export function StepDetails({
                 className="block w-full text-sm text-ink-600 file:mr-3 file:h-10 file:cursor-pointer file:rounded-xl file:border-0 file:bg-ink-900 file:px-4 file:text-sm file:font-semibold file:text-white hover:file:bg-ink-800 disabled:opacity-50"
               />
               <p className="mt-1.5 text-xs text-ink-500">
-                Tasveer 8 MB tak, video 40 MB tak. Zyada se zyada {MAX_FILES} files. Sirf aap,
-                assigned technician aur support team inhe dekh sakte hain.
+                Photos up to 8 MB, videos up to 40 MB. Up to {MAX_FILES} files. Only you, the
+                assigned technician and the support team can see them.
               </p>
             </>
           ) : (
             <div className="rounded-xl border border-info-100 bg-info-50 px-4 py-3">
               <p className="text-sm text-info-700">
-                Tasveer bhejne ke liye login zaroori hai — files aapke account se juri hoti hain.
-                Aap login ke baad wapis is step par aa sakte hain.
+                You need to sign in to send a photo — files are tied to your account. You can come
+                back to this step after signing in.
               </p>
             </div>
           )}
 
           {uploading ? (
             <p className="mt-2 text-sm text-ink-600" aria-live="polite">
-              Upload ho rahi hai...
+              Uploading...
             </p>
           ) : null}
 

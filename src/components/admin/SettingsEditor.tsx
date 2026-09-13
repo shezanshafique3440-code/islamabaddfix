@@ -70,7 +70,7 @@ export function SettingsEditor({
     setSaving(entry.key);
     try {
       await api.patch('/api/admin/settings', { key: entry.key, value: rawValue });
-      toast({ tone: 'success', title: `${entry.label} update ho gaya` });
+      toast({ tone: 'success', title: `${entry.label} updated` });
       setDrafts((current) => {
         const next = { ...current };
         delete next[entry.key];
@@ -80,7 +80,7 @@ export function SettingsEditor({
     } catch (error) {
       toast({
         tone: 'error',
-        title: 'Save nahi hua',
+        title: 'Not saved',
         description: error instanceof ApiError ? error.message : undefined,
       });
     } finally {
@@ -92,9 +92,7 @@ export function SettingsEditor({
     <div className="space-y-5">
       {!canWrite ? (
         <div className="rounded-xl border border-info-100 bg-info-50 px-4 py-3">
-          <p className="text-sm text-info-700">
-            Aap yeh settings dekh sakte hain lekin badal nahi sakte.
-          </p>
+          <p className="text-sm text-info-700">You can see these settings but not change them.</p>
         </div>
       ) : null}
 
@@ -227,7 +225,7 @@ export function SettingsEditor({
                                   try {
                                     save(entry, JSON.parse(draft));
                                   } catch {
-                                    toast({ tone: 'error', title: 'Valid JSON likhein' });
+                                    toast({ tone: 'error', title: 'Enter valid JSON' });
                                   }
                                 }}
                               >
@@ -248,7 +246,7 @@ export function SettingsEditor({
                     ) : null}
                     {isFinancial && !canWriteFinancial ? (
                       <p className="mt-1.5 text-xs text-warn-700">
-                        Yeh setting sirf super admin badal sakta hai.
+                        Only a super admin can change this setting.
                       </p>
                     ) : null}
                   </li>
@@ -259,7 +257,7 @@ export function SettingsEditor({
       ))}
 
       <p className="text-xs text-ink-500">
-        Har tabdeeli audit log mein purani aur nayi value ke saath darj hoti hai.
+        Every change is recorded in the audit log with the old and new value.
       </p>
     </div>
   );

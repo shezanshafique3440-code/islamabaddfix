@@ -68,7 +68,7 @@ export default async function AdminProvidersPage({
         <div>
           <h1 className="text-display-sm text-ink-950">Providers</h1>
           <p className="mt-1 text-sm text-ink-600">
-            Approve karne se pehle document, services aur areas check karein.
+            Check the documents, services and areas before approving.
           </p>
         </div>
         <form className="flex gap-2" action="/admin/providers">
@@ -77,14 +77,14 @@ export default async function AdminProvidersPage({
             name="search"
             defaultValue={query.search ?? ''}
             placeholder="Naam, email ya phone"
-            aria-label="Providers dhoondein"
+            aria-label="Search providers"
             className="h-10 rounded-xl border border-ink-300 px-3.5 text-sm"
           />
           <button
             type="submit"
             className="h-10 rounded-xl bg-ink-900 px-4 text-sm font-semibold text-white hover:bg-ink-800"
           >
-            Dhoondein
+            Search
           </button>
         </form>
       </header>
@@ -128,7 +128,7 @@ export default async function AdminProvidersPage({
                         {provider.businessName}
                       </span>
                       {provider.isDemo ? <DemoBadge /> : null}
-                      {incomplete ? <Badge tone="warn">Profile adhoori</Badge> : null}
+                      {incomplete ? <Badge tone="warn">Profile incomplete</Badge> : null}
                     </div>
                     <p className="mt-0.5 text-sm text-ink-600">
                       {provider.user.fullName} · {provider.user.email} · {provider.contactPhone}
@@ -159,8 +159,8 @@ export default async function AdminProvidersPage({
       ) : (
         <EmptyState
           className="mt-5"
-          title="Is filter par koi provider nahi"
-          description="Doosra status chunein ya search clear karein."
+          title="No providers match this filter"
+          description="Pick a different status or clear the search."
         />
       )}
     </div>

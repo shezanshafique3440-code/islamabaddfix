@@ -166,19 +166,19 @@ export function BookingWizard({
     <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-10">
       <div className="mb-6">
         <h1 className="text-display-sm text-ink-950">
-          {draft.isEmergency ? 'Emergency booking' : 'Service book karein'}
+          {draft.isEmergency ? 'Emergency booking' : 'Book a service'}
         </h1>
         <p className="mt-1.5 text-sm text-ink-600">
           {draft.isEmergency
-            ? 'Emergency technicians dhoond rahe hain. Charges confirm karne se pehle dikhaye jayenge.'
-            : 'Chand sawal, phir aap ka technician tayyar.'}
+            ? 'Looking for emergency technicians. Charges are shown before you confirm.'
+            : 'A few questions, then your technician is lined up.'}
         </p>
         {prefill.via ? (
           <p className="mt-1 text-xs text-ink-500">
             {prefill.via === 'whatsapp'
-              ? 'WhatsApp se aayi maloomat pehle se bhar di gayi hai.'
+              ? 'Details from WhatsApp have been filled in for you.'
               : prefill.via === 'voice'
-                ? 'Call se aayi maloomat pehle se bhar di gayi hai.'
+                ? 'Details from the call have been filled in for you.'
                 : null}
           </p>
         ) : null}
@@ -280,19 +280,19 @@ export function BookingWizard({
       {!isSignedIn ? (
         <div className="mt-8 rounded-xl border border-info-100 bg-info-50 px-4 py-3">
           <p className="text-sm text-info-700">
-            Booking confirm karne ke liye login zaroori hai — aap yahan tak ki maloomat bhar sakte
-            hain, phir aakhir mein login karein.{' '}
+            You need to sign in to confirm a booking — you can fill in everything up to this point
+            and sign in at the end.{' '}
             <Link href="/login?next=/book" className="font-semibold underline">
-              Ab login karein
+              Sign in now
             </Link>
           </p>
         </div>
       ) : null}
 
       <p className="mt-8 text-center text-xs text-ink-500">
-        Madad chahiye?{' '}
+        Need help?{' '}
         <ButtonLink href="/contact" variant="ghost" size="sm" className="h-auto px-1 py-0 text-xs">
-          Support se rabta karein
+          Contact support
         </ButtonLink>
       </p>
     </div>

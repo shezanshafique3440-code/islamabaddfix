@@ -13,7 +13,7 @@ import { checkRateLimit, RATE_LIMITS } from '@/lib/auth/rate-limit';
 export async function POST(request: Request) {
   if (!integrations.voice.inboundConfigured) {
     return NextResponse.json(
-      { error: 'Voice agent is deployment par configured nahi hai.' },
+      { error: 'The voice agent is not configured on this deployment.' },
       { status: 503 },
     );
   }
@@ -63,7 +63,7 @@ export async function POST(request: Request) {
       console.error('[webhook:voice] tool failed', { name, error });
       results.push({
         toolCallId: call.id,
-        result: { error: 'Yeh maloomat is waqt hasil nahi ho saki.' },
+        result: { error: 'This information could not be retrieved right now.' },
       });
     }
   }

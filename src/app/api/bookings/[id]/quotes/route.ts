@@ -14,11 +14,11 @@ async function assertParty(bookingId: string, ctx: Awaited<ReturnType<typeof req
     where: { id: bookingId },
     select: { id: true, customerId: true, providerId: true },
   });
-  if (!booking) throw new AppError('NOT_FOUND', 'Booking nahi mili.');
+  if (!booking) throw new AppError('NOT_FOUND', 'Booking not found.');
   const isCustomer = booking.customerId === ctx.user.id;
   const isProvider = ctx.providerId !== undefined && booking.providerId === ctx.providerId;
   if (!isCustomer && !isProvider && !isStaff(ctx.role)) {
-    throw new AppError('NOT_FOUND', 'Booking nahi mili.');
+    throw new AppError('NOT_FOUND', 'Booking not found.');
   }
   return booking;
 }
@@ -39,7 +39,7 @@ export const POST = route(async (request, { params }: Params) => {
   const booking = await assertParty(id, ctx);
 
   if (booking.customerId !== ctx.user.id) {
-    throw new AppError('FORBIDDEN', 'Quote sirf customer approve ya reject kar sakta hai.');
+    throw new AppError('FORBIDDEN', 'Only the customer can approve or reject a quote.');
   }
 
   const input = await parseJson(

@@ -320,7 +320,10 @@ export async function submitGuaranteeClaim(params: {
 }): Promise<GuaranteeClaim> {
   const enabled = await getSetting('guarantee.enabled');
   if (!enabled) {
-    throw new AppError('GUARANTEE_NOT_ELIGIBLE', 'The guarantee programme is switched off right now.');
+    throw new AppError(
+      'GUARANTEE_NOT_ELIGIBLE',
+      'The guarantee programme is switched off right now.',
+    );
   }
 
   const booking = await prisma.booking.findUnique({
@@ -469,12 +472,11 @@ export async function decideGuaranteeClaim(params: {
   return updated;
 }
 
-export const GUARANTEE_STATUS_LABELS: Record<GuaranteeClaim['status'], string> =
-  {
-    SUBMITTED: 'Submitted',
-    UNDER_REVIEW: 'Under review',
-    APPROVED: 'Approved',
-    REVISIT_SCHEDULED: 'Re-visit scheduled',
-    RESOLVED: 'Resolved',
-    REJECTED: 'Rejected',
-  };
+export const GUARANTEE_STATUS_LABELS: Record<GuaranteeClaim['status'], string> = {
+  SUBMITTED: 'Submitted',
+  UNDER_REVIEW: 'Under review',
+  APPROVED: 'Approved',
+  REVISIT_SCHEDULED: 'Re-visit scheduled',
+  RESOLVED: 'Resolved',
+  REJECTED: 'Rejected',
+};

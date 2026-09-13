@@ -32,9 +32,7 @@ async function blockers(userId: string): Promise<string[]> {
     },
   });
   if (liveBookings > 0) {
-    reasons.push(
-      `${liveBookings} booking(s) are still under way. Complete or cancel them first.`,
-    );
+    reasons.push(`${liveBookings} booking(s) are still under way. Complete or cancel them first.`);
   }
 
   const unpaid = await prisma.booking.count({

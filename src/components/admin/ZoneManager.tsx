@@ -41,16 +41,16 @@ export function ZoneManager({ zones }: { zones: ZoneRow[] }) {
 
   return (
     <div>
-      <Button onClick={() => setEditing('new')}>+ Naya area</Button>
+      <Button onClick={() => setEditing('new')}>+ New area</Button>
 
       {uncovered.length > 0 ? (
         <div className="mt-4 rounded-xl border border-warn-200 bg-warn-50 p-4">
           <p className="text-sm font-semibold text-warn-700">
-            {uncovered.length} active area(s) mein koi provider nahi
+            No provider in {uncovered.length} active area(s)
           </p>
           <p className="mt-1 text-sm text-ink-700">
-            {uncovered.map((zone) => zone.name).join(', ')} — in areas ki bookings automatic match
-            nahi hongi aur manual assignment ke liye queue mein aayengi.
+            {uncovered.map((zone) => zone.name).join(', ')} — bookings in these areas will not match
+            automatically and will queue for manual assignment.
           </p>
         </div>
       ) : null}
@@ -90,7 +90,7 @@ export function ZoneManager({ zones }: { zones: ZoneRow[] }) {
                 <Td className="text-xs text-ink-500">
                   {zone.latitude !== null && zone.longitude !== null
                     ? `${zone.latitude.toFixed(3)}, ${zone.longitude.toFixed(3)}`
-                    : 'Set nahi'}
+                    : 'Not set'}
                 </Td>
                 <Td>
                   <Badge tone={zone.isActive ? 'success' : 'neutral'}>
@@ -129,22 +129,22 @@ export function ZoneManager({ zones }: { zones: ZoneRow[] }) {
       <ConfirmDialog
         open={deactivating !== null}
         onClose={() => setDeactivating(null)}
-        title={`"${deactivating?.name}" deactivate karein?`}
-        description="Naye bookings ke liye yeh area nahi dikhega. Mojooda addresses aur bookings barqarar rahengi — is liye delete nahi, deactivate hota hai."
-        confirmLabel="Deactivate karein"
+        title={`Deactivate “${deactivating?.name}”?`}
+        description="This area will not appear for new bookings. Existing addresses and bookings stay intact — which is why it is deactivated, not deleted."
+        confirmLabel="Deactivate"
         loading={busy}
         onConfirm={async () => {
           if (!deactivating) return;
           setBusy(true);
           try {
             await api.delete(`/api/admin/catalogue/zones/${deactivating.id}`);
-            toast({ tone: 'success', title: 'Area deactivate ho gaya' });
+            toast({ tone: 'success', title: 'Area deactivated' });
             setDeactivating(null);
             router.refresh();
           } catch (error) {
             toast({
               tone: 'error',
-              title: 'Deactivate nahi hua',
+              title: 'Not deactivated',
               description: error instanceof ApiError ? error.message : undefined,
             });
           } finally {
@@ -184,11 +184,11 @@ function ZoneDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      title={zone ? 'Area edit karein' : 'Naya service area'}
+      title={zone ? 'Edit area' : 'New service area'}
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={loading}>
-            Band karein
+            Close
           </Button>
           <Button
             loading={loading}
@@ -207,7 +207,7 @@ function ZoneDialog({
               try {
                 if (zone) await api.patch(`/api/admin/catalogue/zones/${zone.id}`, payload);
                 else await api.post('/api/admin/catalogue/zones', payload);
-                toast({ tone: 'success', title: 'Save ho gaya' });
+                toast({ tone: 'success', title: 'Saved' });
                 onDone();
               } catch (error) {
                 if (error instanceof ApiError) {
@@ -219,7 +219,7 @@ function ZoneDialog({
               }
             }}
           >
-            Save karein
+            Save
           </Button>
         </>
       }
@@ -258,8 +258,8 @@ function ZoneDialog({
           />
         </div>
         <p className="rounded-xl bg-ink-50 px-3.5 py-2.5 text-xs leading-relaxed text-ink-600">
-          Centroid optional hai. Jab customer GPS pin na de, matching isi se faasla ka andaza lagati
-          hai — is liye ise set karna matching behtar banata hai.
+          The centroid is optional. When a customer does not drop a GPS pin, matching uses it to
+          estimate distance — so setting it makes matching better.
         </p>
         <TextInput
           label="Sort order"
@@ -269,7 +269,7 @@ function ZoneDialog({
           onChange={(event) => setForm((f) => ({ ...f, sortOrder: event.target.value }))}
         />
         <Checkbox
-          label="Active (booking ke liye available)"
+          label="Active (available for booking)"
           checked={form.isActive}
           onChange={(event) => setForm((f) => ({ ...f, isActive: event.target.checked }))}
         />

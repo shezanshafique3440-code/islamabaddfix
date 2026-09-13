@@ -16,14 +16,14 @@ interface Preferences {
 }
 
 const CHANNELS: Array<{ key: keyof Preferences; label: string; hint: string }> = [
-  { key: 'email', label: 'Email', hint: 'Booking confirm, quote aur receipt.' },
-  { key: 'sms', label: 'SMS', hint: 'Technician ke aane se pehle ittila.' },
-  { key: 'whatsapp', label: 'WhatsApp', hint: 'Wohi updates WhatsApp par.' },
+  { key: 'email', label: 'Email', hint: 'Booking confirmations, quotes and receipts.' },
+  { key: 'sms', label: 'SMS', hint: 'Notice before the technician arrives.' },
+  { key: 'whatsapp', label: 'WhatsApp', hint: 'The same updates on WhatsApp.' },
   { key: 'push', label: 'Push', hint: 'Browser ya app notification.' },
   {
     key: 'marketing',
-    label: 'Offers aur naye services',
-    hint: 'Sirf tab jab aap khud on karein.',
+    label: 'Offers and new services',
+    hint: 'Only when you turn it on yourself.',
   },
 ];
 
@@ -45,7 +45,7 @@ export function NotificationPreferences({ initial }: { initial: Preferences }) {
       setPrefs(previous);
       toast({
         tone: 'error',
-        title: caught instanceof ApiError ? caught.message : 'Setting save nahi hui.',
+        title: caught instanceof ApiError ? caught.message : 'The setting was not saved.',
       });
     } finally {
       setSaving(null);
@@ -69,8 +69,8 @@ export function NotificationPreferences({ initial }: { initial: Preferences }) {
         />
       ))}
       <p className="border-t border-ink-100 pt-3 text-xs leading-relaxed text-ink-500">
-        Booking ki zaroori ittila hamesha app ke andar milti rahegi — woh band nahi hoti. Password
-        aur security ke messages bhi hamesha bheje jate hain.
+        Essential booking notices always stay on inside the app — they cannot be turned off.
+        Password and security messages are always sent too.
       </p>
     </div>
   );
@@ -91,10 +91,10 @@ export function AccountControls({ blockers }: { blockers: string[] }) {
     setLoading(true);
     try {
       await api.post('/api/account/close', { password, reason: reason.trim() || undefined });
-      toast({ tone: 'success', title: 'Account band kar diya gaya' });
+      toast({ tone: 'success', title: 'Account closed' });
       window.location.href = '/';
     } catch (caught) {
-      setError(caught instanceof ApiError ? caught.message : 'Account band nahi ho saka.');
+      setError(caught instanceof ApiError ? caught.message : 'The account could not be closed.');
       setLoading(false);
     }
   }
@@ -102,30 +102,30 @@ export function AccountControls({ blockers }: { blockers: string[] }) {
   return (
     <div className="space-y-5">
       <div>
-        <h3 className="text-sm font-semibold text-ink-900">Apna data download karein</h3>
+        <h3 className="text-sm font-semibold text-ink-900">Download your data</h3>
         <p className="mt-1 text-sm leading-relaxed text-ink-600">
-          Aap ki maloomat, bookings, quotes, payments aur reviews ek JSON file mein.
+          Your details, bookings, quotes, payments and reviews, in one JSON file.
         </p>
         {/* A plain link: the server sends it as a download, so no script needed. */}
         <a
           href="/api/account/export"
           className="mt-2 inline-flex h-9 items-center rounded-xl border border-ink-300 px-3.5 text-sm font-medium text-ink-800 hover:bg-ink-50"
         >
-          Download karein
+          Download
         </a>
       </div>
 
       <div className="border-t border-ink-100 pt-5">
-        <h3 className="text-sm font-semibold text-ink-900">Account band karein</h3>
+        <h3 className="text-sm font-semibold text-ink-900">Close account</h3>
         <p className="mt-1 text-sm leading-relaxed text-ink-600">
-          Aapka naam, email, phone, addresses aur tasveerein hata di jayengi. Booking aur payment ka
-          record accounting ki zaroorat aur doosri party ke haq ke tehat rakha jata hai — us par aap
-          ka naam nahi rahega.
+          Your name, email, phone, addresses and photos are removed. Booking and payment records are
+          kept to meet accounting requirements and the other party’s rights — but your name is no
+          longer on them.
         </p>
 
         {blockers.length > 0 ? (
           <div className="mt-3 rounded-xl border border-warn-200 bg-warn-50 px-4 py-3">
-            <p className="text-sm font-semibold text-warn-700">Abhi band nahi kiya ja sakta</p>
+            <p className="text-sm font-semibold text-warn-700">Cannot be closed yet</p>
             <ul className="mt-1.5 list-inside list-disc space-y-0.5 text-sm text-warn-700/90">
               {blockers.map((blocker) => (
                 <li key={blocker}>{blocker}</li>
@@ -134,7 +134,7 @@ export function AccountControls({ blockers }: { blockers: string[] }) {
           </div>
         ) : (
           <Button variant="outline" className="mt-3" onClick={() => setOpen(true)}>
-            Account band karein
+            Close account
           </Button>
         )}
       </div>
@@ -142,8 +142,8 @@ export function AccountControls({ blockers }: { blockers: string[] }) {
       <Dialog
         open={open}
         onClose={() => setOpen(false)}
-        title="Account band karein"
-        description="Yeh wapis nahi ho sakta. Tasdeeq ke liye apna password likhein."
+        title="Close account"
+        description="This cannot be undone. Enter your password to confirm."
       >
         <form onSubmit={close} className="space-y-4">
           {error ? (
@@ -161,19 +161,19 @@ export function AccountControls({ blockers }: { blockers: string[] }) {
             required
           />
           <Textarea
-            label="Wajah (optional)"
+            label="Reason (optional)"
             value={reason}
             onChange={(event) => setReason(event.target.value.slice(0, 500))}
             rows={2}
-            hint="Isse hum behtar ho sakte hain. Likhna zaroori nahi."
+            hint="This helps us improve. Optional."
           />
 
           <div className="flex justify-end gap-2">
             <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
-              Rehne dein
+              Leave it
             </Button>
             <Button type="submit" variant="danger" loading={loading} disabled={!password}>
-              Hamesha ke liye band karein
+              Close permanently
             </Button>
           </div>
         </form>

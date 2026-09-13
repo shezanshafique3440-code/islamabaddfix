@@ -39,7 +39,7 @@ export const GET = route(async (_request, { params }: Params) => {
       },
     },
   });
-  if (!payout) throw new AppError('NOT_FOUND', 'Payout nahi mila.');
+  if (!payout) throw new AppError('NOT_FOUND', 'Payout not found.');
   return ok(payout);
 });
 
@@ -58,9 +58,9 @@ export const POST = route(async (request, { params }: Params) => {
     where: { id },
     select: { id: true, status: true, netPaisa: true, provider: { select: { userId: true } } },
   });
-  if (!existing) throw new AppError('NOT_FOUND', 'Payout nahi mila.');
+  if (!existing) throw new AppError('NOT_FOUND', 'Payout not found.');
   if (existing.status === 'PAID') {
-    throw new AppError('CONFLICT', 'Yeh payout pehle se paid hai.');
+    throw new AppError('CONFLICT', 'This payout has already been paid.');
   }
 
   const payout = await prisma.payout.update({
@@ -85,8 +85,8 @@ export const POST = route(async (request, { params }: Params) => {
   await notify({
     event: NOTIFICATION_EVENTS.PAYMENT_RECORDED,
     userId: existing.provider.userId,
-    title: 'Payout bhej diya gaya',
-    body: `${formatPaisa(payout.netPaisa)} ka payout process ho gaya hai.${
+    title: 'Payout sent',
+    body: `A payout of ${formatPaisa(payout.netPaisa)} has been processed.${
       input.reference ? ` Reference: ${input.reference}` : ''
     }`,
     href: '/provider/earnings',

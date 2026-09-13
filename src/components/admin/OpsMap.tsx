@@ -95,7 +95,7 @@ export function OpsMap({
       {!mapsConfigured ? (
         <NotConfiguredNotice
           feature="Map tiles"
-          detail="MAPS_PROVIDER aur MAPS_API_KEY set nahi hain, is liye tile map available nahi. Neeche wohi operational data area ke hisaab se dikhaya ja raha hai — dispatch ke faislay isi par hote hain."
+          detail="MAPS_PROVIDER and MAPS_API_KEY are not set, so the tile map is unavailable. The same operational data is shown below by area — dispatch decisions are made on this."
         />
       ) : null}
 
@@ -130,7 +130,7 @@ export function OpsMap({
         ))}
 
         <span className="ml-auto text-xs text-ink-500">
-          {liveSharing} provider live location share kar rahe hain
+          {liveSharing} provider(s) sharing live location
         </span>
       </div>
 
@@ -160,7 +160,7 @@ export function OpsMap({
 
                 {uncovered ? (
                   <p className="mt-2 rounded-lg bg-alert-50 px-2.5 py-1.5 text-xs font-medium text-alert-700">
-                    Is area mein koi provider nahi — manual assignment darkar hai.
+                    No provider in this area — manual assignment required.
                   </p>
                 ) : null}
 
@@ -189,7 +189,7 @@ export function OpsMap({
                               : ''}
                           </p>
                           <p className="text-[0.6875rem] text-ink-500">
-                            {booking.providerName ?? 'Technician assign nahi hua'}
+                            {booking.providerName ?? 'No technician assigned'}
                           </p>
                         </Link>
                       </li>
@@ -199,7 +199,7 @@ export function OpsMap({
                     ) : null}
                   </ul>
                 ) : (
-                  <p className="mt-3 text-xs text-ink-500">Is area mein koi active booking nahi.</p>
+                  <p className="mt-3 text-xs text-ink-500">No active bookings in this area.</p>
                 )}
 
                 {entry.providers.length > 0 ? (
@@ -237,7 +237,7 @@ export function OpsMap({
         </div>
       ) : (
         <p className="rounded-2xl border border-dashed border-ink-200 px-6 py-12 text-center text-sm text-ink-500">
-          Is waqt koi active booking ya provider coverage nahi.
+          No active bookings or provider coverage right now.
         </p>
       )}
 
@@ -250,15 +250,15 @@ export function OpsMap({
             <LocationDot status="live" /> Live (30 min ke andar ping)
           </li>
           <li className="flex items-center gap-1.5">
-            <LocationDot status="stale" /> Purani ping — bharosa na karein
+            <LocationDot status="stale" /> Stale ping — do not rely on it
           </li>
           <li className="flex items-center gap-1.5">
-            <LocationDot status="sharing_off" /> Provider ne sharing off rakhi hai
+            <LocationDot status="sharing_off" /> Provider has sharing turned off
           </li>
         </ul>
         <p className="mt-2 text-xs leading-relaxed text-ink-500">
-          Provider ki location sirf unki ijazat se record hoti hai aur 24 ghante baad khud mit jati
-          hai. Customer ka exact pata is screen par kabhi nahi aata.
+          A provider’s location is recorded only with their permission and is erased automatically
+          after 24 hours. A customer’s exact address never appears on this screen.
         </p>
       </div>
     </div>

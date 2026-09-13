@@ -11,10 +11,10 @@ import { formatDateTime } from '@/lib/utils';
 
 const OUTCOMES = [
   { value: 'UNDER_REVIEW', label: 'Under review' },
-  { value: 'APPROVED', label: 'Manzoor — re-visit ka haq hai' },
+  { value: 'APPROVED', label: 'Approved — entitled to a re-visit' },
   { value: 'REVISIT_SCHEDULED', label: 'Re-visit ka time set' },
-  { value: 'RESOLVED', label: 'Hal ho gaya' },
-  { value: 'REJECTED', label: 'Manzoor nahi' },
+  { value: 'RESOLVED', label: 'Resolved' },
+  { value: 'REJECTED', label: 'Not approved' },
 ] as const;
 
 /**
@@ -49,7 +49,7 @@ export function GuaranteeDecisionPanel({
   return (
     <>
       <section className="rounded-2xl border border-ink-200 bg-white p-5">
-        <h2 className="text-[0.9375rem] font-semibold text-ink-900">Faisla</h2>
+        <h2 className="text-[0.9375rem] font-semibold text-ink-900">Decision</h2>
 
         {reviewNotes ? (
           <p className="mt-2 rounded-xl bg-ink-50 px-3.5 py-2.5 text-sm text-ink-700">
@@ -59,7 +59,7 @@ export function GuaranteeDecisionPanel({
 
         <dl className="mt-3 space-y-1.5 text-sm">
           <div className="flex justify-between gap-3">
-            <dt className="text-ink-500">Mojooda status</dt>
+            <dt className="text-ink-500">Current status</dt>
             <dd className="text-ink-900">{status}</dd>
           </div>
           {revisitScheduledFor ? (
@@ -70,26 +70,26 @@ export function GuaranteeDecisionPanel({
           ) : null}
           {providerResponsible !== null ? (
             <div className="flex justify-between gap-3">
-              <dt className="text-ink-500">Kharcha kis par</dt>
+              <dt className="text-ink-500">Who pays</dt>
               <dd className="text-ink-900">{providerResponsible ? 'Provider' : 'Platform'}</dd>
             </div>
           ) : null}
         </dl>
 
         <Button className="mt-4" onClick={() => setOpen(true)}>
-          Faisla update karein
+          Update decision
         </Button>
       </section>
 
       <Dialog
         open={open}
         onClose={() => setOpen(false)}
-        title="Guarantee claim ka faisla"
-        description="Faisla customer aur provider dono ko bheja jayega aur audit log mein darj hoga."
+        title="Guarantee claim decision"
+        description="The decision is sent to both the customer and the provider and recorded in the audit log."
         footer={
           <>
             <Button variant="outline" onClick={() => setOpen(false)} disabled={loading}>
-              Band karein
+              Close
             </Button>
             <Button
               loading={loading}
@@ -108,13 +108,13 @@ export function GuaranteeDecisionPanel({
                       : {}),
                     providerResponsible: providerPays,
                   });
-                  toast({ tone: 'success', title: 'Faisla record ho gaya' });
+                  toast({ tone: 'success', title: 'Decision recorded' });
                   setOpen(false);
                   router.refresh();
                 } catch (error) {
                   toast({
                     tone: 'error',
-                    title: 'Faisla record nahi hua',
+                    title: 'Decision not recorded',
                     description: error instanceof ApiError ? error.message : undefined,
                   });
                 } finally {
@@ -122,14 +122,14 @@ export function GuaranteeDecisionPanel({
                 }
               }}
             >
-              Save karein
+              Save
             </Button>
           </>
         }
       >
         <div className="space-y-4">
           <Select
-            label="Faisla"
+            label="Decision"
             value={outcome}
             onChange={(event) => setOutcome(event.target.value)}
           >
@@ -142,7 +142,7 @@ export function GuaranteeDecisionPanel({
 
           {outcome === 'REVISIT_SCHEDULED' ? (
             <TextInput
-              label="Re-visit ka waqt"
+              label="Re-visit time"
               type="datetime-local"
               value={revisitAt}
               onChange={(event) => setRevisitAt(event.target.value)}
@@ -152,20 +152,20 @@ export function GuaranteeDecisionPanel({
 
           {outcome === 'APPROVED' || outcome === 'REVISIT_SCHEDULED' ? (
             <Checkbox
-              label="Re-visit ka kharcha provider bardasht karega"
+              label="The provider bears the cost of the re-visit"
               checked={providerPays}
               onChange={(event) => setProviderPays(event.target.checked)}
-              hint="Uncheck karein to platform kharcha uthayega."
+              hint="Uncheck and the platform absorbs the cost."
             />
           ) : null}
 
           <Textarea
-            label="Faisle ki wajah"
+            label="Reason for the decision"
             required
             rows={4}
             value={notes}
             onChange={(event) => setNotes(event.target.value)}
-            placeholder="Kya maloom hua aur kis buniyad par faisla kiya."
+            placeholder="What you found and what you based the decision on."
           />
         </div>
       </Dialog>

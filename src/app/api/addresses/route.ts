@@ -23,7 +23,7 @@ export const POST = route(async (request) => {
       where: { id: input.zoneId, isActive: true },
       select: { id: true },
     });
-    if (!zone) throw new AppError('VALIDATION_ERROR', 'Yeh service area available nahi hai.');
+    if (!zone) throw new AppError('VALIDATION_ERROR', 'This service area is not available.');
   }
 
   const address = await prisma.$transaction(async (tx) => {

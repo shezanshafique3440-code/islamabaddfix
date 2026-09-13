@@ -247,7 +247,8 @@ export async function refreshSession(
     include: { user: true },
   });
 
-  if (!stored) throw new AppError('UNAUTHENTICATED', 'Your session is no longer valid. Please sign in again.');
+  if (!stored)
+    throw new AppError('UNAUTHENTICATED', 'Your session is no longer valid. Please sign in again.');
 
   if (stored.replacedById !== null || stored.revokedAt !== null) {
     await prisma.refreshToken.updateMany({
@@ -340,7 +341,7 @@ export async function changePassword(
   newPassword: string,
 ): Promise<void> {
   const user = await prisma.user.findUnique({ where: { id: userId } });
-  if (!user) throw new AppError('NOT_FOUND', 'User nahi mila.');
+  if (!user) throw new AppError('NOT_FOUND', 'User not found.');
   if (!(await verifyPassword(currentPassword, user.passwordHash))) {
     throw new AppError('INVALID_CREDENTIALS', 'Your current password is wrong.');
   }

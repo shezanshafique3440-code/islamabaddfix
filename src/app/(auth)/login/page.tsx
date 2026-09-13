@@ -8,7 +8,7 @@ import { Skeleton } from '@/components/ui/Skeleton';
 
 export const metadata: Metadata = {
   title: 'Login',
-  description: 'Islamabad Fix account mein login karein.',
+  description: 'Sign in to your Islamabad Fix account.',
   robots: { index: false, follow: false },
 };
 
@@ -19,9 +19,9 @@ export default async function LoginPage() {
 
   return (
     <div>
-      <h1 className="text-display-sm text-ink-950">Wapis khush aamdeed</h1>
+      <h1 className="text-display-sm text-ink-950">Welcome back</h1>
       <p className="mt-2 text-sm text-ink-600">
-        Apni bookings, quotes aur payments dekhne ke liye login karein.
+        Sign in to see your bookings, quotes and payments.
       </p>
       <div className="mt-7">
         <Suspense fallback={<Skeleton className="h-64 rounded-xl" />}>

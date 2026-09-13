@@ -9,21 +9,21 @@ export const bankTransferProvider: PaymentProvider = {
   key: 'bank_transfer',
   method: 'BANK_TRANSFER',
   label: 'Bank transfer',
-  description: 'Bank ya mobile wallet se transfer karein; receipt confirm hone par settle hoga.',
+  description: 'Transfer from a bank or mobile wallet; it settles once the receipt is confirmed.',
   isConfigured: () => true,
   initialStatus: () => 'PENDING',
 
   async charge(): Promise<ChargeResult> {
     return {
       kind: 'DEFERRED',
-      note: 'Transfer ke baad ops team receipt confirm karegi.',
+      note: 'After the transfer the ops team confirms the receipt.',
     };
   },
 
   async refund(intent): Promise<RefundResult> {
     return {
       kind: 'MANUAL_REQUIRED',
-      instructions: `Customer ke account mein manually transfer karein. Wajah: ${intent.reason}`,
+      instructions: `Transfer to the customer’s account manually. Reason: ${intent.reason}`,
     };
   },
 };

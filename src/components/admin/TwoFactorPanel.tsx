@@ -35,7 +35,7 @@ export function TwoFactorPanel({ initial, email }: { initial: Status; email: str
     try {
       setSetup(await api.put<{ secret: string; uri: string }>('/api/auth/two-factor', {}));
     } catch (caught) {
-      setError(caught instanceof ApiError ? caught.message : 'Setup shuru nahi ho saka.');
+      setError(caught instanceof ApiError ? caught.message : 'Setup could not be started.');
     } finally {
       setLoading(false);
     }
@@ -58,9 +58,9 @@ export function TwoFactorPanel({ initial, email }: { initial: Status; email: str
       });
       setSetup(null);
       setCode('');
-      toast({ tone: 'success', title: 'Two-factor on ho gaya' });
+      toast({ tone: 'success', title: 'Two-factor is on' });
     } catch (caught) {
-      setError(caught instanceof ApiError ? caught.message : 'Code check nahi kar sake.');
+      setError(caught instanceof ApiError ? caught.message : 'We could not check the code.');
     } finally {
       setLoading(false);
     }
@@ -74,9 +74,9 @@ export function TwoFactorPanel({ initial, email }: { initial: Status; email: str
       await api.patch('/api/auth/two-factor', { action: 'disable', code });
       setStatus({ enabled: false, pending: false, recoveryCodesRemaining: 0 });
       setCode('');
-      toast({ tone: 'success', title: 'Two-factor off kar diya' });
+      toast({ tone: 'success', title: 'Two-factor turned off' });
     } catch (caught) {
-      setError(caught instanceof ApiError ? caught.message : 'Off nahi kar sake.');
+      setError(caught instanceof ApiError ? caught.message : 'Could not turn it off.');
     } finally {
       setLoading(false);
     }
@@ -87,12 +87,10 @@ export function TwoFactorPanel({ initial, email }: { initial: Status; email: str
     return (
       <div className="space-y-3">
         <div className="rounded-xl border border-warn-200 bg-warn-50 px-4 py-3">
-          <p className="text-sm font-semibold text-warn-700">
-            Yeh recovery codes abhi mehfooz kar lein
-          </p>
+          <p className="text-sm font-semibold text-warn-700">Save these recovery codes now</p>
           <p className="mt-1 text-sm leading-relaxed text-warn-700/90">
-            Har code sirf ek baar chalta hai. Phone kho jaye to yahi aap ko wapis andar laate hain —
-            dobara nahi dikhaye jayenge.
+            Each code works once only. If you lose your phone, these are what get you back in — and
+            they will not be shown again.
           </p>
         </div>
         <ul className="grid grid-cols-2 gap-2 rounded-xl border border-ink-200 bg-ink-50 p-4 font-mono text-sm">
@@ -103,7 +101,7 @@ export function TwoFactorPanel({ initial, email }: { initial: Status; email: str
           ))}
         </ul>
         <Button variant="outline" onClick={() => setRecoveryCodes(null)}>
-          Maine save kar liye
+          I have saved them
         </Button>
       </div>
     );
@@ -114,8 +112,8 @@ export function TwoFactorPanel({ initial, email }: { initial: Status; email: str
     return (
       <form onSubmit={confirm} className="space-y-4">
         <p className="text-sm leading-relaxed text-ink-600">
-          Authenticator app (Google Authenticator, 1Password, Authy) mein yeh key add karein, phir
-          jo 6-hindson ka code aaye woh likhein.
+          Add this key to an authenticator app (Google Authenticator, 1Password, Authy), then enter
+          the 6-digit code it shows.
         </p>
         <div className="rounded-xl border border-ink-200 bg-ink-50 p-4">
           <p className="text-[0.6875rem] font-semibold uppercase tracking-wide text-ink-500">
@@ -142,10 +140,10 @@ export function TwoFactorPanel({ initial, email }: { initial: Status; email: str
             className="w-40"
           />
           <Button type="submit" loading={loading} disabled={code.length !== 6}>
-            Confirm karein
+            Confirm
           </Button>
           <Button type="button" variant="ghost" onClick={() => setSetup(null)}>
-            Rehne dein
+            Leave it
           </Button>
         </div>
       </form>
@@ -160,8 +158,8 @@ export function TwoFactorPanel({ initial, email }: { initial: Status; email: str
           <p className="text-sm font-semibold text-ink-900">Two-factor authentication</p>
           <p className="mt-0.5 text-sm text-ink-600">
             {status.enabled
-              ? `On hai. ${status.recoveryCodesRemaining} recovery codes baqi hain.`
-              : 'Password ke saath ek aur code — refunds aur provider approvals is account se hote hain.'}
+              ? `On. ${status.recoveryCodesRemaining} recovery codes left.`
+              : 'A second code alongside your password — refunds and provider approvals happen from this account.'}
           </p>
         </div>
         {status.enabled ? <Badge tone="success">✓ On</Badge> : <Badge tone="warn">Off</Badge>}
@@ -176,19 +174,19 @@ export function TwoFactorPanel({ initial, email }: { initial: Status; email: str
       {status.enabled ? (
         <form onSubmit={disable} className="flex flex-wrap items-end gap-2">
           <TextInput
-            label="Off karne ke liye code"
+            label="Code to turn it off"
             value={code}
             onChange={(event) => setCode(event.target.value.toUpperCase().slice(0, 20))}
             inputMode="numeric"
             className="w-44"
           />
           <Button type="submit" variant="outline" loading={loading} disabled={code.length < 6}>
-            Off karein
+            Turn off
           </Button>
         </form>
       ) : (
         <Button onClick={begin} loading={loading}>
-          Two-factor on karein
+          Turn on two-factor
         </Button>
       )}
     </div>

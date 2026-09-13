@@ -195,9 +195,9 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
     await notify({
       event: NOTIFICATION_EVENTS.PROVIDER_NOTIFIED,
       userId: chosenProvider.userId,
-      title: isEmergency ? 'Emergency job request' : 'Nayi job request',
+      title: isEmergency ? 'Emergency job request' : 'New job request',
       body: `${service.name} — ${address.zone?.name ?? address.city}. ${
-        scheduledFor ? formatDateTime(scheduledFor) : 'Foran'
+        scheduledFor ? formatDateTime(scheduledFor) : 'Right now'
       }`,
       href: `/provider/jobs/${booking.id}`,
       data: { bookingId: booking.id, reference: booking.reference },
@@ -236,9 +236,9 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
         offered.map((o) => o.userId),
         {
           event: NOTIFICATION_EVENTS.PROVIDER_NOTIFIED,
-          title: isEmergency ? 'Emergency job request' : 'Nayi job request',
+          title: isEmergency ? 'Emergency job request' : 'New job request',
           body: `${service.name} — ${address.zone?.name ?? address.city}. ${
-            scheduledFor ? formatDateTime(scheduledFor) : 'Foran'
+            scheduledFor ? formatDateTime(scheduledFor) : 'Right now'
           }`,
           href: `/provider/jobs/${booking.id}`,
           data: { bookingId: booking.id, reference: booking.reference },
@@ -416,8 +416,8 @@ export async function acceptBooking(params: {
   await notify({
     event: NOTIFICATION_EVENTS.BOOKING_ACCEPTED,
     userId: booking.customerId,
-    title: 'Technician ne booking qubool kar li',
-    body: `${provider.businessName} aapki ${booking.service.name} booking le raha hai.${
+    title: 'A technician has accepted your booking',
+    body: `${provider.businessName} is taking your ${booking.service.name} booking.${
       booking.service.requiresInspection ? ' You will get a quote after the inspection.' : ''
     }`,
     href: `/account/bookings/${booking.id}`,
@@ -516,7 +516,7 @@ export async function cancelBooking(params: {
   await notifyMany([...audience], {
     event: NOTIFICATION_EVENTS.BOOKING_CANCELLED,
     title: `Booking cancelled — ${booking.reference}`,
-    body: `${booking.service.name} ki booking cancel kar di gayi. Wajah: ${params.reason}${
+    body: `Your ${booking.service.name} booking has been cancelled. Reason: ${params.reason}${
       appliedFee > 0 ? ` Late cancellation fee: ${formatPaisa(appliedFee)}.` : ''
     }`,
     href: `/account/bookings/${booking.id}`,

@@ -13,7 +13,7 @@ import { formatPaisa } from '@/lib/money';
 export const metadata: Metadata = {
   title: 'Emergency service — Islamabad',
   description:
-    'Islamabad mein emergency home services — bara water leakage, electrical fault, generator failure, AC emergency. Available emergency technicians dekhein.',
+    'Emergency home services in Islamabad — major water leaks, electrical faults, generator failure, AC emergencies. See the emergency technicians available now.',
   alternates: { canonical: '/emergency' },
 };
 
@@ -33,16 +33,16 @@ export default async function EmergencyPage() {
       <>
         <PageHeader
           eyebrow="Emergency"
-          title="Emergency service is waqt band hai"
-          description="Hum emergency dispatch abhi offer nahi kar rahe. Normal booking kar lein ya support se rabta karein."
+          title="Emergency service is currently switched off"
+          description="We are not offering emergency dispatch right now. Make a normal booking or contact support."
           breadcrumbs={[{ href: '/', label: 'Home' }]}
         />
         <div className="mx-auto max-w-content px-4 py-12 sm:px-6">
           <SafetyNotice />
           <div className="mt-6 flex flex-wrap gap-3">
-            <ButtonLink href="/book">Normal booking karein</ButtonLink>
+            <ButtonLink href="/book">Make a normal booking</ButtonLink>
             <ButtonLink href="/contact" variant="outline">
-              Support se rabta karein
+              Contact support
             </ButtonLink>
           </div>
         </div>
@@ -76,11 +76,11 @@ export default async function EmergencyPage() {
           </nav>
           <p className="text-eyebrow uppercase text-alert-600">🚨 Emergency</p>
           <h1 className="mt-2 text-display-sm text-ink-950 sm:text-display">
-            Foran madad chahiye?
+            Need help right now?
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink-700 sm:text-base">
-            Emergency-available technicians ko aap ki request foran bheji jayegi. Emergency charges
-            booking confirm karne se pehle saaf dikhaye jate hain.
+            Your request goes out immediately to technicians available for emergencies. Emergency
+            charges are shown clearly before you confirm the booking.
           </p>
         </div>
       </div>
@@ -90,10 +90,10 @@ export default async function EmergencyPage() {
 
         <section aria-labelledby="emergency-services" className="mt-10">
           <h2 id="emergency-services" className="text-title text-ink-950">
-            Kis qism ki emergency hai?
+            What kind of emergency is it?
           </h2>
           <p className="mt-1 text-sm text-ink-600">
-            Service chunein — hum available technicians dikha denge.
+            Pick a service — we will show you the technicians available.
           </p>
 
           {grouped.size > 0 ? (
@@ -125,9 +125,9 @@ export default async function EmergencyPage() {
           ) : (
             <EmptyState
               className="mt-5"
-              title="Abhi koi service emergency ke liye enabled nahi"
-              description="Admin panel se services ko emergency ke liye enable kiya jata hai."
-              action={{ label: 'Normal booking karein', href: '/book' }}
+              title="No service is enabled for emergency yet"
+              description="Services are enabled for emergency from the admin panel."
+              action={{ label: 'Make a normal booking', href: '/book' }}
             />
           )}
         </section>
@@ -138,17 +138,17 @@ export default async function EmergencyPage() {
           </h2>
           <div className="mt-3 rounded-2xl border border-ink-200 bg-white p-5">
             <p className="text-sm leading-relaxed text-ink-700">
-              Emergency visit par technician apni emergency fee laagu karta hai, jo normal service
-              charge ke ilawa hoti hai. Default{' '}
-              <strong className="font-semibold text-ink-900">{formatPaisa(defaultFee)}</strong> hai
-              aur platform ki maximum limit{' '}
-              <strong className="font-semibold text-ink-900">{formatPaisa(maxFee)}</strong> hai.
+              On an emergency visit the technician applies their emergency fee, which is charged on
+              top of the normal service charge. The default is{' '}
+              <strong className="font-semibold text-ink-900">{formatPaisa(defaultFee)}</strong> and
+              the platform maximum is{' '}
+              <strong className="font-semibold text-ink-900">{formatPaisa(maxFee)}</strong>.
             </p>
             <p className="mt-2.5 text-sm leading-relaxed text-ink-700">
-              Aap ko yeh fee{' '}
-              <strong className="font-semibold">booking confirm karne se pehle</strong> dikhayi jati
-              hai, aur baqi kaam ka kharcha technician ke muaina ke baad quote mein aata hai — jise
-              aap approve ya reject karte hain.
+              You are shown this fee{' '}
+              <strong className="font-semibold">before you confirm the booking</strong>, and the
+              cost of the rest of the work comes in the technician’s quote after inspection — which
+              you approve or reject.
             </p>
           </div>
         </section>
@@ -158,7 +158,7 @@ export default async function EmergencyPage() {
             Emergency technicians ({providers.pagination.total})
           </h2>
           <p className="mt-1 text-sm text-ink-600">
-            Yeh providers emergency calls lete hain. Availability booking ke waqt confirm hoti hai.
+            These providers take emergency calls. Availability is confirmed at the time of booking.
           </p>
 
           {providers.items.length > 0 ? (
@@ -174,7 +174,7 @@ export default async function EmergencyPage() {
                       size="sm"
                       fullWidth
                     >
-                      Emergency request bhejein
+                      Send emergency request
                     </ButtonLink>
                   }
                 />
@@ -183,9 +183,9 @@ export default async function EmergencyPage() {
           ) : (
             <EmptyState
               className="mt-5"
-              title="Is waqt koi emergency technician available nahi"
-              description="Aap phir bhi request bhej sakte hain — ops team dekh kar intezam karegi."
-              action={{ label: 'Request bhejein', href: '/book?emergency=1' }}
+              title="No emergency technician is available right now"
+              description="You can still send the request — the operations team will arrange someone."
+              action={{ label: 'Send request', href: '/book?emergency=1' }}
             />
           )}
         </section>
@@ -205,32 +205,32 @@ function SafetyNotice() {
   return (
     <div className="border-alert-300 rounded-2xl border-2 bg-white p-5">
       <h2 className="flex items-center gap-2 text-sm font-bold text-alert-700">
-        <span aria-hidden="true">⚠️</span> Pehle safety
+        <span aria-hidden="true">⚠️</span> Safety first
       </h2>
       <ul className="mt-3 space-y-2 text-sm leading-relaxed text-ink-800">
         <li>
-          <strong className="font-semibold">Aag, gas leak, ya koi zakhmi:</strong> foran{' '}
+          <strong className="font-semibold">Fire, a gas leak, or anyone injured:</strong> call{' '}
           <a href="tel:1122" className="font-semibold text-alert-700 underline">
             Rescue 1122
           </a>{' '}
-          ko call karein. Technician ka intezar na karein.
+          immediately. Do not wait for a technician.
         </li>
         <li>
-          <strong className="font-semibold">Gas ki bu:</strong> khirkiyan kholein, koi switch ya
-          lighter istemal na karein, aur ghar se bahar niklein.
+          <strong className="font-semibold">Smell of gas:</strong> open the windows, do not touch
+          any switch or lighter, and get out of the building.
         </li>
         <li>
-          <strong className="font-semibold">Sparking ya bijli ka khatra:</strong> us hisse ko na
-          chhuein. Agar main breaker mehfooz jagah par hai to usay off kar dein.
+          <strong className="font-semibold">Sparking or an electrical hazard:</strong> do not touch
+          that part. If the main breaker is somewhere safe to reach, switch it off.
         </li>
         <li>
-          <strong className="font-semibold">Bara paani leak:</strong> agar mumkin ho to main water
-          valve band kar dein aur geele farsh par bijli ke switch na chhuein.
+          <strong className="font-semibold">Major water leak:</strong> if you can, shut the main
+          water valve, and do not touch electrical switches on a wet floor.
         </li>
       </ul>
       <p className="mt-3 border-t border-ink-100 pt-3 text-xs leading-relaxed text-ink-500">
-        Khud repair karne ki koshish na karein — bijli, gas aur refrigeration ka kaam qualified
-        technician hi kare.
+        Do not attempt the repair yourself — electrical, gas and refrigeration work belongs to a
+        qualified technician.
       </p>
     </div>
   );

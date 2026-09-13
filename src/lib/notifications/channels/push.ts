@@ -11,7 +11,7 @@ export const pushChannel: NotificationChannelDriver = {
   async send() {
     return {
       status: 'SKIPPED_NOT_CONFIGURED',
-      reason: 'Push notifications is deployment par configure nahi hain.',
+      reason: 'Push notifications are not configured on this deployment.',
     };
   },
 };

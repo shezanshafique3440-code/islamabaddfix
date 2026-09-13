@@ -76,7 +76,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               type="button"
               onClick={() => dismiss(entry.id)}
               className="-mr-1 -mt-0.5 rounded-lg p-1 text-ink-400 hover:bg-ink-100 hover:text-ink-700"
-              aria-label="Band karein"
+              aria-label="Close"
             >
               <svg viewBox="0 0 20 20" className="h-4 w-4" fill="currentColor" aria-hidden="true">
                 <path d="M6.3 5 5 6.3 8.7 10 5 13.7 6.3 15 10 11.3 13.7 15 15 13.7 11.3 10 15 6.3 13.7 5 10 8.7 6.3 5z" />

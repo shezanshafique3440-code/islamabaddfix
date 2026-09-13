@@ -9,8 +9,8 @@ import { formatRelative, cn } from '@/lib/utils';
 export const metadata: Metadata = { title: 'Support', robots: { index: false, follow: false } };
 
 const TABS = [
-  { key: 'open', label: 'Khule', statuses: ['OPEN', 'IN_PROGRESS', 'WAITING_ON_CUSTOMER'] },
-  { key: 'resolved', label: 'Hal ho gaye', statuses: ['RESOLVED', 'CLOSED'] },
+  { key: 'open', label: 'Open', statuses: ['OPEN', 'IN_PROGRESS', 'WAITING_ON_CUSTOMER'] },
+  { key: 'resolved', label: 'Resolved', statuses: ['RESOLVED', 'CLOSED'] },
 ] as const;
 
 export default async function AdminSupportPage({
@@ -39,8 +39,7 @@ export default async function AdminSupportPage({
       <header>
         <h1 className="text-display-sm text-ink-950">Support tickets</h1>
         <p className="mt-1 text-sm text-ink-600">
-          Customers aur providers ke masail. Jawab dene par ticket customer ke intezar par chala
-          jata hai.
+          Issues from customers and providers. Replying moves the ticket to waiting on the customer.
         </p>
       </header>
 
@@ -105,7 +104,7 @@ export default async function AdminSupportPage({
       ) : (
         <EmptyState
           className="mt-5"
-          title={view.key === 'open' ? 'Koi khula ticket nahi' : 'Koi hal shuda ticket nahi'}
+          title={view.key === 'open' ? 'No open tickets' : 'No resolved tickets'}
         />
       )}
     </div>

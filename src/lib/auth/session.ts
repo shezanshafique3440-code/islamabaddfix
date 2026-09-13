@@ -80,7 +80,10 @@ export async function requirePermission(permission: Permission): Promise<AuthCon
 export async function requireProvider(): Promise<AuthContext & { providerId: string }> {
   const ctx = await requireRole('PROVIDER');
   if (!ctx.providerId) {
-    throw new AppError('NOT_FOUND', 'Your provider profile is incomplete. Please finish onboarding.');
+    throw new AppError(
+      'NOT_FOUND',
+      'Your provider profile is incomplete. Please finish onboarding.',
+    );
   }
   return ctx as AuthContext & { providerId: string };
 }

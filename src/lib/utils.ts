@@ -40,20 +40,20 @@ export function formatTime(value: Date | string): string {
   }).format(date);
 }
 
-/** "2 din pehle", "abhi" — Roman Urdu relative time. */
+/** "2 days ago", "just now" — relative time in words. */
 export function formatRelative(value: Date | string): string {
   const date = typeof value === 'string' ? new Date(value) : value;
   const diffMs = Date.now() - date.getTime();
   const future = diffMs < 0;
   const seconds = Math.abs(diffMs) / 1000;
 
-  if (seconds < 45) return future ? 'abhi' : 'abhi abhi';
+  if (seconds < 45) return future ? 'in a moment' : 'just now';
   const units: Array<[number, string]> = [
     [60, 'minute'],
-    [3600, 'ghanta'],
-    [86_400, 'din'],
-    [604_800, 'hafta'],
-    [2_592_000, 'mahina'],
+    [3600, 'hour'],
+    [86_400, 'day'],
+    [604_800, 'week'],
+    [2_592_000, 'month'],
   ];
   let amount = Math.round(seconds / 60);
   let unit = 'minute';
@@ -65,8 +65,8 @@ export function formatRelative(value: Date | string): string {
       break;
     }
   }
-  const plural = amount === 1 ? unit : `${unit}${unit.endsWith('a') ? 'y' : 's'}`;
-  return future ? `${amount} ${plural} mein` : `${amount} ${plural} pehle`;
+  const plural = amount === 1 ? unit : `${unit}s`;
+  return future ? `in ${amount} ${plural}` : `${amount} ${plural} ago`;
 }
 
 export function initials(name: string): string {

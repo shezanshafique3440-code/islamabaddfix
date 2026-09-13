@@ -4,11 +4,11 @@ import { cn } from '@/lib/utils';
 import type { WizardStep } from './types';
 
 const LABELS: Record<WizardStep, string> = {
-  intake: 'Masla',
+  intake: 'Problem',
   service: 'Service',
-  details: 'Tafseel',
+  details: 'Details',
   location: 'Location',
-  schedule: 'Waqt',
+  schedule: 'Time',
   provider: 'Technician',
   confirm: 'Confirm',
 };
@@ -117,7 +117,7 @@ export function WizardProgress({
 export function StepFooter({
   onBack,
   onNext,
-  nextLabel = 'Aage barhein',
+  nextLabel = 'Continue',
   nextDisabled,
   loading,
   children,
@@ -173,7 +173,7 @@ export function StepFooter({
           onClick={onBack}
           className="inline-flex h-11 items-center justify-center rounded-xl px-3 text-sm font-medium text-ink-600 hover:bg-ink-100 hover:text-ink-900"
         >
-          ← Peechay
+          ← Back
         </button>
       ) : (
         <span />

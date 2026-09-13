@@ -18,12 +18,12 @@ export const revalidate = 600;
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const service = await getServiceBySlug(slug);
-  if (!service) return { title: 'Service nahi mili' };
+  if (!service) return { title: 'Service not found' };
 
   const title = `${service.name} in Islamabad`;
   const description =
     service.description ??
-    `${service.name} Islamabad mein — verified technicians, muaina ke baad transparent quote.`;
+    `${service.name} in Islamabad — verified technicians, and a clear quote after the inspection.`;
 
   return {
     title,
@@ -84,7 +84,7 @@ export default async function ServiceDetailPage({ params }: Params) {
                         size="sm"
                         fullWidth
                       >
-                        Is technician se book karein
+                        Book this technician
                       </ButtonLink>
                     }
                   />
@@ -93,9 +93,9 @@ export default async function ServiceDetailPage({ params }: Params) {
             ) : (
               <EmptyState
                 className="mt-5"
-                title="Abhi koi verified technician list nahi hua"
-                description="Aap request bhej sakte hain — ops team manually technician assign karegi."
-                action={{ label: 'Request bhejein', href: `/book?service=${service.slug}` }}
+                title="No verified technician is listed yet"
+                description="You can send the request — the operations team will assign a technician."
+                action={{ label: 'Send request', href: `/book?service=${service.slug}` }}
               />
             )}
           </div>
@@ -107,25 +107,25 @@ export default async function ServiceDetailPage({ params }: Params) {
                 {formatPaisaRange(service.minPricePaisa, service.maxPricePaisa)}
               </p>
               <p className="mt-2 text-xs leading-relaxed text-ink-500">
-                Yeh sirf andaza hai. Final qeemat technician ke muaina aur likhit quote se tay hoti
-                hai, jise aap approve ya reject kar sakte hain.
+                This is an estimate only. The final price is set by the technician’s inspection and
+                written quote, which you can approve or reject.
               </p>
 
               <dl className="mt-4 space-y-2.5 border-t border-ink-100 pt-4 text-sm">
                 <div className="flex items-center justify-between gap-3">
-                  <dt className="text-ink-500">Andazan waqt</dt>
+                  <dt className="text-ink-500">Estimated time</dt>
                   <dd className="font-medium text-ink-900">{service.estimatedMinutes} min</dd>
                 </div>
                 <div className="flex items-center justify-between gap-3">
-                  <dt className="text-ink-500">Muaina zaroori</dt>
+                  <dt className="text-ink-500">Inspection required</dt>
                   <dd className="font-medium text-ink-900">
-                    {service.requiresInspection ? 'Haan' : 'Nahi'}
+                    {service.requiresInspection ? 'Yes' : 'No'}
                   </dd>
                 </div>
                 <div className="flex items-center justify-between gap-3">
                   <dt className="text-ink-500">Emergency</dt>
                   <dd className="font-medium text-ink-900">
-                    {service.isEmergencyEnabled ? 'Available' : 'Nahi'}
+                    {service.isEmergencyEnabled ? 'Available' : 'No'}
                   </dd>
                 </div>
               </dl>
@@ -140,20 +140,20 @@ export default async function ServiceDetailPage({ params }: Params) {
                 <div className="flex items-center gap-2">
                   <span aria-hidden="true">🛡️</span>
                   <h2 className="text-sm font-semibold text-brand-900">
-                    {service.guaranteeDaysOverride ?? guaranteeDays}-din Fix Guarantee
+                    {service.guaranteeDaysOverride ?? guaranteeDays}-day Fix Guarantee
                   </h2>
                 </div>
                 <p className="mt-2 text-xs leading-relaxed text-brand-900/80">
-                  Agar wohi masla guarantee ki muddat ke andar wapis aa jaye to aap re-visit ki
-                  request kar sakte hain. Har claim ka jaiza ops team karti hai.
+                  If the same problem returns within the guarantee period, you can request a
+                  re-visit. Every claim is reviewed by the ops team.
                 </p>
               </div>
             ) : (
               <div className="rounded-2xl border border-ink-200 bg-ink-50 p-5">
                 <h2 className="text-sm font-semibold text-ink-800">Guarantee</h2>
                 <p className="mt-2 text-xs leading-relaxed text-ink-600">
-                  Is service par re-visit guarantee laagu nahi hoti. Kaam se mutmain na hon to aap
-                  booking par dispute khol sakte hain.
+                  The re-visit guarantee does not apply to this service. If you are not satisfied
+                  with the work, you can open a dispute on the booking.
                 </p>
               </div>
             )}
@@ -162,8 +162,8 @@ export default async function ServiceDetailPage({ params }: Params) {
               <div className="rounded-2xl border border-alert-200 bg-alert-50 p-5">
                 <Badge tone="danger">Emergency</Badge>
                 <p className="mt-2 text-xs leading-relaxed text-ink-700">
-                  Is service ke liye emergency booking available hai. Emergency charges booking se
-                  pehle saaf dikhaye jate hain.
+                  Emergency booking is available for this service. Emergency charges are shown
+                  clearly before you confirm.
                 </p>
                 <ButtonLink
                   href={`/emergency?service=${service.slug}`}

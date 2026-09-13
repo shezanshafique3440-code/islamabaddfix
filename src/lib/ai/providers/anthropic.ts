@@ -46,7 +46,7 @@ export const anthropicProvider: LlmProvider = {
 
   async complete({ systemPrompt, userPrompt }) {
     if (!this.isConfigured()) {
-      throw new AppError('INTEGRATION_NOT_CONFIGURED', 'AI provider configured nahi hai.');
+      throw new AppError('INTEGRATION_NOT_CONFIGURED', 'No AI provider is configured.');
     }
 
     const baseUrl = env.AI_BASE_URL ?? 'https://api.anthropic.com';
@@ -75,7 +75,7 @@ export const anthropicProvider: LlmProvider = {
 
       if (!response.ok) {
         const detail = await response.text();
-        throw new AppError('INTEGRATION_FAILED', 'AI assistant is waqt jawab nahi de saka.', {
+        throw new AppError('INTEGRATION_FAILED', 'The AI assistant could not answer just now.', {
           context: { status: response.status, detail: detail.slice(0, 400) },
         });
       }
@@ -87,7 +87,10 @@ export const anthropicProvider: LlmProvider = {
         (block) => block.type === 'tool_use' && block.name === INTAKE_TOOL.name,
       );
       if (!toolUse?.input) {
-        throw new AppError('INTEGRATION_FAILED', 'AI assistant ka jawab samajh nahi aaya.');
+        throw new AppError(
+          'INTEGRATION_FAILED',
+          'The AI assistant’s answer could not be understood.',
+        );
       }
       return toolUse.input;
     } finally {

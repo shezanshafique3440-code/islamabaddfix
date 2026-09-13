@@ -6,9 +6,9 @@ import { env } from '@/lib/env';
 import { jsonLdScript } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: 'Aam sawalat (FAQ)',
+  title: 'Common questions (FAQ)',
   description:
-    'Islamabad Fix ke baare mein aam sawalat — qeemat, verification, guarantee, payment aur dispute ka nizam.',
+    'Common questions about Islamabad Fix — pricing, verification, the guarantee, payments and how disputes work.',
   alternates: { canonical: '/faq' },
 };
 
@@ -25,83 +25,83 @@ export default async function FaqPage() {
       heading: 'Booking',
       items: [
         {
-          q: 'Booking kaise karun?',
-          a: 'Home page par apna masla likhein ya category chunein. Phir address aur time select karein, available verified technicians dekhein aur ek chunein. Poora process do minute se kam mein ho jata hai.',
+          q: 'How do I make a booking?',
+          a: 'Describe your problem on the home page or pick a category. Then choose an address and time, see the verified technicians available and pick one. The whole thing takes under two minutes.',
         },
         {
-          q: 'Kya mujhe account banana zaroori hai?',
-          a: 'Haan. Booking aapke account se juri hoti hai taake aap status track kar sakein, quote approve kar sakein aur zaroorat parne par dispute khol sakein.',
+          q: 'Do I need to create an account?',
+          a: 'Yes. A booking is tied to your account so you can track its status, approve the quote and open a dispute if you need to.',
         },
         {
-          q: 'Booking cancel kar sakta hoon?',
-          a: `Ji haan. Scheduled waqt se ${Math.round(freeCancelMinutes / 60)} ghante pehle tak cancel karna free hai. Uske baad late cancellation fee laagu ho sakti hai — cancel karte waqt aap ko saaf dikh jayegi.`,
+          q: 'Can I cancel a booking?',
+          a: `Yes. Cancelling is free up to ${Math.round(freeCancelMinutes / 60)} hours before the scheduled time. After that a late cancellation fee may apply — it is shown clearly when you cancel.`,
         },
         {
-          q: 'Technician na aaye to?',
-          a: 'Booking par dispute khol dein aur wajah mein "Technician nahi aaya" chunein. Ops team dono taraf se baat kar ke faisla karti hai aur zaroorat ho to refund ya dobara visit ka intezam karti hai.',
-        },
-      ],
-    },
-    {
-      heading: 'Qeemat aur payment',
-      items: [
-        {
-          q: 'Site par jo qeemat likhi hai wohi lagegi?',
-          a: 'Nahi. Site par di gayi ranges sirf andaza hain. Asal qeemat technician muaina ke baad likhit quote mein deta hai, jise aap approve ya reject karte hain.',
-        },
-        {
-          q: 'Kaam ke beech mein qeemat barh sakti hai?',
-          a: 'Aapki ijazat ke baghair nahi. Agar technician ko koi extra kaam ya part chahiye to woh alag "additional charges" quote bhejta hai. Jab tak aap approve nahi karte, kaam complete mark nahi ho sakta.',
-        },
-        {
-          q: 'Payment kaise hoti hai?',
-          a: 'Filhaal Cash on Service available hai — kaam mukammal hone par technician ko cash dein aur app mein payment record karein. Online payment aur bank transfer ka nizam bana hua hai aur baad mein enable hoga.',
-        },
-        {
-          q: 'Platform kitna commission leta hai?',
-          a: `Har mukammal booking par ${commissionBp / 100}% commission provider ki earning se katta hai. Aap se is ka koi alag charge nahi hota.`,
+          q: 'What if the technician does not turn up?',
+          a: 'Open a dispute on the booking and pick "The technician did not turn up" as the reason. The ops team hears both sides and decides, arranging a refund or a repeat visit if needed.',
         },
       ],
     },
     {
-      heading: 'Trust aur guarantee',
+      heading: 'Pricing and payment',
       items: [
         {
-          q: '"Verified" ka theek theek kya matlab hai?',
-          a: 'Iska matlab hai ke humari team ne provider ka shanakhti document aur onboarding maloomat check ki hain, aur unka phone aur email confirm hua hai. Profile par sirf wohi badge dikhta hai jo waqai verify hua ho. Hum government licensing, insurance ya police background check ka dawa nahi karte.',
+          q: 'Will I be charged the price shown on the site?',
+          a: 'No. The ranges on the site are estimates only. The actual price comes in the technician’s written quote after inspection, which you approve or reject.',
+        },
+        {
+          q: 'Can the price go up midway through the work?',
+          a: 'Not without your permission. If the technician needs extra work or a part, they send a separate "additional charges" quote. The job cannot be marked complete until you approve it.',
+        },
+        {
+          q: 'How does payment work?',
+          a: 'Cash on Service is available for now — pay the technician in cash when the work is done and record the payment in the app. Online payment and bank transfer are built and will be enabled later.',
+        },
+        {
+          q: 'How much commission does the platform take?',
+          a: `On every completed booking, ${commissionBp / 100}% commission is deducted from the provider’s earnings. You are not charged separately for it.`,
+        },
+      ],
+    },
+    {
+      heading: 'Trust and guarantee',
+      items: [
+        {
+          q: 'What exactly does "Verified" mean?',
+          a: 'It means our team has checked the provider’s identity document and onboarding details, and confirmed their phone and email. Only badges that have actually been verified appear on a profile. We do not claim government licensing, insurance or police background checks.',
         },
         {
           q: guaranteeEnabled
-            ? `${guaranteeDays}-din guarantee kaise kaam karti hai?`
-            : 'Guarantee available hai?',
+            ? `How does the ${guaranteeDays}-day guarantee work?`
+            : 'Is there a guarantee?',
           a: guaranteeEnabled
-            ? `Eligible services par kaam mukammal hone ke baad ${guaranteeDays} din tak, agar wohi masla wapis aa jaye to aap re-visit claim kar sakte hain. Har service cover nahi hoti — booking par saaf likha hota hai ke guarantee laagu hai ya nahi. Har claim ka jaiza ops team karti hai.`
-            : 'Guarantee program is waqt band hai. Kaam se mutmain na hon to aap booking par dispute khol sakte hain.',
+            ? `On eligible services, if the same problem returns within ${guaranteeDays} days of completion, you can claim a re-visit. Not every service is covered — each booking states clearly whether the guarantee applies. Every claim is reviewed by the ops team.`
+            : 'The guarantee programme is currently switched off. If you are not satisfied with the work, you can open a dispute on the booking.',
         },
         {
-          q: 'Mera address aur phone number kis ko dikhta hai?',
-          a: 'Job qubool karne se pehle technician ko sirf aapka area (sector) dikhta hai. Poora address aur phone number tab share hota hai jab woh job accept kar leta hai. Aapki maloomat kabhi public profile par nahi aati.',
+          q: 'Who can see my address and phone number?',
+          a: 'Before accepting a job, the technician sees only your area (sector). Your full address and phone number are shared once they accept. Your details never appear on a public profile.',
         },
         {
-          q: 'Review kaun de sakta hai?',
-          a: 'Sirf woh customer jiski booking mukammal hui ho, aur har booking par ek hi baar. Is liye yahan reviews un logon ke hain jinhone waqai kaam karwaya.',
+          q: 'Who can leave a review?',
+          a: 'Only a customer whose booking was completed, and only once per booking. That is why the reviews here come from people who actually had the work done.',
         },
       ],
     },
     {
-      heading: 'Providers ke liye',
+      heading: 'For providers',
       items: [
         {
-          q: 'Provider kaise banun?',
-          a: 'Provider signup se account banayein, apni services, areas, rates aur working hours daalein, aur shanakhti document submit karein. Team review kar ke approve karti hai — approve hone tak aapki profile customers ko nahi dikhti.',
+          q: 'How do I become a provider?',
+          a: 'Create an account through provider signup, add your services, areas, rates and working hours, and submit an identity document. The team reviews and approves — until you are approved, your profile is not shown to customers.',
         },
         {
-          q: 'Approval mein kitna waqt lagta hai?',
-          a: 'Yeh manual review hai, is liye waqt team ke workload par hai. Status aap ko app mein aur notification par mil jata hai.',
+          q: 'How long does approval take?',
+          a: 'This is a manual review, so the time depends on the team’s workload. You get the status in the app and by notification.',
         },
         {
-          q: 'Paise kab milte hain?',
-          a: 'Cash bookings mein paise seedhe aap ko customer se milte hain; platform commission aapke earnings dashboard par record hota hai. Payout records bhi wahin dikhte hain.',
+          q: 'When do I get paid?',
+          a: 'On cash bookings you take the money directly from the customer; the platform commission is recorded on your earnings dashboard. Payout records appear there too.',
         },
       ],
     },
@@ -128,8 +128,8 @@ export default async function FaqPage() {
       />
       <PageHeader
         eyebrow="FAQ"
-        title="Aam sawalat"
-        description="Qeemat, verification, guarantee aur payment ke baare mein woh sawal jo sab poochte hain."
+        title="Common questions"
+        description="The questions everyone asks about pricing, verification, the guarantee and payment."
         breadcrumbs={[{ href: '/', label: 'Home' }]}
       />
 
@@ -161,16 +161,16 @@ export default async function FaqPage() {
         </div>
 
         <p className="mt-10 text-sm text-ink-600">
-          Jawab nahi mila?{' '}
+          Did not find your answer?{' '}
           <Link href="/contact" className="font-medium text-brand-700 hover:underline">
-            Support se rabta karein
+            Contact support
           </Link>{' '}
           ya{' '}
           <a
             href={`${env.NEXT_PUBLIC_APP_URL}/account/support/new`}
             className="font-medium text-brand-700 hover:underline"
           >
-            ticket kholein
+            open a ticket
           </a>
           .
         </p>

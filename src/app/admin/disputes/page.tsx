@@ -46,7 +46,7 @@ export default async function AdminDisputesPage({
       <header>
         <h1 className="text-display-sm text-ink-950">Disputes</h1>
         <p className="mt-1 text-sm text-ink-600">
-          Dono taraf ki maloomat dekh kar faisla karein. Har faisla audit log mein jata hai.
+          Decide after reading both sides. Every decision goes into the audit log.
         </p>
       </header>
 
@@ -71,7 +71,7 @@ export default async function AdminDisputesPage({
               : 'rounded-lg px-3 py-2 text-sm font-medium text-ink-600 hover:bg-ink-100'
           }
         >
-          Hal ho gaye
+          Resolved
         </Link>
       </nav>
 
@@ -136,8 +136,8 @@ export default async function AdminDisputesPage({
       ) : (
         <EmptyState
           className="mt-5"
-          title={showResolved ? 'Koi hal shuda dispute nahi' : 'Koi khula dispute nahi'}
-          description={showResolved ? undefined : 'Achi khabar — sab theek chal raha hai.'}
+          title={showResolved ? 'No resolved disputes' : 'No open disputes'}
+          description={showResolved ? undefined : 'Good news — everything is running fine.'}
         />
       )}
     </div>

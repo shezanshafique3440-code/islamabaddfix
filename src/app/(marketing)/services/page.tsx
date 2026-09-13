@@ -9,7 +9,7 @@ import { PageHeader } from '@/components/marketing/PageHeader';
 export const metadata: Metadata = {
   title: 'Sab services',
   description:
-    'Islamabad Fix par available tamam services — AC, electrical, plumbing, cleaning, carpenter, painting, appliances aur security. Verified technicians aur transparent quotes.',
+    'Every service available on Islamabad Fix — AC, electrical, plumbing, cleaning, carpentry, painting, appliances and security. Verified technicians and transparent quotes.',
   alternates: { canonical: '/services' },
 };
 
@@ -22,8 +22,8 @@ export default async function ServicesPage() {
     <>
       <PageHeader
         eyebrow="Services"
-        title="Hum kya kaam karte hain"
-        description="Har service verified technicians karte hain. Qeemat muaina ke baad quote se tay hoti hai — neeche di gayi ranges sirf andaza hain."
+        title="What we do"
+        description="Every service is done by verified technicians. The price is set by a quote after inspection — the ranges below are estimates only."
       />
 
       <div className="mx-auto max-w-content px-4 pb-16 sm:px-6">
@@ -76,7 +76,7 @@ export default async function ServicesPage() {
                       </span>
                       <span className="mt-0.5 text-xs text-ink-400">
                         {service.requiresInspection
-                          ? 'Muaina ke baad quote'
+                          ? 'Quote after inspection'
                           : `Andazan ${service.estimatedMinutes} min`}
                       </span>
                     </Link>

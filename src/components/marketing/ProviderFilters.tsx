@@ -57,20 +57,20 @@ export function ProviderFilters({
         className="flex gap-2"
       >
         <label htmlFor="provider-search" className="sr-only">
-          Technician ya service dhoondein
+          Find a technician or service
         </label>
         <input
           id="provider-search"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          placeholder="Naam ya service se dhoondein..."
+          placeholder="Search by name or service..."
           className="h-10 flex-1 rounded-xl border border-ink-300 bg-white px-3.5 text-sm text-ink-900 placeholder:text-ink-400 hover:border-ink-400 focus:border-brand-600"
         />
         <button
           type="submit"
           className="h-10 rounded-xl bg-ink-900 px-4 text-sm font-semibold text-white hover:bg-ink-800"
         >
-          Dhoondein
+          Search
         </button>
       </form>
 
@@ -109,10 +109,10 @@ export function ProviderFilters({
           onChange={(event) => apply({ sort: event.target.value })}
           className={selectClass}
         >
-          <option value="rating">Behtareen rating</option>
-          <option value="jobs">Sab se zyada jobs</option>
-          <option value="experience">Sab se zyada tajurba</option>
-          <option value="newest">Naye providers</option>
+          <option value="rating">Best rating</option>
+          <option value="jobs">Most jobs</option>
+          <option value="experience">Most experience</option>
+          <option value="newest">Newest providers</option>
         </select>
 
         <button
@@ -138,7 +138,7 @@ export function ProviderFilters({
             }}
             className="h-10 px-2 text-sm font-medium text-ink-500 hover:text-ink-800 hover:underline"
           >
-            Filters clear karein
+            Clear filters
           </button>
         ) : null}
       </div>

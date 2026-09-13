@@ -18,12 +18,12 @@ export const POST = route(async (request, { params }: Params) => {
     where: { id },
     select: { id: true, customerId: true, providerId: true },
   });
-  if (!booking) throw new AppError('NOT_FOUND', 'Booking nahi mili.');
+  if (!booking) throw new AppError('NOT_FOUND', 'Booking not found.');
 
   const isCustomer = booking.customerId === ctx.user.id;
   const isAssignedProvider = ctx.providerId !== undefined && booking.providerId === ctx.providerId;
   if (!isCustomer && !isAssignedProvider && !isStaff(ctx.role)) {
-    throw new AppError('FORBIDDEN', 'Yeh booking aap cancel nahi kar sakte.');
+    throw new AppError('FORBIDDEN', 'You cannot cancel this booking.');
   }
 
   const result = await cancelBooking({
@@ -38,7 +38,7 @@ export const POST = route(async (request, { params }: Params) => {
     cancellationFeePaisa: result.feePaisa,
     message:
       result.feePaisa > 0
-        ? `Booking cancel ho gayi. Late cancellation fee: ${formatPaisa(result.feePaisa)}.`
-        : 'Booking cancel ho gayi.',
+        ? `Booking cancelled. Late cancellation fee: ${formatPaisa(result.feePaisa)}.`
+        : 'Booking cancelled.',
   });
 });

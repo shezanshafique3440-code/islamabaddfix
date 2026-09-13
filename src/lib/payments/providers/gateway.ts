@@ -17,7 +17,7 @@ export const gatewayProvider: PaymentProvider = {
   key: 'online_gateway',
   method: 'ONLINE_GATEWAY',
   label: 'Card / wallet',
-  description: 'Debit/credit card ya mobile wallet se online payment.',
+  description: 'Online payment by debit/credit card or mobile wallet.',
   isConfigured: () => integrations.onlinePayments.configured,
   initialStatus: () => 'PENDING',
 
@@ -26,7 +26,7 @@ export const gatewayProvider: PaymentProvider = {
       return {
         kind: 'FAILED',
         reason:
-          'Online payment gateway is deployment par configured nahi hai. PAYMENT_GATEWAY aur PAYMENT_API_KEY set karein.',
+          'The online payment gateway is not configured on this deployment. Set PAYMENT_GATEWAY and PAYMENT_API_KEY.',
       };
     }
     // Implementation note for whoever wires the real gateway: create the hosted
@@ -34,7 +34,7 @@ export const gatewayProvider: PaymentProvider = {
     return {
       kind: 'FAILED',
       reason:
-        'Gateway driver ka charge() implement nahi hua. Apne provider ka checkout call add karein.',
+        'The gateway driver’s charge() is not implemented. Add your provider’s checkout call.',
     };
   },
 
@@ -42,12 +42,12 @@ export const gatewayProvider: PaymentProvider = {
     if (!integrations.onlinePayments.configured) {
       return {
         kind: 'FAILED',
-        reason: 'Online payment gateway configured nahi hai.',
+        reason: 'The online payment gateway is not configured.',
       };
     }
     return {
       kind: 'MANUAL_REQUIRED',
-      instructions: 'Gateway dashboard se refund karein aur yahan record karein.',
+      instructions: 'Refund from the gateway dashboard and record it here.',
     };
   },
 
@@ -57,16 +57,16 @@ export const gatewayProvider: PaymentProvider = {
    */
   verifyWebhook(rawBody: string, headers: Headers) {
     if (!env.PAYMENT_WEBHOOK_SECRET) {
-      return { valid: false, reason: 'PAYMENT_WEBHOOK_SECRET set nahi hai.' };
+      return { valid: false, reason: 'PAYMENT_WEBHOOK_SECRET is not set.' };
     }
     const signature = headers.get('x-payment-signature');
-    if (!signature) return { valid: false, reason: 'Signature header missing hai.' };
+    if (!signature) return { valid: false, reason: 'The signature header is missing.' };
 
     const expected = createHmac('sha256', env.PAYMENT_WEBHOOK_SECRET).update(rawBody).digest('hex');
     const a = Buffer.from(expected, 'utf8');
     const b = Buffer.from(signature, 'utf8');
     if (a.length !== b.length || !timingSafeEqual(a, b)) {
-      return { valid: false, reason: 'Signature match nahi karta.' };
+      return { valid: false, reason: 'The signature does not match.' };
     }
     return { valid: true };
   },

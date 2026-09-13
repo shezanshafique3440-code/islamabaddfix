@@ -63,8 +63,8 @@ export default async function ProviderNotificationsPage() {
       ) : (
         <EmptyState
           className="mt-6"
-          title="Koi notification nahi"
-          description="Nayi job request aane par yahan alert milega."
+          title="No notifications"
+          description="You will be alerted here when a new job request arrives."
         />
       )}
     </div>

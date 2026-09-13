@@ -12,14 +12,14 @@ export const cashProvider: PaymentProvider = {
   key: 'cash',
   method: 'CASH',
   label: 'Cash on Service',
-  description: 'Technician ko kaam mukammal hone par cash dein.',
+  description: 'Pay the technician in cash when the work is complete.',
   isConfigured: () => true,
   initialStatus: () => 'PENDING',
 
   async charge(): Promise<ChargeResult> {
     return {
       kind: 'DEFERRED',
-      note: 'Cash kaam mukammal hone par collect hoga.',
+      note: 'Cash is collected when the work is complete.',
     };
   },
 
@@ -27,7 +27,7 @@ export const cashProvider: PaymentProvider = {
     // There is no rail to reverse; ops refunds cash by hand and records it.
     return {
       kind: 'MANUAL_REQUIRED',
-      instructions: `Cash refund manually process karein aur record rakhein. Wajah: ${intent.reason}`,
+      instructions: `Process the cash refund manually and keep a record. Reason: ${intent.reason}`,
     };
   },
 };

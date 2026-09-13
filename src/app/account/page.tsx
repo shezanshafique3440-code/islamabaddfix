@@ -7,14 +7,14 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
-  title: 'Meri bookings',
+  title: 'My bookings',
   robots: { index: false, follow: false },
 };
 
 const TABS = [
-  { key: 'active', label: 'Chal rahi hain' },
-  { key: 'upcoming', label: 'Aane wali' },
-  { key: 'completed', label: 'Mukammal' },
+  { key: 'active', label: 'In progress' },
+  { key: 'upcoming', label: 'Upcoming' },
+  { key: 'completed', label: 'Completed' },
   { key: 'cancelled', label: 'Cancelled' },
   { key: 'disputed', label: 'Disputes' },
   { key: 'all', label: 'Sab' },
@@ -39,14 +39,16 @@ export default async function AccountBookingsPage({
     <div>
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-display-sm text-ink-950">Meri bookings</h1>
-          <p className="mt-1 text-sm text-ink-600">Status, quotes aur payments — sab yahan.</p>
+          <h1 className="text-display-sm text-ink-950">My bookings</h1>
+          <p className="mt-1 text-sm text-ink-600">
+            Status, quotes and payments — all in one place.
+          </p>
         </div>
         <Link
           href="/book"
           className="hidden h-10 items-center rounded-xl bg-brand-700 px-4 text-sm font-semibold text-white hover:bg-brand-800 sm:inline-flex md:hidden"
         >
-          + Nayi booking
+          + New booking
         </Link>
       </div>
 
@@ -81,13 +83,13 @@ export default async function AccountBookingsPage({
           <EmptyState
             title={
               scope === 'active'
-                ? 'Koi booking chal nahi rahi'
+                ? 'No bookings in progress'
                 : scope === 'completed'
-                  ? 'Abhi koi mukammal booking nahi'
-                  : 'Is filter mein kuch nahi'
+                  ? 'No completed bookings yet'
+                  : 'Nothing matches this filter'
             }
-            description="Nayi booking banayein — masla batayein aur verified technician chunein."
-            action={{ label: 'Service book karein', href: '/book' }}
+            description="Create a new booking — describe the problem and pick a verified technician."
+            action={{ label: 'Book a service', href: '/book' }}
           />
         )}
       </div>

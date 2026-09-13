@@ -90,7 +90,7 @@ export async function enforceRateLimit(rule: RateLimitRule, identity: string): P
   if (!result.allowed) {
     throw new AppError(
       'RATE_LIMITED',
-      `Bohat zyada requests. ${result.retryAfterSeconds} seconds baad dobara koshish karein.`,
+      `Too many requests. Try again in ${result.retryAfterSeconds} seconds.`,
       { context: { rule: rule.name, retryAfterSeconds: result.retryAfterSeconds } },
     );
   }

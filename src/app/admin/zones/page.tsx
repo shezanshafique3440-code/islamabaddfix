@@ -26,7 +26,7 @@ export default async function AdminZonesPage() {
       <header>
         <h1 className="text-display-sm text-ink-950">Service areas</h1>
         <p className="mt-1 text-sm text-ink-600">
-          Sectors data hain, code nahi — naya area kholna sirf ek row add karna hai.
+          Sectors are data, not code — opening a new area is just adding a row.
         </p>
       </header>
 

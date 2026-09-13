@@ -11,7 +11,7 @@ import { ImageResponse } from 'next/og';
  */
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
-export const alt = 'Islamabad Fix — Problem batao. Baqi hum sambhal lenge.';
+export const alt = 'Islamabad Fix — Tell us the problem. We will handle the rest.';
 
 // brand-700 and ink-950 from tailwind.config.ts.
 const BRAND = '#0b6b51';
@@ -55,13 +55,13 @@ export default function OpengraphImage() {
 
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div style={{ fontSize: 76, fontWeight: 700, color: INK, lineHeight: 1.1 }}>
-          Problem batao.
+          Tell us the problem.
         </div>
         <div style={{ fontSize: 76, fontWeight: 700, color: BRAND, lineHeight: 1.1 }}>
-          Baqi hum sambhal lenge.
+          We will handle the rest.
         </div>
         <div style={{ marginTop: 28, fontSize: 30, color: '#4a5553' }}>
-          Islamabad mein verified technicians — AC, electrical, plumbing aur bohat kuch.
+          Verified technicians in Islamabad — AC, electrical, plumbing and much more.
         </div>
       </div>
 
@@ -77,7 +77,7 @@ export default function OpengraphImage() {
       >
         <span>Transparent quotes</span>
         <span>·</span>
-        <span>Qeemat pehle, kaam baad mein</span>
+        <span>Price first, work after</span>
         <span>·</span>
         <span>Fix Guarantee</span>
       </div>

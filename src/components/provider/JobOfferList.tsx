@@ -39,14 +39,14 @@ export function JobOfferList({ offers }: { offers: Offer[] }) {
       await api.post(`/api/provider/jobs/${offer.booking.id}/status`, { action: 'accept' });
       toast({
         tone: 'success',
-        title: 'Job qubool kar li',
-        description: 'Ab customer ka poora address aur phone number aap ko dikh raha hai.',
+        title: 'Job accepted',
+        description: 'You can now see the customer’s full address and phone number.',
       });
       router.refresh();
     } catch (error) {
       toast({
         tone: 'error',
-        title: 'Qubool nahi ho saki',
+        title: 'Could not accept',
         description: error instanceof ApiError ? error.message : undefined,
       });
     } finally {
@@ -79,13 +79,13 @@ export function JobOfferList({ offers }: { offers: Offer[] }) {
                   {offer.booking.scheduledFor ? (
                     <span>{formatDateTime(offer.booking.scheduledFor)}</span>
                   ) : (
-                    <span>Foran</span>
+                    <span>Right now</span>
                   )}
-                  <span>{formatRelative(offer.notifiedAt)} aayi</span>
+                  <span>arrived {formatRelative(offer.notifiedAt)}</span>
                 </div>
                 {offer.expiresAt ? (
                   <p className="mt-1.5 text-xs font-medium text-warn-700">
-                    {formatRelative(offer.expiresAt)} tak jawab dein
+                    respond within {formatRelative(offer.expiresAt)}
                   </p>
                 ) : null}
               </div>
@@ -98,21 +98,21 @@ export function JobOfferList({ offers }: { offers: Offer[] }) {
                 onClick={() => accept(offer)}
                 className="sm:flex-1"
               >
-                Qubool karein
+                Accept
               </Button>
               <Button variant="outline" onClick={() => setDeclining(offer)}>
-                Nahi kar sakta
+                Not allowed
               </Button>
               <Link
                 href={`/provider/jobs/${offer.booking.id}`}
                 className="inline-flex h-11 items-center justify-center rounded-xl px-3 text-sm font-medium text-ink-600 hover:bg-ink-100"
               >
-                Tafseel
+                Details
               </Link>
             </div>
 
             <p className="mt-2 text-xs text-ink-500">
-              Poora address aur customer ka number qubool karne ke baad dikhega.
+              The full address and the customer’s number appear once you accept.
             </p>
           </li>
         ))}
@@ -147,12 +147,12 @@ function DeclineDialog({
     <Dialog
       open={offer !== null}
       onClose={onClose}
-      title="Yeh job decline karein?"
-      description="Wajah batana optional hai lekin matching behtar banata hai."
+      title="Decline this job?"
+      description="Giving a reason is optional but it improves matching."
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={loading}>
-            Rehne dein
+            Leave it
           </Button>
           <Button
             variant="danger"
@@ -165,12 +165,12 @@ function DeclineDialog({
                   action: 'decline',
                   reason: reason.trim() || undefined,
                 });
-                toast({ tone: 'info', title: 'Job decline kar di' });
+                toast({ tone: 'info', title: 'Job declined' });
                 onDone();
               } catch (error) {
                 toast({
                   tone: 'error',
-                  title: 'Decline nahi ho saki',
+                  title: 'Could not decline',
                   description: error instanceof ApiError ? error.message : undefined,
                 });
               } finally {
@@ -178,17 +178,17 @@ function DeclineDialog({
               }
             }}
           >
-            Decline karein
+            Decline
           </Button>
         </>
       }
     >
       <Textarea
-        label="Wajah (optional)"
+        label="Reason (optional)"
         rows={3}
         value={reason}
         onChange={(event) => setReason(event.target.value)}
-        placeholder="Misal: us waqt doosri job hai"
+        placeholder="For example: I have another job at that time"
       />
     </Dialog>
   );

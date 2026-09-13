@@ -22,7 +22,7 @@ export const POST = route(async (request) => {
   if (!provider.shareLiveLocation) {
     throw new AppError(
       'FORBIDDEN',
-      'Location sharing off hai. Settings mein enable karein tab hi location record hogi.',
+      'Location sharing is off. Your location is only recorded if you enable it in settings.',
     );
   }
 

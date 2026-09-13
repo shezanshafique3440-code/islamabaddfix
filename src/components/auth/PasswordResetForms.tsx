@@ -43,7 +43,7 @@ export function ForgotPasswordForm() {
       setError(
         caught instanceof ApiError
           ? caught.message
-          : 'Request bhej nahi sake. Dobara koshish karein.',
+          : 'We could not send the request. Please try again.',
       );
     } finally {
       setLoading(false);
@@ -60,7 +60,7 @@ export function ForgotPasswordForm() {
         {/* Honest about delivery: a "check your inbox" for mail that was never
             sent is exactly the kind of lie this product does not tell. */}
         {!result.delivered && result.notice ? (
-          <NotConfiguredNotice feature="Email bhejna" detail={result.notice} />
+          <NotConfiguredNotice feature="Sending email" detail={result.notice} />
         ) : null}
 
         {result.devToken ? (
@@ -72,7 +72,7 @@ export function ForgotPasswordForm() {
               href={`/reset-password?token=${encodeURIComponent(result.devToken)}`}
               className="mt-1.5 block break-all text-sm font-medium text-brand-700 underline"
             >
-              Reset link kholein
+              Open reset link
             </Link>
           </div>
         ) : null}
@@ -81,7 +81,7 @@ export function ForgotPasswordForm() {
           href="/login"
           className="block text-center text-sm font-medium text-brand-700 hover:underline"
         >
-          Login par wapis jayein
+          Back to sign in
         </Link>
       </div>
     );
@@ -102,18 +102,18 @@ export function ForgotPasswordForm() {
         autoComplete="email"
         inputMode="email"
         required
-        placeholder="aap@example.com"
-        hint="Jis email se account banaya tha."
+        placeholder="you@example.com"
+        hint="The email you signed up with."
       />
 
       <Button type="submit" fullWidth size="lg" loading={loading}>
-        Reset link bhejein
+        Send reset link
       </Button>
 
       <p className="text-center text-sm text-ink-600">
-        Yaad aa gaya?{' '}
+        Remembered it?{' '}
         <Link href="/login" className="font-medium text-brand-700 hover:underline">
-          Login karein
+          Sign in
         </Link>
       </p>
     </form>
@@ -159,7 +159,7 @@ export function ResetPasswordForm() {
     const confirm = String(form.get('confirmPassword') ?? '');
 
     if (password !== confirm) {
-      setFieldError('Dono passwords ek jaise nahi hain.');
+      setFieldError('The two passwords do not match.');
       setLoading(false);
       return;
     }
@@ -172,7 +172,7 @@ export function ResetPasswordForm() {
         setFieldError(caught.fieldMap.newPassword);
         setError(caught.message);
       } else {
-        setError('Password badal nahi saka. Dobara koshish karein.');
+        setError('The password could not be changed. Please try again.');
       }
       setLoading(false);
     }
@@ -184,15 +184,14 @@ export function ResetPasswordForm() {
     return (
       <div className="space-y-4">
         <div role="alert" className="rounded-xl border border-alert-200 bg-alert-50 px-4 py-3">
-          <p className="text-sm font-semibold text-alert-700">Yeh link ab kaam nahi karta</p>
+          <p className="text-sm font-semibold text-alert-700">This link no longer works</p>
           <p className="mt-1 text-sm leading-relaxed text-alert-700/90">
-            Reset link 30 minute tak valid rehta hai, aur ek hi baar istemal hota hai. Naya link
-            mangwa lein.
+            A reset link is valid for 30 minutes and works only once. Request a new one.
           </p>
         </div>
         <Link href="/forgot-password" className="block">
           <Button fullWidth size="lg">
-            Naya link mangwayein
+            Request a new link
           </Button>
         </Link>
       </div>
@@ -203,15 +202,15 @@ export function ResetPasswordForm() {
     return (
       <div className="space-y-4">
         <div className="rounded-xl border border-brand-200 bg-brand-50 px-4 py-3">
-          <p className="text-sm font-semibold text-brand-900">Password badal gaya</p>
+          <p className="text-sm font-semibold text-brand-900">Password changed</p>
           <p className="mt-1 text-sm leading-relaxed text-brand-900/90">
-            Hifazat ke liye aapke sab devices se logout kar diya gaya hai. Naye password se login
-            karein.
+            For your safety you have been signed out of all your devices. Sign in with your new
+            password.
           </p>
         </div>
         <Link href="/login" className="block">
           <Button fullWidth size="lg">
-            Login karein
+            Sign in
           </Button>
         </Link>
       </div>
@@ -227,16 +226,16 @@ export function ResetPasswordForm() {
       ) : null}
 
       <TextInput
-        label="Naya password"
+        label="New password"
         name="newPassword"
         type="password"
         autoComplete="new-password"
         required
         error={fieldError}
-        hint="Kam az kam 10 characters, choti aur bari letters ya numbers ke saath."
+        hint="At least 10 characters, with upper and lower case letters or numbers."
       />
       <TextInput
-        label="Naya password dobara"
+        label="New password again"
         name="confirmPassword"
         type="password"
         autoComplete="new-password"
@@ -244,7 +243,7 @@ export function ResetPasswordForm() {
       />
 
       <Button type="submit" fullWidth size="lg" loading={loading}>
-        Password set karein
+        Set a password
       </Button>
     </form>
   );

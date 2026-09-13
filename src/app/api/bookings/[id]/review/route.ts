@@ -39,7 +39,7 @@ export const PATCH = route(async (request, { params }: Params) => {
     where: { bookingId: id },
     select: { id: true },
   });
-  if (!existing) throw new AppError('NOT_FOUND', 'Is booking ka review nahi mila.');
+  if (!existing) throw new AppError('NOT_FOUND', 'No review found for this booking.');
 
   const review = await updateReview({ reviewId: existing.id, authorId: ctx.user.id, ...input });
   return ok({ id: review.id, rating: review.rating });
@@ -52,7 +52,7 @@ export const PATCH = route(async (request, { params }: Params) => {
 export const PUT = route(async (request, { params }: Params) => {
   const ctx = await requireAuth();
   const { id } = await params;
-  if (!ctx.providerId) throw new AppError('FORBIDDEN', 'Sirf provider yeh rating de sakta hai.');
+  if (!ctx.providerId) throw new AppError('FORBIDDEN', 'Only the provider can give this rating.');
 
   const input = await parseJson(request, rateCustomerSchema);
   await rateCustomer({

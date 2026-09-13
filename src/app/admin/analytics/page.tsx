@@ -75,14 +75,14 @@ export default async function AdminAnalyticsPage({
 
       <dl className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         <MetricCard label="Bookings" value={String(totals.bookings)} />
-        <MetricCard label="Mukammal" value={String(totals.completed)} />
+        <MetricCard label="Completed" value={String(totals.completed)} />
         <MetricCard label="Cancelled" value={String(totals.cancelled)} />
         <MetricCard label="Gross revenue" value={formatPaisa(totals.gross)} />
         <MetricCard label="Commission" value={formatPaisa(totals.commission)} />
       </dl>
 
       <section className="rounded-2xl border border-ink-200 bg-white p-5">
-        <h2 className="text-[0.9375rem] font-semibold text-ink-900">Rozana trend</h2>
+        <h2 className="text-[0.9375rem] font-semibold text-ink-900">Daily trend</h2>
         <div className="mt-4">
           <BookingsChart data={series} />
         </div>
@@ -90,15 +90,15 @@ export default async function AdminAnalyticsPage({
 
       <div className="grid gap-6 lg:grid-cols-2">
         <BreakdownPanel
-          title="Category ke hisaab se"
+          title="By category"
           rows={categories.map((category) => ({
             label: category.categoryName,
             primary: category.bookings,
-            secondary: `${category.completed} mukammal · ${formatPaisa(category.grossPaisa)}`,
+            secondary: `${category.completed} completed · ${formatPaisa(category.grossPaisa)}`,
           }))}
         />
         <BreakdownPanel
-          title="Area ke hisaab se"
+          title="Based on area"
           rows={zones.map((zone) => ({
             label: zone.zoneName,
             primary: zone.bookings,
@@ -117,9 +117,9 @@ export default async function AdminAnalyticsPage({
             value={
               retention.repeatRate !== null ? `${(retention.repeatRate * 100).toFixed(1)}%` : '—'
             }
-            hint={retention.repeatRate === null ? 'Koi mukammal booking nahi' : undefined}
+            hint={retention.repeatRate === null ? 'No completed bookings' : undefined}
           />
-          <MetricCard label="Active (30 din)" value={String(retention.activeCustomers)} />
+          <MetricCard label="Active (30 days)" value={String(retention.activeCustomers)} />
         </dl>
       </section>
 
@@ -134,13 +134,13 @@ export default async function AdminAnalyticsPage({
               <thead className="bg-ink-50 text-left">
                 <tr>
                   <Th>Provider</Th>
-                  <Th className="text-right">Mukammal</Th>
+                  <Th className="text-right">Completed</Th>
                   <Th className="text-right">Cancelled</Th>
                   <Th>Rating</Th>
                   <Th className="text-right">Response rate</Th>
-                  <Th className="text-right">Avg jawab</Th>
+                  <Th className="text-right">Avg response</Th>
                   <Th className="text-right">Gross</Th>
-                  <Th className="text-right">Kamai</Th>
+                  <Th className="text-right">Earnings</Th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-ink-100 bg-white">
@@ -182,7 +182,7 @@ export default async function AdminAnalyticsPage({
             </table>
           </div>
         ) : (
-          <p className="mt-4 text-sm text-ink-500">Abhi koi verified provider nahi.</p>
+          <p className="mt-4 text-sm text-ink-500">No verified provider yet.</p>
         )}
       </section>
     </div>
@@ -221,7 +221,7 @@ function BreakdownPanel({
           ))}
         </ul>
       ) : (
-        <p className="mt-3 text-sm text-ink-500">Is arse mein koi data nahi.</p>
+        <p className="mt-3 text-sm text-ink-500">No data for this period.</p>
       )}
     </section>
   );

@@ -114,7 +114,7 @@ export function can(role: Role, permission: Permission): boolean {
 
 export function assertCan(role: Role, permission: Permission): void {
   if (!can(role, permission)) {
-    throw new AppError('FORBIDDEN', 'Aap is action ke liye authorized nahi hain.', {
+    throw new AppError('FORBIDDEN', 'You are not authorised to do that.', {
       context: { role, permission },
     });
   }

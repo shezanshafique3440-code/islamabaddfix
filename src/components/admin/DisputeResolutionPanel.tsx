@@ -10,14 +10,14 @@ import { useToast } from '@/components/ui/Toast';
 import { formatPaisa } from '@/lib/money';
 
 const OUTCOMES = [
-  { value: 'UNDER_REVIEW', label: 'Under review — jaiza jari hai', needsRefund: false },
-  { value: 'AWAITING_CUSTOMER', label: 'Customer se maloomat chahiye', needsRefund: false },
-  { value: 'AWAITING_PROVIDER', label: 'Provider se maloomat chahiye', needsRefund: false },
-  { value: 'RESOLVED_REVISIT', label: 'Hal — dobara visit manzoor', needsRefund: false },
-  { value: 'RESOLVED_PARTIAL_REFUND', label: 'Hal — juzvi refund', needsRefund: true },
-  { value: 'RESOLVED_REFUND', label: 'Hal — poora refund', needsRefund: true },
-  { value: 'RESOLVED_NO_ACTION', label: 'Hal — koi karwai nahi', needsRefund: false },
-  { value: 'CLOSED', label: 'Band karein', needsRefund: false },
+  { value: 'UNDER_REVIEW', label: 'Under review', needsRefund: false },
+  { value: 'AWAITING_CUSTOMER', label: 'Information needed from the customer', needsRefund: false },
+  { value: 'AWAITING_PROVIDER', label: 'Information needed from the provider', needsRefund: false },
+  { value: 'RESOLVED_REVISIT', label: 'Resolved — re-visit approved', needsRefund: false },
+  { value: 'RESOLVED_PARTIAL_REFUND', label: 'Resolved — partial refund', needsRefund: true },
+  { value: 'RESOLVED_REFUND', label: 'Resolved — full refund', needsRefund: true },
+  { value: 'RESOLVED_NO_ACTION', label: 'Resolved — no action', needsRefund: false },
+  { value: 'CLOSED', label: 'Close', needsRefund: false },
 ] as const;
 
 /**
@@ -80,26 +80,26 @@ export function DisputeResolutionPanel({
 
         {!hasPaidPayment ? (
           <p className="mt-2 text-sm text-ink-600">
-            Is booking par koi paid payment nahi hai, is liye refund ke options available nahi.
+            There is no paid payment on this booking, so refund options are not available.
           </p>
         ) : refundablePaisa > 0 ? (
           <p className="mt-2 text-sm text-ink-600">
             Refund ke liye {formatPaisa(refundablePaisa)} available hai.
           </p>
         ) : (
-          <p className="mt-2 text-sm text-ink-600">Poori raqam pehle refund ho chuki hai.</p>
+          <p className="mt-2 text-sm text-ink-600">The full amount has already been refunded.</p>
         )}
 
         {instructions ? (
           <div className="mt-3 rounded-xl border border-warn-200 bg-warn-50 p-3.5">
-            <p className="text-sm font-semibold text-warn-700">Manual karwai darkar hai</p>
+            <p className="text-sm font-semibold text-warn-700">Manual action required</p>
             <p className="mt-1 text-sm text-ink-700">{instructions}</p>
           </div>
         ) : null}
 
         <div className="mt-4">
           <Button onClick={() => setOpen(true)} disabled={isTerminal && status === 'CLOSED'}>
-            {isTerminal ? 'Status update karein' : 'Faisla karein'}
+            {isTerminal ? 'Update status' : 'Decide'}
           </Button>
         </div>
       </section>
@@ -107,12 +107,12 @@ export function DisputeResolutionPanel({
       <Dialog
         open={open}
         onClose={() => setOpen(false)}
-        title="Dispute ka faisla"
-        description="Faisla dono taraf ko notification se bhej diya jayega aur audit log mein darj hoga."
+        title="Dispute decision"
+        description="The decision is sent to both sides by notification and recorded in the audit log."
         footer={
           <>
             <Button variant="outline" onClick={() => setOpen(false)} disabled={loading}>
-              Band karein
+              Close
             </Button>
             <Button
               loading={loading}
@@ -134,13 +134,13 @@ export function DisputeResolutionPanel({
                     },
                   );
                   setInstructions(result.refundInstructions);
-                  toast({ tone: 'success', title: 'Faisla record ho gaya' });
+                  toast({ tone: 'success', title: 'Decision recorded' });
                   setOpen(false);
                   router.refresh();
                 } catch (error) {
                   toast({
                     tone: 'error',
-                    title: 'Faisla record nahi hua',
+                    title: 'Decision not recorded',
                     description: error instanceof ApiError ? error.message : undefined,
                   });
                 } finally {
@@ -148,14 +148,14 @@ export function DisputeResolutionPanel({
                 }
               }}
             >
-              Faisla save karein
+              Save decision
             </Button>
           </>
         }
       >
         <div className="space-y-4">
           <Select
-            label="Faisla"
+            label="Decision"
             value={outcome}
             onChange={(event) => setOutcome(event.target.value)}
           >
@@ -174,25 +174,25 @@ export function DisputeResolutionPanel({
               max={refundablePaisa / 100}
               value={refundRupees}
               onChange={(event) => setRefundRupees(event.target.value)}
-              hint={`Zyada se zyada ${formatPaisa(refundablePaisa)}`}
+              hint={`Up to ${formatPaisa(refundablePaisa)}`}
               required
             />
           ) : null}
 
           {outcome === 'RESOLVED_REFUND' ? (
             <p className="rounded-xl bg-info-50 px-3.5 py-2.5 text-sm text-info-700">
-              Poora baqi refund ({formatPaisa(refundablePaisa)}) process hoga.
+              The full remaining refund ({formatPaisa(refundablePaisa)}) will be processed.
             </p>
           ) : null}
 
           <Textarea
-            label="Faisle ki wajah"
+            label="Reason for the decision"
             required
             rows={4}
             value={notes}
             onChange={(event) => setNotes(event.target.value)}
-            placeholder="Kya maloom hua, kis buniyad par faisla kiya."
-            hint="Yeh customer aur provider dono ko dikhayi jayegi."
+            placeholder="What you found, and what you based the decision on."
+            hint="This is shown to both the customer and the provider."
           />
         </div>
       </Dialog>

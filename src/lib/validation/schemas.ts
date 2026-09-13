@@ -11,45 +11,45 @@ import { passwordSchema } from '../auth/password';
 
 // ------------------------------------------------------------------ primitives
 
-export const uuidSchema = z.string().uuid('Valid id darkar hai.');
+export const uuidSchema = z.string().uuid('A valid id is required.');
 
 export const phoneSchema = z
   .string()
   .trim()
-  .min(10, 'Phone number mukammal likhein.')
-  .max(20, 'Phone number bohat lamba hai.')
-  .regex(/^[\d\s+()-]+$/, 'Phone number mein sirf digits ho sakte hain.');
+  .min(10, 'Enter the complete phone number.')
+  .max(20, 'That phone number is too long.')
+  .regex(/^[\d\s+()-]+$/, 'A phone number can only contain digits.');
 
 export const emailSchema = z
   .string()
   .trim()
   .toLowerCase()
-  .email('Valid email address likhein.')
+  .email('Enter a valid email address.')
   .max(254);
 
 export const nameSchema = z
   .string()
   .trim()
-  .min(2, 'Naam kam az kam 2 characters ka ho.')
-  .max(120, 'Naam bohat lamba hai.');
+  .min(2, 'The name must be at least 2 characters.')
+  .max(120, 'That name is too long.');
 
 /** Money accepted from clients as whole rupees, converted to paisa. */
 export const rupeesSchema = z
-  .number({ invalid_type_error: 'Rupees mein number likhein.' })
-  .int('Rupees poore number mein likhein.')
-  .min(0, 'Amount negative nahi ho sakti.')
-  .max(5_000_000, 'Amount bohat zyada hai.');
+  .number({ invalid_type_error: 'Enter a number in rupees.' })
+  .int('Enter rupees as a whole number.')
+  .min(0, 'The amount cannot be negative.')
+  .max(5_000_000, 'That amount is too large.');
 
 export const paisaSchema = z.number().int().min(0).max(500_000_000);
 
 export const ratingSchema = z
   .number()
-  .int('Rating 1 se 5 ke darmiyan honi chahiye.')
-  .min(1, 'Rating 1 se 5 ke darmiyan honi chahiye.')
-  .max(5, 'Rating 1 se 5 ke darmiyan honi chahiye.');
+  .int('The rating must be between 1 and 5.')
+  .min(1, 'The rating must be between 1 and 5.')
+  .max(5, 'The rating must be between 1 and 5.');
 
 /** Accepts an ISO string or Date, and rejects anything unparseable. */
-export const dateSchema = z.coerce.date({ invalid_type_error: 'Valid date aur time chunein.' });
+export const dateSchema = z.coerce.date({ invalid_type_error: 'Pick a valid date and time.' });
 
 export const paginationSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
@@ -65,22 +65,22 @@ export const registerSchema = z.object({
   password: passwordSchema,
   role: z.enum(['CUSTOMER', 'PROVIDER']).default('CUSTOMER'),
   acceptedTerms: z.literal(true, {
-    errorMap: () => ({ message: 'Terms accept karna zaroori hai.' }),
+    errorMap: () => ({ message: 'You must accept the terms.' }),
   }),
 });
 
 export const loginSchema = z.object({
   email: emailSchema,
-  password: z.string().min(1, 'Password likhein.'),
+  password: z.string().min(1, 'Enter your password.'),
 });
 
 export const changePasswordSchema = z
   .object({
-    currentPassword: z.string().min(1, 'Mojooda password likhein.'),
+    currentPassword: z.string().min(1, 'Enter your current password.'),
     newPassword: passwordSchema,
   })
   .refine((data) => data.currentPassword !== data.newPassword, {
-    message: 'Naya password purane se mukhtalif hona chahiye.',
+    message: 'The new password must be different from the old one.',
     path: ['newPassword'],
   });
 
@@ -96,12 +96,12 @@ export const forgotPasswordSchema = z.object({
 });
 
 export const resetPasswordSchema = z.object({
-  token: z.string().min(20, 'Reset link adhoora hai.').max(400),
+  token: z.string().min(20, 'That reset link is incomplete.').max(400),
   newPassword: passwordSchema,
 });
 
 export const verifyEmailSchema = z.object({
-  token: z.string().min(20, 'Verification link adhoora hai.').max(400),
+  token: z.string().min(20, 'That verification link is incomplete.').max(400),
 });
 
 export const requestPhoneCodeSchema = z.object({
@@ -112,7 +112,7 @@ export const confirmPhoneCodeSchema = z.object({
   code: z
     .string()
     .trim()
-    .regex(/^\d{6}$/, 'Code chhe hindson ka hota hai.'),
+    .regex(/^\d{6}$/, 'The code is six digits.'),
 });
 
 // ---------------------------------------------------------------- two-factor
@@ -141,7 +141,7 @@ export const notificationPreferencesSchema = z
   .partial();
 
 export const closeAccountSchema = z.object({
-  password: z.string().min(1, 'Password likhein.'),
+  password: z.string().min(1, 'Enter your password.'),
   reason: z.string().trim().max(500).optional(),
 });
 
@@ -154,8 +154,8 @@ export const addressSchema = z.object({
   addressLine: z
     .string()
     .trim()
-    .min(5, 'Address thoda tafseel se likhein.')
-    .max(300, 'Address bohat lamba hai.'),
+    .min(5, 'Please write the address in a little more detail.')
+    .max(300, 'That address is too long.'),
   houseOrBuilding: z.string().trim().max(120).optional(),
   landmark: z.string().trim().max(160).optional(),
   latitude: z.number().min(-90).max(90).optional().nullable(),
@@ -172,14 +172,14 @@ export const createBookingSchema = z.object({
   problemDescription: z
     .string()
     .trim()
-    .min(10, 'Masla kam az kam 10 characters mein batayein.')
-    .max(2000, 'Tafseel bohat lambi hai.'),
+    .min(10, 'Describe the problem in at least 10 characters.')
+    .max(2000, 'That description is too long.'),
   providerId: uuidSchema.optional().nullable(),
   scheduledFor: dateSchema.optional().nullable(),
   urgency: z.enum(['NORMAL', 'URGENT', 'EMERGENCY']).default('NORMAL'),
   isEmergency: z.boolean().default(false),
   customerNotes: z.string().trim().max(1000).optional(),
-  fileIds: z.array(uuidSchema).max(8, 'Zyada se zyada 8 files attach ki ja sakti hain.').optional(),
+  fileIds: z.array(uuidSchema).max(8, 'You can attach up to 8 files.').optional(),
   intakeSummary: z.record(z.unknown()).optional().nullable(),
   promoCode: z.string().trim().min(3).max(32).optional(),
 });
@@ -200,8 +200,8 @@ export const cancelBookingSchema = z.object({
   reason: z
     .string()
     .trim()
-    .min(4, 'Cancel karne ki wajah likhein.')
-    .max(500, 'Wajah bohat lambi hai.'),
+    .min(4, 'Give a reason for cancelling.')
+    .max(500, 'That reason is too long.'),
 });
 
 export const bookingStatusActionSchema = z.object({
@@ -223,7 +223,7 @@ export const bookingStatusActionSchema = z.object({
 // --------------------------------------------------------- booking messaging
 
 export const bookingMessageSchema = z.object({
-  body: z.string().trim().max(2000, 'Message bohat lamba hai.'),
+  body: z.string().trim().max(2000, 'That message is too long.'),
   attachmentId: uuidSchema.optional().nullable(),
 });
 
@@ -236,17 +236,14 @@ export const rescheduleSchema = z.object({
 
 export const quoteItemSchema = z.object({
   kind: z.enum(['INSPECTION', 'LABOUR', 'PARTS', 'EMERGENCY_FEE', 'TRAVEL', 'OTHER']),
-  label: z.string().trim().min(2, 'Item ka naam likhein.').max(120),
+  label: z.string().trim().min(2, 'Enter an item name.').max(120),
   quantity: z.number().int().min(1).max(999).default(1),
   // Providers type rupees; paisa conversion happens in the route.
   unitPriceRupees: rupeesSchema,
 });
 
 export const submitQuoteSchema = z.object({
-  items: z
-    .array(quoteItemSchema)
-    .min(1, 'Kam az kam ek item add karein.')
-    .max(20, 'Zyada se zyada 20 items.'),
+  items: z.array(quoteItemSchema).min(1, 'Add at least one item.').max(20, 'Up to 20 items.'),
   notes: z.string().trim().max(1000).optional(),
   validUntil: dateSchema.optional().nullable(),
 });
@@ -286,7 +283,7 @@ export const settlePaymentSchema = z.object({
 export const refundSchema = z.object({
   amountRupees: rupeesSchema.optional(),
   full: z.boolean().default(false),
-  reason: z.string().trim().min(4, 'Refund ki wajah likhein.').max(500),
+  reason: z.string().trim().min(4, 'Give a reason for the refund.').max(500),
 });
 
 // -------------------------------------------------------------------- disputes
@@ -303,7 +300,7 @@ export const createDisputeSchema = z.object({
   description: z
     .string()
     .trim()
-    .min(15, 'Masla thoda tafseel se batayein (kam az kam 15 characters).')
+    .min(15, 'Describe the problem in a little detail (at least 15 characters).')
     .max(2000),
   fileIds: z.array(uuidSchema).max(8).optional(),
 });
@@ -329,7 +326,7 @@ export const createGuaranteeClaimSchema = z.object({
   description: z
     .string()
     .trim()
-    .min(15, 'Masla thoda tafseel se batayein (kam az kam 15 characters).')
+    .min(15, 'Describe the problem in a little detail (at least 15 characters).')
     .max(2000),
   fileIds: z.array(uuidSchema).max(8).optional(),
 });
@@ -344,15 +341,15 @@ export const decideGuaranteeClaimSchema = z.object({
 // ------------------------------------------------------------------- providers
 
 export const providerOnboardingSchema = z.object({
-  businessName: z.string().trim().min(3, 'Business ya apna naam likhein.').max(120),
+  businessName: z.string().trim().min(3, 'Enter your business or your own name.').max(120),
   contactPhone: phoneSchema,
   headline: z.string().trim().max(140).optional(),
   description: z.string().trim().max(2000).optional(),
   yearsExperience: z
     .number()
     .int()
-    .min(0, 'Experience negative nahi ho sakta.')
-    .max(60, 'Experience 60 saal se zyada nahi ho sakta.'),
+    .min(0, 'Experience cannot be negative.')
+    .max(60, 'Experience cannot be more than 60 years.'),
   addressLine: z.string().trim().max(300).optional(),
   sector: z.string().trim().max(60).optional(),
   services: z
@@ -362,9 +359,9 @@ export const providerOnboardingSchema = z.object({
         startingPriceRupees: rupeesSchema,
       }),
     )
-    .min(1, 'Kam az kam ek service select karein.')
+    .min(1, 'Select at least one service.')
     .max(60),
-  zoneIds: z.array(uuidSchema).min(1, 'Kam az kam ek service area select karein.').max(60),
+  zoneIds: z.array(uuidSchema).min(1, 'Select at least one service area.').max(60),
   availability: z
     .array(
       z
@@ -374,7 +371,7 @@ export const providerOnboardingSchema = z.object({
           endMinute: z.number().int().min(1).max(1440),
         })
         .refine((window) => window.endMinute > window.startMinute, {
-          message: 'Khatam hone ka waqt shuru se baad hona chahiye.',
+          message: 'The end time must be after the start time.',
         }),
     )
     .max(21)
@@ -390,7 +387,7 @@ export const providerOnboardingSchema = z.object({
     // We store a reference, not the CNIC itself; reject anything that looks like
     // a full 13-digit number so it cannot be captured by accident.
     .refine((value) => !value || value.replace(/\D/g, '').length <= 6, {
-      message: 'Poora CNIC number na likhein — sirf aakhri 4 digits.',
+      message: 'Do not enter the full CNIC number — last 4 digits only.',
     }),
   bankAccountTitle: z.string().trim().max(120).optional(),
   bankName: z.string().trim().max(120).optional(),
@@ -398,10 +395,10 @@ export const providerOnboardingSchema = z.object({
     .string()
     .trim()
     .max(34)
-    .regex(/^PK\d{2}[A-Z0-9]{16,20}$/i, 'Valid Pakistani IBAN likhein (PK se shuru).')
+    .regex(/^PK\d{2}[A-Z0-9]{16,20}$/i, 'Enter a valid Pakistani IBAN (starting with PK).')
     .optional(),
   acceptedTerms: z.literal(true, {
-    errorMap: () => ({ message: 'Provider terms accept karna zaroori hai.' }),
+    errorMap: () => ({ message: 'You must accept the provider terms.' }),
   }),
 });
 
@@ -491,8 +488,8 @@ export const intakeSchema = z.object({
   message: z
     .string()
     .trim()
-    .min(3, 'Apna masla thoda tafseel se likhein.')
-    .max(1500, 'Message bohat lamba hai.'),
+    .min(3, 'Please describe your problem in a little more detail.')
+    .max(1500, 'That message is too long.'),
   history: z
     .array(
       z.object({
@@ -518,8 +515,8 @@ export const matchQuerySchema = z.object({
 // --------------------------------------------------------------------- support
 
 export const createTicketSchema = z.object({
-  subject: z.string().trim().min(5, 'Subject likhein.').max(160),
-  description: z.string().trim().min(15, 'Masla tafseel se batayein.').max(3000),
+  subject: z.string().trim().min(5, 'Enter a subject.').max(160),
+  description: z.string().trim().min(15, 'Describe the problem in detail.').max(3000),
   bookingId: uuidSchema.optional().nullable(),
   fileIds: z.array(uuidSchema).max(5).optional(),
 });
@@ -530,7 +527,7 @@ export const updateTicketSchema = z.object({
 });
 
 export const messageSchema = z.object({
-  body: z.string().trim().min(1, 'Message likhein.').max(2000),
+  body: z.string().trim().min(1, 'Write a message.').max(2000),
   attachmentId: uuidSchema.optional().nullable(),
 });
 
@@ -544,7 +541,7 @@ export const promoWriteSchema = z
       .toUpperCase()
       .min(3)
       .max(32)
-      .regex(/^[A-Z0-9-]+$/, 'Code mein sirf letters, digits aur dash ho sakte hain.'),
+      .regex(/^[A-Z0-9-]+$/, 'The code can only contain letters, digits and dashes.'),
     kind: z.enum(['PERCENTAGE', 'FIXED_AMOUNT']),
     /** Percent for PERCENTAGE, rupees for FIXED_AMOUNT. */
     value: z.number().min(0.01),
@@ -557,11 +554,11 @@ export const promoWriteSchema = z
     isActive: z.boolean().default(true),
   })
   .refine((data) => data.kind !== 'PERCENTAGE' || data.value <= 100, {
-    message: 'Percentage 100 se zyada nahi ho sakta.',
+    message: 'The percentage cannot be more than 100.',
     path: ['value'],
   })
   .refine((data) => !data.startsAt || !data.endsAt || data.endsAt > data.startsAt, {
-    message: 'Khatam hone ki tareekh shuru se baad honi chahiye.',
+    message: 'The end date must be after the start date.',
     path: ['endsAt'],
   });
 
@@ -589,10 +586,10 @@ export const adminUserQuerySchema = paginationSchema.extend({
 
 export const changeRoleSchema = z.object({
   role: z.enum(['CUSTOMER', 'PROVIDER', 'ADMIN', 'SUPER_ADMIN']),
-  reason: z.string().trim().min(4, 'Wajah likhein.').max(500),
+  reason: z.string().trim().min(4, 'Give a reason.').max(500),
 });
 
 export const setUserActiveSchema = z.object({
   isActive: z.boolean(),
-  reason: z.string().trim().min(4, 'Wajah likhein.').max(500),
+  reason: z.string().trim().min(4, 'Give a reason.').max(500),
 });

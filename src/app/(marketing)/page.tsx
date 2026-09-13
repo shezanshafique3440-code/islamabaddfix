@@ -13,9 +13,9 @@ import { HowItWorks } from '@/components/marketing/HowItWorks';
 import { formatPaisaRange } from '@/lib/money';
 
 export const metadata: Metadata = {
-  title: 'Islamabad Fix — Problem batao. Baqi hum sambhal lenge.',
+  title: 'Islamabad Fix — Tell us the problem. We will handle the rest.',
   description:
-    'Islamabad mein trusted home & business services — verified professionals, transparent quotes aur easy booking. AC, plumbing, electrical, cleaning, carpenter, appliances aur CCTV.',
+    'Trusted home and business services in Islamabad — verified professionals, transparent quotes and easy booking. AC, plumbing, electrical, cleaning, carpentry, appliances and CCTV.',
   alternates: { canonical: '/' },
 };
 
@@ -52,21 +52,21 @@ export default async function HomePage() {
         <div className="relative mx-auto max-w-content px-4 pb-14 pt-12 sm:px-6 sm:pb-20 sm:pt-16">
           <div className="max-w-2xl">
             <Badge tone="brand" dot className="mb-5">
-              {city} mein live
+              Live in {city}
             </Badge>
             <h1 className="text-display-sm text-ink-950 sm:text-display lg:text-display-lg">
-              Problem batao.
+              Tell us the problem.
               <br />
-              <span className="text-brand-700">Baqi hum sambhal lenge.</span>
+              <span className="text-brand-700">We will handle the rest.</span>
             </h1>
             <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-600 sm:text-lg">
-              {city} mein trusted home &amp; business services — verified professionals, transparent
-              quotes aur easy booking.
+              Trusted home &amp; business services in {city} — verified professionals, transparent
+              quotes and easy booking.
             </p>
 
             <div className="mt-7 max-w-xl">
               <p className="mb-2.5 text-sm font-semibold text-ink-800">
-                Aapko kis cheez ki help chahiye?
+                What do you need help with?
               </p>
               <ProblemSearch />
             </div>
@@ -89,14 +89,14 @@ export default async function HomePage() {
             />
             <TrustStat
               value={stats.completed > 0 ? `${stats.completed}` : '—'}
-              label="Jobs mukammal"
+              label="Jobs completed"
             />
             <TrustStat
               value={stats.rating !== null ? stats.rating.toFixed(1) : '—'}
               label="Average rating"
             />
             <TrustStat
-              value={guaranteeEnabled ? `${guaranteeDays} din` : '—'}
+              value={guaranteeEnabled ? `${guaranteeDays} days` : '—'}
               label="Service guarantee"
             />
           </dl>
@@ -107,8 +107,8 @@ export default async function HomePage() {
       <section className="mx-auto max-w-content px-4 py-14 sm:px-6 sm:py-16">
         <SectionHeading
           eyebrow="Popular services"
-          title="Kis cheez ka kaam hai?"
-          description="Category chunein ya oopar apna masla likh dein — hum sahi service tak pohcha denge."
+          title="What is the work for?"
+          description="Pick a category or describe your problem above — we will get you to the right service."
         />
         <CategoryGrid categories={popular} className="mt-7" />
       </section>
@@ -118,8 +118,8 @@ export default async function HomePage() {
         <div className="mx-auto max-w-content px-4 py-14 sm:px-6 sm:py-16">
           <SectionHeading
             eyebrow="How it works"
-            title="Char qadam, bas."
-            description="Koi technical maloomat ki zaroorat nahi. Aap masla batayein, baqi hum dekh lete hain."
+            title="Four steps, that is all."
+            description="No technical knowledge needed. Describe the problem and we will handle the rest."
           />
           <div className="mt-9">
             <HowItWorks />
@@ -131,8 +131,8 @@ export default async function HomePage() {
       <section className="mx-auto max-w-content px-4 py-14 sm:px-6 sm:py-16">
         <SectionHeading
           eyebrow="Transparent pricing"
-          title="Qeemat pehle, kaam baad mein."
-          description="Har technician muaina ke baad likhit quote deta hai. Aapki approval ke baghair koi extra charge nahi."
+          title="Price first, work after."
+          description="Every technician gives a written quote after inspecting. No extra charge without your approval."
         />
         <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {catalogue.slice(0, 6).map((category) => {
@@ -163,7 +163,7 @@ export default async function HomePage() {
                   {cheapest !== null ? formatPaisaRange(cheapest, dearest) : 'Quote par'}
                 </p>
                 <p className="mt-2 text-xs text-ink-400">
-                  Indicative range — final qeemat quote se tay hogi
+                  Indicative range — the final price is set by the quote
                 </p>
               </Link>
             );
@@ -182,12 +182,12 @@ export default async function HomePage() {
               <h2 className="text-title text-ink-950">Emergency service</h2>
             </div>
             <p className="mt-2 text-sm leading-relaxed text-ink-700">
-              Bara water leakage, electrical fault, generator band ya AC emergency? Available
-              emergency technicians dekhein. Emergency charges booking confirm karne se pehle saaf
-              dikhaye jate hain.
+              Major water leak, electrical fault, generator down or an AC emergency? See the
+              emergency technicians available now. Emergency charges are shown clearly before you
+              confirm the booking.
             </p>
             <p className="mt-2 text-xs text-ink-600">
-              Aag, gas leak ya kisi ke zakhmi hone ki soorat mein pehle Rescue 1122 ko call karein.
+              If there is fire, a gas leak or an injury, call Rescue 1122 first.
             </p>
           </div>
           <ButtonLink href="/emergency" variant="danger" size="lg" className="shrink-0">
@@ -202,8 +202,8 @@ export default async function HomePage() {
           <div className="mx-auto max-w-content px-4 py-14 sm:px-6 sm:py-16">
             <SectionHeading
               eyebrow="Customer reviews"
-              title="Logon ka tajurba"
-              description="Review sirf mukammal booking ke baad diya ja sakta hai."
+              title="What people say"
+              description="A review can only be left after a booking is complete."
             />
             <div className="mt-7 grid gap-4 lg:grid-cols-3">
               {reviews.map((review) => (
@@ -240,13 +240,11 @@ export default async function HomePage() {
       <section className="mx-auto max-w-content px-4 py-14 sm:px-6 sm:py-16">
         <div className="grid items-center gap-8 rounded-2xl bg-ink-950 p-7 text-white sm:p-10 lg:grid-cols-2">
           <div>
-            <p className="text-eyebrow uppercase text-brand-300">Providers ke liye</p>
-            <h2 className="mt-2.5 text-display-sm">
-              {city} mein apna service business grow karein.
-            </h2>
+            <p className="text-eyebrow uppercase text-brand-300">For providers</p>
+            <h2 className="mt-2.5 text-display-sm">Grow your service business in {city}.</h2>
             <p className="mt-3 text-sm leading-relaxed text-ink-300">
-              Naye customers, digital profile, booking management aur earnings dashboard — mehngi
-              marketing ke baghair.
+              New customers, a digital profile, booking management and an earnings dashboard —
+              without expensive marketing.
             </p>
             <ButtonLink
               href="/provider-signup"
@@ -258,11 +256,11 @@ export default async function HomePage() {
           </div>
           <ul className="grid gap-3 sm:grid-cols-2">
             {[
-              'Zyada customers',
-              'Zyada jobs',
+              'More customers',
+              'More jobs',
               'Digital profile',
               'Booking management',
-              'Reviews aur rating',
+              'Reviews and ratings',
               'Earnings dashboard',
             ].map((benefit) => (
               <li key={benefit} className="flex items-center gap-2.5 text-sm text-ink-200">
@@ -287,7 +285,7 @@ export default async function HomePage() {
 
       {/* ------------------------------------------------------------- FAQ */}
       <section className="mx-auto max-w-3xl px-4 pb-16 sm:px-6">
-        <SectionHeading eyebrow="FAQ" title="Aam sawalat" />
+        <SectionHeading eyebrow="FAQ" title="Common questions" />
         <div className="mt-6 divide-y divide-ink-200 border-y border-ink-200">
           {FAQ_ITEMS.map((item) => (
             <details key={item.question} className="group py-4">
@@ -307,9 +305,9 @@ export default async function HomePage() {
           ))}
         </div>
         <p className="mt-6 text-center text-sm text-ink-500">
-          Aur sawal hain?{' '}
+          More questions?{' '}
           <Link href="/contact" className="font-medium text-brand-700 hover:underline">
-            Humein batayein
+            Tell us
           </Link>
           .
         </p>
@@ -320,29 +318,29 @@ export default async function HomePage() {
 
 const FAQ_ITEMS = [
   {
-    question: 'Qeemat kaise tay hoti hai?',
+    question: 'How is the price decided?',
     answer:
-      'Har technician muaina karne ke baad likhit quote deta hai jismein inspection, labour aur parts alag alag likhe hote hain. Aap approve karein tab kaam shuru hota hai. Beech mein koi extra kharcha nikle to uske liye dobara aapki approval zaroori hai.',
+      'Every technician gives a written quote after inspecting, with inspection, labour and parts listed separately. Work starts only once you approve. If any extra cost comes up midway, that needs your approval again.',
   },
   {
-    question: '"Verified" ka kya matlab hai?',
+    question: 'What does "Verified" mean?',
     answer:
-      'Iska matlab hai ke humari team ne provider ka shanakhti document aur onboarding maloomat check ki hain, aur unka phone aur email confirm hua hai. Hum government licensing, insurance ya police background check ka dawa nahi karte — jo badge dikhta hai sirf wohi check hua hai.',
+      'It means our team has checked the provider’s identity document and onboarding details, and confirmed their phone and email. We do not claim government licensing, insurance or police background checks — only the badge shown has actually been checked.',
   },
   {
-    question: 'Kaam theek na ho to?',
+    question: 'What if the work is not right?',
     answer:
-      'Eligible services par service guarantee laagu hoti hai: agar wohi masla guarantee ki muddat ke andar wapis aa jaye to aap re-visit ki request kar sakte hain. Iske ilawa aap booking par dispute khol sakte hain jise humari team dekhti hai.',
+      'The service guarantee applies to eligible services: if the same problem returns within the guarantee period, you can request a re-visit. You can also open a dispute on the booking, which our team reviews.',
   },
   {
-    question: 'Payment kaise hoti hai?',
+    question: 'How does payment work?',
     answer:
-      'Filhaal Cash on Service available hai — kaam mukammal hone par technician ko cash dein aur app mein payment record karein. Online payment ka option baad mein add hoga.',
+      'Cash on Service is available for now — pay the technician in cash when the work is done and record the payment in the app. Online payment will be added later.',
   },
   {
-    question: 'Technicians Islamabad Fix ke mulazim hain?',
+    question: 'Are technicians employed by Islamabad Fix?',
     answer:
-      'Nahi. Yeh khud-mukhtar (independent) professionals hain jo platform par apni services list karte hain. Islamabad Fix booking, quote aur dispute ka nizam chalata hai.',
+      'No. They are independent professionals who list their services on the platform. Islamabad Fix runs the booking, quote and dispute system.',
   },
 ];
 

@@ -65,7 +65,7 @@ export function PayoutManager({
       <section aria-labelledby="pending-heading">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <h2 id="pending-heading" className="text-title text-ink-950">
-            Payout ke muntazir
+            Awaiting payout
           </h2>
           {totalPendingPaisa > 0 ? (
             <p className="text-sm font-semibold text-ink-900">
@@ -77,13 +77,13 @@ export function PayoutManager({
         {pending.length > 0 ? (
           <div className="mt-4 overflow-x-auto rounded-2xl border border-ink-200">
             <table className="w-full min-w-[44rem] text-sm">
-              <caption className="sr-only">Payout ke muntazir providers</caption>
+              <caption className="sr-only">Providers awaiting payout</caption>
               <thead className="bg-ink-50 text-left">
                 <tr>
                   <Th>Provider</Th>
                   <Th>Payout account</Th>
                   <Th className="text-right">Jobs</Th>
-                  <Th className="text-right">Kamai</Th>
+                  <Th className="text-right">Earnings</Th>
                   <Th>Period</Th>
                   <Th />
                 </tr>
@@ -104,7 +104,7 @@ export function PayoutManager({
                     <Td>
                       <div className="flex justify-end">
                         <Button variant="outline" size="sm" onClick={() => setCreating(row)}>
-                          Payout banayein
+                          Create payout
                         </Button>
                       </div>
                     </Td>
@@ -116,8 +116,8 @@ export function PayoutManager({
         ) : (
           <EmptyState
             className="mt-4"
-            title="Sab kuch settled hai"
-            description="Koi mukammal job payout ke baghair nahi."
+            title="Everything is settled"
+            description="No completed job is without a payout."
           />
         )}
       </section>
@@ -166,7 +166,7 @@ export function PayoutManager({
                   </span>
                   {payout.status !== 'PAID' ? (
                     <Button size="sm" onClick={() => setMarking(payout)}>
-                      Paid mark karein
+                      Mark as paid
                     </Button>
                   ) : payout.processedAt ? (
                     <span className="text-xs text-ink-500">{formatDate(payout.processedAt)}</span>
@@ -176,7 +176,7 @@ export function PayoutManager({
             ))}
           </ul>
         ) : (
-          <EmptyState className="mt-4" title="Abhi koi payout record nahi" />
+          <EmptyState className="mt-4" title="No payouts recorded yet" />
         )}
       </section>
 
@@ -237,11 +237,11 @@ function CreatePayoutDialog({
       open={row !== null}
       onClose={onClose}
       title={`${row?.businessName} ke liye payout`}
-      description="Sirf woh mukammal bookings shamil hongi jo pehle se kisi payout mein nahi hain."
+      description="Only completed bookings that are not already in a payout will be included."
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={loading}>
-            Band karein
+            Close
           </Button>
           <Button
             loading={loading}
@@ -256,12 +256,12 @@ function CreatePayoutDialog({
                   periodEnd: new Date(`${periodEnd}T23:59:59`).toISOString(),
                   notes: notes.trim() || undefined,
                 });
-                toast({ tone: 'success', title: 'Payout ban gaya' });
+                toast({ tone: 'success', title: 'Payout created' });
                 onDone();
               } catch (error) {
                 toast({
                   tone: 'error',
-                  title: 'Payout nahi bana',
+                  title: 'Payout not created',
                   description: error instanceof ApiError ? error.message : undefined,
                 });
               } finally {
@@ -269,7 +269,7 @@ function CreatePayoutDialog({
               }
             }}
           >
-            Payout banayein
+            Create payout
           </Button>
         </>
       }
@@ -278,7 +278,7 @@ function CreatePayoutDialog({
         {row ? (
           <div className="rounded-xl bg-ink-50 p-3.5 text-sm">
             <p className="text-ink-700">
-              {row.jobs} jobs · {formatPaisa(row.earningsPaisa)} provider ki kamai
+              {row.jobs} jobs · {formatPaisa(row.earningsPaisa)} provider earnings
             </p>
             <p className="mt-0.5 text-xs text-ink-500">{row.bankLabel}</p>
           </div>
@@ -328,12 +328,12 @@ function MarkPaidDialog({
     <Dialog
       open={payout !== null}
       onClose={onClose}
-      title="Payout paid mark karein"
-      description="Yeh record karta hai ke bank transfer ho gaya. Transfer khud is system se bahar hota hai."
+      title="Mark payout as paid"
+      description="This records that the bank transfer happened. The transfer itself takes place outside this system."
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={loading}>
-            Band karein
+            Close
           </Button>
           <Button
             loading={loading}
@@ -345,12 +345,12 @@ function MarkPaidDialog({
                   reference: reference.trim() || undefined,
                   notes: notes.trim() || undefined,
                 });
-                toast({ tone: 'success', title: 'Payout paid mark ho gaya' });
+                toast({ tone: 'success', title: 'Payout marked as paid' });
                 onDone();
               } catch (error) {
                 toast({
                   tone: 'error',
-                  title: 'Mark nahi hua',
+                  title: 'Not marked',
                   description: error instanceof ApiError ? error.message : undefined,
                 });
               } finally {
@@ -358,7 +358,7 @@ function MarkPaidDialog({
               }
             }}
           >
-            Paid mark karein
+            Mark as paid
           </Button>
         </>
       }
@@ -376,8 +376,8 @@ function MarkPaidDialog({
           label="Bank transfer reference"
           value={reference}
           onChange={(event) => setReference(event.target.value)}
-          placeholder="Misal: IBFT-2024-0091"
-          hint="Reconciliation ke liye rakha jata hai."
+          placeholder="For example: IBFT-2024-0091"
+          hint="Kept for reconciliation."
         />
         <Textarea
           label="Notes (optional)"

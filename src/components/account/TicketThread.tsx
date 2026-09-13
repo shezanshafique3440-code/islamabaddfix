@@ -36,7 +36,7 @@ export function TicketThread({
   return (
     <div className="rounded-2xl border border-ink-200 bg-white">
       <div className="border-b border-ink-200 px-5 py-3.5">
-        <h2 className="text-[0.9375rem] font-semibold text-ink-900">Baat cheet</h2>
+        <h2 className="text-[0.9375rem] font-semibold text-ink-900">Conversation</h2>
       </div>
 
       {messages.length > 0 ? (
@@ -53,7 +53,7 @@ export function TicketThread({
                 )}
               >
                 <p className="text-xs font-semibold opacity-80">
-                  {message.isMine ? 'Aap' : message.isStaff ? 'Support team' : message.senderName}
+                  {message.isMine ? 'You' : message.isStaff ? 'Support team' : message.senderName}
                 </p>
                 <p className="mt-1 whitespace-pre-line text-sm leading-relaxed">{message.body}</p>
                 <p className="mt-1 text-[0.6875rem] opacity-70">
@@ -65,13 +65,13 @@ export function TicketThread({
         </ul>
       ) : (
         <p className="px-5 py-6 text-center text-sm text-ink-500">
-          Abhi koi jawab nahi aaya. Support team jald rabta karegi.
+          No reply yet. The support team will be in touch shortly.
         </p>
       )}
 
       {closed ? (
         <p className="border-t border-ink-200 bg-ink-50 px-5 py-3 text-sm text-ink-600">
-          Yeh ticket band hai. Naya masla ho to naya ticket kholein.
+          This ticket is closed. Open a new ticket for a new problem.
         </p>
       ) : (
         <form
@@ -86,7 +86,7 @@ export function TicketThread({
             } catch (error) {
               toast({
                 tone: 'error',
-                title: 'Message nahi gaya',
+                title: 'Message not sent',
                 description: error instanceof ApiError ? error.message : undefined,
               });
             } finally {
@@ -95,19 +95,19 @@ export function TicketThread({
           }}
         >
           <label htmlFor="reply" className="sr-only">
-            Jawab likhein
+            Write a reply
           </label>
           <textarea
             id="reply"
             value={body}
             onChange={(event) => setBody(event.target.value)}
             rows={3}
-            placeholder="Apna message likhein..."
+            placeholder="Write your message..."
             className="w-full rounded-xl border border-ink-300 px-3.5 py-2.5 text-sm text-ink-900 placeholder:text-ink-400 hover:border-ink-400 focus:border-brand-600"
           />
           <div className="mt-2 flex justify-end">
             <Button type="submit" size="sm" loading={loading} disabled={body.trim().length === 0}>
-              Bhejein
+              Send
             </Button>
           </div>
         </form>

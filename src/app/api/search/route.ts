@@ -4,7 +4,7 @@ import { searchCatalogue } from '@/lib/catalogue';
 import { listPublicProviders } from '@/lib/providers/visibility';
 
 const querySchema = z.object({
-  q: z.string().trim().min(2, 'Kam az kam 2 characters likhein.').max(120),
+  q: z.string().trim().min(2, 'Enter at least 2 characters.').max(120),
   include: z.enum(['all', 'catalogue', 'providers']).default('all'),
 });
 

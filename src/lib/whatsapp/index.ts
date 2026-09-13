@@ -36,17 +36,17 @@ export function verifyWhatsappSignature(
   signatureHeader: string | null,
 ): { valid: boolean; reason?: string } {
   if (!env.WHATSAPP_APP_SECRET) {
-    return { valid: false, reason: 'WHATSAPP_APP_SECRET set nahi hai.' };
+    return { valid: false, reason: 'WHATSAPP_APP_SECRET is not set.' };
   }
   if (!signatureHeader?.startsWith('sha256=')) {
-    return { valid: false, reason: 'Signature header missing ya ghalat format mein hai.' };
+    return { valid: false, reason: 'The signature header is missing or badly formatted.' };
   }
   const provided = signatureHeader.slice('sha256='.length);
   const expected = createHmac('sha256', env.WHATSAPP_APP_SECRET).update(rawBody).digest('hex');
   const a = Buffer.from(expected, 'utf8');
   const b = Buffer.from(provided, 'utf8');
   if (a.length !== b.length || !timingSafeEqual(a, b)) {
-    return { valid: false, reason: 'Signature match nahi karta.' };
+    return { valid: false, reason: 'The signature does not match.' };
   }
   return { valid: true };
 }
@@ -157,7 +157,7 @@ async function advance(state: WhatsappIntakeState, text: string): Promise<Intake
   if (turns > MAX_TURNS) {
     return {
       text:
-        'Yeh baat cheet lambi ho gayi hai. Behtar hai app par jaa kar booking mukammal karein: ' +
+        'This conversation has gone on a while. It is easier to finish the booking in the app: ' +
         `${env.NEXT_PUBLIC_APP_URL}/book`,
       state: { ...state, step: 'done', turns },
     };
@@ -174,7 +174,7 @@ async function advance(state: WhatsappIntakeState, text: string): Promise<Intake
 
       if (intake.safetyNotice) {
         return {
-          text: `${intake.safetyNotice}\n\nKya aap safe hain? Hum emergency technician dhoondte hain.`,
+          text: `${intake.safetyNotice}\n\nAre you safe right now? We are finding an emergency technician.`,
           state: { ...state, step: 'location', urgency: 'EMERGENCY', description: trimmed, turns },
         };
       }
@@ -182,8 +182,8 @@ async function advance(state: WhatsappIntakeState, text: string): Promise<Intake
       if (!intake.serviceSlug && !intake.categorySlug) {
         return {
           text:
-            'Assalam-o-alaikum! Main Islamabad Fix ka assistant hoon.\n\n' +
-            'Batayein masla kis cheez mein hai — AC, bijli, plumbing, safai, carpenter, appliance ya CCTV?',
+            'Hello! I am the Islamabad Fix assistant.\n\n' +
+            'Tell us where the problem is — AC, electrical, plumbing, cleaning, carpentry, appliances or CCTV?',
           state: { ...state, step: 'service', turns },
         };
       }
@@ -198,7 +198,7 @@ async function advance(state: WhatsappIntakeState, text: string): Promise<Intake
       return {
         text:
           `${intake.reply}\n\n` +
-          'Aap Islamabad ke kis sector/area mein hain? (misal: G-10, F-11, Bahria Town)',
+          'Which sector or area of Islamabad are you in? (for example G-10, F-11, Bahria Town)',
         state: {
           ...state,
           step: 'location',
@@ -227,7 +227,7 @@ async function advance(state: WhatsappIntakeState, text: string): Promise<Intake
           .join(', ');
         return {
           text:
-            'Yeh area hamari list mein nahi mila. In mein se koi likhein ya apna sector likhein:\n' +
+            'We could not find this area in our list. Pick one of these or type your sector:\n' +
             `${examples}${zones.length > 8 ? ' …' : ''}`,
           state: { ...state, step: 'location', turns },
         };
@@ -235,15 +235,15 @@ async function advance(state: WhatsappIntakeState, text: string): Promise<Intake
 
       return {
         text:
-          `${zone.name} — theek hai.\n\n` +
-          'Masla thoda tafseel se batayein. Agar tasveer bhej sakein to technician sahi parts saath laayega.',
+          `${zone.name} — got it.\n\n` +
+          'Describe the problem in a little detail. If you can send a photo, the technician will bring the right parts.',
         state: { ...state, step: 'description', zoneSlug: zone.slug, zoneName: zone.name, turns },
       };
     }
 
     case 'description': {
       return {
-        text: 'Shukriya. Aap ko technician kab chahiye? (misal: "aaj shaam 5 baje", "kal subah", ya "jitni jaldi ho sake")',
+        text: 'Thanks. When do you need the technician? (for example: "today at 5pm", "tomorrow morning", or "as soon as possible")',
         state: {
           ...state,
           step: 'time',
@@ -257,12 +257,12 @@ async function advance(state: WhatsappIntakeState, text: string): Promise<Intake
       const draft = await createDraft({ ...state, preferredTime: trimmed, turns });
       return {
         text:
-          'Sab maloomat mil gayi:\n' +
-          `• Service: ${state.serviceName ?? state.categorySlug ?? 'confirm karni hai'}\n` +
+          'Got everything we need:\n' +
+          `• Service: ${state.serviceName ?? state.categorySlug ?? 'to be confirmed'}\n` +
           `• Area: ${state.zoneName ?? '—'}\n` +
-          `• Waqt: ${trimmed}\n\n` +
-          'Ab is link par jaa kar booking confirm karein aur verified technicians dekhein — ' +
-          'security ke liye final booking app hi se hoti hai:\n' +
+          `• Time: ${trimmed}\n\n` +
+          'Open this link to confirm the booking and see verified technicians — ' +
+          'for security the final booking always happens in the app:\n' +
           draft.url,
         state: {
           ...state,
@@ -280,7 +280,7 @@ async function advance(state: WhatsappIntakeState, text: string): Promise<Intake
     default: {
       return {
         text:
-          'Aapki request pehle bhej di gayi hai. Naya masla ho to bata dein, ya app par booking dekhein: ' +
+          'Your request is already in. Tell us if something new comes up, or check the booking in the app: ' +
           `${env.NEXT_PUBLIC_APP_URL}/account/bookings`,
         state: { ...state, step: 'done', turns },
       };
@@ -316,7 +316,7 @@ export async function sendWhatsappText(
   body: string,
 ): Promise<{ sent: boolean; reason?: string }> {
   if (!integrations.whatsapp.configured) {
-    return { sent: false, reason: 'WhatsApp outbound configured nahi hai.' };
+    return { sent: false, reason: 'WhatsApp outbound is not configured.' };
   }
   try {
     const response = await fetch(
@@ -375,7 +375,7 @@ export function parseWebhookPayload(payload: unknown): InboundMessage[] {
           // An image with no caption still advances the conversation.
           messages.push({
             from: message.from,
-            text: '[tasveer bheji gayi]',
+            text: '[photo sent]',
             mediaId: message.image.id,
             messageId: message.id,
           });

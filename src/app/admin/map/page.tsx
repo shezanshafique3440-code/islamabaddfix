@@ -73,8 +73,8 @@ export default async function AdminMapPage() {
       <header>
         <h1 className="text-display-sm text-ink-950">Operations map</h1>
         <p className="mt-1 text-sm text-ink-600">
-          Live demand aur provider coverage. Customer locations taqreeban 1 km grid par dikhayi jati
-          hain — exact pata kabhi nahi.
+          Live demand and provider coverage. Customer locations are shown on a roughly 1 km grid —
+          never the exact address.
         </p>
       </header>
 

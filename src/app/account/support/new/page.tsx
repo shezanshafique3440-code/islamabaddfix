@@ -3,7 +3,7 @@ import { requirePageAuth } from '@/lib/auth/session';
 import { prisma } from '@/lib/db';
 import { NewTicketForm } from '@/components/account/NewTicketForm';
 
-export const metadata: Metadata = { title: 'Naya ticket', robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: 'New ticket', robots: { index: false, follow: false } };
 
 export default async function NewTicketPage() {
   const ctx = await requirePageAuth('/account/support/new');
@@ -23,9 +23,9 @@ export default async function NewTicketPage() {
 
   return (
     <div className="max-w-2xl">
-      <h1 className="text-display-sm text-ink-950">Naya support ticket</h1>
+      <h1 className="text-display-sm text-ink-950">New support ticket</h1>
       <p className="mt-1 text-sm text-ink-600">
-        Masla tafseel se batayein. Booking select karne se team ko context mil jata hai.
+        Describe the problem in detail. Selecting a booking gives the team context.
       </p>
       <div className="mt-6">
         <NewTicketForm

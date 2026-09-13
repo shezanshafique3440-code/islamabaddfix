@@ -15,7 +15,7 @@ export const openaiProvider: LlmProvider = {
 
   async complete({ systemPrompt, userPrompt }) {
     if (!this.isConfigured()) {
-      throw new AppError('INTEGRATION_NOT_CONFIGURED', 'AI provider configured nahi hai.');
+      throw new AppError('INTEGRATION_NOT_CONFIGURED', 'No AI provider is configured.');
     }
 
     const baseUrl = env.AI_BASE_URL ?? 'https://api.openai.com';
@@ -43,7 +43,7 @@ export const openaiProvider: LlmProvider = {
 
       if (!response.ok) {
         const detail = await response.text();
-        throw new AppError('INTEGRATION_FAILED', 'AI assistant is waqt jawab nahi de saka.', {
+        throw new AppError('INTEGRATION_FAILED', 'The AI assistant could not answer just now.', {
           context: { status: response.status, detail: detail.slice(0, 400) },
         });
       }
@@ -53,12 +53,12 @@ export const openaiProvider: LlmProvider = {
       };
       const content = json.choices?.[0]?.message?.content;
       if (!content) {
-        throw new AppError('INTEGRATION_FAILED', 'AI assistant ka jawab khali tha.');
+        throw new AppError('INTEGRATION_FAILED', 'The AI assistant returned an empty answer.');
       }
       try {
         return JSON.parse(content) as unknown;
       } catch {
-        throw new AppError('INTEGRATION_FAILED', 'AI assistant ka jawab valid JSON nahi tha.');
+        throw new AppError('INTEGRATION_FAILED', 'The AI assistant’s answer was not valid JSON.');
       }
     } finally {
       clearTimeout(timeout);

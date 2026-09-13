@@ -66,7 +66,7 @@ const CATEGORIES: CategorySeed[] = [
     slug: 'ac-cooling',
     tagline: 'AC service, repair aur installation',
     description:
-      'Split aur window AC ki service, repair, installation aur gas refilling. Verified technicians jo pehle muaina karte hain, phir quote dete hain.',
+      'Split and window AC service, repair, installation and gas refilling. Verified technicians who inspect first, then quote.',
     iconKey: 'snowflake',
     emergencyCategory: true,
     services: [
@@ -122,7 +122,7 @@ const CATEGORIES: CategorySeed[] = [
     slug: 'electrical',
     tagline: 'Wiring, fans, UPS aur generator',
     description:
-      'Ghar aur office ki electrical repair, wiring, light installation, UPS aur generator ka kaam. Bijli ka kaam khud karne ki koshish na karein.',
+      'Electrical repair for homes and offices, wiring, light installation, UPS and generator work. Do not attempt electrical work yourself.',
     iconKey: 'bolt',
     emergencyCategory: true,
     services: [
@@ -177,9 +177,9 @@ const CATEGORIES: CategorySeed[] = [
   {
     name: 'Plumbing',
     slug: 'plumbing',
-    tagline: 'Leakage, blockage aur bathroom kaam',
+    tagline: 'Leaks, blockages and bathroom work',
     description:
-      'Pipe leakage, drain blockage, tap repair, water tank aur bathroom/kitchen plumbing. Bara leakage ho to emergency service available hai.',
+      'Pipe leaks, drain blockages, tap repair, water tanks and bathroom/kitchen plumbing. Emergency service is available for a major leak.',
     iconKey: 'droplet',
     emergencyCategory: true,
     services: [
@@ -232,9 +232,9 @@ const CATEGORIES: CategorySeed[] = [
   {
     name: 'Cleaning',
     slug: 'cleaning',
-    tagline: 'Ghar, office aur sofa ki safai',
+    tagline: 'Home, office and sofa cleaning',
     description:
-      'Home aur office deep cleaning, sofa aur carpet shampooing, water tank cleaning. Team apna equipment saath laati hai.',
+      'Home and office deep cleaning, sofa and carpet shampooing, water tank cleaning. The team brings its own equipment.',
     iconKey: 'sparkles',
     services: [
       {
@@ -282,9 +282,9 @@ const CATEGORIES: CategorySeed[] = [
   {
     name: 'Carpenter',
     slug: 'carpenter',
-    tagline: 'Darwaza, furniture aur cabinet kaam',
+    tagline: 'Door, furniture and cabinet work',
     description:
-      'Door repair, furniture repair, cabinet aur shelf ka kaam. Tarkhan muaina kar ke material aur mazdoori ka quote deta hai.',
+      'Door repair, furniture repair, cabinet and shelf work. The carpenter inspects and quotes for material and labour.',
     iconKey: 'hammer',
     services: [
       { name: 'Door Repair', slug: 'door-repair', minRupees: 1200, maxRupees: 8000, minutes: 120 },
@@ -321,9 +321,9 @@ const CATEGORIES: CategorySeed[] = [
   {
     name: 'Painting',
     slug: 'painting',
-    tagline: 'Room, ghar aur office painting',
+    tagline: 'Room, house and office painting',
     description:
-      'Room aur poore ghar ki painting, office painting aur wall repair. Area dekh kar quote diya jata hai.',
+      'Room and whole-house painting, office painting and wall repair. Quoted after measuring the area.',
     iconKey: 'brush',
     services: [
       {
@@ -355,7 +355,7 @@ const CATEGORIES: CategorySeed[] = [
     slug: 'appliances',
     tagline: 'Fridge, washing machine aur geyser',
     description:
-      'Refrigerator, washing machine, microwave aur geyser ki repair. Brand aur model batayein taake technician parts saath laaye.',
+      'Refrigerator, washing machine, microwave and geyser repair. Tell us the brand and model so the technician brings the right parts.',
     iconKey: 'plug',
     services: [
       {
@@ -401,7 +401,7 @@ const CATEGORIES: CategorySeed[] = [
     slug: 'security',
     tagline: 'CCTV aur access control',
     description:
-      'CCTV installation aur repair, access control aur security system maintenance. Site dekh kar cameras aur cabling ka quote milta hai.',
+      'CCTV installation and repair, access control and security system maintenance. You get a quote for cameras and cabling after a site visit.',
     iconKey: 'shield',
     services: [
       {
@@ -489,9 +489,9 @@ const DEMO_PROVIDERS: DemoProviderSeed[] = [
     fullName: 'Ali Raza',
     email: 'demo.ali@islamabadfix.pk',
     phone: '+923001234501',
-    headline: 'AC aur electrical ka 12 saal ka tajurba',
+    headline: '12 years of AC and electrical experience',
     description:
-      'Split aur window AC ki service, repair aur gas refilling. Electrical repair aur UPS installation bhi karte hain. Har kaam se pehle muaina, phir clear quote.',
+      'Split and window AC service, repair and gas refilling. Also electrical repair and UPS installation. Inspection before every job, then a clear quote.',
     years: 12,
     serviceSlugs: [
       'ac-service',
@@ -515,9 +515,9 @@ const DEMO_PROVIDERS: DemoProviderSeed[] = [
     fullName: 'Muhammad Naveed',
     email: 'demo.naveed@islamabadfix.pk',
     phone: '+923001234502',
-    headline: 'Leakage aur blockage ka foran hal',
+    headline: 'Leaks and blockages sorted fast',
     description:
-      'Pipe leakage, drain blockage aur bathroom plumbing. Emergency calls raat ko bhi attend karte hain. Apne tools aur camera inspection ke saath.',
+      'Pipe leaks, drain blockages and bathroom plumbing. Emergency calls attended at night too. Own tools and camera inspection.',
     years: 9,
     serviceSlugs: [
       'pipe-leakage',
@@ -540,9 +540,9 @@ const DEMO_PROVIDERS: DemoProviderSeed[] = [
     fullName: 'Bilal Ahmed',
     email: 'demo.bilal@islamabadfix.pk',
     phone: '+923001234503',
-    headline: 'Deep cleaning team, apna equipment',
+    headline: 'Deep cleaning team with their own equipment',
     description:
-      'Ghar aur office ki deep cleaning, sofa aur carpet shampooing. Trained team, machine se cleaning, fixed rates per area.',
+      'Deep cleaning for homes and offices, sofa and carpet shampooing. Trained team, machine cleaning, fixed rates per area.',
     years: 5,
     serviceSlugs: [
       'home-cleaning',
@@ -564,9 +564,9 @@ const DEMO_PROVIDERS: DemoProviderSeed[] = [
     fullName: 'Tariq Mehmood',
     email: 'demo.tariq@islamabadfix.pk',
     phone: '+923001234504',
-    headline: 'Furniture, darwaze aur cabinet kaam',
+    headline: 'Furniture, door and cabinet work',
     description:
-      'Door aur furniture repair, kitchen cabinets aur wardrobes. Material ka hisaab pehle likh kar dete hain.',
+      'Door and furniture repair, kitchen cabinets and wardrobes. Material costing is given in writing upfront.',
     years: 18,
     serviceSlugs: [
       'door-repair',
@@ -590,7 +590,7 @@ const DEMO_PROVIDERS: DemoProviderSeed[] = [
     phone: '+923001234505',
     headline: 'Fridge, washing machine aur geyser',
     description:
-      'Refrigerator, washing machine, microwave aur geyser repair. Dawlance, PEL, Haier aur Samsung ke parts available.',
+      'Refrigerator, washing machine, microwave and geyser repair. Parts available for Dawlance, PEL, Haier and Samsung.',
     years: 7,
     serviceSlugs: ['refrigerator', 'washing-machine', 'microwave', 'geyser', 'other-appliances'],
     zoneNames: ['I-8', 'I-9', 'I-10', 'G-9', 'G-8', 'PWD Colony'],
@@ -608,7 +608,7 @@ const DEMO_PROVIDERS: DemoProviderSeed[] = [
     phone: '+923001234506',
     headline: 'CCTV installation aur maintenance',
     description:
-      'Ghar aur dukan ke liye CCTV, DVR/NVR setup aur mobile par live view. Site survey ke baad camera count aur cabling ka quote.',
+      'CCTV for homes and shops, DVR/NVR setup and live view on your phone. Camera count and cabling are quoted after a site survey.',
     years: 6,
     serviceSlugs: ['cctv-installation', 'cctv-repair', 'access-control', 'security-maintenance'],
     zoneNames: ['Blue Area', 'F-8', 'G-8', 'I-9', 'Gulberg Greens', 'Bahria Town Phase 4'],
@@ -624,9 +624,9 @@ const DEMO_PROVIDERS: DemoProviderSeed[] = [
     fullName: 'Imran Butt',
     email: 'demo.imran@islamabadfix.pk',
     phone: '+923001234507',
-    headline: 'Room aur ghar ki painting',
+    headline: 'Room and house painting',
     description:
-      'Emulsion aur weather coat painting, putty aur wall repair. Area measure kar ke per-square-foot rate dete hain.',
+      'Emulsion and weather coat painting, putty and wall repair. The area is measured and a per-square-foot rate is quoted.',
     years: 11,
     serviceSlugs: ['room-painting', 'house-painting', 'office-painting', 'wall-repair'],
     zoneNames: ['G-13', 'G-14', 'E-11', 'Soan Garden', 'Bahria Town Phase 7'],
@@ -644,7 +644,7 @@ const DEMO_PROVIDERS: DemoProviderSeed[] = [
     phone: '+923001234508',
     headline: 'Wiring, generator aur emergency electrical',
     description:
-      'House wiring, generator service aur emergency electrical faults. Raat ko bhi available for urgent faults.',
+      'House wiring, generator service and emergency electrical faults. Available at night for urgent faults.',
     years: 14,
     serviceSlugs: [
       'electrical-repair',
@@ -666,33 +666,33 @@ const DEMO_PROVIDERS: DemoProviderSeed[] = [
 
 const DEMO_REVIEW_COMMENTS: Record<string, string[]> = {
   'ac-cooling': [
-    'Technician waqt par aaya, AC ki service acchi tarah ki. Cooling pehle se behtar hai.',
-    'Gas refill ke baad AC theek chal raha hai. Quote pehle bata diya tha, koi extra charge nahi.',
-    'Muaina kar ke masla bataya, phir repair kiya. Kaam saaf suthra tha.',
+    'The technician arrived on time and serviced the AC thoroughly. It cools better than before.',
+    'The AC runs fine after the gas refill. Quoted upfront, no extra charges.',
+    'Inspected, explained the problem, then repaired it. Clean work.',
   ],
   plumbing: [
-    'Leakage foran theek kar di. Bathroom saaf chhod kar gaye.',
-    'Raat ko emergency call par aaye, drain khol diya. Shukriya.',
-    'Kaam theek hua lekin thoda late aaye. Baqi sab acha tha.',
+    'Fixed the leak straight away. Left the bathroom clean.',
+    'Came out on an emergency call at night and cleared the drain. Thank you.',
+    'The work was fine but they arrived a little late. Everything else was good.',
   ],
   cleaning: [
-    'Poori team aayi, ghar chamka diya. Sofa bilkul naya lag raha hai.',
-    'Office cleaning professional tareeqe se hui. Dobara book karenge.',
+    'The whole team came and made the house sparkle. The sofa looks brand new.',
+    'The office cleaning was done professionally. We will book again.',
   ],
   carpenter: [
-    'Darwaza theek kar diya aur hinge bhi badal diye. Rate munasib tha.',
-    'Cabinet ka kaam bohat safai se kiya. Material ka hisaab pehle likh kar diya.',
+    'Fixed the door and replaced the hinges too. The rate was fair.',
+    'Did the cabinet work very cleanly. Gave the material costing in writing beforehand.',
   ],
   appliances: [
-    'Fridge ki cooling wapis aa gayi. Parts ka bill bhi dikhaya.',
-    'Washing machine ka masla samajh kar theek kiya. Munasib charges.',
+    'The fridge is cooling again. Showed me the bill for the parts as well.',
+    'Understood the washing machine problem and fixed it. Fair charges.',
   ],
   electrical: [
-    'Switch board ka kaam theek se kiya, safety ka khayal rakha.',
-    'Generator service ke baad awaz kam ho gayi. Professional banda hai.',
+    'Did the switchboard work properly and took care over safety.',
+    'The noise dropped after the generator service. A real professional.',
   ],
-  security: ['CCTV install kar ke mobile par setup bhi kar diya. Tafseel se samjhaya.'],
-  painting: ['Room painting saaf suthri hui, furniture cover kiya tha. Waqt par mukammal.'],
+  security: ['Installed the CCTV and set it up on my phone too. Explained everything in detail.'],
+  painting: ['The room painting was neat, they covered the furniture. Finished on time.'],
 };
 
 // ================================= main ===================================
@@ -1054,7 +1054,7 @@ async function seedDemoBookings(
       serviceSlug: 'ac-repair',
       status: 'COMPLETED',
       daysOffset: -18,
-      problem: 'AC chal raha hai lekin thandi hawa nahi aa rahi.',
+      problem: 'The AC runs but blows no cold air.',
       totalRupees: 3300,
       rating: 5,
     },
@@ -1062,7 +1062,7 @@ async function seedDemoBookings(
       serviceSlug: 'ac-service',
       status: 'COMPLETED',
       daysOffset: -14,
-      problem: 'Do split AC ki service karani hai, filter bohat gande hain.',
+      problem: 'I need two split ACs serviced, the filters are very dirty.',
       totalRupees: 3000,
       rating: 4,
     },
@@ -1070,7 +1070,7 @@ async function seedDemoBookings(
       serviceSlug: 'pipe-leakage',
       status: 'COMPLETED',
       daysOffset: -11,
-      problem: 'Kitchen ke neeche pipe se paani tapak raha hai.',
+      problem: 'A pipe under the kitchen is dripping water.',
       totalRupees: 2500,
       rating: 5,
     },
@@ -1078,7 +1078,7 @@ async function seedDemoBookings(
       serviceSlug: 'drain-blockage',
       status: 'COMPLETED',
       daysOffset: -9,
-      problem: 'Bathroom ki nali band ho gayi hai, paani khara ho raha hai.',
+      problem: 'The bathroom drain is blocked and water is standing.',
       totalRupees: 2000,
       rating: 4,
     },
@@ -1086,7 +1086,7 @@ async function seedDemoBookings(
       serviceSlug: 'home-cleaning',
       status: 'COMPLETED',
       daysOffset: -7,
-      problem: 'Poore ghar ki deep cleaning chahiye, 3 bedroom.',
+      problem: 'I need a deep clean of the whole house, 3 bedrooms.',
       totalRupees: 8500,
       rating: 5,
     },
@@ -1094,7 +1094,7 @@ async function seedDemoBookings(
       serviceSlug: 'refrigerator',
       status: 'COMPLETED',
       daysOffset: -5,
-      problem: 'Fridge ka freezer kaam kar raha hai lekin neeche cooling nahi.',
+      problem: 'The fridge freezer works but there is no cooling below.',
       totalRupees: 4200,
       rating: 4,
     },
@@ -1102,7 +1102,7 @@ async function seedDemoBookings(
       serviceSlug: 'door-repair',
       status: 'COMPLETED',
       daysOffset: -4,
-      problem: 'Bedroom ka darwaza band nahi hota, hinge dheele hain.',
+      problem: 'The bedroom door will not shut, the hinges are loose.',
       totalRupees: 1800,
       rating: 5,
     },
@@ -1110,7 +1110,7 @@ async function seedDemoBookings(
       serviceSlug: 'electrical-repair',
       status: 'COMPLETED',
       daysOffset: -3,
-      problem: 'Lounge ke do switch kaam nahi kar rahe.',
+      problem: 'Two switches in the lounge are not working.',
       totalRupees: 1600,
       rating: 5,
     },
@@ -1118,7 +1118,7 @@ async function seedDemoBookings(
       serviceSlug: 'geyser',
       status: 'COMPLETED',
       daysOffset: -2,
-      problem: 'Geyser se paani garam nahi ho raha.',
+      problem: 'The geyser is not heating the water.',
       totalRupees: 2800,
       rating: 3,
     },
@@ -1126,40 +1126,40 @@ async function seedDemoBookings(
       serviceSlug: 'cctv-installation',
       status: 'SCHEDULED',
       daysOffset: 1,
-      problem: 'Ghar ke bahar 4 cameras lagwane hain.',
+      problem: 'I want 4 cameras installed outside the house.',
       totalRupees: 32000,
     },
     {
       serviceSlug: 'ac-installation',
       status: 'SCHEDULED',
       daysOffset: 2,
-      problem: 'Naya 1.5 ton split AC install karana hai.',
+      problem: 'I need a new 1.5 ton split AC installed.',
       totalRupees: 5500,
     },
     {
       serviceSlug: 'sofa-cleaning',
       status: 'QUOTE_PENDING',
       daysOffset: 1,
-      problem: '7-seater sofa aur ek carpet clean karana hai.',
+      problem: 'I need a 7-seater sofa and one carpet cleaned.',
     },
     {
       serviceSlug: 'room-painting',
       status: 'IN_PROGRESS',
       daysOffset: 0,
-      problem: 'Do kamron ki painting karani hai, deewar par kuch cracks bhi hain.',
+      problem: 'I need two rooms painted, and there are some cracks in the wall too.',
       totalRupees: 18000,
     },
     {
       serviceSlug: 'washing-machine',
       status: 'CANCELLED',
       daysOffset: -6,
-      problem: 'Washing machine spin nahi kar rahi.',
+      problem: 'The washing machine is not spinning.',
     },
     {
       serviceSlug: 'fan-repair',
       status: 'PENDING',
       daysOffset: 2,
-      problem: 'Ceiling fan se khat khat ki awaz aa rahi hai.',
+      problem: 'The ceiling fan is making a rattling noise.',
     },
   ];
 
@@ -1196,7 +1196,7 @@ async function seedDemoBookings(
         completedAt: entry.status === 'COMPLETED' ? scheduledFor : null,
         cancelledAt: entry.status === 'CANCELLED' ? scheduledFor : null,
         cancellationReason:
-          entry.status === 'CANCELLED' ? 'Customer ne khud repair karwa liya.' : null,
+          entry.status === 'CANCELLED' ? 'The customer had it repaired themselves.' : null,
         approvedTotalPaisa: entry.status === 'QUOTE_PENDING' ? null : totalPaisa,
         finalTotalPaisa: entry.status === 'COMPLETED' ? totalPaisa : null,
         commissionRateBp: entry.status === 'COMPLETED' ? commissionRateBp : null,
@@ -1237,8 +1237,8 @@ async function seedDemoBookings(
           respondedAt: entry.status === 'QUOTE_PENDING' ? null : scheduledFor,
           items: {
             create: [
-              { kind: 'INSPECTION', label: 'Muaina', quantity: 1, unitPricePaisa: inspection },
-              { kind: 'LABOUR', label: 'Mazdoori', quantity: 1, unitPricePaisa: labour },
+              { kind: 'INSPECTION', label: 'Inspection', quantity: 1, unitPricePaisa: inspection },
+              { kind: 'LABOUR', label: 'Labour', quantity: 1, unitPricePaisa: labour },
               ...(parts > 0
                 ? [{ kind: 'PARTS' as const, label: 'Parts', quantity: 1, unitPricePaisa: parts }]
                 : []),

@@ -34,7 +34,7 @@ export const PATCH = route(async (request) => {
   if (emergencyFeePaisa !== undefined) {
     const cap = await getSetting('emergency.maxFeePaisa');
     if (emergencyFeePaisa > cap) {
-      throw new AppError('VALIDATION_ERROR', 'Emergency fee platform limit se zyada hai.');
+      throw new AppError('VALIDATION_ERROR', 'The emergency fee is above the platform limit.');
     }
   }
 

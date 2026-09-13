@@ -22,7 +22,7 @@ export const GET = route(async (_request, { params }: Params) => {
 
   const file = await prisma.uploadedFile.findUnique({ where: { id } });
   if (!file || file.deletedAt) {
-    throw new AppError('NOT_FOUND', 'File nahi mili.');
+    throw new AppError('NOT_FOUND', 'File not found.');
   }
 
   const ctx = await getAuthContext();
@@ -38,7 +38,7 @@ export const GET = route(async (_request, { params }: Params) => {
       metadata: { purpose: file.purpose, visibility: file.visibility },
     });
     // 404 rather than 403: existence of someone's document is itself private.
-    return fail(new AppError('NOT_FOUND', 'File nahi mili.'));
+    return fail(new AppError('NOT_FOUND', 'File not found.'));
   }
 
   const { body, contentType } = await readFileBytes(file);

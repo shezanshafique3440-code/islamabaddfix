@@ -45,7 +45,7 @@ export function MobileMenu({
         type="button"
         onClick={() => setOpen(true)}
         className="relative rounded-lg p-2 text-ink-700 hover:bg-ink-100"
-        aria-label="Menu kholein"
+        aria-label="Open menu"
         aria-expanded={open}
       >
         <svg
@@ -69,7 +69,7 @@ export function MobileMenu({
             type="button"
             className="absolute inset-0 bg-ink-950/40 backdrop-blur-sm"
             onClick={() => setOpen(false)}
-            aria-label="Menu band karein"
+            aria-label="Close menu"
           />
           <div
             className="absolute inset-y-0 right-0 flex w-[min(20rem,85vw)] animate-slide-in-right flex-col bg-white shadow-pop"
@@ -84,7 +84,7 @@ export function MobileMenu({
                 type="button"
                 onClick={() => setOpen(false)}
                 className="rounded-lg p-2 text-ink-500 hover:bg-ink-100"
-                aria-label="Band karein"
+                aria-label="Close"
               >
                 <svg viewBox="0 0 20 20" className="h-5 w-5" fill="currentColor" aria-hidden="true">
                   <path d="M6.3 5 5 6.3 8.7 10 5 13.7 6.3 15 10 11.3 13.7 15 15 13.7 11.3 10 15 6.3 13.7 5 10 8.7 6.3 5z" />
@@ -114,7 +114,7 @@ export function MobileMenu({
                     href={dashboardHref}
                     className="block rounded-xl px-3 py-3 text-[0.9375rem] font-medium text-ink-700 hover:bg-ink-100"
                   >
-                    Mera dashboard
+                    My dashboard
                   </Link>
                   <Link
                     href={`${dashboardHref}/notifications`}
@@ -137,13 +137,13 @@ export function MobileMenu({
               ) : (
                 <>
                   <ButtonLink href="/book" fullWidth>
-                    Service book karein
+                    Book a service
                   </ButtonLink>
                   <ButtonLink href="/login" variant="outline" fullWidth>
                     Login
                   </ButtonLink>
                   <ButtonLink href="/provider-signup" variant="ghost" fullWidth>
-                    Provider banein
+                    Become a provider
                   </ButtonLink>
                 </>
               )}

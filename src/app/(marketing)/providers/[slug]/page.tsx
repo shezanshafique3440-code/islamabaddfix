@@ -22,12 +22,12 @@ export const revalidate = 300;
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const provider = await getPublicProvider(slug);
-  if (!provider) return { title: 'Technician nahi mila' };
+  if (!provider) return { title: 'No technician found' };
 
   const title = `${provider.businessName} — ${provider.city}`;
   const description =
     provider.headline ??
-    `${provider.businessName} — Islamabad Fix par verified service provider. ${provider.completedJobs} jobs mukammal.`;
+    `${provider.businessName} — a verified service provider on Islamabad Fix, with ${provider.completedJobs} jobs completed.`;
 
   return {
     title,
@@ -104,19 +104,19 @@ export default async function ProviderProfilePage({ params }: Params) {
                 <Rating value={provider.ratingAverage} count={provider.ratingCount} />
                 <span className="text-sm text-ink-600">
                   <strong className="font-semibold text-ink-900">{provider.completedJobs}</strong>{' '}
-                  jobs mukammal
+                  jobs completed
                 </span>
                 {provider.yearsExperience > 0 ? (
                   <span className="text-sm text-ink-600">
                     <strong className="font-semibold text-ink-900">
                       {provider.yearsExperience}
                     </strong>{' '}
-                    saal tajurba
+                    years experience
                   </span>
                 ) : null}
                 {provider.avgResponseMinutes !== null ? (
                   <span className="text-sm text-ink-600">
-                    Jawab ~
+                    Responds in ~
                     <strong className="font-semibold text-ink-900">
                       {provider.avgResponseMinutes} min
                     </strong>
@@ -141,7 +141,7 @@ export default async function ProviderProfilePage({ params }: Params) {
                 Book Now
               </ButtonLink>
               <p className="mt-2 max-w-[14rem] text-xs text-ink-500">
-                Booking ke baad hi contact details share hoti hain.
+                Contact details are shared only after a booking.
               </p>
             </div>
           </div>
@@ -153,7 +153,7 @@ export default async function ProviderProfilePage({ params }: Params) {
           <div className="space-y-10 lg:col-span-2">
             {provider.description ? (
               <section>
-                <h2 className="text-title text-ink-950">Baare mein</h2>
+                <h2 className="text-title text-ink-950">About</h2>
                 <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-ink-700">
                   {provider.description}
                 </p>
@@ -162,7 +162,7 @@ export default async function ProviderProfilePage({ params }: Params) {
 
             <section aria-labelledby="services-heading">
               <h2 id="services-heading" className="text-title text-ink-950">
-                Services aur rates
+                Services and rates
               </h2>
               <ul className="mt-4 divide-y divide-ink-200 rounded-xl border border-ink-200 bg-white">
                 {provider.services.map((service) => (
@@ -180,7 +180,7 @@ export default async function ProviderProfilePage({ params }: Params) {
                       <p className="text-xs text-ink-500">
                         {service.category.name} ·{' '}
                         {service.requiresInspection
-                          ? 'Muaina ke baad quote'
+                          ? 'Quote after inspection'
                           : `~${service.estimatedMinutes} min`}
                       </p>
                     </div>
@@ -200,7 +200,7 @@ export default async function ProviderProfilePage({ params }: Params) {
                 ))}
               </ul>
               <p className="mt-2 text-xs text-ink-500">
-                Yeh starting rates hain. Final qeemat muaina ke baad quote se tay hoti hai.
+                These are starting rates. The final price is set by the quote after inspection.
               </p>
             </section>
 
@@ -238,8 +238,8 @@ export default async function ProviderProfilePage({ params }: Params) {
               ) : (
                 <EmptyState
                   className="mt-4"
-                  title="Abhi koi review nahi"
-                  description="Review sirf mukammal booking ke baad customer de sakta hai."
+                  title="No reviews yet"
+                  description="Only the customer can review, and only after the booking is complete."
                 />
               )}
             </section>
@@ -277,8 +277,8 @@ export default async function ProviderProfilePage({ params }: Params) {
               </ul>
               {/* Explicit limit on what the badges mean. */}
               <p className="mt-4 border-t border-ink-100 pt-3 text-xs leading-relaxed text-ink-500">
-                Yeh independent service provider hai, Islamabad Fix ka mulazim nahi. Hum government
-                licensing, insurance ya police background check ka dawa nahi karte.
+                This is an independent service provider, not an employee of Islamabad Fix. We do not
+                claim government licensing, insurance or police background checks.
               </p>
             </div>
 

@@ -47,13 +47,13 @@ export function RescheduleDialog({
         `/api/bookings/${bookingId}/reschedule`,
         { scheduledFor: new Date(value).toISOString(), reason: reason.trim() || undefined },
       );
-      toast({ tone: 'success', title: 'Time badal diya gaya' });
+      toast({ tone: 'success', title: 'Time changed' });
       setOpen(false);
       onDone?.(result.scheduledFor);
       // The booking detail is server-rendered; reload so every view agrees.
       window.location.reload();
     } catch (caught) {
-      setError(caught instanceof ApiError ? caught.message : 'Time badal nahi sake.');
+      setError(caught instanceof ApiError ? caught.message : 'We could not change the time.');
     } finally {
       setLoading(false);
     }
@@ -62,7 +62,7 @@ export function RescheduleDialog({
   if (remaining <= 0) {
     return (
       <p className="text-xs text-ink-500">
-        Is booking ka time zyada se zyada baar badla ja chuka hai. Support se rabta karein.
+        This booking has been rescheduled the maximum number of times. Please contact support.
       </p>
     );
   }
@@ -70,14 +70,14 @@ export function RescheduleDialog({
   return (
     <>
       <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
-        Time badlein
+        Change time
       </Button>
 
       <Dialog
         open={open}
         onClose={() => setOpen(false)}
-        title="Booking ka time badlein"
-        description={`${remaining} martaba aur badal sakte hain. Doosri party ko foran ittila mil jayegi.`}
+        title="Change the booking time"
+        description={`You can move it ${remaining} more time(s). The other side is told straight away.`}
       >
         <form onSubmit={submit} className="space-y-4">
           {error ? (
@@ -87,28 +87,28 @@ export function RescheduleDialog({
           ) : null}
 
           <TextInput
-            label="Naya waqt"
+            label="New time"
             type="datetime-local"
             value={value}
             min={earliest}
             max={latest}
             onChange={(event) => setValue(event.target.value)}
             required
-            hint={`Kam az kam ${minLeadMinutes} minute baad, aur ${maxLeadDays} din ke andar.`}
+            hint={`At least ${minLeadMinutes} minutes from now, and within ${maxLeadDays} days.`}
           />
           <TextInput
-            label="Wajah (optional)"
+            label="Reason (optional)"
             value={reason}
             onChange={(event) => setReason(event.target.value.slice(0, 300))}
-            placeholder="Misal: us waqt ghar par koi nahi hoga"
+            placeholder="For example: nobody will be home at that time"
           />
 
           <div className="flex justify-end gap-2">
             <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
-              Rehne dein
+              Leave it
             </Button>
             <Button type="submit" loading={loading} disabled={!value}>
-              Time confirm karein
+              Confirm time
             </Button>
           </div>
         </form>

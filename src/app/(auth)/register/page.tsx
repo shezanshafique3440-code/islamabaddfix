@@ -7,8 +7,8 @@ import { RegisterForm } from '@/components/auth/AuthForm';
 import { Skeleton } from '@/components/ui/Skeleton';
 
 export const metadata: Metadata = {
-  title: 'Account banayein',
-  description: 'Islamabad Fix par account banayein — customer ya service provider ke taur par.',
+  title: 'Create account',
+  description: 'Create an Islamabad Fix account — as a customer or as a service provider.',
   robots: { index: false, follow: false },
 };
 
@@ -18,9 +18,9 @@ export default async function RegisterPage() {
 
   return (
     <div>
-      <h1 className="text-display-sm text-ink-950">Account banayein</h1>
+      <h1 className="text-display-sm text-ink-950">Create account</h1>
       <p className="mt-2 text-sm text-ink-600">
-        Do minute lagte hain. Booking, quotes aur guarantee sab ek jagah.
+        It takes two minutes. Bookings, quotes and guarantee all in one place.
       </p>
       <div className="mt-7">
         <Suspense fallback={<Skeleton className="h-96 rounded-xl" />}>

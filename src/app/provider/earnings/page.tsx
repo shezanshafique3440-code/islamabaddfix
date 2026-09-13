@@ -45,24 +45,24 @@ export default async function ProviderEarningsPage() {
       <header>
         <h1 className="text-display-sm text-ink-950">Earnings</h1>
         <p className="mt-1 text-sm text-ink-600">
-          Platform commission {commissionRateBp / 100}% hai, jo har mukammal booking par aap ki
-          earning se katta hai.
+          Platform commission is {commissionRateBp / 100}%, deducted from your earnings on every
+          completed booking.
         </p>
       </header>
 
       <dl className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Stat
-          label="Aaj"
+          label="Today"
           value={formatPaisa(earnings.today.earningsPaisa)}
           hint={`${earnings.today.jobs} job`}
         />
         <Stat
-          label="Is hafte"
+          label="This week"
           value={formatPaisa(earnings.week.earningsPaisa)}
           hint={`${earnings.week.jobs} jobs`}
         />
         <Stat
-          label="Is mahine"
+          label="This month"
           value={formatPaisa(earnings.month.earningsPaisa)}
           hint={`${earnings.month.jobs} jobs`}
         />
@@ -74,10 +74,10 @@ export default async function ProviderEarningsPage() {
       </dl>
 
       <section className="rounded-2xl border border-ink-200 bg-white p-5">
-        <h2 className="text-[0.9375rem] font-semibold text-ink-900">Kul hisaab</h2>
+        <h2 className="text-[0.9375rem] font-semibold text-ink-900">Totals</h2>
         <dl className="mt-3 space-y-2 text-sm">
           <div className="flex justify-between gap-3">
-            <dt className="text-ink-600">Customers ne kul diya</dt>
+            <dt className="text-ink-600">Total paid by customers</dt>
             <dd className="font-medium text-ink-900">{formatPaisa(earnings.allTime.grossPaisa)}</dd>
           </div>
           <div className="flex justify-between gap-3">
@@ -85,13 +85,13 @@ export default async function ProviderEarningsPage() {
             <dd className="text-ink-700">−{formatPaisa(earnings.allTime.commissionPaisa)}</dd>
           </div>
           <div className="flex justify-between gap-3 border-t border-ink-200 pt-2">
-            <dt className="font-semibold text-ink-900">Aapki kul kamai</dt>
+            <dt className="font-semibold text-ink-900">Your total earnings</dt>
             <dd className="text-lg font-bold text-brand-700">
               {formatPaisa(earnings.allTime.earningsPaisa)}
             </dd>
           </div>
           <div className="flex justify-between gap-3">
-            <dt className="text-ink-600">Mukammal jobs</dt>
+            <dt className="text-ink-600">Completed jobs</dt>
             <dd className="text-ink-900">{earnings.allTime.jobs}</dd>
           </div>
         </dl>
@@ -99,7 +99,7 @@ export default async function ProviderEarningsPage() {
 
       <section aria-labelledby="jobs-heading">
         <h2 id="jobs-heading" className="text-title text-ink-950">
-          Recent mukammal jobs
+          Recently completed jobs
         </h2>
         {recentJobs.length > 0 ? (
           <div className="mt-4 overflow-x-auto rounded-2xl border border-ink-200">
@@ -108,10 +108,10 @@ export default async function ProviderEarningsPage() {
                 <tr>
                   <Th>Booking</Th>
                   <Th>Service</Th>
-                  <Th>Tareekh</Th>
+                  <Th>Date</Th>
                   <Th className="text-right">Total</Th>
                   <Th className="text-right">Commission</Th>
-                  <Th className="text-right">Aapki kamai</Th>
+                  <Th className="text-right">Your earnings</Th>
                   <Th>Payout</Th>
                 </tr>
               </thead>
@@ -132,9 +132,9 @@ export default async function ProviderEarningsPage() {
                     </Td>
                     <Td>
                       {job.payoutItems.length > 0 ? (
-                        <Badge tone="success">Shamil</Badge>
+                        <Badge tone="success">Included</Badge>
                       ) : (
-                        <Badge tone="neutral">Baqi</Badge>
+                        <Badge tone="neutral">Outstanding</Badge>
                       )}
                     </Td>
                   </tr>
@@ -145,8 +145,8 @@ export default async function ProviderEarningsPage() {
         ) : (
           <EmptyState
             className="mt-4"
-            title="Abhi koi job mukammal nahi"
-            description="Pehli job mukammal karne par earnings yahan dikhengi."
+            title="No completed jobs yet"
+            description="Your earnings appear here once you complete your first job."
           />
         )}
       </section>
@@ -181,9 +181,9 @@ export default async function ProviderEarningsPage() {
                   }
                 >
                   {payout.status === 'PAID'
-                    ? 'Bhej diya'
+                    ? 'Sent'
                     : payout.status === 'PROCESSING'
-                      ? 'Process ho raha'
+                      ? 'Processing'
                       : payout.status === 'FAILED'
                         ? 'Fail'
                         : 'Pending'}
@@ -194,9 +194,9 @@ export default async function ProviderEarningsPage() {
         ) : (
           <div className="mt-4 rounded-2xl border border-ink-200 bg-white p-5">
             <p className="text-sm text-ink-600">
-              Abhi koi payout record nahi. Cash bookings mein paise seedhe aap ko customer se milte
-              hain; platform commission ka hisaab yahan record hota hai. Bank payouts ops team
-              process karti hai.
+              No payouts recorded yet. On cash bookings the money comes to you directly from the
+              customer; the platform commission is accounted for here. Bank payouts are processed by
+              the ops team.
             </p>
           </div>
         )}

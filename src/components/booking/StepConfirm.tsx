@@ -96,7 +96,7 @@ export function StepConfirm({
       }
 
       if (!addressId || !draft.serviceId) {
-        setError('Service aur address dono zaroori hain.');
+        setError('Both a service and an address are required.');
         setSubmitting(false);
         return;
       }
@@ -131,20 +131,17 @@ export function StepConfirm({
       if (caught instanceof ApiError) {
         setError(caught.message);
         if (caught.code === 'UNAUTHENTICATED') {
-          setError('Booking confirm karne ke liye login zaroori hai.');
+          setError('You need to sign in to confirm a booking.');
         }
       } else {
-        setError('Booking nahi ban saki. Dobara koshish karein.');
+        setError('The booking could not be created. Please try again.');
       }
       setSubmitting(false);
     }
   }
 
   return (
-    <StepShell
-      title="Booking review karein"
-      description="Sab theek lag raha hai? Phir confirm karein."
-    >
+    <StepShell title="Review booking" description="Does everything look right? Then confirm.">
       <div className="space-y-5">
         <dl className="divide-y divide-ink-200 rounded-xl border border-ink-200">
           <Row label="Service">
@@ -154,7 +151,7 @@ export function StepConfirm({
             ) : null}
           </Row>
 
-          <Row label="Masla">
+          <Row label="Problem">
             <span className="whitespace-pre-line text-ink-800">{draft.problem}</span>
             {draft.customerNotes ? (
               <span className="mt-1 block text-xs text-ink-500">
@@ -184,9 +181,9 @@ export function StepConfirm({
             )}
           </Row>
 
-          <Row label="Waqt">
+          <Row label="Time">
             {draft.isEmergency ? (
-              <Badge tone="danger">🚨 Foran — emergency</Badge>
+              <Badge tone="danger">🚨 Emergency — right now</Badge>
             ) : draft.scheduledFor ? (
               <span className="text-ink-800">{formatDateTime(draft.scheduledFor)}</span>
             ) : (
@@ -196,12 +193,13 @@ export function StepConfirm({
 
           <Row label="Technician">
             {draft.providerId ? (
-              <span className="text-ink-800">Aap ne khud chuna hai</span>
+              <span className="text-ink-800">You chose this one</span>
             ) : (
               <>
-                <span className="text-ink-800">Hum behtareen match chun lenge</span>
+                <span className="text-ink-800">We will pick the best match</span>
                 <span className="block text-xs text-ink-500">
-                  Top matched technicians ko request jayegi; jo pehle qubool kare wohi aayega.
+                  The request goes to the best-matched technicians; whoever accepts first is the one
+                  who comes.
                 </span>
               </>
             )}
@@ -216,7 +214,7 @@ export function StepConfirm({
 
         {/* Payment method */}
         <div>
-          <p className="mb-2 text-sm font-medium text-ink-800">Payment ka tareeqa</p>
+          <p className="mb-2 text-sm font-medium text-ink-800">Payment method</p>
           {paymentMethods.length > 0 ? (
             <div className="space-y-2">
               {paymentMethods.map((method) => (
@@ -232,17 +230,17 @@ export function StepConfirm({
             </div>
           ) : (
             <p className="rounded-xl border border-warn-200 bg-warn-50 px-4 py-3 text-sm text-warn-700">
-              Is waqt koi payment method enabled nahi hai. Support se rabta karein.
+              No payment method is enabled right now. Please contact support.
             </p>
           )}
           <p className="mt-2 text-xs text-ink-500">
-            Payment kaam mukammal hone par hoti hai, ab nahi.
+            Payment happens when the work is complete, not now.
           </p>
         </div>
 
         {/* Price expectation */}
         <div className="rounded-xl border border-ink-200 bg-ink-50/60 p-4">
-          <p className="text-sm font-semibold text-ink-900">Qeemat ka andaza</p>
+          <p className="text-sm font-semibold text-ink-900">Estimated price</p>
           <dl className="mt-2.5 space-y-1.5 text-sm">
             {service ? (
               <div className="flex items-center justify-between gap-3">
@@ -260,9 +258,9 @@ export function StepConfirm({
             ) : null}
           </dl>
           <p className="mt-3 border-t border-ink-200 pt-2.5 text-xs leading-relaxed text-ink-600">
-            Ab kuch charge nahi hoga. Technician muaina karke likhit quote bhejega — inspection,
-            labour aur parts alag alag. Aap approve karenge tab kaam shuru hoga, aur aapki ijazat ke
-            baghair koi extra charge nahi lagega.
+            Nothing is charged now. The technician inspects it and sends a written quote —
+            inspection, labour and parts listed separately. Work starts once you approve, and no
+            extra charge applies without your permission.
           </p>
         </div>
 
@@ -271,10 +269,10 @@ export function StepConfirm({
             <span aria-hidden="true">🛡️</span>
             <p className="text-xs leading-relaxed text-brand-900">
               <strong className="font-semibold">
-                {config.guaranteeDays}-din Fix Guarantee laagu hai.
+                The {config.guaranteeDays}-day Fix Guarantee applies.
               </strong>{' '}
-              Agar wohi masla is muddat mein wapis aa jaye to re-visit request kar sakte hain. Har
-              claim ka jaiza ops team karti hai.
+              If the same problem returns within this period you can request a re-visit. Every claim
+              is reviewed by the ops team.
             </p>
           </div>
         ) : null}
@@ -287,7 +285,7 @@ export function StepConfirm({
                 href="/login?next=/book"
                 className="mt-1.5 inline-block text-sm font-semibold text-alert-700 underline"
               >
-                Login karein
+                Sign in
               </Link>
             ) : null}
           </div>
@@ -298,7 +296,7 @@ export function StepConfirm({
         onBack={onBack}
         onNext={submit}
         loading={submitting}
-        nextLabel={draft.isEmergency ? 'Emergency request bhejein' : 'Booking confirm karein'}
+        nextLabel={draft.isEmergency ? 'Send emergency request' : 'Confirm booking'}
         nextDisabled={!service || paymentMethods.length === 0}
       />
     </StepShell>

@@ -27,7 +27,7 @@ export const PATCH = route(async (request) => {
       where: { phone, id: { not: ctx.user.id } },
       select: { id: true },
     });
-    if (clash) throw new AppError('PHONE_TAKEN', 'Yeh phone number kisi aur account par hai.');
+    if (clash) throw new AppError('PHONE_TAKEN', 'This phone number is on another account.');
   }
 
   const user = await prisma.user.update({

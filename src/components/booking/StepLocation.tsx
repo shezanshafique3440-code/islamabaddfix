@@ -62,7 +62,7 @@ export function StepLocation({
 
   function useMyLocation() {
     if (!('geolocation' in navigator)) {
-      toast({ tone: 'error', title: 'Is browser mein GPS available nahi hai.' });
+      toast({ tone: 'error', title: 'GPS is not available in this browser.' });
       return;
     }
     setLocating(true);
@@ -75,19 +75,19 @@ export function StepLocation({
         setLocating(false);
         toast({
           tone: 'success',
-          title: 'Location mil gayi',
-          description: 'Is se technician ko sahi jagah pohanchne mein asani hogi.',
+          title: 'Location found',
+          description: 'This helps the technician reach the right place.',
         });
       },
       (error) => {
         setLocating(false);
         toast({
           tone: 'error',
-          title: 'Location nahi mil saki',
+          title: 'Could not get your location',
           description:
             error.code === error.PERMISSION_DENIED
-              ? 'Aap ne ijazat nahi di. Address manually likh dein — bilkul theek hai.'
-              : 'Koi baat nahi, address manually likh dein.',
+              ? 'You did not allow location access. Just type the address instead — that works fine.'
+              : 'No problem, type the address in manually.',
         });
       },
       { enableHighAccuracy: true, timeout: 10_000 },
@@ -101,8 +101,8 @@ export function StepLocation({
 
   return (
     <StepShell
-      title="Kahan aana hai?"
-      description="Sector aur address likh dein. GPS optional hai — address se bhi kaam ho jata hai."
+      title="Where should we come?"
+      description="Enter the sector and address. GPS is optional — the address alone works fine."
     >
       <div className="space-y-5">
         {addresses.length > 0 ? (
@@ -110,7 +110,7 @@ export function StepLocation({
             {(
               [
                 { value: 'saved', label: 'Saved address' },
-                { value: 'new', label: 'Naya address' },
+                { value: 'new', label: 'New address' },
               ] as const
             ).map((option) => (
               <button
@@ -158,7 +158,7 @@ export function StepLocation({
             {!mapsConfigured ? (
               <NotConfiguredNotice
                 feature="Map picker"
-                detail="Is deployment par maps configured nahi hai, is liye map pin available nahi. Sector aur address likh dein — booking mukammal ho jayegi. GPS button phir bhi kaam karta hai."
+                detail="Maps are not configured on this deployment, so the map pin is unavailable. Enter the sector and address — the booking will still complete. The GPS button still works."
               />
             ) : null}
 
@@ -167,9 +167,9 @@ export function StepLocation({
               required
               value={form.zoneId ?? ''}
               onChange={(event) => updateForm({ zoneId: event.target.value || null })}
-              hint="Aapka area list mein na ho to support ko bata dein."
+              hint="If your area is not listed, let support know."
             >
-              <option value="">Area chunein</option>
+              <option value="">Choose an area</option>
               {zones.map((zone) => (
                 <option key={zone.id} value={zone.id}>
                   {zone.name}
@@ -178,7 +178,7 @@ export function StepLocation({
             </Select>
 
             <TextInput
-              label="Poora address"
+              label="Full address"
               required
               value={form.addressLine}
               onChange={(event) => updateForm({ addressLine: event.target.value })}
@@ -196,7 +196,7 @@ export function StepLocation({
                 label="Landmark"
                 value={form.landmark}
                 onChange={(event) => updateForm({ landmark: event.target.value })}
-                placeholder="Masjid ke saamne"
+                placeholder="Opposite the mosque"
               />
             </div>
 
@@ -208,13 +208,13 @@ export function StepLocation({
                 placeholder="Home / Office"
               />
               <TextInput
-                label="Rabta number"
+                label="Contact number"
                 type="tel"
                 inputMode="tel"
                 value={form.contactPhone}
                 onChange={(event) => updateForm({ contactPhone: event.target.value })}
                 placeholder="0300 1234567"
-                hint="Technician isi par rabta karega."
+                hint="The technician will contact you on this."
               />
             </div>
 
@@ -232,12 +232,12 @@ export function StepLocation({
                     clipRule="evenodd"
                   />
                 </svg>
-                {locating ? 'Dhoond rahe hain...' : 'Meri location istemal karein'}
+                {locating ? 'Searching...' : 'Use my location'}
               </button>
               {form.latitude !== null ? (
-                <Badge tone="success">GPS location save ho gayi</Badge>
+                <Badge tone="success">GPS location saved</Badge>
               ) : (
-                <span className="text-xs text-ink-500">Optional — address kaafi hai</span>
+                <span className="text-xs text-ink-500">Optional — the address is enough</span>
               )}
             </div>
 
@@ -249,15 +249,15 @@ export function StepLocation({
                   onChange={(event) => updateForm({ saveForLater: event.target.checked })}
                   className="h-[1.125rem] w-[1.125rem] rounded border-ink-300 text-brand-700 focus:ring-brand-600"
                 />
-                Yeh address aage ke liye save kar lein
+                Save this address for next time
               </label>
             ) : null}
           </div>
         )}
 
         <p className="rounded-xl bg-ink-50 px-3.5 py-2.5 text-xs leading-relaxed text-ink-600">
-          🔒 Technician ko job qubool karne se pehle sirf aapka area dikhta hai. Poora address aur
-          phone number tab share hota hai jab woh job accept kar le.
+          🔒 Before accepting a job the technician sees only your area. Your full address and phone
+          number are shared once they accept.
         </p>
       </div>
 

@@ -78,9 +78,11 @@ export function ProviderCard({
 
           <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
             <Rating value={provider.ratingAverage} count={provider.ratingCount} size="sm" />
-            <span className="text-xs text-ink-500">{provider.completedJobs} jobs mukammal</span>
+            <span className="text-xs text-ink-500">{provider.completedJobs} jobs completed</span>
             {provider.yearsExperience > 0 ? (
-              <span className="text-xs text-ink-500">{provider.yearsExperience} saal tajurba</span>
+              <span className="text-xs text-ink-500">
+                {provider.yearsExperience} years experience
+              </span>
             ) : null}
           </div>
         </div>
@@ -96,25 +98,25 @@ export function ProviderCard({
 
       <dl className="grid grid-cols-2 gap-x-4 gap-y-2 border-t border-ink-100 pt-3 text-sm sm:grid-cols-4">
         {provider.startingPricePaisa !== undefined ? (
-          <Stat label="Shuru" value={formatPaisa(provider.startingPricePaisa)} emphasis />
+          <Stat label="From" value={formatPaisa(provider.startingPricePaisa)} emphasis />
         ) : null}
         {provider.distanceKm !== undefined ? (
           <Stat
-            label="Faasla"
+            label="Distance"
             value={
               provider.distanceIsEstimate
                 ? `~${provider.distanceKm} km`
                 : `${provider.distanceKm} km`
             }
-            hint={provider.distanceIsEstimate ? 'Andazan, area ke hisaab se' : undefined}
+            hint={provider.distanceIsEstimate ? 'Estimated, based on area' : undefined}
           />
         ) : null}
         {provider.avgResponseMinutes !== null ? (
-          <Stat label="Jawab" value={`~${provider.avgResponseMinutes} min`} />
+          <Stat label="Responds" value={`~${provider.avgResponseMinutes} min`} />
         ) : (
-          <Stat label="Jawab" value="Naya" />
+          <Stat label="Responds" value="New" />
         )}
-        <Stat label="Emergency" value={provider.emergencyAvailable ? 'Available' : 'Nahi'} />
+        <Stat label="Emergency" value={provider.emergencyAvailable ? 'Available' : 'No'} />
       </dl>
 
       {provider.emergencyAvailable && provider.emergencyFeePaisa > 0 ? (

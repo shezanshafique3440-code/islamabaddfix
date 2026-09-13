@@ -30,7 +30,7 @@ export default async function AdminDashboardPage() {
     <div className="space-y-8">
       <header>
         <h1 className="text-display-sm text-ink-950">Dashboard</h1>
-        <p className="mt-1 text-sm text-ink-600">Poore marketplace ki soorat-e-haal ek jagah.</p>
+        <p className="mt-1 text-sm text-ink-600">The whole marketplace at a glance.</p>
       </header>
 
       {/* Queues first: these are the things that need a human today. */}
@@ -43,7 +43,7 @@ export default async function AdminDashboardPage() {
           className="rounded-2xl border border-warn-200 bg-warn-50 p-5"
         >
           <h2 id="queues-heading" className="text-[0.9375rem] font-semibold text-warn-700">
-            Aap ki tawajjo darkar hai
+            Needs your attention
           </h2>
           <ul className="mt-3 flex flex-wrap gap-3">
             {metrics.queues.pendingProviders > 0 ? (
@@ -87,26 +87,26 @@ export default async function AdminDashboardPage() {
 
       <section aria-labelledby="today-heading">
         <h2 id="today-heading" className="text-title text-ink-950">
-          Aaj
+          Today
         </h2>
         <dl className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <MetricCard label="Aaj ki bookings" value={String(metrics.bookings.today)} />
-          <MetricCard label="Aaj mukammal" value={String(metrics.bookings.completedToday)} />
+          <MetricCard label="Bookings today" value={String(metrics.bookings.today)} />
+          <MetricCard label="Completed today" value={String(metrics.bookings.completedToday)} />
           <MetricCard
-            label="Aaj ki revenue"
+            label="Revenue today"
             value={formatPaisa(metrics.revenue.todayGrossPaisa)}
             hint={`Commission ${formatPaisa(metrics.revenue.todayCommissionPaisa)}`}
           />
-          <MetricCard label="Aaj cancelled" value={String(metrics.bookings.cancelledToday)} />
+          <MetricCard label="Cancelled today" value={String(metrics.bookings.cancelledToday)} />
         </dl>
       </section>
 
       <section aria-labelledby="month-heading">
         <h2 id="month-heading" className="text-title text-ink-950">
-          Pichle 30 din
+          Last 30 days
         </h2>
         <dl className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <MetricCard label="Mukammal jobs" value={String(metrics.bookings.completedThisMonth)} />
+          <MetricCard label="Completed jobs" value={String(metrics.bookings.completedThisMonth)} />
           <MetricCard label="Gross revenue" value={formatPaisa(metrics.revenue.monthGrossPaisa)} />
           <MetricCard
             label="Platform commission"
@@ -120,9 +120,7 @@ export default async function AdminDashboardPage() {
                 : '—'
             }
             hint={
-              metrics.revenue.averageOrderValuePaisa === null
-                ? 'Koi mukammal booking nahi'
-                : undefined
+              metrics.revenue.averageOrderValuePaisa === null ? 'No completed bookings' : undefined
             }
           />
         </dl>
@@ -133,7 +131,7 @@ export default async function AdminDashboardPage() {
         className="rounded-2xl border border-ink-200 bg-white p-5"
       >
         <h2 id="chart-heading" className="text-[0.9375rem] font-semibold text-ink-900">
-          Pichle 14 din
+          Last 14 days
         </h2>
         <div className="mt-4">
           <BookingsChart data={series} />
@@ -152,7 +150,7 @@ export default async function AdminDashboardPage() {
               value={String(metrics.providers.pendingVerification)}
             />
             <MetricCard label="Customers" value={String(metrics.users.customers)} />
-            <MetricCard label="Naye users (7 din)" value={String(metrics.users.newThisWeek)} />
+            <MetricCard label="New users (7 days)" value={String(metrics.users.newThisWeek)} />
           </dl>
         </section>
 
@@ -171,7 +169,7 @@ export default async function AdminDashboardPage() {
               hint={
                 metrics.quality.ratingCount > 0
                   ? `${metrics.quality.ratingCount} reviews`
-                  : 'Koi review nahi'
+                  : 'No reviews'
               }
             />
             <MetricCard
@@ -192,7 +190,7 @@ export default async function AdminDashboardPage() {
         className="rounded-2xl border border-ink-200 bg-white p-5"
       >
         <h2 id="categories-heading" className="text-[0.9375rem] font-semibold text-ink-900">
-          Top categories (30 din)
+          Top categories (30 days)
         </h2>
         {categories.length > 0 ? (
           <ul className="mt-4 space-y-2.5">
@@ -217,7 +215,7 @@ export default async function AdminDashboardPage() {
             })}
           </ul>
         ) : (
-          <p className="mt-3 text-sm text-ink-500">Is arse mein koi booking nahi.</p>
+          <p className="mt-3 text-sm text-ink-500">No bookings in this period.</p>
         )}
       </section>
 
@@ -226,7 +224,7 @@ export default async function AdminDashboardPage() {
           Integrations
         </h2>
         <p className="mt-1 text-sm text-ink-600">
-          Jo configure nahi hui woh saaf dikhti hai — koi feature chupke se fail nahi hoti.
+          Anything not configured is shown clearly — no feature fails silently.
         </p>
         <div className="mt-4">
           <IntegrationStatusList

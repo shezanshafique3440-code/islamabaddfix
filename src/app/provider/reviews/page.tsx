@@ -33,9 +33,7 @@ export default async function ProviderReviewsPage() {
     <div className="space-y-8">
       <header>
         <h1 className="text-display-sm text-ink-950">Reviews</h1>
-        <p className="mt-1 text-sm text-ink-600">
-          Behtar rating aap ko matching mein oopar laati hai.
-        </p>
+        <p className="mt-1 text-sm text-ink-600">A better rating moves you up in matching.</p>
       </header>
 
       <section className="rounded-2xl border border-ink-200 bg-white p-5">
@@ -69,7 +67,7 @@ export default async function ProviderReviewsPage() {
           <div className="text-sm text-ink-600">
             <p>
               <strong className="font-semibold text-ink-900">{profile.completedJobs}</strong> jobs
-              mukammal
+              completed
             </p>
           </div>
         </div>
@@ -98,10 +96,10 @@ export default async function ProviderReviewsPage() {
                   <span>Quality {review.breakdown.serviceQuality}/5</span>
                 ) : null}
                 {review.breakdown.professionalism ? (
-                  <span>Rawayya {review.breakdown.professionalism}/5</span>
+                  <span>Professionalism {review.breakdown.professionalism}/5</span>
                 ) : null}
                 {review.breakdown.punctuality ? (
-                  <span>Waqt {review.breakdown.punctuality}/5</span>
+                  <span>Punctuality {review.breakdown.punctuality}/5</span>
                 ) : null}
                 {review.breakdown.valueForMoney ? (
                   <span>Value {review.breakdown.valueForMoney}/5</span>
@@ -112,8 +110,8 @@ export default async function ProviderReviewsPage() {
         </ul>
       ) : (
         <EmptyState
-          title="Abhi koi review nahi"
-          description="Jobs mukammal karne par customers review de sakte hain."
+          title="No reviews yet"
+          description="Customers can leave a review once jobs are completed."
         />
       )}
     </div>

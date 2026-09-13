@@ -52,9 +52,9 @@ export const POST = route(async (request, { params }: Params) => {
       service: { select: { name: true } },
     },
   });
-  if (!booking) throw new AppError('NOT_FOUND', 'Booking nahi mili.');
+  if (!booking) throw new AppError('NOT_FOUND', 'Booking not found.');
   if (booking.providerId !== ctx.providerId) {
-    throw new AppError('FORBIDDEN', 'Yeh job aap ko assign nahi hui.');
+    throw new AppError('FORBIDDEN', 'This job is not assigned to you.');
   }
 
   if (input.action === 'complete') {
@@ -105,25 +105,25 @@ async function notifyCustomer(
   const messages: Record<typeof target, { event: string; title: string; body: string }> = {
     SCHEDULED: {
       event: NOTIFICATION_EVENTS.BOOKING_SCHEDULED,
-      title: 'Booking ka time confirm ho gaya',
+      title: 'Booking time confirmed',
       body: scheduledFor
         ? `${booking.service.name} — ${formatDateTime(scheduledFor)}.`
-        : `${booking.service.name} ka time confirm ho gaya.`,
+        : `Your ${booking.service.name} visit is confirmed.`,
     },
     ON_THE_WAY: {
       event: NOTIFICATION_EVENTS.PROVIDER_ON_THE_WAY,
-      title: 'Technician raste mein hai',
-      body: `${booking.reference}: technician aapke ghar ki taraf nikal chuka hai.`,
+      title: 'Technician is on the way',
+      body: `${booking.reference}: your technician is on the way.`,
     },
     ARRIVED: {
       event: NOTIFICATION_EVENTS.PROVIDER_ARRIVED,
-      title: 'Technician pohonch gaya',
-      body: `${booking.reference}: technician aapke address par pohonch gaya hai.`,
+      title: 'Technician has arrived',
+      body: `${booking.reference}: your technician has arrived.`,
     },
     IN_PROGRESS: {
       event: NOTIFICATION_EVENTS.JOB_STARTED,
-      title: 'Kaam shuru ho gaya',
-      body: `${booking.reference}: ${booking.service.name} par kaam shuru hai.`,
+      title: 'Work started',
+      body: `${booking.reference}: work has started on your ${booking.service.name}.`,
     },
   };
 

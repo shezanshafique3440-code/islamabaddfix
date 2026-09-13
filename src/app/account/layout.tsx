@@ -31,7 +31,7 @@ export default async function AccountLayout({ children }: { children: React.Reac
             icon: NavIcons.bookings,
             match: '/account/bookings',
           },
-          { href: '/book', label: 'Naya', icon: NavIcons.search },
+          { href: '/book', label: 'New', icon: NavIcons.search },
           { href: '/account/notifications', label: 'Alerts', icon: NavIcons.bell },
           { href: '/account/profile', label: 'Profile', icon: NavIcons.profile },
         ]}

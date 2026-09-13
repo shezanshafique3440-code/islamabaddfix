@@ -32,7 +32,7 @@ export function IntegrationStatusList({
             key={channel.channel}
             label={CHANNEL_LABELS[channel.channel] ?? channel.channel}
             configured={channel.configured}
-            note={channel.configured ? undefined : 'Credentials set nahi hain'}
+            note={channel.configured ? undefined : 'Credentials are not set'}
           />
         ))}
       </Panel>
@@ -43,7 +43,7 @@ export function IntegrationStatusList({
             key={provider.key}
             label={provider.label}
             configured={provider.configured}
-            note={provider.configured ? undefined : 'PAYMENT_* variables darkar hain'}
+            note={provider.configured ? undefined : 'PAYMENT_* variables are required'}
           />
         ))}
       </Panel>
@@ -55,38 +55,38 @@ export function IntegrationStatusList({
           note={
             ai.configured
               ? `Provider: ${ai.provider}`
-              : 'Rule-based fallback chal raha hai (UI par saaf likha hai)'
+              : 'Running the rule-based fallback (stated plainly in the UI)'
           }
         />
         <StatusRow
           label="Maps / geocoding"
           configured={maps.configured}
-          note={
-            maps.configured ? `Provider: ${maps.provider}` : 'Manual address entry chal rahi hai'
-          }
+          note={maps.configured ? `Provider: ${maps.provider}` : 'Manual address entry is in use'}
         />
       </Panel>
 
       <Panel title="Channels & storage">
         <StatusRow
-          label="WhatsApp (bhejna)"
+          label="WhatsApp (outbound)"
           configured={whatsapp.configured}
-          note={whatsapp.configured ? undefined : 'WHATSAPP_API_KEY darkar hai'}
+          note={whatsapp.configured ? undefined : 'WHATSAPP_API_KEY is required'}
         />
         <StatusRow
           label="WhatsApp (webhook)"
           configured={whatsapp.inboundConfigured}
-          note={whatsapp.inboundConfigured ? undefined : 'Verify token aur app secret darkar hain'}
+          note={
+            whatsapp.inboundConfigured ? undefined : 'A verify token and app secret are required'
+          }
         />
         <StatusRow
           label="Voice agent"
           configured={voice.configured}
-          note={voice.configured ? undefined : 'VAPI_API_KEY darkar hai'}
+          note={voice.configured ? undefined : 'VAPI_API_KEY is required'}
         />
         <StatusRow
           label={`Storage (${storage.driver})`}
           configured={storage.configured}
-          note={storage.driver === 'local' ? 'Local disk — single node ke liye theek' : undefined}
+          note={storage.driver === 'local' ? 'Local disk — fine for a single node' : undefined}
         />
       </Panel>
     </div>

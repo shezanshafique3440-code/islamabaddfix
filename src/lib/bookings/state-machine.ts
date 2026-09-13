@@ -234,19 +234,19 @@ export function assertTransition(from: BookingStatus, to: BookingStatus, actor: 
   if (from === to) {
     throw new AppError(
       'INVALID_STATUS_TRANSITION',
-      `Booking pehle se "${humanStatus(to)}" status mein hai.`,
+      `The booking is already in the "${humanStatus(to)}" status.`,
       { context: { from, to, actor } },
     );
   }
   if (!TRANSITIONS[from].some((rule) => rule.to === to)) {
     throw new AppError(
       'INVALID_STATUS_TRANSITION',
-      `"${humanStatus(from)}" se "${humanStatus(to)}" tak jana allowed nahi hai.`,
+      `Moving from "${humanStatus(from)}" to "${humanStatus(to)}" is not allowed.`,
       { context: { from, to, actor } },
     );
   }
   if (!canTransition(from, to, actor)) {
-    throw new AppError('FORBIDDEN', 'Yeh status change aap nahi kar sakte.', {
+    throw new AppError('FORBIDDEN', 'You cannot make this status change.', {
       context: { from, to, actor },
     });
   }

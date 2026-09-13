@@ -27,7 +27,7 @@ export function VerifyEmailView() {
 
     if (!token) {
       setState('failed');
-      setMessage('Link adhoora hai.');
+      setMessage('That link is incomplete.');
       return;
     }
     api
@@ -36,7 +36,7 @@ export function VerifyEmailView() {
       .catch((error: unknown) => {
         setState('failed');
         setMessage(
-          error instanceof ApiError ? error.message : 'Verification mukammal nahi ho saki.',
+          error instanceof ApiError ? error.message : 'Verification could not be completed.',
         );
       });
   }, [token]);
@@ -47,14 +47,14 @@ export function VerifyEmailView() {
     return (
       <div className="space-y-4">
         <div className="rounded-xl border border-brand-200 bg-brand-50 px-4 py-3">
-          <p className="text-sm font-semibold text-brand-900">Email verify ho gayi</p>
+          <p className="text-sm font-semibold text-brand-900">Email verified</p>
           <p className="mt-1 text-sm leading-relaxed text-brand-900/90">
-            Ab aap booking updates email par bhi wasool kar sakte hain.
+            You can now get booking updates by email too.
           </p>
         </div>
         <Link href="/account" className="block">
           <Button fullWidth size="lg">
-            Account kholein
+            Open account
           </Button>
         </Link>
       </div>
@@ -64,12 +64,12 @@ export function VerifyEmailView() {
   return (
     <div className="space-y-4">
       <div role="alert" className="rounded-xl border border-alert-200 bg-alert-50 px-4 py-3">
-        <p className="text-sm font-semibold text-alert-700">Verify nahi ho saka</p>
+        <p className="text-sm font-semibold text-alert-700">Could not be verified</p>
         <p className="mt-1 text-sm leading-relaxed text-alert-700/90">{message}</p>
       </div>
       <Link href="/account/profile" className="block">
         <Button fullWidth size="lg" variant="secondary">
-          Profile se naya link bhejein
+          Send a new link from your profile
         </Button>
       </Link>
     </div>

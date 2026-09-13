@@ -12,7 +12,7 @@ async function ownedAddress(userId: string, id: string) {
     where: { id, userId, deletedAt: null },
     select: { id: true },
   });
-  if (!address) throw new AppError('NOT_FOUND', 'Address nahi mila.');
+  if (!address) throw new AppError('NOT_FOUND', 'Address not found.');
   return address;
 }
 
@@ -82,7 +82,7 @@ export const DELETE = route(async (_request, { params }: Params) => {
   if (liveBookings > 0) {
     throw new AppError(
       'CONFLICT',
-      'Is address par live booking hai. Pehle woh mukammal ya cancel karein.',
+      'There is a live booking at this address. Complete or cancel it first.',
     );
   }
 

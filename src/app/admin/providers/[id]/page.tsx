@@ -67,10 +67,10 @@ export default async function AdminProviderDetailPage({ params }: Params) {
 
   const identityVerification = provider.verifications.find((v) => v.kind === 'IDENTITY_CNIC');
   const blockers: string[] = [];
-  if (provider.services.length === 0) blockers.push('Koi service select nahi ki gayi');
-  if (provider.serviceAreas.length === 0) blockers.push('Koi service area select nahi kiya gaya');
+  if (provider.services.length === 0) blockers.push('No service selected');
+  if (provider.serviceAreas.length === 0) blockers.push('No service area selected');
   if (requireCnic && (!identityVerification || identityVerification.status === 'NOT_SUBMITTED')) {
-    blockers.push('Shanakhti document submit nahi hua');
+    blockers.push('No identity document submitted');
   }
 
   return (
@@ -95,7 +95,7 @@ export default async function AdminProviderDetailPage({ params }: Params) {
           </p>
           <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5">
             <Rating value={provider.ratingAverage} count={provider.ratingCount} size="sm" />
-            <span className="text-sm text-ink-600">{provider.completedJobs} jobs mukammal</span>
+            <span className="text-sm text-ink-600">{provider.completedJobs} jobs completed</span>
             <span className="text-sm text-ink-600">{provider._count.bookings} total bookings</span>
             <span className="text-sm text-ink-600">{formatDate(provider.createdAt)} se member</span>
           </div>
@@ -118,21 +118,21 @@ export default async function AdminProviderDetailPage({ params }: Params) {
       />
 
       <div className="grid gap-5 lg:grid-cols-2">
-        <Panel title="Rabta aur maloomat">
+        <Panel title="Contact and information">
           <dl className="space-y-2 text-sm">
             <Row label="Business phone" value={provider.contactPhone} />
             <Row label="Account phone" value={provider.user.phone ?? '—'} />
             <Row label="Email" value={provider.user.email} />
             <Row label="Address" value={provider.addressLine ?? '—'} />
             <Row label="Sector" value={provider.sector ?? '—'} />
-            <Row label="Tajurba" value={`${provider.yearsExperience} saal`} />
+            <Row label="Experience" value={`${provider.yearsExperience} years`} />
             <Row label="Service radius" value={`${provider.serviceRadiusKm} km`} />
             <Row
               label="Emergency"
               value={
                 provider.emergencyAvailable
-                  ? `Haan · ${formatPaisa(provider.emergencyFeePaisa)}`
-                  : 'Nahi'
+                  ? `Yes · ${formatPaisa(provider.emergencyFeePaisa)}`
+                  : 'No'
               }
             />
             <Row label="Max active jobs" value={String(provider.maxActiveJobs)} />
@@ -140,7 +140,7 @@ export default async function AdminProviderDetailPage({ params }: Params) {
           </dl>
           {provider.description ? (
             <div className="mt-4 border-t border-ink-100 pt-3">
-              <p className="text-xs font-semibold uppercase tracking-wide text-ink-400">Tafseel</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-ink-400">Details</p>
               <p className="mt-1.5 whitespace-pre-line text-sm text-ink-700">
                 {provider.description}
               </p>
@@ -159,8 +159,8 @@ export default async function AdminProviderDetailPage({ params }: Params) {
           </dl>
           {/* States the storage decision, so nobody looks for the full number. */}
           <p className="mt-3 border-t border-ink-100 pt-3 text-xs leading-relaxed text-ink-500">
-            Poora IBAN store nahi hota — sirf aakhri 4 hindse aur ek hash. Payout karte waqt
-            provider se tasdeeq karein.
+            The full IBAN is not stored — only the last 4 digits and a hash. Confirm the account
+            with the provider when making a payout.
           </p>
         </Panel>
 
@@ -182,7 +182,7 @@ export default async function AdminProviderDetailPage({ params }: Params) {
               ))}
             </ul>
           ) : (
-            <p className="text-sm text-warn-700">Koi service select nahi ki gayi.</p>
+            <p className="text-sm text-warn-700">No service selected.</p>
           )}
         </Panel>
 
@@ -199,7 +199,7 @@ export default async function AdminProviderDetailPage({ params }: Params) {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-warn-700">Koi area select nahi kiya gaya.</p>
+            <p className="text-sm text-warn-700">No area selected.</p>
           )}
 
           <div className="mt-4 border-t border-ink-100 pt-3">
@@ -219,7 +219,7 @@ export default async function AdminProviderDetailPage({ params }: Params) {
                 ))}
               </dl>
             ) : (
-              <p className="mt-1.5 text-sm text-ink-500">Working hours set nahi kiye.</p>
+              <p className="mt-1.5 text-sm text-ink-500">Working hours not set.</p>
             )}
           </div>
         </Panel>
@@ -247,17 +247,17 @@ export default async function AdminProviderDetailPage({ params }: Params) {
                     rel="noopener noreferrer"
                     className="shrink-0 rounded-lg border border-ink-300 bg-white px-3 py-1.5 text-sm font-medium text-ink-800 hover:bg-ink-50"
                   >
-                    Kholein
+                    Open
                   </a>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-sm text-ink-500">Koi document upload nahi hua.</p>
+            <p className="text-sm text-ink-500">No document uploaded.</p>
           )}
           <p className="mt-3 text-xs text-ink-500">
-            🔒 Yeh documents sirf provider aur ops team dekh sakti hai. Har access attempt audit log
-            mein record hoti hai.
+            🔒 Only the provider and the ops team can see these documents. Every access attempt is
+            recorded in the audit log.
           </p>
         </Panel>
 

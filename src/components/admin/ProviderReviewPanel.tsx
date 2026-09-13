@@ -57,12 +57,12 @@ export function ProviderReviewPanel({
     setBusy(action);
     try {
       await api.post(`/api/admin/providers/${providerId}`, { action, ...body });
-      toast({ tone: 'success', title: 'Ho gaya' });
+      toast({ tone: 'success', title: 'Done' });
       router.refresh();
     } catch (error) {
       toast({
         tone: 'error',
-        title: 'Nahi ho saka',
+        title: 'Could not be done',
         description: error instanceof ApiError ? error.message : undefined,
       });
     } finally {
@@ -75,7 +75,7 @@ export function ProviderReviewPanel({
     <>
       <section className="rounded-2xl border border-ink-200 bg-white p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="text-[0.9375rem] font-semibold text-ink-900">Faisla</h2>
+          <h2 className="text-[0.9375rem] font-semibold text-ink-900">Decision</h2>
           <Badge
             tone={
               status === 'VERIFIED'
@@ -99,7 +99,7 @@ export function ProviderReviewPanel({
         {blockers.length > 0 && status !== 'VERIFIED' ? (
           <div className="mt-3 rounded-xl border border-warn-200 bg-warn-50 p-3.5">
             <p className="text-sm font-semibold text-warn-700">
-              Approve karne se pehle yeh mukammal hona chahiye
+              This must be complete before approval
             </p>
             <ul className="mt-1.5 space-y-1 text-sm text-ink-700">
               {blockers.map((blocker) => (
@@ -115,42 +115,42 @@ export function ProviderReviewPanel({
               variant="success"
               loading={busy === 'approve'}
               disabled={blockers.length > 0}
-              onClick={() => decide('approve', { note: 'Onboarding maloomat ka jaiza mukammal' })}
+              onClick={() => decide('approve', { note: 'Onboarding details reviewed' })}
             >
-              Approve karein
+              Approve
             </Button>
           ) : null}
 
           {status === 'PENDING_VERIFICATION' ? (
             <Button variant="outline" onClick={() => setDialog('reject')}>
-              Reject karein
+              Reject
             </Button>
           ) : null}
 
           {status === 'VERIFIED' ? (
             <Button variant="danger" onClick={() => setDialog('suspend')}>
-              Suspend karein
+              Suspend
             </Button>
           ) : null}
 
           {status === 'SUSPENDED' ? (
             <Button
               loading={busy === 'reinstate'}
-              onClick={() => decide('reinstate', { note: 'Suspension khatam' })}
+              onClick={() => decide('reinstate', { note: 'Suspension lifted' })}
             >
-              Dobara active karein
+              Reactivate
             </Button>
           ) : null}
 
           <Button variant="ghost" onClick={() => setDialog('verification')}>
-            Verification badge set karein
+            Set verification badge
           </Button>
         </div>
 
         {status === 'VERIFIED' ? (
           <p className="mt-3 text-xs text-ink-500">
-            Yeh provider customers ko dikh raha hai aur jobs receive kar sakta hai. Suspend karne
-            par uske sessions khatam ho jayenge aur pending offers withdraw ho jayenge.
+            This provider is visible to customers and can receive jobs. Suspending them ends their
+            sessions and withdraws any pending offers.
           </p>
         ) : null}
       </section>
@@ -158,9 +158,9 @@ export function ProviderReviewPanel({
       <ReasonDialog
         open={dialog === 'reject'}
         onClose={() => setDialog(null)}
-        title="Provider reject karein?"
-        description="Wajah provider ko notification mein bheji jayegi taake woh theek kar ke dobara submit kar sakein."
-        confirmLabel="Reject karein"
+        title="Reject this provider?"
+        description="The reason is sent to the provider in a notification so they can fix it and resubmit."
+        confirmLabel="Reject"
         loading={busy === 'reject'}
         onConfirm={(reason) => decide('reject', { reason })}
       />
@@ -168,9 +168,9 @@ export function ProviderReviewPanel({
       <ReasonDialog
         open={dialog === 'suspend'}
         onClose={() => setDialog(null)}
-        title="Provider suspend karein?"
-        description="Suspend karne par sessions revoke ho jayenge aur pending offers withdraw. Pehle se qubool ki gayi jobs waise hi rahengi — unhe manually reassign karein."
-        confirmLabel="Suspend karein"
+        title="Suspend this provider?"
+        description="Suspending revokes their sessions and withdraws pending offers. Jobs already accepted stay as they are — reassign those manually."
+        confirmLabel="Suspend"
         destructive
         loading={busy === 'suspend'}
         onConfirm={(reason) => decide('suspend', { reason })}
@@ -220,7 +220,7 @@ function ReasonDialog({
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={loading}>
-            Band karein
+            Close
           </Button>
           <Button
             variant={destructive ? 'danger' : 'primary'}
@@ -234,12 +234,12 @@ function ReasonDialog({
       }
     >
       <Textarea
-        label="Wajah"
+        label="Reason"
         required
         rows={3}
         value={reason}
         onChange={(event) => setReason(event.target.value)}
-        placeholder="Saaf aur madadgar wajah likhein."
+        placeholder="Give a clear, helpful reason."
       />
     </Dialog>
   );
@@ -270,12 +270,12 @@ function VerificationDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      title="Verification badge set karein"
-      description="Har badge alag set hota hai. Sirf woh badge approve karein jo aap ne waqai check kiya."
+      title="Set verification badge"
+      description="Each badge is set separately. Only approve a badge you have actually verified."
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={loading}>
-            Band karein
+            Close
           </Button>
           <Button
             loading={loading}
@@ -287,12 +287,12 @@ function VerificationDialog({
                   status,
                   notes: notes.trim() || undefined,
                 });
-                toast({ tone: 'success', title: 'Badge update ho gaya' });
+                toast({ tone: 'success', title: 'Badge updated' });
                 onDone();
               } catch (error) {
                 toast({
                   tone: 'error',
-                  title: 'Update nahi hua',
+                  title: 'Not updated',
                   description: error instanceof ApiError ? error.message : undefined,
                 });
               } finally {
@@ -300,17 +300,17 @@ function VerificationDialog({
               }
             }}
           >
-            Set karein
+            Set
           </Button>
         </>
       }
     >
       <div className="space-y-4">
         <Select
-          label="Kaunsa check?"
+          label="Which check?"
           value={kind}
           onChange={(event) => setKind(event.target.value)}
-          hint={current ? `Mojooda status: ${current.status}` : undefined}
+          hint={current ? `Current status: ${current.status}` : undefined}
         >
           {VERIFICATION_KINDS.map((option) => (
             <option key={option.value} value={option.value}>
@@ -320,27 +320,27 @@ function VerificationDialog({
         </Select>
 
         <Select
-          label="Naya status"
+          label="New status"
           value={status}
           onChange={(event) => setStatus(event.target.value)}
         >
-          <option value="APPROVED">Approved — check mukammal</option>
-          <option value="SUBMITTED">Submitted — jaiza baqi</option>
+          <option value="APPROVED">Approved — checks complete</option>
+          <option value="SUBMITTED">Submitted — review pending</option>
           <option value="REJECTED">Rejected — check fail</option>
           <option value="NOT_SUBMITTED">Not submitted</option>
         </Select>
 
         <Textarea
-          label="Notes (audit log mein jayenge)"
+          label="Notes (these go into the audit log)"
           rows={2}
           value={notes}
           onChange={(event) => setNotes(event.target.value)}
-          placeholder="Misal: CNIC front aur back dono check kiye."
+          placeholder="For example: checked both the front and back of the CNIC."
         />
 
         <p className="rounded-xl bg-warn-50 px-3.5 py-2.5 text-xs leading-relaxed text-warn-700">
-          Yaad rahe: hum government licensing, insurance ya police background check ka dawa nahi
-          karte. Sirf wohi badge approve karein jo aap ne khud verify kiya ho.
+          Remember: we do not claim government licensing, insurance or police background checks.
+          Only approve a badge you have verified yourself.
         </p>
       </div>
     </Dialog>

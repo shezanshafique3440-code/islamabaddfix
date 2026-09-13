@@ -31,8 +31,8 @@ export async function SiteFooter() {
           <div className="lg:col-span-1">
             <Logo showTagline />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink-600">
-              {city} mein ghar aur business ki services — verified professionals, transparent quotes
-              aur asaan booking.
+              Home and business services in {city} — verified professionals, transparent quotes aur
+              asaan booking.
             </p>
           </div>
 
@@ -56,11 +56,11 @@ export async function SiteFooter() {
             <h2 className="text-eyebrow uppercase text-ink-500">Company</h2>
             <ul className="mt-3 space-y-2">
               {[
-                { href: '/about', label: 'Humare baare mein' },
-                { href: '/how-it-works', label: 'Kaise kaam karta hai' },
-                { href: '/provider-signup', label: 'Provider banein' },
+                { href: '/about', label: 'About us' },
+                { href: '/how-it-works', label: 'How it works' },
+                { href: '/provider-signup', label: 'Become a provider' },
                 { href: '/providers', label: 'Technicians' },
-                { href: '/contact', label: 'Rabta karein' },
+                { href: '/contact', label: 'Contact us' },
                 { href: '/faq', label: 'FAQ' },
               ].map((link) => (
                 <li key={link.href}>
@@ -107,14 +107,13 @@ export async function SiteFooter() {
         */}
         <div className="mt-10 border-t border-ink-200 pt-6">
           <p className="max-w-3xl text-xs leading-relaxed text-ink-500">
-            Islamabad Fix ek marketplace hai. Yahan listed service providers khud-mukhtar
-            (independent) professionals hain, Islamabad Fix ke mulazim nahi. Hum providers ki
-            shanakht aur onboarding maloomat ka jaiza lete hain; hum government licensing, insurance
-            ya background check ka dawa nahi karte. Har kaam ki qeemat provider ke quote se tay hoti
-            hai.
+            Islamabad Fix is a marketplace. The service providers listed here are independent
+            professionals, not employees of Islamabad Fix. We review providers’ identity and
+            onboarding details; we do not claim government licensing, insurance or background
+            checks. The price of every job is set by the provider’s quote.
           </p>
           <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-xs text-ink-500">© {year} Islamabad Fix. Tamam haqooq mahfooz.</p>
+            <p className="text-xs text-ink-500">© {year} Islamabad Fix. All rights reserved.</p>
             <div className="flex gap-4 text-xs text-ink-500">
               <Link href="/terms" className="hover:text-brand-700 hover:underline">
                 Terms

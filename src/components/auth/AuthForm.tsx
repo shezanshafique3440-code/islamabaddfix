@@ -65,7 +65,7 @@ export function LoginForm() {
         setErrors(error.fieldMap);
         setFormError(error.message);
       } else {
-        setFormError('Kuch ghalat ho gaya. Dobara koshish karein.');
+        setFormError('Something went wrong. Please try again.');
       }
       setLoading(false);
     }
@@ -83,7 +83,7 @@ export function LoginForm() {
       toast({ tone: 'success', title: `Khush aamdeed, ${result.user.fullName.split(' ')[0]}!` });
       window.location.href = next ?? result.redirectTo;
     } catch (error) {
-      setFormError(error instanceof ApiError ? error.message : 'Code check nahi kar sake.');
+      setFormError(error instanceof ApiError ? error.message : 'We could not check the code.');
       setLoading(false);
     }
   }
@@ -94,7 +94,7 @@ export function LoginForm() {
         {formError ? <FormError message={formError} /> : null}
 
         <p className="text-sm leading-relaxed text-ink-600">
-          Apni authenticator app kholein aur 6-hindson ka code likhein. Phone kho gaya ho to
+          Open your authenticator app and enter the 6-digit code. If you have lost your phone,
           recovery code bhi chalega.
         </p>
 
@@ -109,7 +109,7 @@ export function LoginForm() {
         />
 
         <Button type="submit" fullWidth size="lg" loading={loading} disabled={code.length < 6}>
-          Login mukammal karein
+          Finish signing in
         </Button>
 
         <button
@@ -121,7 +121,7 @@ export function LoginForm() {
           }}
           className="w-full text-center text-sm text-ink-500 hover:text-ink-800 hover:underline"
         >
-          Wapis jayein
+          Go back
         </button>
       </form>
     );
@@ -139,7 +139,7 @@ export function LoginForm() {
         inputMode="email"
         required
         error={errors.email}
-        placeholder="aap@example.com"
+        placeholder="you@example.com"
       />
       <TextInput
         label="Password"
@@ -155,19 +155,19 @@ export function LoginForm() {
       </Button>
 
       <p className="text-center text-sm text-ink-600">
-        Account nahi hai?{' '}
+        No account?{' '}
         <Link
           href={next ? `/register?next=${encodeURIComponent(next)}` : '/register'}
           className="font-medium text-brand-700 hover:underline"
         >
-          Register karein
+          Register
         </Link>
       </p>
       <Link
         href="/forgot-password"
         className="block w-full text-center text-sm text-ink-500 hover:text-ink-800 hover:underline"
       >
-        Password bhool gaye?
+        Forgot your password?
       </Link>
     </form>
   );
@@ -206,11 +206,11 @@ export function RegisterForm() {
       });
       toast({
         tone: 'success',
-        title: 'Account ban gaya',
+        title: 'Account created',
         description:
           role === 'PROVIDER'
-            ? 'Ab apni profile mukammal karein taake team review kar sake.'
-            : 'Ab aap booking kar sakte hain.',
+            ? 'Now complete your profile so the team can review it.'
+            : 'You can book now.',
       });
       window.location.href = next ?? result.redirectTo;
     } catch (error) {
@@ -218,7 +218,7 @@ export function RegisterForm() {
         setErrors(error.fieldMap);
         setFormError(error.message);
       } else {
-        setFormError('Kuch ghalat ho gaya. Dobara koshish karein.');
+        setFormError('Something went wrong. Please try again.');
       }
       setLoading(false);
     }
@@ -230,12 +230,12 @@ export function RegisterForm() {
 
       {/* Role is chosen here but clamped server-side: a client cannot ask for staff. */}
       <fieldset>
-        <legend className="mb-2 text-sm font-medium text-ink-800">Aap kaun hain?</legend>
+        <legend className="mb-2 text-sm font-medium text-ink-800">Who are you?</legend>
         <div className="grid grid-cols-2 gap-2">
           {(
             [
-              { value: 'CUSTOMER', label: 'Customer', hint: 'Service chahiye' },
-              { value: 'PROVIDER', label: 'Provider', hint: 'Service deta hoon' },
+              { value: 'CUSTOMER', label: 'Customer', hint: 'I need a service' },
+              { value: 'PROVIDER', label: 'Provider', hint: 'I provide a service' },
             ] as const
           ).map((option) => (
             <button
@@ -257,7 +257,7 @@ export function RegisterForm() {
       </fieldset>
 
       <TextInput
-        label="Poora naam"
+        label="Full name"
         name="fullName"
         autoComplete="name"
         required
@@ -272,7 +272,7 @@ export function RegisterForm() {
         inputMode="email"
         required
         error={errors.email}
-        placeholder="aap@example.com"
+        placeholder="you@example.com"
       />
       <TextInput
         label="Phone number"
@@ -284,8 +284,8 @@ export function RegisterForm() {
         placeholder="0300 1234567"
         hint={
           role === 'PROVIDER'
-            ? 'Zaroori hai — customers isi par rabta karte hain.'
-            : 'Technician isi par rabta karega.'
+            ? 'Required — this is how customers reach you.'
+            : 'The technician will contact you on this.'
         }
         required={role === 'PROVIDER'}
       />
@@ -296,7 +296,7 @@ export function RegisterForm() {
         autoComplete="new-password"
         required
         error={errors.password}
-        hint="Kam az kam 10 characters, choti aur bari letters ya numbers ke saath."
+        hint="At least 10 characters, with upper and lower case letters or numbers."
       />
 
       <Checkbox
@@ -321,22 +321,22 @@ export function RegisterForm() {
             >
               Privacy Policy
             </Link>{' '}
-            se ittefaq karta/karti hoon.
+            .
           </>
         }
       />
 
       <Button type="submit" fullWidth size="lg" loading={loading}>
-        {role === 'PROVIDER' ? 'Provider account banayein' : 'Account banayein'}
+        {role === 'PROVIDER' ? 'Create a provider account' : 'Create account'}
       </Button>
 
       <p className="text-center text-sm text-ink-600">
-        Pehle se account hai?{' '}
+        Already have an account?{' '}
         <Link
           href={next ? `/login?next=${encodeURIComponent(next)}` : '/login'}
           className="font-medium text-brand-700 hover:underline"
         >
-          Login karein
+          Sign in
         </Link>
       </p>
     </form>

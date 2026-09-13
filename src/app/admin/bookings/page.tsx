@@ -10,8 +10,8 @@ export const metadata: Metadata = { title: 'Bookings', robots: { index: false, f
 
 const TABS = [
   { key: 'all', label: 'Sab' },
-  { key: 'active', label: 'Chal rahi hain' },
-  { key: 'completed', label: 'Mukammal' },
+  { key: 'active', label: 'In progress' },
+  { key: 'completed', label: 'Completed' },
   { key: 'disputed', label: 'Disputed' },
   { key: 'cancelled', label: 'Cancelled' },
 ] as const;
@@ -47,14 +47,14 @@ export default async function AdminBookingsPage({
             name="search"
             defaultValue={query.search ?? ''}
             placeholder="Reference, customer ya service"
-            aria-label="Bookings dhoondein"
+            aria-label="Search bookings"
             className="h-10 w-56 rounded-xl border border-ink-300 px-3.5 text-sm"
           />
           <button
             type="submit"
             className="h-10 rounded-xl bg-ink-900 px-4 text-sm font-semibold text-white hover:bg-ink-800"
           >
-            Dhoondein
+            Search
           </button>
         </form>
       </header>
@@ -80,7 +80,7 @@ export default async function AdminBookingsPage({
             href="/admin/bookings"
             className="rounded-lg px-3 py-2 text-sm font-medium text-brand-700 hover:underline"
           >
-            Status filter clear karein ({query.status})
+            Clear status filter ({query.status})
           </Link>
         ) : null}
       </nav>
@@ -95,8 +95,8 @@ export default async function AdminBookingsPage({
           />
         ) : (
           <EmptyState
-            title="Is filter par koi booking nahi"
-            description="Doosra filter chunein ya search clear karein."
+            title="No bookings match this filter"
+            description="Pick a different filter or clear the search."
           />
         )}
       </div>

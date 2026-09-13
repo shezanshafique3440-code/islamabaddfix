@@ -67,7 +67,7 @@ export function BookingDetailView({
     } catch (error) {
       toast({
         tone: 'error',
-        title: 'Kaam nahi ho saka',
+        title: 'The work could not be completed',
         description: error instanceof ApiError ? error.message : undefined,
       });
     } finally {
@@ -90,7 +90,7 @@ export function BookingDetailView({
             <p className="mt-1 text-sm text-ink-600">
               <span className="font-mono font-medium">{booking.reference}</span>
               {' · '}
-              {formatRelative(booking.createdAt)} banayi
+              created {formatRelative(booking.createdAt)}
             </p>
           </div>
           <StatusBadge status={booking.status} label={booking.statusLabel} />
@@ -103,12 +103,12 @@ export function BookingDetailView({
       {pendingQuote ? (
         <section className="border-warn-300 rounded-2xl border-2 bg-warn-50 p-5">
           <h2 className="text-title text-ink-950">
-            {pendingQuote.isAdditional ? 'Extra charges ki approval chahiye' : 'Quote aa gaya'}
+            {pendingQuote.isAdditional ? 'Extra charges need your approval' : 'Quote received'}
           </h2>
           <p className="mt-1 text-sm text-ink-700">
             {pendingQuote.isAdditional
-              ? 'Technician ne kaam ke doran extra charges bheje hain. Aap ki approval ke baghair kaam complete nahi hoga.'
-              : 'Tafseel dekh kar approve ya reject karein. Approve karne ke baad hi kaam shuru hoga.'}
+              ? 'The technician has sent extra charges during the work. The job cannot be completed without your approval.'
+              : 'Review the details and approve or reject. Work starts only after you approve.'}
           </p>
 
           <QuoteCard quote={pendingQuote} className="mt-4" />
@@ -123,7 +123,7 @@ export function BookingDetailView({
                     decision: 'approve',
                     quoteId: pendingQuote.id,
                   });
-                  toast({ tone: 'success', title: 'Quote approve ho gaya' });
+                  toast({ tone: 'success', title: 'Quote approved' });
                 })
               }
             >
@@ -138,14 +138,14 @@ export function BookingDetailView({
                     decision: 'reject',
                     quoteId: pendingQuote.id,
                   });
-                  toast({ tone: 'info', title: 'Quote reject kar diya' });
+                  toast({ tone: 'info', title: 'Quote rejected' });
                 })
               }
             >
               Reject Quote
             </Button>
             <Button variant="ghost" onClick={() => setDialog('dispute')}>
-              Sawal poochein
+              Ask a question
             </Button>
           </div>
         </section>
@@ -154,17 +154,17 @@ export function BookingDetailView({
       {/* ------------------------------------------------------------ details */}
       <section className="rounded-2xl border border-ink-200 bg-white">
         <div className="border-b border-ink-200 px-5 py-4">
-          <h2 className="text-[0.9375rem] font-semibold text-ink-900">Booking ki tafseel</h2>
+          <h2 className="text-[0.9375rem] font-semibold text-ink-900">Booking details</h2>
         </div>
         <dl className="divide-y divide-ink-100">
-          <Row label="Masla">
+          <Row label="Problem">
             <p className="whitespace-pre-line">{booking.problemDescription}</p>
             {booking.customerNotes ? (
               <p className="mt-1.5 text-xs text-ink-500">Hidayat: {booking.customerNotes}</p>
             ) : null}
           </Row>
 
-          <Row label="Waqt">
+          <Row label="Time">
             {booking.scheduledFor ? (
               <>
                 {formatDateTime(booking.scheduledFor)}
@@ -173,7 +173,7 @@ export function BookingDetailView({
                 </span>
               </>
             ) : (
-              <span className="text-ink-500">Abhi tay nahi hua</span>
+              <span className="text-ink-500">Not set yet</span>
             )}
           </Row>
 
@@ -197,7 +197,7 @@ export function BookingDetailView({
           </Row>
 
           {booking.media.length > 0 ? (
-            <Row label="Tasveerein">
+            <Row label="Photos">
               <ul className="flex flex-wrap gap-2">
                 {booking.media.map((file) => (
                   <li key={file.id}>
@@ -207,9 +207,7 @@ export function BookingDetailView({
                       rel="noopener noreferrer"
                       className="block h-20 w-20 overflow-hidden rounded-lg border border-ink-200 bg-ink-100"
                       title={
-                        file.isCompletionProof
-                          ? 'Technician ki completion photo'
-                          : file.originalName
+                        file.isCompletionProof ? 'Technician’s completion photo' : file.originalName
                       }
                     >
                       {file.isVideo ? (
@@ -232,14 +230,14 @@ export function BookingDetailView({
               </ul>
               {booking.media.some((file) => file.isCompletionProof) ? (
                 <p className="mt-1.5 text-xs text-ink-500">
-                  Kuch tasveerein technician ne kaam mukammal hone par bheji hain.
+                  Some photos were sent by the technician when the work was completed.
                 </p>
               ) : null}
             </Row>
           ) : null}
 
           {booking.providerNotes ? (
-            <Row label="Technician ke notes">
+            <Row label="Technician’s notes">
               <p className="whitespace-pre-line">{booking.providerNotes}</p>
             </Row>
           ) : null}
@@ -249,7 +247,7 @@ export function BookingDetailView({
       {/* ----------------------------------------------------------- provider */}
       {booking.provider ? (
         <section className="rounded-2xl border border-ink-200 bg-white p-5">
-          <h2 className="text-[0.9375rem] font-semibold text-ink-900">Aapka technician</h2>
+          <h2 className="text-[0.9375rem] font-semibold text-ink-900">Your technician</h2>
           <div className="mt-3 flex items-start gap-3.5">
             <Avatar name={booking.provider.businessName} url={booking.provider.photoUrl} />
             <div className="min-w-0 flex-1">
@@ -288,9 +286,9 @@ export function BookingDetailView({
         </section>
       ) : booking.status === 'PENDING' || booking.status === 'PROVIDER_NOTIFIED' ? (
         <section className="rounded-2xl border border-info-100 bg-info-50 p-5">
-          <p className="text-sm font-medium text-info-700">Technician dhoonda ja raha hai</p>
+          <p className="text-sm font-medium text-info-700">Looking for a technician</p>
           <p className="mt-1 text-sm text-info-700/90">
-            Jaise hi koi technician qubool karega, aap ko notification mil jayega.
+            As soon as a technician accepts, you will get a notification.
           </p>
         </section>
       ) : null}
@@ -299,7 +297,7 @@ export function BookingDetailView({
       {booking.pricing.approvedTotalPaisa !== null || booking.quotes.length > 0 ? (
         <section className="rounded-2xl border border-ink-200 bg-white">
           <div className="border-b border-ink-200 px-5 py-4">
-            <h2 className="text-[0.9375rem] font-semibold text-ink-900">Qeemat</h2>
+            <h2 className="text-[0.9375rem] font-semibold text-ink-900">Price</h2>
           </div>
           <div className="space-y-4 p-5">
             {booking.quotes
@@ -375,11 +373,11 @@ export function BookingDetailView({
                     {payment.status === 'PAID'
                       ? 'Paid'
                       : payment.status === 'PENDING'
-                        ? 'Baqi hai'
+                        ? 'Outstanding'
                         : payment.status === 'REFUNDED'
                           ? 'Refunded'
                           : payment.status === 'PARTIALLY_REFUNDED'
-                            ? 'Juzvi refund'
+                            ? 'Partial refund'
                             : payment.status}
                   </Badge>
                 </li>
@@ -397,18 +395,18 @@ export function BookingDetailView({
                       await api.patch(`/api/bookings/${booking.id}/payment`, {
                         paymentId: unpaidPayment.id,
                       });
-                      toast({ tone: 'success', title: 'Payment record ho gayi' });
+                      toast({ tone: 'success', title: 'Payment recorded' });
                     })
                   }
                 >
-                  Cash de diya — record karein
+                  Paid in cash — record it
                 </Button>
               ) : (
-                <Button onClick={() => setDialog('payment')}>Payment record karein</Button>
+                <Button onClick={() => setDialog('payment')}>Record payment</Button>
               )}
               <p className="mt-2 text-xs text-ink-500">
-                Technician ko cash dene ke baad yahan record karein taake dono taraf hisaab saaf
-                rahe.
+                Record it here after paying the technician in cash, so the account stays clear on
+                both sides.
               </p>
             </div>
           ) : null}
@@ -418,7 +416,7 @@ export function BookingDetailView({
       {/* ------------------------------------------------------------- review */}
       {booking.status === 'COMPLETED' ? (
         <section className="rounded-2xl border border-ink-200 bg-white p-5">
-          <h2 className="text-[0.9375rem] font-semibold text-ink-900">Aapka review</h2>
+          <h2 className="text-[0.9375rem] font-semibold text-ink-900">Your review</h2>
           {booking.review ? (
             <div className="mt-3">
               <Rating value={booking.review.rating} />
@@ -428,16 +426,16 @@ export function BookingDetailView({
                 </p>
               ) : null}
               <p className="mt-2 text-xs text-ink-500">
-                {formatRelative(booking.review.createdAt)} diya gaya
+                left {formatRelative(booking.review.createdAt)}
               </p>
             </div>
           ) : (
             <>
               <p className="mt-1.5 text-sm text-ink-600">
-                Aapki rating doosre customers ko behtar technician chunne mein madad karti hai.
+                Your rating helps other customers choose the right technician.
               </p>
               <Button className="mt-3" onClick={() => setDialog('review')}>
-                Review dein
+                Leave a review
               </Button>
             </>
           )}
@@ -453,13 +451,13 @@ export function BookingDetailView({
           {booking.guarantee.isActive ? (
             <>
               <p className="mt-1.5 text-sm text-brand-900/85">
-                Guarantee{' '}
-                {booking.guarantee.expiresAt ? formatDateTime(booking.guarantee.expiresAt) : ''} tak
-                active hai. Wohi masla wapis aaye to re-visit request karein.
+                The guarantee is active until{' '}
+                {booking.guarantee.expiresAt ? formatDateTime(booking.guarantee.expiresAt) : ''}. If
+                the same problem returns, request a re-visit.
               </p>
               {booking.guarantee.claims.length === 0 ? (
                 <Button variant="outline" className="mt-3" onClick={() => setDialog('guarantee')}>
-                  Re-visit request karein
+                  Request a re-visit
                 </Button>
               ) : (
                 <ul className="mt-3 space-y-2">
@@ -478,9 +476,7 @@ export function BookingDetailView({
               )}
             </>
           ) : (
-            <p className="mt-1.5 text-sm text-brand-900/85">
-              Guarantee ki muddat khatam ho gayi hai.
-            </p>
+            <p className="mt-1.5 text-sm text-brand-900/85">The guarantee period has ended.</p>
           )}
         </section>
       ) : null}
@@ -499,7 +495,7 @@ export function BookingDetailView({
                 <p className="mt-1.5 text-sm text-ink-800">{dispute.description}</p>
                 {dispute.resolutionNotes ? (
                   <p className="mt-2 border-t border-alert-200 pt-2 text-sm text-ink-700">
-                    <strong className="font-semibold">Faisla:</strong> {dispute.resolutionNotes}
+                    <strong className="font-semibold">Decision:</strong> {dispute.resolutionNotes}
                   </p>
                 ) : null}
                 {dispute.refundPaisa > 0 ? (
@@ -537,7 +533,7 @@ export function BookingDetailView({
       <section className="flex flex-wrap gap-2">
         {canCancel ? (
           <Button variant="outline" onClick={() => setDialog('cancel')}>
-            Booking cancel karein
+            Cancel booking
           </Button>
         ) : null}
         {booking.status === 'COMPLETED' || booking.status === 'REFUNDED' ? (
@@ -545,7 +541,7 @@ export function BookingDetailView({
             href={`/account/bookings/${booking.id}/receipt`}
             className="inline-flex h-11 items-center rounded-xl border border-ink-300 px-4 text-sm font-medium text-ink-800 transition-colors hover:bg-ink-50"
           >
-            Receipt dekhein
+            View receipt
           </Link>
         ) : null}
         {reschedule ? (
@@ -560,7 +556,7 @@ export function BookingDetailView({
         {(booking.status === 'COMPLETED' || booking.status === 'IN_PROGRESS') &&
         booking.disputes.length === 0 ? (
           <Button variant="ghost" onClick={() => setDialog('dispute')}>
-            Masla report karein
+            Report a problem
           </Button>
         ) : null}
       </section>
@@ -667,16 +663,16 @@ function CancelDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      title="Booking cancel karein?"
+      title="Cancel this booking?"
       description={
         insideWindow
-          ? `Scheduled waqt qareeb hai, is liye late cancellation fee laagu ho sakti hai.`
-          : 'Is waqt cancel karna free hai.'
+          ? `The scheduled time is close, so a late cancellation fee may apply.`
+          : 'Cancelling now is free.'
       }
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={loading}>
-            Rehne dein
+            Leave it
           </Button>
           <Button
             variant="danger"
@@ -695,7 +691,7 @@ function CancelDialog({
               } catch (error) {
                 toast({
                   tone: 'error',
-                  title: 'Cancel nahi ho saki',
+                  title: 'Could not cancel',
                   description: error instanceof ApiError ? error.message : undefined,
                 });
               } finally {
@@ -703,18 +699,18 @@ function CancelDialog({
               }
             }}
           >
-            Cancel karein
+            Cancel
           </Button>
         </>
       }
     >
       <Textarea
-        label="Cancel karne ki wajah"
+        label="Reason for cancelling"
         required
         rows={3}
         value={reason}
         onChange={(event) => setReason(event.target.value)}
-        placeholder="Misal: masla khud theek ho gaya"
+        placeholder="For example: the problem fixed itself"
       />
     </Dialog>
   );
@@ -746,12 +742,12 @@ function ReviewDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      title="Apna experience batayein"
-      description="Sirf mukammal booking par review diya ja sakta hai, aur ek hi baar."
+      title="Tell us how it went"
+      description="A review can only be left on a completed booking, and only once."
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={loading}>
-            Baad mein
+            Later
           </Button>
           <Button
             loading={loading}
@@ -764,13 +760,13 @@ function ReviewDialog({
                   comment: comment.trim() || undefined,
                   ...Object.fromEntries(Object.entries(scores).filter(([, value]) => value > 0)),
                 });
-                toast({ tone: 'success', title: 'Review ke liye shukriya!' });
+                toast({ tone: 'success', title: 'Thank you for your review!' });
                 onClose();
                 onDone();
               } catch (error) {
                 toast({
                   tone: 'error',
-                  title: 'Review submit nahi hua',
+                  title: 'Review not submitted',
                   description: error instanceof ApiError ? error.message : undefined,
                 });
               } finally {
@@ -778,7 +774,7 @@ function ReviewDialog({
               }
             }}
           >
-            Review submit karein
+            Submit review
           </Button>
         </>
       }
@@ -789,28 +785,28 @@ function ReviewDialog({
         <div className="grid gap-3 sm:grid-cols-2">
           <RatingInput
             name="serviceQuality"
-            label="Kaam ki quality"
+            label="Quality of work"
             size="md"
             value={scores.serviceQuality}
             onChange={(value) => setScores((s) => ({ ...s, serviceQuality: value }))}
           />
           <RatingInput
             name="professionalism"
-            label="Rawayya"
+            label="Professionalism"
             size="md"
             value={scores.professionalism}
             onChange={(value) => setScores((s) => ({ ...s, professionalism: value }))}
           />
           <RatingInput
             name="punctuality"
-            label="Waqt ki pabandi"
+            label="Punctuality"
             size="md"
             value={scores.punctuality}
             onChange={(value) => setScores((s) => ({ ...s, punctuality: value }))}
           />
           <RatingInput
             name="valueForMoney"
-            label="Paise ka sahi istemal"
+            label="Value for money"
             size="md"
             value={scores.valueForMoney}
             onChange={(value) => setScores((s) => ({ ...s, valueForMoney: value }))}
@@ -818,11 +814,11 @@ function ReviewDialog({
         </div>
 
         <Textarea
-          label="Kuch likhna chahenge? (optional)"
+          label="Anything you would like to add? (optional)"
           rows={3}
           value={comment}
           onChange={(event) => setComment(event.target.value)}
-          placeholder="Kaam kaisa raha, technician ka rawayya kaisa tha..."
+          placeholder="How was the work, how was the technician..."
         />
       </div>
     </Dialog>
@@ -830,12 +826,12 @@ function ReviewDialog({
 }
 
 const DISPUTE_REASONS = [
-  { value: 'TECHNICIAN_NO_SHOW', label: 'Technician nahi aaya' },
-  { value: 'POOR_SERVICE', label: 'Kaam theek nahi hua' },
-  { value: 'WRONG_PRICE', label: 'Ghalat qeemat li gayi' },
-  { value: 'UNAUTHORIZED_CHARGE', label: 'Bina ijazat extra charge' },
-  { value: 'DAMAGE', label: 'Nuqsan hua' },
-  { value: 'OTHER', label: 'Koi aur wajah' },
+  { value: 'TECHNICIAN_NO_SHOW', label: 'The technician did not turn up' },
+  { value: 'POOR_SERVICE', label: 'The work was not done properly' },
+  { value: 'WRONG_PRICE', label: 'Overcharged' },
+  { value: 'UNAUTHORIZED_CHARGE', label: 'Extra charge without permission' },
+  { value: 'DAMAGE', label: 'Something was damaged' },
+  { value: 'OTHER', label: 'Some other reason' },
 ];
 
 function DisputeDialog({
@@ -858,12 +854,12 @@ function DisputeDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      title="Masla report karein"
-      description="Ops team dono taraf se maloomat le kar faisla karti hai."
+      title="Report a problem"
+      description="The ops team decides after hearing both sides."
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={loading}>
-            Band karein
+            Close
           </Button>
           <Button
             variant="danger"
@@ -878,15 +874,15 @@ function DisputeDialog({
                 );
                 toast({
                   tone: 'success',
-                  title: `Dispute darj ho gaya — ${result.reference}`,
-                  description: 'Ops team jald rabta karegi.',
+                  title: `Dispute filed — ${result.reference}`,
+                  description: 'The ops team will be in touch shortly.',
                 });
                 onClose();
                 onDone();
               } catch (error) {
                 toast({
                   tone: 'error',
-                  title: 'Dispute darj nahi hua',
+                  title: 'Dispute not filed',
                   description: error instanceof ApiError ? error.message : undefined,
                 });
               } finally {
@@ -894,14 +890,14 @@ function DisputeDialog({
               }
             }}
           >
-            Dispute darj karein
+            File a dispute
           </Button>
         </>
       }
     >
       <div className="space-y-4">
         <Select
-          label="Wajah"
+          label="Reason"
           required
           value={reason}
           onChange={(event) => setReason(event.target.value)}
@@ -913,12 +909,12 @@ function DisputeDialog({
           ))}
         </Select>
         <Textarea
-          label="Tafseel"
+          label="Details"
           required
           rows={4}
           value={description}
           onChange={(event) => setDescription(event.target.value)}
-          placeholder="Kya hua, kab hua, aur aap kya chahte hain?"
+          placeholder="What happened, when, and what would you like done?"
           hint="Kam az kam 15 characters."
         />
       </div>
@@ -945,12 +941,12 @@ function GuaranteeDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      title="Re-visit request karein"
-      description="Batayein wohi masla kaise wapis aaya. Har claim ka jaiza ops team karti hai — manzoori khud-ba-khud nahi hoti."
+      title="Request a re-visit"
+      description="Tell us how the same problem came back. Every claim is reviewed by the ops team — approval is not automatic."
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={loading}>
-            Band karein
+            Close
           </Button>
           <Button
             loading={loading}
@@ -964,14 +960,14 @@ function GuaranteeDialog({
                 );
                 toast({
                   tone: 'success',
-                  title: `Claim jama ho gaya — ${result.reference}`,
+                  title: `Claim submitted — ${result.reference}`,
                 });
                 onClose();
                 onDone();
               } catch (error) {
                 toast({
                   tone: 'error',
-                  title: 'Claim jama nahi hua',
+                  title: 'Claim not submitted',
                   description: error instanceof ApiError ? error.message : undefined,
                 });
               } finally {
@@ -979,18 +975,18 @@ function GuaranteeDialog({
               }
             }}
           >
-            Claim jama karein
+            Submit claim
           </Button>
         </>
       }
     >
       <Textarea
-        label="Masla kya hai?"
+        label="What is the problem?"
         required
         rows={4}
         value={description}
         onChange={(event) => setDescription(event.target.value)}
-        placeholder="Misal: teen din baad AC ne phir cooling band kar di."
+        placeholder="For example: three days later the AC stopped cooling again."
         hint="Kam az kam 15 characters."
       />
     </Dialog>
@@ -1020,12 +1016,12 @@ function PaymentDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      title="Payment record karein"
-      description={`Total ${formatPaisa(amountPaisa)}. Yeh record rakhta hai ke paise diye ja chuke hain.`}
+      title="Record payment"
+      description={`Total ${formatPaisa(amountPaisa)}. This records that the money has been paid.`}
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={loading}>
-            Band karein
+            Close
           </Button>
           <Button
             loading={loading}
@@ -1044,13 +1040,13 @@ function PaymentDialog({
                     paymentId: created.payment.id,
                   });
                 }
-                toast({ tone: 'success', title: 'Payment record ho gayi' });
+                toast({ tone: 'success', title: 'Payment recorded' });
                 onClose();
                 onDone();
               } catch (error) {
                 toast({
                   tone: 'error',
-                  title: 'Payment record nahi hui',
+                  title: 'Payment not recorded',
                   description: error instanceof ApiError ? error.message : undefined,
                 });
               } finally {
@@ -1058,7 +1054,7 @@ function PaymentDialog({
               }
             }}
           >
-            Record karein
+            Record
           </Button>
         </>
       }

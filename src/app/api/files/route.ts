@@ -50,13 +50,13 @@ export const POST = route(async (request) => {
 
   const contentType = request.headers.get('content-type') ?? '';
   if (!contentType.includes('multipart/form-data')) {
-    throw new AppError('UNSUPPORTED_MEDIA_TYPE', 'multipart/form-data expected hai.');
+    throw new AppError('UNSUPPORTED_MEDIA_TYPE', 'multipart/form-data expected.');
   }
 
   const form = await request.formData();
   const file = form.get('file');
   if (!(file instanceof File)) {
-    throw new AppError('VALIDATION_ERROR', 'Koi file attach nahi hui.');
+    throw new AppError('VALIDATION_ERROR', 'No file was attached.');
   }
 
   const fields = fieldsSchema.parse({
@@ -66,7 +66,7 @@ export const POST = route(async (request) => {
 
   const allowed = isStaff(ctx.role) ? PURPOSES : (ROLE_PURPOSES[ctx.role] ?? []);
   if (!allowed.includes(fields.purpose)) {
-    throw new AppError('FORBIDDEN', 'Aap is qism ki file upload nahi kar sakte.');
+    throw new AppError('FORBIDDEN', 'You cannot upload that kind of file.');
   }
 
   // Booking-scoped uploads must reference a booking the caller is party to.
@@ -75,24 +75,21 @@ export const POST = route(async (request) => {
       where: { id: fields.bookingId },
       select: { id: true, customerId: true, providerId: true },
     });
-    if (!booking) throw new AppError('NOT_FOUND', 'Booking nahi mili.');
+    if (!booking) throw new AppError('NOT_FOUND', 'Booking not found.');
     const isCustomer = booking.customerId === ctx.user.id;
     const isAssignedProvider =
       ctx.providerId !== undefined && booking.providerId === ctx.providerId;
     if (!isCustomer && !isAssignedProvider && !isStaff(ctx.role)) {
-      throw new AppError('FORBIDDEN', 'Yeh booking aapki nahi hai.');
+      throw new AppError('FORBIDDEN', 'This booking is not yours.');
     }
     if (fields.purpose === 'COMPLETION_PROOF' && !isAssignedProvider) {
-      throw new AppError(
-        'FORBIDDEN',
-        'Completion photos sirf assigned technician upload kar sakta hai.',
-      );
+      throw new AppError('FORBIDDEN', 'Only the assigned technician can upload completion photos.');
     }
   }
 
   if (fields.purpose === 'PROVIDER_DOCUMENT' || fields.purpose === 'PROVIDER_PROFILE_PHOTO') {
     if (!ctx.providerId) {
-      throw new AppError('NOT_FOUND', 'Provider profile nahi mila. Pehle onboarding poora karein.');
+      throw new AppError('NOT_FOUND', 'Provider profile not found. Complete onboarding first.');
     }
   }
 

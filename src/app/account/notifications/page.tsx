@@ -22,7 +22,7 @@ export default async function NotificationsPage() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-display-sm text-ink-950">Notifications</h1>
-          <p className="mt-1 text-sm text-ink-600">Booking, quote aur payment ke updates.</p>
+          <p className="mt-1 text-sm text-ink-600">Updates on bookings, quotes and payments.</p>
         </div>
         {hasUnread ? <MarkAllRead /> : null}
       </div>
@@ -68,9 +68,9 @@ export default async function NotificationsPage() {
       ) : (
         <EmptyState
           className="mt-6"
-          title="Koi notification nahi"
-          description="Booking banane par yahan updates aayenge."
-          action={{ label: 'Service book karein', href: '/book' }}
+          title="No notifications"
+          description="Updates appear here once you make a booking."
+          action={{ label: 'Book a service', href: '/book' }}
         />
       )}
     </div>

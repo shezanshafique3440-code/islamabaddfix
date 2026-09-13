@@ -17,7 +17,7 @@ export default async function AdminCataloguePage() {
       <header>
         <h1 className="text-display-sm text-ink-950">Categories &amp; services</h1>
         <p className="mt-1 text-sm text-ink-600">
-          Catalogue yahan se manage hota hai — code mein koi category hard-coded nahi.
+          The catalogue is managed from here — no category is hard-coded in the code.
         </p>
       </header>
 

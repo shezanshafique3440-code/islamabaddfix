@@ -37,7 +37,7 @@ export function BookingsChart({ data }: { data: Point[] }) {
   const titleId = useId();
 
   if (data.length === 0) {
-    return <p className="text-sm text-ink-500">Is arse ka koi data nahi.</p>;
+    return <p className="text-sm text-ink-500">No data for this period.</p>;
   }
 
   const maxCount = Math.max(1, ...data.map((point) => Math.max(point.bookings, point.completed)));
@@ -56,22 +56,22 @@ export function BookingsChart({ data }: { data: Point[] }) {
     <div>
       {/* Legend — always present for two series. */}
       <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-        <LegendItem color={CHART_1} label="Bookings aayi" />
-        <LegendItem color={CHART_2} label="Mukammal hui" />
+        <LegendItem color={CHART_1} label="Bookings received" />
+        <LegendItem color={CHART_2} label="Completed" />
         <button
           type="button"
           onClick={() => setShowTable((current) => !current)}
           className="ml-auto text-xs font-medium text-ink-500 underline hover:text-ink-800"
           aria-expanded={showTable}
         >
-          {showTable ? 'Table chhupayein' : 'Table dekhein'}
+          {showTable ? 'Hide table' : 'View table'}
         </button>
       </div>
 
       {/* ------------------------------------------------------- counts plot */}
       <figure className="mt-4">
         <figcaption id={titleId} className="text-xs font-medium text-ink-500">
-          Rozana bookings
+          Daily bookings
         </figcaption>
         <div className="relative mt-2">
           <svg
@@ -108,7 +108,7 @@ export function BookingsChart({ data }: { data: Point[] }) {
                   onBlur={() => setHover(null)}
                   tabIndex={0}
                   role="graphics-symbol"
-                  aria-label={`${point.date}: ${point.bookings} bookings, ${point.completed} mukammal`}
+                  aria-label={`${point.date}: ${point.bookings} bookings, ${point.completed} completed`}
                 >
                   {/* Hit target wider than the marks, so hover is forgiving. */}
                   <rect
@@ -167,7 +167,7 @@ export function BookingsChart({ data }: { data: Point[] }) {
             >
               <p className="font-semibold text-ink-900">{formatDay(data[hover]!.date)}</p>
               <p className="mt-0.5 text-ink-600">
-                {data[hover]!.bookings} aayi · {data[hover]!.completed} mukammal
+                {data[hover]!.bookings} received · {data[hover]!.completed} completed
               </p>
               {data[hover]!.cancelled > 0 ? (
                 <p className="text-ink-500">{data[hover]!.cancelled} cancelled</p>
@@ -190,13 +190,13 @@ export function BookingsChart({ data }: { data: Point[] }) {
       {/* ------------------------------------------------------ revenue plot */}
       <figure className="mt-6">
         <figcaption className="text-xs font-medium text-ink-500">
-          Rozana revenue (mukammal bookings)
+          Daily revenue (completed bookings)
         </figcaption>
         <svg
           viewBox="0 0 100 24"
           preserveAspectRatio="none"
           role="img"
-          aria-label="Rozana revenue"
+          aria-label="Daily revenue"
           className="mt-2 h-20 w-full"
         >
           <path
@@ -234,23 +234,23 @@ export function BookingsChart({ data }: { data: Point[] }) {
       {showTable ? (
         <div className="mt-5 overflow-x-auto rounded-xl border border-ink-200">
           <table className="w-full min-w-[28rem] text-sm">
-            <caption className="sr-only">Rozana bookings aur revenue</caption>
+            <caption className="sr-only">Daily bookings and revenue</caption>
             <thead className="bg-ink-50 text-left">
               <tr>
                 <th scope="col" className="px-3 py-2 text-xs font-semibold uppercase text-ink-500">
-                  Tareekh
+                  Date
                 </th>
                 <th
                   scope="col"
                   className="px-3 py-2 text-right text-xs font-semibold uppercase text-ink-500"
                 >
-                  Aayi
+                  Received
                 </th>
                 <th
                   scope="col"
                   className="px-3 py-2 text-right text-xs font-semibold uppercase text-ink-500"
                 >
-                  Mukammal
+                  Completed
                 </th>
                 <th
                   scope="col"

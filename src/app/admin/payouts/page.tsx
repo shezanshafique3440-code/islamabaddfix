@@ -42,8 +42,8 @@ export default async function AdminPayoutsPage() {
       <header>
         <h1 className="text-display-sm text-ink-950">Payouts</h1>
         <p className="mt-1 text-sm text-ink-600">
-          Bank transfer is system se bahar hota hai — yahan record rakha jata hai ke kis ko kitna
-          bheja gaya.
+          Bank transfers happen outside this system — what is recorded here is who is owed how much,
+          and what has been sent.
         </p>
       </header>
 
@@ -58,7 +58,7 @@ export default async function AdminPayoutsPage() {
                 businessName: provider?.businessName ?? 'Unknown',
                 bankLabel: provider?.bankAccountLast4
                   ? `${provider.bankName ?? 'Bank'} •••• ${provider.bankAccountLast4}`
-                  : 'Payout account set nahi',
+                  : 'No payout account set',
                 jobs: row._count._all,
                 earningsPaisa: row._sum.providerEarningsPaisa ?? 0,
                 earliest: row._min.completedAt?.toISOString() ?? null,
@@ -72,7 +72,7 @@ export default async function AdminPayoutsPage() {
             providerName: payout.provider.businessName,
             bankLabel: payout.provider.bankAccountLast4
               ? `${payout.provider.bankName ?? 'Bank'} •••• ${payout.provider.bankAccountLast4}`
-              : 'Payout account set nahi',
+              : 'No payout account set',
             periodStart: payout.periodStart.toISOString(),
             periodEnd: payout.periodEnd.toISOString(),
             grossPaisa: payout.grossPaisa,
@@ -90,12 +90,12 @@ export default async function AdminPayoutsPage() {
       </div>
 
       <p className="mt-6 text-xs text-ink-500">
-        Note: cash bookings mein paise seedhe provider ko customer se milte hain. Payout record
-        commission reconciliation aur bank transfers ke liye hai.{' '}
+        Note: on cash bookings the provider takes the money directly from the customer. The payout
+        record for commission reconciliation and bank transfers.{' '}
         {owing.length > 0
-          ? `Filhaal ${formatPaisa(
+          ? `${formatPaisa(
               owing.reduce((sum, row) => sum + (row._sum.providerEarningsPaisa ?? 0), 0),
-            )} kisi payout mein shamil nahi.`
+            )} is not in any payout yet.`
           : ''}
       </p>
     </div>

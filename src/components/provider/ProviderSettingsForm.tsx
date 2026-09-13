@@ -58,7 +58,7 @@ export function ProviderSettingsForm({
           : {}),
         serviceRadiusKm: Number(next.serviceRadiusKm) || 15,
       });
-      toast({ tone: 'success', title: 'Settings save ho gayi' });
+      toast({ tone: 'success', title: 'Settings saved' });
       router.refresh();
     } catch (error) {
       if (error instanceof ApiError) {
@@ -80,17 +80,17 @@ export function ProviderSettingsForm({
         }}
       >
         <section className="rounded-2xl border border-ink-200 bg-white p-5">
-          <h2 className="text-[0.9375rem] font-semibold text-ink-900">Kaam ki capacity</h2>
+          <h2 className="text-[0.9375rem] font-semibold text-ink-900">Work capacity</h2>
           <div className="mt-4 space-y-4">
             <TextInput
-              label="Ek waqt mein maximum jobs"
+              label="Maximum jobs at one time"
               type="number"
               min={1}
               max={50}
               value={form.maxActiveJobs}
               onChange={(event) => setForm((f) => ({ ...f, maxActiveJobs: event.target.value }))}
               error={errors.maxActiveJobs}
-              hint="Itni active jobs hone par nayi requests aana band ho jayengi."
+              hint="Once you have this many active jobs, new requests stop coming in."
             />
             <TextInput
               label="Service radius (km)"
@@ -108,12 +108,12 @@ export function ProviderSettingsForm({
           <h2 className="text-[0.9375rem] font-semibold text-ink-900">Emergency service</h2>
           <div className="mt-4 space-y-4">
             <Checkbox
-              label="Main emergency calls leta hoon"
+              label="I take emergency calls"
               checked={form.emergencyAvailable}
               onChange={(event) =>
                 setForm((f) => ({ ...f, emergencyAvailable: event.target.checked }))
               }
-              hint="Emergency jobs raat aur chhutti mein bhi aa sakti hain."
+              hint="Emergency jobs can come at night and on holidays too."
             />
             {form.emergencyAvailable ? (
               <TextInput
@@ -125,7 +125,7 @@ export function ProviderSettingsForm({
                   setForm((f) => ({ ...f, emergencyFeeRupees: event.target.value }))
                 }
                 error={errors.emergencyFeeRupees}
-                hint={`Maximum ${formatPaisa(maxEmergencyFeePaisa)}. Customer ko booking se pehle dikhayi jati hai.`}
+                hint={`Maximum ${formatPaisa(maxEmergencyFeePaisa)}. Shown to the customer before booking.`}
               />
             ) : null}
           </div>
@@ -134,12 +134,12 @@ export function ProviderSettingsForm({
         <section className="rounded-2xl border border-ink-200 bg-white p-5">
           <h2 className="text-[0.9375rem] font-semibold text-ink-900">Location sharing</h2>
           <p className="mt-1 text-sm leading-relaxed text-ink-600">
-            On karne par aap ki location sirf ops team ke dispatch map par dikhti hai — customers ko
-            nahi. Record sirf 24 ghante rakha jata hai.
+            When on, your location appears only on the ops team’s dispatch map — never to customers.
+            The record is kept for 24 hours only.
           </p>
           <div className="mt-4">
             <Checkbox
-              label="Ops team ke saath live location share karein"
+              label="Share live location with the ops team"
               checked={form.shareLiveLocation}
               onChange={(event) => {
                 if (!event.target.checked && storedLocationCount > 0) {
@@ -151,23 +151,23 @@ export function ProviderSettingsForm({
             />
             {storedLocationCount > 0 ? (
               <p className="mt-2 text-xs text-ink-500">
-                {storedLocationCount} location record mojood hai. Off karne par sab mit jayenge.
+                {storedLocationCount} location record(s) stored. Turning this off erases them all.
               </p>
             ) : null}
           </div>
         </section>
 
         <Button type="submit" loading={loading}>
-          Settings save karein
+          Save settings
         </Button>
       </form>
 
       <ConfirmDialog
         open={confirmLocationOff}
         onClose={() => setConfirmLocationOff(false)}
-        title="Location sharing off karein?"
-        description="Aap ki mojooda location history bhi mita di jayegi. Yeh wapis nahi aayegi."
-        confirmLabel="Off karein aur mitayein"
+        title="Turn off location sharing?"
+        description="Your location history is deleted as well. It does not come back."
+        confirmLabel="Turn off and erase"
         destructive
         loading={loading}
         onConfirm={async () => {
@@ -175,13 +175,13 @@ export function ProviderSettingsForm({
           try {
             await api.delete('/api/provider/location');
             setForm((f) => ({ ...f, shareLiveLocation: false }));
-            toast({ tone: 'success', title: 'Location sharing off, history mit gayi' });
+            toast({ tone: 'success', title: 'Location sharing off, history erased' });
             setConfirmLocationOff(false);
             router.refresh();
           } catch (error) {
             toast({
               tone: 'error',
-              title: 'Off nahi ho saka',
+              title: 'Could not turn off',
               description: error instanceof ApiError ? error.message : undefined,
             });
           } finally {

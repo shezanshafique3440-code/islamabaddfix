@@ -86,7 +86,10 @@ export async function initiatePayment(params: {
     where: { bookingId: booking.id, status: { in: ['PAID', 'AUTHORIZED'] } },
   });
   if (existing) {
-    throw new AppError('PAYMENT_ALREADY_SETTLED', 'A payment is already recorded for this booking.');
+    throw new AppError(
+      'PAYMENT_ALREADY_SETTLED',
+      'A payment is already recorded for this booking.',
+    );
   }
 
   const intent: ChargeIntent = {
@@ -197,10 +200,7 @@ export async function refundPayment(params: {
 
   const remaining = payment.amountPaisa - payment.refundedPaisa;
   if (params.amountPaisa <= 0 || params.amountPaisa > remaining) {
-    throw new AppError(
-      'VALIDATION_ERROR',
-      'A refund cannot exceed the available balance.',
-    );
+    throw new AppError('VALIDATION_ERROR', 'A refund cannot exceed the available balance.');
   }
 
   const provider = paymentProvider(payment.method);

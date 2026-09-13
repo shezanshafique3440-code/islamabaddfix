@@ -171,8 +171,8 @@ describe('intake step', () => {
       />,
     );
 
-    expect(screen.getByText(/AI model configured nahi hai/i)).toBeInTheDocument();
-    expect(screen.queryByText(/AI assistant is deployment par configured hai/i)).toBeNull();
+    expect(screen.getByText(/No AI model is configured/i)).toBeInTheDocument();
+    expect(screen.queryByText(/An AI assistant is configured/i)).toBeNull();
   });
 
   it('does not offer to analyse an empty description', () => {
@@ -187,7 +187,7 @@ describe('intake step', () => {
       />,
     );
 
-    expect(screen.getByRole('button', { name: /yeh dekhein/i })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /take a look/i })).toBeDisabled();
   });
 
   it('labels a rule-based answer as rule-based, not as AI', async () => {
@@ -205,7 +205,7 @@ describe('intake step', () => {
       />,
     );
 
-    await user.click(screen.getByRole('button', { name: /yeh dekhein/i }));
+    await user.click(screen.getByRole('button', { name: /take a look/i }));
 
     expect(await screen.findByText('Rule-based')).toBeInTheDocument();
     expect(screen.queryByText(/^AI$/)).toBeNull();
@@ -225,7 +225,7 @@ describe('intake step', () => {
         onSkip={vi.fn()}
       />,
     );
-    await user.click(screen.getByRole('button', { name: /yeh dekhein/i }));
+    await user.click(screen.getByRole('button', { name: /take a look/i }));
 
     expect(await screen.findByText(/keyword matching was used/i)).toBeInTheDocument();
   });
@@ -235,7 +235,7 @@ describe('intake step', () => {
     post.mockResolvedValue(
       intakeResponse({
         safetyNotice:
-          'Gas ki bu aa rahi hai to foran gas band karein, koi switch na chalayein aur bahar nikal jayein.',
+          'If you can smell gas, turn the gas valve off now, do not touch any switch, and get outside.',
       }),
     );
 
@@ -249,10 +249,10 @@ describe('intake step', () => {
         onSkip={vi.fn()}
       />,
     );
-    await user.click(screen.getByRole('button', { name: /yeh dekhein/i }));
+    await user.click(screen.getByRole('button', { name: /take a look/i }));
 
     const alert = await screen.findByRole('alert');
-    expect(alert).toHaveTextContent(/gas band karein/i);
+    expect(alert).toHaveTextContent(/turn the gas valve off/i);
   });
 
   it('only preselects a service when the classifier is reasonably confident', async () => {
@@ -270,7 +270,7 @@ describe('intake step', () => {
         onSkip={vi.fn()}
       />,
     );
-    await user.click(screen.getByRole('button', { name: /yeh dekhein/i }));
+    await user.click(screen.getByRole('button', { name: /take a look/i }));
 
     await waitFor(() => expect(patch).toHaveBeenCalled());
     expect(patch.mock.calls[0]![0]).toMatchObject({ serviceId: null });
@@ -291,12 +291,12 @@ describe('intake step', () => {
         onSkip={onSkip}
       />,
     );
-    await user.click(screen.getByRole('button', { name: /yeh dekhein/i }));
+    await user.click(screen.getByRole('button', { name: /take a look/i }));
 
     expect(await screen.findByRole('alert')).toHaveTextContent(/assistant down/i);
     // The manual route out is still there, so a failed integration never traps
     // the customer.
-    await user.click(screen.getByRole('button', { name: /seedha category chunein/i }));
+    await user.click(screen.getByRole('button', { name: /pick a category directly/i }));
     expect(onSkip).toHaveBeenCalled();
   });
 });
@@ -338,15 +338,17 @@ describe('confirm step', () => {
   it('states that nothing is being charged now and that extras need approval', () => {
     renderConfirm();
 
-    expect(screen.getByText(/Ab kuch charge nahi hoga/i)).toBeInTheDocument();
-    expect(screen.getByText(/ijazat ke baghair koi extra charge nahi lagega/i)).toBeInTheDocument();
+    expect(screen.getByText(/Nothing is charged now/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/no extra charge applies without your permission/i),
+    ).toBeInTheDocument();
   });
 
   it('shows the indicative range as indicative, not as a price', () => {
     renderConfirm();
 
     expect(screen.getByText(/indicative/i)).toBeInTheDocument();
-    expect(screen.getByText(/likhit quote bhejega/i)).toBeInTheDocument();
+    expect(screen.getByText(/sends a written quote/i)).toBeInTheDocument();
   });
 
   it('discloses the emergency fee before the customer commits', () => {
@@ -359,8 +361,8 @@ describe('confirm step', () => {
   it('refuses to submit when no payment method is enabled', async () => {
     renderConfirm({ paymentMethods: [] });
 
-    expect(screen.getByText(/koi payment method enabled nahi/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /booking confirm karein/i })).toBeDisabled();
+    expect(screen.getByText(/No payment method is enabled/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /confirm booking/i })).toBeDisabled();
     expect(withMeta).not.toHaveBeenCalled();
   });
 
@@ -372,7 +374,7 @@ describe('confirm step', () => {
     });
     const { onCreated } = renderConfirm();
 
-    await user.click(screen.getByRole('button', { name: /booking confirm karein/i }));
+    await user.click(screen.getByRole('button', { name: /confirm booking/i }));
 
     await waitFor(() => expect(withMeta).toHaveBeenCalledTimes(1));
     const [path, options] = withMeta.mock.calls[0] as [
@@ -396,16 +398,16 @@ describe('confirm step', () => {
   it('does not claim a booking exists when the request failed', async () => {
     const user = userEvent.setup();
     withMeta.mockRejectedValue(
-      new ApiError('Is waqt koi technician available nahi hai.', 'NO_PROVIDER_AVAILABLE', 409),
+      new ApiError('No technician is available right now.', 'NO_PROVIDER_AVAILABLE', 409),
     );
     const { onCreated } = renderConfirm();
 
-    await user.click(screen.getByRole('button', { name: /booking confirm karein/i }));
+    await user.click(screen.getByRole('button', { name: /confirm booking/i }));
 
-    expect(await screen.findByRole('alert')).toHaveTextContent(/koi technician available nahi/i);
+    expect(await screen.findByRole('alert')).toHaveTextContent(/No technician is available/i);
     expect(onCreated).not.toHaveBeenCalled();
     // The button comes back so the customer can retry.
-    expect(screen.getByRole('button', { name: /booking confirm karein/i })).toBeEnabled();
+    expect(screen.getByRole('button', { name: /confirm booking/i })).toBeEnabled();
   });
 
   it('asks an unauthenticated customer to log in rather than losing the draft', async () => {
@@ -428,11 +430,11 @@ describe('confirm step', () => {
       </ToastProvider>,
     );
 
-    await user.click(screen.getByRole('button', { name: /booking confirm karein/i }));
+    await user.click(screen.getByRole('button', { name: /confirm booking/i }));
 
     const alert = await screen.findByRole('alert');
-    expect(alert).toHaveTextContent(/login zaroori hai/i);
-    expect(screen.getByRole('link', { name: /login karein/i })).toHaveAttribute(
+    expect(alert).toHaveTextContent(/sign in to confirm a booking/i);
+    expect(screen.getByRole('link', { name: /sign in/i })).toHaveAttribute(
       'href',
       '/login?next=/book',
     );
@@ -463,7 +465,7 @@ describe('confirm step', () => {
       },
     });
 
-    await user.click(screen.getByRole('button', { name: /booking confirm karein/i }));
+    await user.click(screen.getByRole('button', { name: /confirm booking/i }));
 
     await waitFor(() => expect(withMeta).toHaveBeenCalled());
     expect(post).toHaveBeenCalledWith(
@@ -478,7 +480,7 @@ describe('confirm step', () => {
 
   it('mentions the guarantee when the service is covered', () => {
     renderConfirm();
-    expect(screen.getByText(/7-din Fix Guarantee laagu hai/i)).toBeInTheDocument();
+    expect(screen.getByText(/7-day Fix Guarantee applies/i)).toBeInTheDocument();
   });
 
   it('makes no guarantee promise for a service that is not covered', () => {
@@ -501,7 +503,7 @@ describe('confirm step', () => {
       </ToastProvider>,
     );
 
-    expect(screen.queryByText(/Fix Guarantee laagu hai/i)).toBeNull();
+    expect(screen.queryByText(/Fix Guarantee applies/i)).toBeNull();
   });
 });
 
@@ -555,11 +557,11 @@ describe('quote card', () => {
   it('shows why a quote was rejected', () => {
     render(
       <QuoteCard
-        quote={{ ...quote, status: 'REJECTED', rejectionReason: 'Bohat zyada hai' }}
+        quote={{ ...quote, status: 'REJECTED', rejectionReason: 'Too expensive' }}
         showStatus
       />,
     );
-    expect(screen.getByText(/Bohat zyada hai/)).toBeInTheDocument();
+    expect(screen.getByText(/Too expensive/)).toBeInTheDocument();
     expect(screen.getByText('Rejected')).toBeInTheDocument();
   });
 });

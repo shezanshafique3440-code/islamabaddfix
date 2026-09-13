@@ -27,7 +27,7 @@ export function NewTicketForm({ bookings }: { bookings: Array<{ id: string; labe
             description: form.description,
             bookingId: form.bookingId || undefined,
           });
-          toast({ tone: 'success', title: `Ticket khul gaya — ${result.reference}` });
+          toast({ tone: 'success', title: `Ticket opened — ${result.reference}` });
           router.push(`/account/support/${result.id}`);
         } catch (error) {
           if (error instanceof ApiError) {
@@ -43,19 +43,19 @@ export function NewTicketForm({ bookings }: { bookings: Array<{ id: string; labe
         required
         value={form.subject}
         onChange={(event) => setForm((f) => ({ ...f, subject: event.target.value }))}
-        placeholder="Misal: technician time par nahi aaya"
+        placeholder="For example: the technician did not arrive on time"
         error={errors.subject}
       />
 
       {bookings.length > 0 ? (
         <Select
-          label="Kis booking se related hai?"
+          label="Which booking is this about?"
           value={form.bookingId}
           onChange={(event) => setForm((f) => ({ ...f, bookingId: event.target.value }))}
-          hint="Optional, lekin madadgar."
+          hint="Optional, but it helps."
           error={errors.bookingId}
         >
-          <option value="">Koi booking nahi</option>
+          <option value="">No booking</option>
           {bookings.map((booking) => (
             <option key={booking.id} value={booking.id}>
               {booking.label}
@@ -65,12 +65,12 @@ export function NewTicketForm({ bookings }: { bookings: Array<{ id: string; labe
       ) : null}
 
       <Textarea
-        label="Tafseel"
+        label="Details"
         required
         rows={6}
         value={form.description}
         onChange={(event) => setForm((f) => ({ ...f, description: event.target.value }))}
-        placeholder="Kya hua, kab hua, aur aap kya chahte hain?"
+        placeholder="What happened, when, and what would you like done?"
         hint="Kam az kam 15 characters."
         error={errors.description}
       />
@@ -80,7 +80,7 @@ export function NewTicketForm({ bookings }: { bookings: Array<{ id: string; labe
         loading={loading}
         disabled={form.subject.trim().length < 5 || form.description.trim().length < 15}
       >
-        Ticket kholein
+        Open ticket
       </Button>
     </form>
   );

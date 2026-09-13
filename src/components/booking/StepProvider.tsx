@@ -58,10 +58,10 @@ export function StepProvider({
       if (caught instanceof ApiError && caught.code === 'UNAUTHENTICATED') {
         // Matching needs a session because it resolves the caller's address.
         setError(
-          'Technicians dekhne ke liye login zaroori hai. Login karne ke baad aap wapis yahin aa jayenge.',
+          'You need to sign in to see technicians. You will be brought right back here afterwards.',
         );
       } else {
-        setError(caught instanceof ApiError ? caught.message : 'Technicians load nahi ho sake.');
+        setError(caught instanceof ApiError ? caught.message : 'Technicians could not be loaded.');
       }
       setProviders([]);
     }
@@ -79,16 +79,16 @@ export function StepProvider({
 
   return (
     <StepShell
-      title={draft.isEmergency ? 'Available emergency technicians' : 'Technician chunein'}
+      title={draft.isEmergency ? 'Available emergency technicians' : 'Choose a technician'}
       description={
         service
-          ? `${service.name} ke liye verified providers, behtareen match pehle.`
+          ? `Verified providers for ${service.name}, best match first.`
           : 'Verified providers.'
       }
     >
       <div className="space-y-4">
         {prefilledProviderName && draft.providerId ? (
-          <Badge tone="brand">{prefilledProviderName} pehle se chuna gaya hai</Badge>
+          <Badge tone="brand">{prefilledProviderName} is already selected</Badge>
         ) : null}
 
         {providers === null ? (
@@ -101,17 +101,17 @@ export function StepProvider({
               onClick={() => void load()}
               className="mt-2 text-sm font-semibold text-warn-700 underline"
             >
-              Dobara koshish karein
+              Try again
             </button>
           </div>
         ) : providers.length === 0 ? (
           <EmptyState
             title={
               draft.isEmergency
-                ? 'Is waqt koi emergency technician available nahi'
-                : 'Is service aur area par koi technician nahi mila'
+                ? 'No emergency technician is available right now'
+                : 'No technician found for this service and area'
             }
-            description="Aap phir bhi request bhej sakte hain — ops team manually technician assign karegi aur aap ko update milega."
+            description="You can still send the request — the operations team will assign a technician and let you know."
           />
         ) : (
           <div className="space-y-3">
@@ -145,8 +145,8 @@ export function StepProvider({
                       }
                     >
                       {draft.providerId === provider.providerId
-                        ? '✓ Chuna gaya'
-                        : 'Yeh technician chunein'}
+                        ? '✓ Selected'
+                        : 'Choose this technician'}
                     </button>
                   }
                 />
@@ -167,11 +167,11 @@ export function StepProvider({
             }
           >
             <span className="block text-sm font-semibold text-ink-900">
-              Mere liye behtareen chun lein
+              Pick the best one for me
             </span>
             <span className="mt-0.5 block text-xs leading-relaxed text-ink-600">
-              Hum top matched technicians ko request bhej denge; jo pehle qubool kare wohi aayega.
-              Aksar yeh sab se tez tareeqa hota hai.
+              We will send your request to the best-matched technicians; whoever accepts first is
+              the one who comes. This is usually the fastest way.
             </span>
           </button>
         ) : null}
@@ -180,7 +180,7 @@ export function StepProvider({
       <StepFooter
         onBack={onBack}
         onNext={onNext}
-        nextLabel="Booking review karein"
+        nextLabel="Review booking"
         nextDisabled={providers === null}
       />
     </StepShell>

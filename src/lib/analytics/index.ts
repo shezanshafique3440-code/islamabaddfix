@@ -340,7 +340,7 @@ export async function getZoneBreakdown(days = 30): Promise<ZoneBreakdown[]> {
   `;
 
   return rows.map((row) => ({
-    zoneName: row.name ?? 'Area set nahi',
+    zoneName: row.name ?? 'Area not set',
     bookings: Number(row.bookings),
     grossPaisa: Number(row.gross ?? 0),
   }));

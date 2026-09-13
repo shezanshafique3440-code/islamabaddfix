@@ -2,13 +2,13 @@ import type { BookingStatus } from '@prisma/client';
 import { cn } from '@/lib/utils';
 
 const STEPS: Array<{ status: BookingStatus; label: string }> = [
-  { status: 'PENDING', label: 'Request bheji' },
-  { status: 'ACCEPTED', label: 'Technician mil gaya' },
+  { status: 'PENDING', label: 'Request sent' },
+  { status: 'ACCEPTED', label: 'Technician found' },
   { status: 'SCHEDULED', label: 'Time confirm' },
-  { status: 'ON_THE_WAY', label: 'Raste mein' },
-  { status: 'ARRIVED', label: 'Pohonch gaya' },
-  { status: 'IN_PROGRESS', label: 'Kaam chal raha' },
-  { status: 'COMPLETED', label: 'Mukammal' },
+  { status: 'ON_THE_WAY', label: 'On the way' },
+  { status: 'ARRIVED', label: 'Arrived' },
+  { status: 'IN_PROGRESS', label: 'Work in progress' },
+  { status: 'COMPLETED', label: 'Completed' },
 ];
 
 /**
@@ -31,7 +31,9 @@ export function BookingTracker({
     return (
       <div className={cn('rounded-xl bg-ink-100 px-4 py-3', className)}>
         <p className="text-sm font-medium text-ink-700">
-          {status === 'CANCELLED' ? 'Yeh booking cancel ho gayi.' : 'Yeh booking refund ho gayi.'}
+          {status === 'CANCELLED'
+            ? 'This booking has been cancelled.'
+            : 'This booking has been refunded.'}
         </p>
       </div>
     );
@@ -41,7 +43,7 @@ export function BookingTracker({
     return (
       <div className={cn('rounded-xl bg-alert-50 px-4 py-3', className)}>
         <p className="text-sm font-medium text-alert-700">
-          Is booking par dispute khula hai — ops team dekh rahi hai.
+          There is an open dispute on this booking — the ops team is reviewing it.
         </p>
       </div>
     );

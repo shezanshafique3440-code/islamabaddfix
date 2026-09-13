@@ -23,7 +23,7 @@ export const emailChannel: NotificationChannelDriver = {
     if (!integrations.email.configured) {
       return {
         status: 'SKIPPED_NOT_CONFIGURED',
-        reason: 'EMAIL_PROVIDER / EMAIL_API_KEY set nahi hai.',
+        reason: 'EMAIL_PROVIDER / EMAIL_API_KEY is not set.',
       };
     }
 

@@ -13,10 +13,10 @@ import { cn } from '@/lib/utils';
  * means the landing page stays fast and works before JavaScript hydrates.
  */
 const EXAMPLES = [
-  'AC chal raha hai lekin thandi hawa nahi aa rahi',
-  'Bathroom mein leakage hai',
-  'Electrician chahiye, do switch kaam nahi kar rahe',
-  'Ghar ki deep cleaning karani hai',
+  'The AC runs but blows no cold air',
+  'There is a leak in the bathroom',
+  'I need an electrician, two switches are not working',
+  'I need a deep clean of the house',
 ];
 
 export function ProblemSearch({ className }: { className?: string }) {
@@ -42,7 +42,7 @@ export function ProblemSearch({ className }: { className?: string }) {
       >
         <div className="relative flex-1">
           <label htmlFor="problem-search" className="sr-only">
-            Aapko kis cheez ki help chahiye?
+            What do you need help with?
           </label>
           <svg
             viewBox="0 0 24 24"
@@ -59,18 +59,18 @@ export function ProblemSearch({ className }: { className?: string }) {
             id="problem-search"
             value={value}
             onChange={(event) => setValue(event.target.value)}
-            placeholder="AC kharab hai..."
+            placeholder="The AC is not working..."
             autoComplete="off"
             className="h-14 w-full rounded-xl border border-ink-300 bg-white pl-12 pr-4 text-[0.9375rem] text-ink-900 shadow-sm placeholder:text-ink-400 hover:border-ink-400 focus:border-brand-600"
           />
         </div>
         <Button type="submit" size="lg" loading={submitting} className="h-14 sm:px-7">
-          Service dhoondein
+          Find a service
         </Button>
       </form>
 
       <div className="mt-3 flex flex-wrap items-center gap-2">
-        <span className="text-xs font-medium text-ink-500">Misal ke taur par:</span>
+        <span className="text-xs font-medium text-ink-500">For example:</span>
         {EXAMPLES.map((example) => (
           <button
             key={example}

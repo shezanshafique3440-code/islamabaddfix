@@ -74,10 +74,7 @@ export async function upsertProviderProfile(input: OnboardProviderInput): Promis
   ]);
 
   if (input.emergencyAvailable && (input.emergencyFeePaisa ?? 0) > maxEmergencyFee) {
-    throw new AppError(
-      'VALIDATION_ERROR',
-      'The emergency fee cannot exceed the platform maximum.',
-    );
+    throw new AppError('VALIDATION_ERROR', 'The emergency fee cannot exceed the platform maximum.');
   }
 
   // Validate the catalogue references before writing anything.
@@ -527,10 +524,7 @@ export const PROVIDER_STATUS_LABELS: Record<ProviderStatus, string> = {
   SUSPENDED: 'Suspended',
 };
 
-export const VERIFICATION_LABELS: Record<
-  VerificationKind,
-  { en: string; help: string }
-> = {
+export const VERIFICATION_LABELS: Record<VerificationKind, { en: string; help: string }> = {
   IDENTITY_CNIC: {
     en: 'Identity verified',
     help: 'The provider submitted a CNIC document and the team checked it.',

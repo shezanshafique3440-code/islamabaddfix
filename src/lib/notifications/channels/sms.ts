@@ -20,11 +20,11 @@ export const smsChannel: NotificationChannelDriver = {
     if (!integrations.sms.configured) {
       return {
         status: 'SKIPPED_NOT_CONFIGURED',
-        reason: 'SMS_PROVIDER / SMS_API_KEY set nahi hai.',
+        reason: 'SMS_PROVIDER / SMS_API_KEY is not set.',
       };
     }
     if (!target.phone) {
-      return { status: 'FAILED', reason: 'Recipient ka phone number mojood nahi hai.' };
+      return { status: 'FAILED', reason: 'The recipient has no phone number on file.' };
     }
     // Body is capped so a long notification does not become four billable parts.
     const text = `${payload.title}: ${payload.body}`.slice(0, 300);
@@ -33,7 +33,7 @@ export const smsChannel: NotificationChannelDriver = {
     return {
       status: 'SKIPPED_NOT_CONFIGURED',
       reason:
-        'SMS gateway endpoint configure nahi hua. Implement sendViaGateway() for your aggregator.',
+        'The SMS gateway endpoint is not configured. Implement sendViaGateway() for your aggregator.',
     };
   },
 };

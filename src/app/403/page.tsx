@@ -5,7 +5,7 @@ import { getAuthContext } from '@/lib/auth/session';
 import { homeForRole } from '@/lib/auth/rbac';
 
 export const metadata: Metadata = {
-  title: 'Ijazat nahi',
+  title: 'Not permitted',
   robots: { index: false, follow: false },
 };
 
@@ -27,17 +27,19 @@ export default async function ForbiddenPage() {
       <main id="main" className="flex flex-1 items-center justify-center px-4 py-16">
         <div className="max-w-md text-center">
           <p className="text-eyebrow uppercase text-alert-600">403</p>
-          <h1 className="mt-2 text-display-sm text-ink-950">Is section ki ijazat nahi</h1>
+          <h1 className="mt-2 text-display-sm text-ink-950">
+            You do not have access to this section
+          </h1>
           <p className="mt-3 text-sm leading-relaxed text-ink-600">
             {ctx
-              ? 'Aapke account ke paas is page ka access nahi hai. Agar yeh ghalti lagti hai to support se rabta karein.'
-              : 'Yeh page dekhne ke liye login zaroori hai.'}
+              ? 'Your account does not have access to this page. If that looks wrong, contact support.'
+              : 'You need to sign in to view this page.'}
           </p>
           <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
             {ctx ? (
-              <ButtonLink href={homeForRole(ctx.role)}>Mera dashboard</ButtonLink>
+              <ButtonLink href={homeForRole(ctx.role)}>My dashboard</ButtonLink>
             ) : (
-              <ButtonLink href="/login">Login karein</ButtonLink>
+              <ButtonLink href="/login">Sign in</ButtonLink>
             )}
             <ButtonLink href="/" variant="outline">
               Home

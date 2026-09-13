@@ -4,7 +4,7 @@ import { getSetting } from '@/lib/settings';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
-  description: 'Islamabad Fix aapki maloomat kaise istemal karta hai aur kaise mahfooz rakhta hai.',
+  description: 'How Islamabad Fix uses your information and keeps it safe.',
   alternates: { canonical: '/privacy' },
 };
 
@@ -15,76 +15,76 @@ export default async function PrivacyPage() {
     <>
       <PageHeader
         title="Privacy Policy"
-        description="Hum kya maloomat rakhte hain, kis ko dikhate hain, aur kaise mahfooz rakhte hain."
+        description="What we hold, who we share it with, and how we keep it safe."
         breadcrumbs={[{ href: '/', label: 'Home' }]}
       />
 
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
         <div className="rounded-xl border border-warn-200 bg-warn-50 p-4">
           <p className="text-sm leading-relaxed text-warn-700">
-            Yeh MVP ke liye tayyar kiya gaya saada summary hai. Commercial launch se pehle isay
-            wakeel se review karwana zaroori hai.
+            This is a plain summary written for the MVP. It must be reviewed by a lawyer before
+            commercial launch.
           </p>
         </div>
 
         <div className="mt-8 space-y-7 text-sm leading-relaxed text-ink-700">
           {[
             {
-              h: 'Kya maloomat hum rakhte hain',
+              h: 'What information we hold',
               p: [
-                'Customers: naam, email, phone number, addresses, booking ki tafseelat, upload ki gayi tasveerein/videos, payment record aur reviews.',
-                'Providers: naam, business naam, phone, email, service areas, rates, working hours, shanakhti document, aur payout account ki maloomat.',
-                'Technical: login ka waqt, IP address aur browser, security aur audit ke liye.',
+                'Customers: name, email, phone number, addresses, booking details, uploaded photos and videos, payment records and reviews.',
+                'Providers: name, business name, phone, email, service areas, rates, working hours, identity document, and payout account details.',
+                'Technical: sign-in times, IP address and browser, for security and audit.',
               ],
             },
             {
-              h: 'Hum kis ko dikhate hain',
+              h: 'Who we share it with',
               p: [
-                'Aapka poora address aur phone number technician ko sirf us waqt dikhta hai jab woh aapki job qubool kar leta hai. Us se pehle sirf aapka area dikhta hai.',
-                'Provider ki personal maloomat (phone, ghar ka address, bank details) public profile par kabhi nahi aati. Customer ko technician ka contact number booking assign hone ke baad milta hai.',
-                'Verification documents sirf provider khud aur humari ops team dekh sakti hai. Customers kabhi nahi.',
-                'Reviews par sirf pehla naam dikhta hai, poora naam nahi.',
+                'Your full address and phone number are shown to a technician only once they accept your job. Before that they see your area and nothing more.',
+                'A provider’s personal details (phone, home address, bank details) never appear on the public profile. The customer gets the technician’s contact number once the booking is assigned.',
+                'Verification documents can be seen only by the provider themselves and our ops team. Never by customers.',
+                'Only the first name appears on reviews, not the full name.',
               ],
             },
             {
               h: 'Location',
               p: [
-                'Provider ki live location tab hi record hoti hai jab woh khud sharing on kare. Sharing off karne par purana record bhi mita diya jata hai.',
-                'Ops map par customer ki location tafseel se nahi, taqreeban 1 km ke grid par dikhayi jati hai.',
+                'A provider’s live location is only recorded when they turn sharing on themselves. Turning sharing off also erases the earlier record.',
+                'On the ops map a customer’s location is shown on a roughly 1 km grid, not precisely.',
               ],
             },
             {
-              h: 'Payment maloomat',
+              h: 'Payment details',
               p: [
-                'Hum card number, CVV ya koi raw payment credential store nahi karte.',
-                'Provider ke bank account ka sirf aakhri 4 hindse aur ek hash rakha jata hai — poora IBAN kisi ko, provider ko bhi, wapis nahi dikhaya jata.',
-                'CNIC ka poora number store nahi hota; sirf ek masked reference rakha jata hai.',
+                'We do not store card numbers, CVVs or any raw payment credentials.',
+                'Only the last 4 digits and a hash of a provider’s bank account are kept — the full IBAN is never shown back to anyone, not even the provider.',
+                'The full CNIC number is not stored; only a masked reference is kept.',
               ],
             },
             {
-              h: 'Files aur tasveerein',
+              h: 'Files and photos',
               p: [
-                'Aap ki bheji hui tasveerein aur videos private storage mein rehti hain. Unhe sirf woh log dekh sakte hain jo us booking se mutalliq hain: aap, assigned technician, aur ops team.',
-                'Har file request par ijazat check hoti hai — koi public link mojood nahi.',
+                'The photos and videos you send stay in private storage. Only people connected to that booking can see them: you, the assigned technician, and the operations team.',
+                'Permission is checked on every file request — there are no public links.',
               ],
             },
             {
               h: 'Security',
               p: [
-                'Passwords hash form mein rakhe jate hain (bcrypt). Login sessions short-lived tokens se chalte hain jo refresh par rotate hote hain.',
-                'Ahem admin karwai (provider approval, refund, settings ki tabdeeli) audit log mein darj hoti hai.',
+                'Passwords are stored hashed (bcrypt). Login sessions run on short-lived tokens that rotate on refresh.',
+                'Significant admin actions (provider approval, refunds, settings changes) are recorded in the audit log.',
               ],
             },
             {
-              h: 'Aap ke haqooq',
+              h: 'Your rights',
               p: [
-                'Aap apni maloomat dekh, theek kar aur account band karwa sakte hain.',
-                'Booking aur payment ka record qanooni aur accounting zaroorat ke tehat mehfooz rakha ja sakta hai.',
+                'You can see your information, correct it, and close your account.',
+                'Booking and payment records may be retained to meet legal and accounting requirements.',
               ],
             },
             {
-              h: 'Rabta',
-              p: [`Privacy se mutalliq sawalat: ${email}`],
+              h: 'Contact',
+              p: [`Privacy questions: ${email}`],
             },
           ].map((section) => (
             <section key={section.h}>

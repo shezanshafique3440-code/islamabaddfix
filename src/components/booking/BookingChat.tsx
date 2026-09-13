@@ -84,7 +84,7 @@ export function BookingChat({
       setDraft('');
       pinnedToBottom.current = true;
     } catch (caught) {
-      setError(caught instanceof ApiError ? caught.message : 'Message bhej nahi sake.');
+      setError(caught instanceof ApiError ? caught.message : 'We could not send the message.');
     } finally {
       setSending(false);
     }
@@ -96,7 +96,7 @@ export function BookingChat({
     <div className="rounded-2xl border border-ink-200 bg-white">
       <div className="flex items-center justify-between border-b border-ink-100 px-4 py-3">
         <h3 className="text-[0.9375rem] font-semibold text-ink-900">Messages</h3>
-        <span className="text-xs text-ink-500">Sirf aap aur {other} — aur support team.</span>
+        <span className="text-xs text-ink-500">Only you and {other} — plus the support team.</span>
       </div>
 
       <div
@@ -117,7 +117,7 @@ export function BookingChat({
           </>
         ) : messages.length === 0 ? (
           <p className="py-6 text-center text-sm text-ink-500">
-            Abhi koi message nahi. Kuch poochna ho to yahan likhein.
+            No messages yet. Ask anything here.
           </p>
         ) : (
           messages.map((message) => <Bubble key={message.id} message={message} />)
@@ -126,7 +126,7 @@ export function BookingChat({
 
       {closed ? (
         <p className="border-t border-ink-100 px-4 py-3 text-sm text-ink-500">
-          Yeh booking band ho chuki hai — naye message nahi bhej sakte.
+          This booking is closed — no new messages can be sent.
         </p>
       ) : (
         <form onSubmit={send} className="border-t border-ink-100 p-3">
@@ -137,7 +137,7 @@ export function BookingChat({
           ) : null}
           <div className="flex items-end gap-2">
             <label htmlFor={`chat-${bookingId}`} className="sr-only">
-              Message likhein
+              Write a message
             </label>
             <textarea
               id={`chat-${bookingId}`}
@@ -151,16 +151,16 @@ export function BookingChat({
                 }
               }}
               rows={2}
-              placeholder="Message likhein…"
+              placeholder="Write a message…"
               className="min-h-[2.75rem] flex-1 resize-y rounded-xl border border-ink-300 bg-white px-3 py-2 text-sm text-ink-900 placeholder:text-ink-400 focus:border-brand-600"
             />
             <Button type="submit" loading={sending} disabled={draft.trim().length === 0}>
-              Bhejein
+              Send
             </Button>
           </div>
           <p className="mt-1.5 text-xs text-ink-500">
-            Payment ya personal maloomat message mein na bhejein. Har message record hota hai aur
-            dispute ki soorat mein support dekh sakti hai.
+            Do not send payment or personal details in a message. Every message is recorded and
+            support can read it if there is a dispute.
           </p>
         </form>
       )}

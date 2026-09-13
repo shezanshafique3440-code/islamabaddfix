@@ -81,27 +81,27 @@ export default async function AdminGuaranteeDetailPage({ params }: Params) {
         <h2 className="text-[0.9375rem] font-semibold text-ink-900">Eligibility</h2>
         <dl className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <Fact
-            label="Booking par guarantee"
-            value={claim.booking.guaranteeEligible ? 'Haan' : 'Nahi'}
+            label="Guarantee on booking"
+            value={claim.booking.guaranteeEligible ? 'Yes' : 'No'}
             tone={claim.booking.guaranteeEligible ? 'good' : 'bad'}
           />
-          <Fact label="Muddat" value={`${claim.booking.guaranteeDays} din`} />
+          <Fact label="Period" value={`${claim.booking.guaranteeDays} days`} />
           <Fact
-            label="Khatam"
+            label="Ends"
             value={
               claim.booking.guaranteeExpiresAt ? formatDate(claim.booking.guaranteeExpiresAt) : '—'
             }
             tone={expired ? 'bad' : 'good'}
           />
           <Fact
-            label="Kaam mukammal"
+            label="Work complete"
             value={claim.booking.completedAt ? formatDate(claim.booking.completedAt) : '—'}
           />
         </dl>
         {expired ? (
           <p className="mt-3 rounded-xl bg-warn-50 px-3.5 py-2.5 text-sm text-warn-700">
-            Guarantee ki muddat khatam ho chuki hai. Claim submit hone ke waqt woh valid thi ya
-            nahi, yeh dekh kar faisla karein.
+            The guarantee period has ended. Decide based on whether it was still valid when the
+            claim was submitted.
           </p>
         ) : null}
       </section>

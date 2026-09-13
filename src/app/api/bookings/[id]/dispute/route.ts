@@ -36,12 +36,12 @@ export const GET = route(async (_request, { params }: Params) => {
     where: { id },
     select: { customerId: true, providerId: true },
   });
-  if (!booking) throw new AppError('NOT_FOUND', 'Booking nahi mili.');
+  if (!booking) throw new AppError('NOT_FOUND', 'Booking not found.');
   const isParty =
     booking.customerId === ctx.user.id ||
     (ctx.providerId !== undefined && booking.providerId === ctx.providerId) ||
     isStaff(ctx.role);
-  if (!isParty) throw new AppError('NOT_FOUND', 'Booking nahi mili.');
+  if (!isParty) throw new AppError('NOT_FOUND', 'Booking not found.');
 
   const disputes = await prisma.dispute.findMany({
     where: { bookingId: id },

@@ -6,8 +6,8 @@ import { getAuthContext } from '@/lib/auth/session';
 import { ButtonLink } from '@/components/ui/Button';
 
 export const metadata: Metadata = {
-  title: 'Rabta karein',
-  description: 'Islamabad Fix support se rabta karein — phone, email ya support ticket ke zariye.',
+  title: 'Contact us',
+  description: 'Contact Islamabad Fix support — by phone, email or a support ticket.',
   alternates: { canonical: '/contact' },
 };
 
@@ -22,8 +22,8 @@ export default async function ContactPage() {
     <>
       <PageHeader
         eyebrow="Support"
-        title="Rabta karein"
-        description="Booking, quote, payment ya kisi bhi masle mein madad chahiye? Humein batayein."
+        title="Contact us"
+        description="Need help with a booking, a quote, a payment or anything else? Tell us."
         breadcrumbs={[{ href: '/', label: 'Home' }]}
       />
 
@@ -35,7 +35,7 @@ export default async function ContactPage() {
           >
             <p className="text-eyebrow uppercase text-ink-500">Phone</p>
             <p className="mt-2 text-lg font-semibold text-ink-950">{phone}</p>
-            <p className="mt-1 text-sm text-ink-600">Booking aur urgent masail ke liye</p>
+            <p className="mt-1 text-sm text-ink-600">For bookings and urgent problems</p>
           </a>
 
           <a
@@ -44,28 +44,28 @@ export default async function ContactPage() {
           >
             <p className="text-eyebrow uppercase text-ink-500">Email</p>
             <p className="mt-2 break-all text-lg font-semibold text-ink-950">{email}</p>
-            <p className="mt-1 text-sm text-ink-600">Tafseeli sawalat ke liye</p>
+            <p className="mt-1 text-sm text-ink-600">For detailed questions</p>
           </a>
         </div>
 
         <div className="mt-8 rounded-2xl border border-ink-200 bg-ink-50/60 p-6">
           <h2 className="text-title text-ink-950">Support ticket</h2>
           <p className="mt-2 text-sm leading-relaxed text-ink-600">
-            Kisi booking se related masla hai? Ticket khol dein — usmein aap booking select kar
-            sakte hain, evidence attach kar sakte hain aur status track kar sakte hain.
+            Is the problem about a booking? Open a ticket — you can pick the booking in it, attach
+            evidence and track the status.
           </p>
           <div className="mt-4">
             {ctx ? (
-              <ButtonLink href="/account/support/new">Ticket kholein</ButtonLink>
+              <ButtonLink href="/account/support/new">Open a ticket</ButtonLink>
             ) : (
               <div className="flex flex-wrap items-center gap-3">
                 <ButtonLink href="/login?next=/account/support/new">
-                  Login kar ke ticket kholein
+                  Sign in to open a ticket
                 </ButtonLink>
                 <span className="text-sm text-ink-500">
-                  Account nahi hai?{' '}
+                  No account?{' '}
                   <Link href="/register" className="font-medium text-brand-700 hover:underline">
-                    Register karein
+                    Register
                   </Link>
                 </span>
               </div>
@@ -76,9 +76,9 @@ export default async function ContactPage() {
         <div className="mt-8 rounded-2xl border border-alert-200 bg-alert-50 p-6">
           <h2 className="text-sm font-semibold text-alert-700">Emergency</h2>
           <p className="mt-2 text-sm leading-relaxed text-ink-700">
-            Aag, gas leak, ya kisi ke zakhmi hone ki soorat mein pehle{' '}
-            <strong className="font-semibold">Rescue 1122</strong> ko call karein. Iske baad hum
-            emergency technician ka intezam kar sakte hain.
+            If there is a fire, a gas leak or anyone is injured, call{' '}
+            <strong className="font-semibold">Rescue 1122</strong> first. After that we can arrange
+            an emergency technician.
           </p>
         </div>
       </div>

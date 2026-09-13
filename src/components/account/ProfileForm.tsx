@@ -40,7 +40,7 @@ export function ProfileForm({
               fullName: form.fullName,
               ...(form.phone ? { phone: form.phone } : {}),
             });
-            toast({ tone: 'success', title: 'Profile update ho gaya' });
+            toast({ tone: 'success', title: 'Profile updated' });
             router.refresh();
           } catch (error) {
             if (error instanceof ApiError) {
@@ -53,7 +53,7 @@ export function ProfileForm({
         }}
       >
         <TextInput
-          label="Poora naam"
+          label="Full name"
           value={form.fullName}
           onChange={(event) => setForm((f) => ({ ...f, fullName: event.target.value }))}
           error={errors.fullName}
@@ -70,7 +70,7 @@ export function ProfileForm({
             error={errors.phone}
             hint={
               form.phone !== initial.phone
-                ? 'Number badalne par verification dobara karni hogi.'
+                ? 'Changing the number means verifying it again.'
                 : undefined
             }
           />
@@ -87,18 +87,18 @@ export function ProfileForm({
             {emailVerified ? (
               <Badge tone="success">✓ Verified</Badge>
             ) : (
-              <Badge tone="warn">Verify baqi</Badge>
+              <Badge tone="warn">Not verified</Badge>
             )}
-            Email badalne ke liye support se rabta karein.
+            Contact support to change your email.
           </p>
         </div>
 
         <div className="flex flex-wrap gap-2 pt-1">
           <Button type="submit" loading={loading} disabled={!dirty}>
-            Save karein
+            Save
           </Button>
           <Button type="button" variant="outline" onClick={() => setPasswordOpen(true)}>
-            Password badlein
+            Change password
           </Button>
         </div>
       </form>
@@ -119,12 +119,12 @@ function PasswordDialog({ open, onClose }: { open: boolean; onClose: () => void 
     <Dialog
       open={open}
       onClose={onClose}
-      title="Password badlein"
-      description="Security ke liye password badalne par aap ko dobara login karna hoga."
+      title="Change password"
+      description="For security, changing your password means signing in again."
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={loading}>
-            Band karein
+            Close
           </Button>
           <Button
             loading={loading}
@@ -139,8 +139,8 @@ function PasswordDialog({ open, onClose }: { open: boolean; onClose: () => void 
                 });
                 toast({
                   tone: 'success',
-                  title: 'Password badal gaya',
-                  description: 'Dobara login karein.',
+                  title: 'Password changed',
+                  description: 'Please sign in again.',
                 });
                 // Every session was revoked, including this one.
                 window.location.href = '/login';
@@ -154,14 +154,14 @@ function PasswordDialog({ open, onClose }: { open: boolean; onClose: () => void 
               }
             }}
           >
-            Password badlein
+            Change password
           </Button>
         </>
       }
     >
       <div className="space-y-4">
         <TextInput
-          label="Mojooda password"
+          label="Current password"
           type="password"
           autoComplete="current-password"
           value={current}
@@ -170,7 +170,7 @@ function PasswordDialog({ open, onClose }: { open: boolean; onClose: () => void 
           required
         />
         <TextInput
-          label="Naya password"
+          label="New password"
           type="password"
           autoComplete="new-password"
           value={next}

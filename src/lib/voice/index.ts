@@ -108,15 +108,15 @@ export function verifyVoiceSignature(
   signatureHeader: string | null,
 ): { valid: boolean; reason?: string } {
   if (!env.VAPI_WEBHOOK_SECRET) {
-    return { valid: false, reason: 'VAPI_WEBHOOK_SECRET set nahi hai.' };
+    return { valid: false, reason: 'VAPI_WEBHOOK_SECRET is not set.' };
   }
-  if (!signatureHeader) return { valid: false, reason: 'Signature header missing hai.' };
+  if (!signatureHeader) return { valid: false, reason: 'The signature header is missing.' };
 
   const expected = createHmac('sha256', env.VAPI_WEBHOOK_SECRET).update(rawBody).digest('hex');
   const a = Buffer.from(expected, 'utf8');
   const b = Buffer.from(signatureHeader.replace(/^sha256=/, ''), 'utf8');
   if (a.length !== b.length || !timingSafeEqual(a, b)) {
-    return { valid: false, reason: 'Signature match nahi karta.' };
+    return { valid: false, reason: 'The signature does not match.' };
   }
   return { valid: true };
 }
@@ -150,7 +150,7 @@ export async function executeVoiceTool(call: VoiceToolCall): Promise<VoiceToolRe
           // The agent must repeat this, not a diagnosis.
           safetyNotice: intake.safetyNotice,
           questionsToAsk: intake.questions,
-          note: 'Yeh andaza hai, final diagnosis nahi. Technician muaina karke batayega.',
+          note: 'This is an estimate, not a final diagnosis. The technician will inspect and confirm.',
         },
       };
     }
@@ -195,7 +195,7 @@ export async function executeVoiceTool(call: VoiceToolCall): Promise<VoiceToolRe
         result: {
           confirmationUrl: `${env.NEXT_PUBLIC_APP_URL}/book?${params.toString()}`,
           message:
-            'Booking confirm karne ke liye link bhej diya gaya hai. Security ke liye final confirmation app se hoti hai.',
+            'A link has been sent to confirm the booking. For security, the final confirmation happens in the app.',
         },
       };
     }
@@ -203,7 +203,7 @@ export async function executeVoiceTool(call: VoiceToolCall): Promise<VoiceToolRe
     default:
       return {
         result: {
-          error: `Tool "${call.name}" available nahi hai.`,
+          error: `Tool "${call.name}" is not available.`,
           allowed: VOICE_TOOLS.map((tool) => tool.name),
         },
       };

@@ -23,7 +23,7 @@ export function Rating({
 
   if (value === null || value === 0) {
     if (!showEmpty) return null;
-    return <span className={cn('text-ink-500', text, className)}>Abhi koi rating nahi</span>;
+    return <span className={cn('text-ink-500', text, className)}>No rating yet</span>;
   }
 
   const rounded = Math.round(value * 10) / 10;

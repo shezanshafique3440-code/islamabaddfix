@@ -8,7 +8,7 @@ export const POST = route(async (request) => {
   await enforceRateLimit(RATE_LIMITS.refresh, rateLimitIdentity(request));
   const { refreshToken } = await readAuthCookies();
   if (!refreshToken) {
-    throw new AppError('UNAUTHENTICATED', 'Session mojood nahi. Dobara login karein.');
+    throw new AppError('UNAUTHENTICATED', 'No session found. Please sign in again.');
   }
 
   try {

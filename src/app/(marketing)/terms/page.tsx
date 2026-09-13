@@ -4,7 +4,7 @@ import { getSetting } from '@/lib/settings';
 
 export const metadata: Metadata = {
   title: 'Terms of Service',
-  description: 'Islamabad Fix ke istemal ki shartein.',
+  description: 'The terms for using Islamabad Fix.',
   alternates: { canonical: '/terms' },
 };
 
@@ -26,85 +26,85 @@ export default async function TermsPage() {
     <>
       <PageHeader
         title="Terms of Service"
-        description="Saada alfaz mein: hum kya karte hain, aap se kya tawaqqo hai, aur zimmedari kis ki hai."
+        description="In plain words: what we do, what is expected of you, and who is responsible for what."
         breadcrumbs={[{ href: '/', label: 'Home' }]}
       />
 
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
         <div className="rounded-xl border border-warn-200 bg-warn-50 p-4">
           <p className="text-sm leading-relaxed text-warn-700">
-            Yeh MVP ke liye tayyar kiya gaya saada summary hai. Commercial launch se pehle isay
-            Pakistani qanoon ke mutabiq wakeel se review karwana zaroori hai.
+            This is a plain summary written for the MVP. It must be reviewed by a lawyer under
+            Pakistani law before commercial launch.
           </p>
         </div>
 
         <div className="mt-8 space-y-7 text-sm leading-relaxed text-ink-700">
           {[
             {
-              h: '1. Islamabad Fix ka kirdar',
+              h: '1. The role of Islamabad Fix',
               p: [
-                'Islamabad Fix ek marketplace platform hai. Hum customers ko independent service providers se milate hain aur booking, quote, payment record, review aur dispute ka nizam chalate hain.',
-                'Hum khud repair ya service ka kaam nahi karte, aur providers humare mulazim nahi hain. Kaam ki quality aur usay mukammal karne ki zimmedari provider ki hai.',
+                'Islamabad Fix is a marketplace platform. We connect customers with independent service providers and run the booking, quote, payment record, review and dispute system.',
+                'We do not carry out repair or service work ourselves, and providers are not our employees. The quality and completion of the work are the provider’s responsibility.',
               ],
             },
             {
               h: '2. Account',
               p: [
-                'Aap durust maloomat dene ke zimmedar hain, aur apna password mahfooz rakhna aapki zimmedari hai.',
-                'Ek shakhs ek hi account rakhe. Ghalat maloomat, dhoka ya doosron ko nuqsan pohanchane ki soorat mein hum account band kar sakte hain.',
+                'You are responsible for giving accurate information, and for keeping your password safe.',
+                'One person, one account. We may close an account for false information, fraud or harm to others.',
               ],
             },
             {
-              h: '3. Booking aur qeemat',
+              h: '3. Bookings and pricing',
               p: [
-                'Site par di gayi qeematein sirf andaza hain. Asal qeemat provider ke likhit quote se tay hoti hai jise aap approve karte hain.',
-                'Quote approve karne ke baad koi bhi extra charge aapki alag approval ke baghair laagu nahi hoga.',
-                'Booking cancel karne ki policy platform settings mein di gayi hai aur cancel karte waqt aap ko dikha di jati hai.',
+                'The prices shown on the site are estimates only. The actual price is set by the provider’s written quote, which you approve.',
+                'After you approve the quote, no extra charge applies without your separate approval.',
+                'The cancellation policy is set in platform settings and is shown to you when you cancel.',
               ],
             },
             {
-              h: '4. Payment aur commission',
+              h: '4. Payment and commission',
               p: [
-                'Filhaal payment kaam mukammal hone par cash se hoti hai. Payment record app mein rakha jata hai.',
-                `Platform har mukammal booking par ${commissionBp / 100}% commission provider ki earning se leta hai. Customer par is ka alag charge nahi hai.`,
+                'For now payment is in cash when the work is complete. The payment record is kept in the app.',
+                `The platform takes ${commissionBp / 100}% commission from the provider’s earnings on every completed booking. There is no separate charge to the customer.`,
               ],
             },
             {
               h: '5. Service guarantee',
               p: [
-                `Eligible services par kaam mukammal hone ke baad ${guaranteeDays} din tak re-visit claim kiya ja sakta hai. Har service is mein shamil nahi — booking par saaf likha hota hai ke guarantee laagu hai ya nahi.`,
-                'Har claim ka jaiza ops team karti hai. Guarantee ka matlab har surat mein muft dobara kaam nahi hai.',
+                `On eligible services you can claim a re-visit for ${guaranteeDays} days after the work is completed. Not every service is covered — each booking states clearly whether the guarantee applies.`,
+                'Every claim is reviewed by the ops team. The guarantee does not mean free repeat work in every case.',
               ],
             },
             {
-              h: '6. Verification ki hadood',
+              h: '6. The limits of verification',
               p: [
-                'Hum providers ki shanakht aur onboarding maloomat ka jaiza lete hain aur profile par sirf wohi badge dikhate hain jo verify hua ho.',
-                'Hum government licensing, insurance, professional certification ya police background check ka dawa nahi karte.',
+                'We review providers’ identity and onboarding details, and show only the badges on a profile that have actually been verified.',
+                'We do not claim government licensing, insurance, professional certification or police background checks.',
               ],
             },
             {
-              h: '7. Zimmedari',
+              h: '7. Liability',
               p: [
-                'Provider ke kaam se hone wale nuqsan ki soorat mein aap dispute khol sakte hain. Hum dono taraf se maloomat le kar munasib faisla karne ki koshish karte hain, jismein refund ya dobara visit shamil ho sakta hai.',
-                'Platform ki zimmedari us booking ki raqam tak mahdood hai. Hum kisi ghair-mutalliq ya baad mein hone wale nuqsan ke zimmedar nahi.',
+                'If a provider’s work causes damage, you can open a dispute. We hear both sides and try to reach a fair decision, which may include a refund or a repeat visit.',
+                'The platform’s liability is limited to the amount of that booking. We are not liable for any indirect or consequential loss.',
               ],
             },
             {
-              h: '8. Mana kaam',
+              h: '8. Prohibited use',
               p: [
-                'Platform ka istemal ghair-qanooni kaam, dhoke, kisi ko harass karne, ya jhoote reviews ke liye mana hai.',
-                'Providers apne kaam mein safety ka khayal rakhne ke paband hain aur khatarnaak kaam ke liye munasib ehtiyat lazim hai.',
+                'Using the platform for anything illegal, for fraud, to harass anyone, or to post fake reviews is prohibited.',
+                'Providers are required to work safely and to take proper precautions on hazardous work.',
               ],
             },
             {
-              h: '9. Tabdeeli',
+              h: '9. Changes',
               p: [
-                'Hum yeh shartein waqtan fawaqtan update kar sakte hain. Ahem tabdeeli par aap ko notification bhej di jayegi.',
+                'We may update these terms from time to time. You will be notified of any significant change.',
               ],
             },
             {
-              h: '10. Rabta',
+              h: '10. Contact',
               p: [`Sawalat ke liye: ${email}`],
             },
           ].map((section) => (

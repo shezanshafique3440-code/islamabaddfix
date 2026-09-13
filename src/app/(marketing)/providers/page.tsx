@@ -11,7 +11,7 @@ import { ProviderFilters } from '@/components/marketing/ProviderFilters';
 export const metadata: Metadata = {
   title: 'Verified technicians in Islamabad',
   description:
-    'Islamabad Fix ke verified service providers — rating, mukammal jobs, tajurba aur service areas dekh kar apna technician chunein.',
+    'Verified service providers on Islamabad Fix — pick your technician by rating, jobs completed, experience and service areas.',
   alternates: { canonical: '/providers' },
 };
 
@@ -53,7 +53,7 @@ export default async function ProvidersPage({
       <PageHeader
         eyebrow="Technicians"
         title="Verified professionals"
-        description="Sirf woh providers dikhte hain jinki shanakht aur onboarding maloomat humari team ne check ki hain."
+        description="Only providers whose identity and onboarding details our team has checked are shown."
         breadcrumbs={[{ href: '/', label: 'Home' }]}
       />
 
@@ -88,7 +88,7 @@ export default async function ProvidersPage({
                       size="sm"
                       fullWidth
                     >
-                      Profile dekhein
+                      View profile
                     </ButtonLink>
                   }
                 />
@@ -128,9 +128,9 @@ export default async function ProvidersPage({
         ) : (
           <EmptyState
             className="mt-6"
-            title="Is filter par koi technician nahi mila"
-            description="Filter badal kar dobara koshish karein, ya seedha booking request bhej dein — ops team technician assign kar degi."
-            action={{ label: 'Booking request bhejein', href: '/book' }}
+            title="No technicians match this filter"
+            description="Change the filter and try again, or send a booking request directly — the ops team will assign a technician."
+            action={{ label: 'Send booking request', href: '/book' }}
           />
         )}
       </div>

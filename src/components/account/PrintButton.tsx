@@ -7,7 +7,7 @@
  * alternative — a server-rendered anchor with a data attribute and a global
  * listener — is the kind of cleverness that stops working silently.
  */
-export function PrintButton({ label = 'Print / PDF save karein' }: { label?: string }) {
+export function PrintButton({ label = 'Print / save as PDF' }: { label?: string }) {
   return (
     <button
       type="button"

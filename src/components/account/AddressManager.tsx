@@ -39,7 +39,7 @@ export function AddressManager({
 
   return (
     <div>
-      <Button onClick={() => setEditing('new')}>+ Naya address</Button>
+      <Button onClick={() => setEditing('new')}>+ New address</Button>
 
       {addresses.length > 0 ? (
         <ul className="mt-4 space-y-3">
@@ -76,12 +76,12 @@ export function AddressManager({
                       setBusy(true);
                       try {
                         await api.patch(`/api/addresses/${address.id}`, { isDefault: true });
-                        toast({ tone: 'success', title: 'Default address set ho gaya' });
+                        toast({ tone: 'success', title: 'Default address set' });
                         router.refresh();
                       } catch (error) {
                         toast({
                           tone: 'error',
-                          title: 'Set nahi hua',
+                          title: 'Not set',
                           description: error instanceof ApiError ? error.message : undefined,
                         });
                       } finally {
@@ -90,14 +90,14 @@ export function AddressManager({
                     }}
                     disabled={busy}
                   >
-                    Default banayein
+                    Make default
                   </Button>
                 ) : null}
                 <Button variant="outline" size="sm" onClick={() => setEditing(address)}>
                   Edit
                 </Button>
                 <Button variant="ghost" size="sm" onClick={() => setDeleting(address)}>
-                  Hatayein
+                  Remove
                 </Button>
               </div>
             </li>
@@ -106,8 +106,8 @@ export function AddressManager({
       ) : (
         <EmptyState
           className="mt-4"
-          title="Koi address save nahi hai"
-          description="Address save karne se agli booking bohat tez ho jati hai."
+          title="No saved addresses"
+          description="Saving an address makes your next booking much faster."
         />
       )}
 
@@ -126,9 +126,9 @@ export function AddressManager({
       <ConfirmDialog
         open={deleting !== null}
         onClose={() => setDeleting(null)}
-        title="Address hatayein?"
-        description="Purani bookings ka record barqarar rahega; yeh address sirf aapki list se hat jayega."
-        confirmLabel="Hatayein"
+        title="Remove this address?"
+        description="Past booking records stay intact; the address is only removed from your list."
+        confirmLabel="Remove"
         destructive
         loading={busy}
         onConfirm={async () => {
@@ -136,13 +136,13 @@ export function AddressManager({
           setBusy(true);
           try {
             await api.delete(`/api/addresses/${deleting.id}`);
-            toast({ tone: 'success', title: 'Address hata diya' });
+            toast({ tone: 'success', title: 'Address removed' });
             setDeleting(null);
             router.refresh();
           } catch (error) {
             toast({
               tone: 'error',
-              title: 'Hataya nahi ja saka',
+              title: 'Could not be removed',
               description: error instanceof ApiError ? error.message : undefined,
             });
           } finally {
@@ -197,7 +197,7 @@ function AddressDialog({
       else await api.post('/api/addresses', payload);
       toast({
         tone: 'success',
-        title: address ? 'Address update ho gaya' : 'Address save ho gaya',
+        title: address ? 'Address updated' : 'Address saved',
       });
       onDone();
     } catch (error) {
@@ -214,14 +214,14 @@ function AddressDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      title={address ? 'Address edit karein' : 'Naya address'}
+      title={address ? 'Edit address' : 'New address'}
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={loading}>
-            Band karein
+            Close
           </Button>
           <Button loading={loading} onClick={save} disabled={form.addressLine.trim().length < 5}>
-            Save karein
+            Save
           </Button>
         </>
       }
@@ -240,7 +240,7 @@ function AddressDialog({
           onChange={(event) => setForm((f) => ({ ...f, zoneId: event.target.value }))}
           error={errors.zoneId}
         >
-          <option value="">Area chunein</option>
+          <option value="">Choose an area</option>
           {zones.map((zone) => (
             <option key={zone.id} value={zone.id}>
               {zone.name}
@@ -248,7 +248,7 @@ function AddressDialog({
           ))}
         </Select>
         <TextInput
-          label="Poora address"
+          label="Full address"
           required
           value={form.addressLine}
           onChange={(event) => setForm((f) => ({ ...f, addressLine: event.target.value }))}
@@ -270,7 +270,7 @@ function AddressDialog({
           />
         </div>
         <TextInput
-          label="Rabta number"
+          label="Contact number"
           type="tel"
           inputMode="tel"
           value={form.contactPhone}
@@ -284,7 +284,7 @@ function AddressDialog({
             onChange={(event) => setForm((f) => ({ ...f, isDefault: event.target.checked }))}
             className="h-[1.125rem] w-[1.125rem] rounded border-ink-300 text-brand-700 focus:ring-brand-600"
           />
-          Default address banayein
+          Make this the default address
         </label>
       </div>
     </Dialog>

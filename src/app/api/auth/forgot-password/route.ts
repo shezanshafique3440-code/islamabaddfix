@@ -20,7 +20,7 @@ export const POST = route(async (request) => {
   return ok({
     // Deliberately constant: the caller learns nothing about the account.
     message:
-      'Agar yeh email register hai to reset link bhej diya gaya hai. Inbox aur spam folder dekhein.',
+      'If this email is registered, a reset link has been sent. Check your inbox and spam folder.',
     delivered: report.delivered,
     // Only ever set outside production, and only when no mail provider exists.
     devToken: report.devToken,

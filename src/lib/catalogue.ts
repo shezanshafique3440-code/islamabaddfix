@@ -187,7 +187,7 @@ export async function createCategory(input: CategoryInput, actor: Actor) {
 
 export async function updateCategory(id: string, input: Partial<CategoryInput>, actor: Actor) {
   const existing = await prisma.serviceCategory.findFirst({ where: { id, deletedAt: null } });
-  if (!existing) throw new AppError('NOT_FOUND', 'Category nahi mili.');
+  if (!existing) throw new AppError('NOT_FOUND', 'Category not found.');
 
   const category = await prisma.serviceCategory.update({
     where: { id },
@@ -244,7 +244,7 @@ export async function deleteCategory(id: string, actor: Actor) {
   if (liveBookings > 0) {
     throw new AppError(
       'CONFLICT',
-      `Is category ki ${liveBookings} live booking(s) hain. Pehle unhe mukammal ya cancel karein.`,
+      `This category has ${liveBookings} live booking(s). Complete or cancel them first.`,
     );
   }
 
@@ -285,7 +285,7 @@ export async function createService(input: ServiceInput, actor: Actor) {
     where: { id: input.categoryId, deletedAt: null },
     select: { id: true, name: true },
   });
-  if (!category) throw new AppError('NOT_FOUND', 'Category nahi mili.');
+  if (!category) throw new AppError('NOT_FOUND', 'Category not found.');
 
   const slug = await uniqueSlug(input.name, async (candidate) =>
     Boolean(await prisma.service.findUnique({ where: { slug: candidate }, select: { id: true } })),
@@ -321,13 +321,13 @@ export async function createService(input: ServiceInput, actor: Actor) {
 
 export async function updateService(id: string, input: Partial<ServiceInput>, actor: Actor) {
   const existing = await prisma.service.findFirst({ where: { id, deletedAt: null } });
-  if (!existing) throw new AppError('NOT_FOUND', 'Service nahi mili.');
+  if (!existing) throw new AppError('NOT_FOUND', 'Service not found.');
 
   if (
     input.maxPricePaisa != null &&
     input.maxPricePaisa < (input.minPricePaisa ?? existing.minPricePaisa)
   ) {
-    throw new AppError('VALIDATION_ERROR', 'Maximum price minimum se kam nahi ho sakti.');
+    throw new AppError('VALIDATION_ERROR', 'The maximum price cannot be lower than the minimum.');
   }
 
   const service = await prisma.service.update({
@@ -388,7 +388,7 @@ export async function deleteService(id: string, actor: Actor) {
   if (liveBookings > 0) {
     throw new AppError(
       'CONFLICT',
-      `Is service ki ${liveBookings} live booking(s) hain. Pehle unhe mukammal ya cancel karein.`,
+      `This service has ${liveBookings} live booking(s). Complete or cancel them first.`,
     );
   }
 

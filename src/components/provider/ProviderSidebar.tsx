@@ -5,12 +5,12 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 const LINKS = [
-  { href: '/provider', label: 'Aaj ka kaam', exact: true },
+  { href: '/provider', label: 'Today’s work', exact: true },
   { href: '/provider/jobs', label: 'Sab jobs', badge: 'offers' },
   { href: '/provider/earnings', label: 'Earnings' },
   { href: '/provider/reviews', label: 'Reviews' },
   { href: '/provider/notifications', label: 'Notifications', badge: 'unread' },
-  { href: '/provider/onboarding', label: 'Meri profile' },
+  { href: '/provider/onboarding', label: 'My profile' },
   { href: '/provider/settings', label: 'Settings' },
 ];
 
@@ -58,7 +58,7 @@ export function ProviderSidebar({
 
         {status === 'VERIFIED' ? (
           <p className="mt-4 rounded-xl bg-brand-50 px-3 py-2.5 text-xs leading-relaxed text-brand-800">
-            ✓ Aapki profile verified hai aur customers ko dikh rahi hai.
+            ✓ Your profile is verified and visible to customers.
           </p>
         ) : null}
       </nav>

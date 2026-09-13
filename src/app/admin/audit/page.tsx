@@ -42,8 +42,8 @@ export default async function AdminAuditPage({
       <header>
         <h1 className="text-display-sm text-ink-950">Audit log</h1>
         <p className="mt-1 text-sm text-ink-600">
-          Read-only. Provider approvals, refunds, role changes aur settings ki har tabdeeli yahan
-          darj hoti hai — is log ko koi delete nahi kar sakta.
+          Read-only. Provider approvals, refunds, role changes and every settings change are
+          recorded here — nobody can delete this log.
         </p>
       </header>
 
@@ -131,7 +131,7 @@ export default async function AdminAuditPage({
           ) : null}
         </>
       ) : (
-        <EmptyState className="mt-5" title="Koi audit entry nahi" />
+        <EmptyState className="mt-5" title="No audit entries" />
       )}
     </div>
   );

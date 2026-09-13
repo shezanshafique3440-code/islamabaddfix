@@ -346,54 +346,56 @@ function buildQuestions(
   confidence: number,
 ): string[] {
   if (isHazard) {
-    return ['Kya aap is waqt safe hain? Hum foran emergency technician dhoondte hain.'];
+    return ['Are you safe right now? We will find an emergency technician immediately.'];
   }
   if (!categorySlug) {
     return [
-      'Masla kis cheez mein hai — AC, bijli, plumbing, safai, carpenter, appliance ya CCTV?',
-      'Thoda tafseel se batayein ke exactly kya ho raha hai?',
+      'Where is the problem — AC, electrical, plumbing, cleaning, carpentry, appliances or CCTV?',
+      'Could you describe in a little more detail exactly what is happening?',
     ];
   }
-  const common =
-    confidence < 0.45 ? ['Kya hum ne sahi category samjhi? Neeche se confirm kar dein.'] : [];
+  const common = confidence < 0.45 ? ['Did we get the category right? Confirm below.'] : [];
 
   switch (categorySlug) {
     case 'ac-cooling':
-      return [...common, 'AC window hai ya split?', 'Masla kab se shuru hua?'];
+      return [...common, 'Is it a window AC or a split unit?', 'When did the problem start?'];
     case 'electrical':
-      return [...common, 'Masla poore ghar mein hai ya sirf ek kamre/point par?'];
+      return [...common, 'Is the problem across the whole house or just one room or point?'];
     case 'plumbing':
-      return [...common, 'Paani kis jagah se aa raha hai — bathroom, kitchen ya main line?'];
+      return [
+        ...common,
+        'Where is the water coming from — the bathroom, the kitchen or the main line?',
+      ];
     case 'cleaning':
-      return [...common, 'Kitne kamre ya kitna area clean karana hai?'];
+      return [...common, 'How many rooms, or how much area, needs cleaning?'];
     case 'carpenter':
-      return [...common, 'Kaam repair ka hai ya kuch naya banwana hai?'];
+      return [...common, 'Is this a repair, or something new to be built?'];
     case 'painting':
-      return [...common, 'Kitne kamre ya kitni deewarein paint karani hain?'];
+      return [...common, 'How many rooms or walls need painting?'];
     case 'appliances':
-      return [...common, 'Appliance ka brand aur model number mil sakta hai?'];
+      return [...common, 'Could you share the appliance brand and model number?'];
     case 'security':
-      return [...common, 'Kitne cameras hain ya kitne lagwane hain?'];
+      return [...common, 'How many cameras are there, or how many do you want installed?'];
     default:
-      return [...common, 'Masla thoda tafseel se batayein?'];
+      return [...common, 'Could you describe the problem in a little more detail?'];
   }
 }
 
 function mediaRequestFor(categorySlug: string | null): string | null {
   switch (categorySlug) {
     case 'ac-cooling':
-      return 'Indoor unit aur uske rating plate ki tasveer bhej dein — technician sahi parts saath laa sakega.';
+      return 'Send a photo of the indoor unit and its rating plate — the technician can then bring the right parts.';
     case 'plumbing':
-      return 'Jahan se paani aa raha hai us jagah ki tasveer ya chhoti video bhej dein.';
+      return 'Send a photo or a short video of where the water is coming from.';
     case 'electrical':
-      return 'Us switch/board ya point ki tasveer bhej dein (door se, chhuye baghair).';
+      return 'Send a photo of that switch, board or point (from a distance, without touching it).';
     case 'appliances':
-      return 'Appliance ke model/rating sticker ki tasveer bhej dein.';
+      return 'Please send a photo of the appliance model or rating sticker.';
     case 'security':
-      return 'Mojooda camera setup ya jagah ki tasveer helpful hogi.';
+      return 'A photo of the current camera setup or the location would help.';
     case 'carpenter':
     case 'painting':
-      return 'Kaam ki jagah ki tasveer bhej dein taake scope samajh aa jaye.';
+      return 'Send a photo of the work area so the scope is clear.';
     default:
       return null;
   }
@@ -406,7 +408,7 @@ function buildRecommendation(
 ): string {
   if (serviceName) return serviceName;
   if (categoryName) return `${categoryName} — ${isRoutine ? 'service' : 'inspection'}`;
-  return 'Service category confirm karein';
+  return 'Confirm the service category';
 }
 
 function buildReply(params: {
@@ -418,14 +420,14 @@ function buildReply(params: {
   if (params.hazardGuidance) return params.hazardGuidance;
 
   if (!params.categoryName) {
-    return 'Main aapki madad karna chahta hoon, lekin ab tak category clear nahi hui. Thoda batayein masla kis cheez mein hai — AC, bijli, plumbing, safai, carpenter, appliance ya CCTV?';
+    return 'I would like to help, but the category still is not clear. Tell me a little about where the problem is — AC, electrical, plumbing, cleaning, carpentry, appliances or CCTV?';
   }
 
   const what = params.serviceName ?? params.categoryName;
   const hedge =
     params.confidence < 0.45
-      ? `Lagta hai yeh ${what} se related hai, lekin please confirm kar dein.`
-      : `Samajh gaya — yeh ${what} ka kaam lagta hai.`;
+      ? `This looks like it relates to ${what}, but please confirm.`
+      : `Got it — this looks like ${what} work.`;
 
-  return `${hedge} Asal wajah technician muaina karke hi confirm kar sakta hai, is liye main aap ko nearby verified technicians dikhata hoon jo dekh kar quote de sakein.`;
+  return `${hedge} Only an inspection can confirm the real cause, so here are verified technicians nearby who can look at it and quote.`;
 }

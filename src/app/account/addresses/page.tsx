@@ -22,7 +22,7 @@ export default async function AddressesPage() {
     <div>
       <h1 className="text-display-sm text-ink-950">Saved addresses</h1>
       <p className="mt-1 text-sm text-ink-600">
-        Booking ke waqt yeh addresses foran chun sakte hain.
+        You can pick these addresses instantly while booking.
       </p>
       <div className="mt-6">
         <AddressManager

@@ -10,7 +10,7 @@ const NAV_LINKS = [
   { href: '/services', label: 'Services' },
   { href: '/providers', label: 'Technicians' },
   { href: '/emergency', label: 'Emergency' },
-  { href: '/how-it-works', label: 'Kaise kaam karta hai' },
+  { href: '/how-it-works', label: 'How it works' },
 ];
 
 /**
@@ -57,9 +57,9 @@ export async function SiteHeader() {
               </Link>
               <ButtonLink href={homeForRole(ctx.role)} variant="outline" size="sm">
                 {ctx.role === 'PROVIDER'
-                  ? 'Mera dashboard'
+                  ? 'My dashboard'
                   : ctx.role === 'CUSTOMER'
-                    ? 'Meri bookings'
+                    ? 'My bookings'
                     : 'Admin'}
               </ButtonLink>
             </>
@@ -69,7 +69,7 @@ export async function SiteHeader() {
                 Login
               </ButtonLink>
               <ButtonLink href="/book" size="sm">
-                Service book karein
+                Book a service
               </ButtonLink>
             </>
           )}

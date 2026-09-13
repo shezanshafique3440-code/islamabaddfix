@@ -63,9 +63,7 @@ export default async function AdminDisputeDetailPage({ params }: Params) {
 
       <header>
         <div className="flex flex-wrap items-center gap-2">
-          <h1 className="text-display-sm text-ink-950">
-            {DISPUTE_REASON_LABELS[dispute.reason]}
-          </h1>
+          <h1 className="text-display-sm text-ink-950">{DISPUTE_REASON_LABELS[dispute.reason]}</h1>
           <Badge tone={dispute.status.startsWith('RESOLVED') ? 'success' : 'danger'}>
             {DISPUTE_STATUS_LABELS[dispute.status]}
           </Badge>
@@ -86,7 +84,7 @@ export default async function AdminDisputeDetailPage({ params }: Params) {
       />
 
       <div className="grid gap-5 lg:grid-cols-2">
-        <Panel title="Customer ki shikayat">
+        <Panel title="Customer’s complaint">
           <p className="whitespace-pre-line text-sm leading-relaxed text-ink-800">
             {dispute.description}
           </p>
@@ -213,7 +211,7 @@ export default async function AdminDisputeDetailPage({ params }: Params) {
               ))}
             </ul>
           ) : (
-            <p className="text-sm text-ink-500">Koi payment record nahi.</p>
+            <p className="text-sm text-ink-500">No payment record.</p>
           )}
         </Panel>
 

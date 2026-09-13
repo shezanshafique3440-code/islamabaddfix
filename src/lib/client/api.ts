@@ -107,7 +107,7 @@ async function send<T>(
     payload = (await response.json()) as Envelope<T>;
   } catch {
     throw new ApiError(
-      'Server se jawab nahi mila. Dobara koshish karein.',
+      'No response from the server. Please try again.',
       'INTERNAL_ERROR',
       response.status,
     );
@@ -115,7 +115,7 @@ async function send<T>(
 
   if (!response.ok || payload.success !== true) {
     throw new ApiError(
-      payload.message ?? 'Kuch ghalat ho gaya.',
+      payload.message ?? 'Something went wrong.',
       payload.code ?? 'INTERNAL_ERROR',
       response.status,
       payload.fields,

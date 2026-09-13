@@ -38,7 +38,7 @@ export function UserActions({
   const [loading, setLoading] = useState(false);
 
   if (isSelf) {
-    return <span className="text-xs text-ink-400">Aap khud</span>;
+    return <span className="text-xs text-ink-400">You</span>;
   }
 
   return (
@@ -57,12 +57,12 @@ export function UserActions({
       <Dialog
         open={dialog === 'role'}
         onClose={() => setDialog(null)}
-        title={`${fullName} ka role badlein`}
-        description="Role badalne par is user ke tamam sessions khatam ho jayenge aur unhe dobara login karna hoga."
+        title={`Change ${fullName}’s role`}
+        description="Changing the role ends all of this user’s sessions and they will have to sign in again."
         footer={
           <>
             <Button variant="outline" onClick={() => setDialog(null)} disabled={loading}>
-              Band karein
+              Close
             </Button>
             <Button
               loading={loading}
@@ -74,13 +74,13 @@ export function UserActions({
                     role: newRole,
                     reason: reason.trim(),
                   });
-                  toast({ tone: 'success', title: 'Role badal gaya' });
+                  toast({ tone: 'success', title: 'Role changed' });
                   setDialog(null);
                   router.refresh();
                 } catch (error) {
                   toast({
                     tone: 'error',
-                    title: 'Role nahi badla',
+                    title: 'Role not changed',
                     description: error instanceof ApiError ? error.message : undefined,
                   });
                 } finally {
@@ -88,14 +88,14 @@ export function UserActions({
                 }
               }}
             >
-              Role badlein
+              Change role
             </Button>
           </>
         }
       >
         <div className="space-y-4">
           <Select
-            label="Naya role"
+            label="New role"
             value={newRole}
             onChange={(event) => setNewRole(event.target.value)}
           >
@@ -105,7 +105,7 @@ export function UserActions({
             <option value="SUPER_ADMIN">Super admin</option>
           </Select>
           <Textarea
-            label="Wajah (audit log mein jayegi)"
+            label="Reason (goes into the audit log)"
             required
             rows={2}
             value={reason}
@@ -117,20 +117,16 @@ export function UserActions({
       <Dialog
         open={dialog === 'active'}
         onClose={() => setDialog(null)}
-        title={
-          isActive
-            ? `${fullName} ka account disable karein?`
-            : `${fullName} ka account enable karein?`
-        }
+        title={isActive ? `Disable ${fullName}’s account?` : `Enable ${fullName}’s account?`}
         description={
           isActive
-            ? 'Disable karne par sessions khatam ho jayenge aur woh login nahi kar sakenge.'
-            : 'Enable karne par woh dobara login kar sakenge.'
+            ? 'Disabling ends their sessions and they will not be able to sign in.'
+            : 'Enabling lets them sign in again.'
         }
         footer={
           <>
             <Button variant="outline" onClick={() => setDialog(null)} disabled={loading}>
-              Band karein
+              Close
             </Button>
             <Button
               variant={isActive ? 'danger' : 'primary'}
@@ -152,7 +148,7 @@ export function UserActions({
                 } catch (error) {
                   toast({
                     tone: 'error',
-                    title: 'Nahi ho saka',
+                    title: 'Could not be done',
                     description: error instanceof ApiError ? error.message : undefined,
                   });
                 } finally {
@@ -160,13 +156,13 @@ export function UserActions({
                 }
               }}
             >
-              {isActive ? 'Disable karein' : 'Enable karein'}
+              {isActive ? 'Disable' : 'Enable'}
             </Button>
           </>
         }
       >
         <Textarea
-          label="Wajah (audit log mein jayegi)"
+          label="Reason (goes into the audit log)"
           required
           rows={2}
           value={reason}

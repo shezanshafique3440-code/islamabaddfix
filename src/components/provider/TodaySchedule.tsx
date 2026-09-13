@@ -23,7 +23,7 @@ export function TodaySchedule({ jobs }: { jobs: BookingSummary[] }) {
           >
             <div className="w-16 shrink-0 border-r border-ink-100 pr-3">
               <p className="text-sm font-bold tracking-tight text-ink-950">
-                {job.scheduledFor ? formatTime(job.scheduledFor) : 'Foran'}
+                {job.scheduledFor ? formatTime(job.scheduledFor) : 'Right now'}
               </p>
               {job.isEmergency ? (
                 <p className="mt-0.5 text-[0.625rem] font-bold uppercase text-alert-600">
@@ -46,7 +46,7 @@ export function TodaySchedule({ jobs }: { jobs: BookingSummary[] }) {
                     {formatPaisa(job.approvedTotalPaisa)}
                   </span>
                 ) : (
-                  <Badge tone="warn">Quote baqi</Badge>
+                  <Badge tone="warn">Quote pending</Badge>
                 )}
               </div>
             </div>

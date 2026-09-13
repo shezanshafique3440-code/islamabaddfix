@@ -40,7 +40,10 @@ export async function createReview(input: CreateReviewInput): Promise<Review> {
   });
   if (!booking) throw new AppError('NOT_FOUND', 'Booking not found.');
   if (booking.customerId !== input.authorId) {
-    throw new AppError('REVIEW_NOT_ALLOWED', 'Only the customer on this booking can leave a review.');
+    throw new AppError(
+      'REVIEW_NOT_ALLOWED',
+      'Only the customer on this booking can leave a review.',
+    );
   }
   if (booking.status !== 'COMPLETED') {
     throw new AppError(
@@ -84,7 +87,7 @@ export async function createReview(input: CreateReviewInput): Promise<Review> {
     await notify({
       event: NOTIFICATION_EVENTS.REVIEW_REQUESTED,
       userId: booking.provider.userId,
-      title: 'Naya review mila',
+      title: 'New review received',
       body: `${booking.reference} par customer ne ${input.rating} star diye.`,
       href: `/provider/reviews`,
       data: { bookingId: booking.id, rating: input.rating },

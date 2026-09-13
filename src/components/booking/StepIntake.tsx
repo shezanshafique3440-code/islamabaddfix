@@ -58,7 +58,7 @@ export function StepIntake({
   async function analyse() {
     const message = text.trim();
     if (message.length < 3) {
-      setError('Apna masla thoda tafseel se likhein.');
+      setError('Please describe your problem in a little more detail.');
       return;
     }
     setLoading(true);
@@ -88,7 +88,7 @@ export function StepIntake({
       setError(
         caught instanceof ApiError
           ? caught.message
-          : 'Assistant se jawab nahi mila. Aap seedha category chun sakte hain.',
+          : 'No response from the assistant. You can pick a category directly.',
       );
     } finally {
       setLoading(false);
@@ -97,20 +97,20 @@ export function StepIntake({
 
   return (
     <StepShell
-      title="Masla batayein"
-      description="Apne alfaz mein likhein — Roman Urdu ya English, jo aasan lage."
+      title="Describe the problem"
+      description="Write it in your own words — Urdu or English, whichever is easier."
     >
       <div className="space-y-4">
         <div>
           <label htmlFor="problem" className="sr-only">
-            Aapko kis cheez ki help chahiye?
+            What do you need help with?
           </label>
           <textarea
             id="problem"
             value={text}
             onChange={(event) => setText(event.target.value)}
             rows={4}
-            placeholder="Misal: AC chal raha hai lekin thandi hawa nahi aa rahi."
+            placeholder="For example: the AC runs but no cold air comes out."
             className="w-full rounded-xl border border-ink-300 bg-white px-3.5 py-2.5 text-[0.9375rem] leading-relaxed text-ink-900 placeholder:text-ink-400 hover:border-ink-400 focus:border-brand-600"
           />
           {error ? (
@@ -127,22 +127,22 @@ export function StepIntake({
             disabled={loading || text.trim().length < 3}
             className="inline-flex h-10 items-center gap-2 rounded-xl bg-ink-900 px-4 text-sm font-semibold text-white hover:bg-ink-800 disabled:opacity-50"
           >
-            {loading ? 'Dekh rahe hain...' : 'Yeh dekhein'}
+            {loading ? 'Checking...' : 'Take a look'}
           </button>
           <button
             type="button"
             onClick={onSkip}
             className="text-sm font-medium text-ink-600 hover:text-ink-900 hover:underline"
           >
-            Ya seedha category chunein →
+            Or pick a category directly →
           </button>
         </div>
 
         {/* Honest statement of which engine is answering. */}
         <p className="text-xs text-ink-500">
           {aiConfigured
-            ? 'AI assistant is deployment par configured hai.'
-            : 'Is deployment par AI model configured nahi hai — yeh keyword-based matching hai, AI nahi. Phir bhi kaam karta hai.'}
+            ? 'An AI assistant is configured on this deployment.'
+            : 'No AI model is configured on this deployment — this is keyword matching, not AI. It still works.'}
         </p>
 
         {result ? (
@@ -150,7 +150,7 @@ export function StepIntake({
             {result.safetyNotice ? (
               <div role="alert" className="rounded-xl border-2 border-alert-400 bg-alert-50 p-4">
                 <p className="flex items-center gap-2 text-sm font-bold text-alert-700">
-                  <span aria-hidden="true">⚠️</span> Pehle safety
+                  <span aria-hidden="true">⚠️</span> Safety first
                 </p>
                 <p className="mt-2 text-sm leading-relaxed text-ink-800">{result.safetyNotice}</p>
               </div>
@@ -166,7 +166,7 @@ export function StepIntake({
 
               {result.degraded ? (
                 <p className="mt-2 text-xs text-warn-700">
-                  AI se jawab nahi mila, is liye keyword matching istemal hui.
+                  No answer came back from the model, so keyword matching was used.
                 </p>
               ) : null}
 
@@ -213,21 +213,21 @@ export function StepIntake({
                   ) : null}
                   <div>
                     <dt className="text-[0.6875rem] uppercase tracking-wide text-ink-400">
-                      Tajweez
+                      Recommendation
                     </dt>
                     <dd className="text-sm text-ink-800">{result.recommendation}</dd>
                   </div>
                 </dl>
               ) : (
                 <p className="mt-3 text-sm text-ink-600">
-                  Category clear nahi hui — agle step par khud chun lein.
+                  The category was not clear — pick one yourself on the next step.
                 </p>
               )}
 
               {result.questions.length > 0 ? (
                 <div className="mt-4 border-t border-ink-200 pt-3">
                   <p className="text-xs font-semibold uppercase tracking-wide text-ink-500">
-                    Technician ko yeh jaanna madadgar hoga
+                    This would help the technician to know
                   </p>
                   <ul className="mt-2 space-y-1.5">
                     {result.questions.map((question) => (
@@ -240,7 +240,7 @@ export function StepIntake({
                     ))}
                   </ul>
                   <p className="mt-2 text-xs text-ink-500">
-                    Inke jawab agle step par tafseel mein likh dein.
+                    Answer these in detail on the next step.
                   </p>
                 </div>
               ) : null}
@@ -258,9 +258,7 @@ export function StepIntake({
             </div>
 
             {catalogue.length > 0 && !result.category ? (
-              <p className="text-sm text-ink-600">
-                Aap agle step par apni category chun sakte hain.
-              </p>
+              <p className="text-sm text-ink-600">You can choose a category on the next step.</p>
             ) : null}
           </div>
         ) : null}
@@ -272,7 +270,7 @@ export function StepIntake({
           onNext();
         }}
         nextDisabled={text.trim().length < 10}
-        nextLabel={result?.service ? 'Aage barhein' : 'Category chunein'}
+        nextLabel={result?.service ? 'Continue' : 'Choose a category'}
       />
     </StepShell>
   );

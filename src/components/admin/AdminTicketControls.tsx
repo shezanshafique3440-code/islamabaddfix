@@ -36,12 +36,12 @@ export function AdminTicketControls({
     setLoading(true);
     try {
       await api.patch(`/api/support/tickets/${ticketId}`, body);
-      toast({ tone: 'success', title: 'Update ho gaya' });
+      toast({ tone: 'success', title: 'Updated' });
       router.refresh();
     } catch (error) {
       toast({
         tone: 'error',
-        title: 'Update nahi hua',
+        title: 'Not updated',
         description: error instanceof ApiError ? error.message : undefined,
       });
     } finally {
@@ -96,7 +96,7 @@ export function AdminTicketControls({
           loading={loading}
           onClick={() => update({ assigneeId: currentUserId })}
         >
-          Mujhe assign karein
+          Assign to me
         </Button>
       ) : null}
     </section>

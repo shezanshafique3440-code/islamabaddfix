@@ -48,7 +48,7 @@ export default async function AdminGuaranteesPage({
       <header>
         <h1 className="text-display-sm text-ink-950">Guarantee claims</h1>
         <p className="mt-1 text-sm text-ink-600">
-          Har claim ka jaiza hota hai — guarantee ka matlab har soorat mein muft re-visit nahi.
+          Every claim is reviewed — the guarantee does not mean a free re-visit in every case.
         </p>
       </header>
 
@@ -71,7 +71,7 @@ export default async function AdminGuaranteesPage({
               : 'rounded-lg px-3 py-2 text-sm font-medium text-ink-600 hover:bg-ink-100'
           }
         >
-          Hal ho gaye
+          Resolved
         </Link>
       </nav>
 
@@ -98,8 +98,9 @@ export default async function AdminGuaranteesPage({
                       {claim.booking.provider ? ` · ${claim.booking.provider.businessName}` : ''}
                     </p>
                     <p className="mt-0.5 text-xs text-ink-500">
-                      Kaam {claim.booking.completedAt ? formatDate(claim.booking.completedAt) : '—'}{' '}
-                      ko mukammal · Guarantee{' '}
+                      Work completed{' '}
+                      {claim.booking.completedAt ? formatDate(claim.booking.completedAt) : '—'} ·
+                      Guarantee until{' '}
                       {claim.booking.guaranteeExpiresAt
                         ? formatDate(claim.booking.guaranteeExpiresAt)
                         : '—'}{' '}
@@ -123,10 +124,7 @@ export default async function AdminGuaranteesPage({
           ))}
         </ul>
       ) : (
-        <EmptyState
-          className="mt-5"
-          title={showClosed ? 'Koi hal shuda claim nahi' : 'Koi khula claim nahi'}
-        />
+        <EmptyState className="mt-5" title={showClosed ? 'No resolved claims' : 'No open claims'} />
       )}
     </div>
   );

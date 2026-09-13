@@ -6,7 +6,7 @@ import { getSetting } from '@/lib/settings';
 import { ProviderOnboardingForm } from '@/components/provider/ProviderOnboardingForm';
 
 export const metadata: Metadata = {
-  title: 'Meri profile',
+  title: 'My profile',
   robots: { index: false, follow: false },
 };
 
@@ -24,12 +24,12 @@ export default async function ProviderOnboardingPage() {
   return (
     <div className="max-w-3xl">
       <h1 className="text-display-sm text-ink-950">
-        {profile ? 'Meri profile' : 'Profile mukammal karein'}
+        {profile ? 'My profile' : 'Complete your profile'}
       </h1>
       <p className="mt-1 text-sm text-ink-600">
         {profile
-          ? 'Services, areas, rates aur working hours yahan se update karein.'
-          : 'Yeh maloomat customers ko dikhti hai aur matching mein istemal hoti hai.'}
+          ? 'Update your services, areas, rates and working hours here.'
+          : 'This information is shown to customers and used in matching.'}
       </p>
 
       <div className="mt-6">

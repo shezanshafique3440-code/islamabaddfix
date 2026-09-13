@@ -13,10 +13,10 @@ const STATUS_LABELS: Record<
   string,
   { label: string; tone: 'neutral' | 'info' | 'warn' | 'success' }
 > = {
-  OPEN: { label: 'Khula hai', tone: 'info' },
-  IN_PROGRESS: { label: 'Kaam ho raha hai', tone: 'warn' },
-  WAITING_ON_CUSTOMER: { label: 'Aapke jawab ka intezar', tone: 'warn' },
-  RESOLVED: { label: 'Hal ho gaya', tone: 'success' },
+  OPEN: { label: 'Open', tone: 'info' },
+  IN_PROGRESS: { label: 'Work under way', tone: 'warn' },
+  WAITING_ON_CUSTOMER: { label: 'Waiting on your reply', tone: 'warn' },
+  RESOLVED: { label: 'Resolved', tone: 'success' },
   CLOSED: { label: 'Band', tone: 'neutral' },
 };
 
@@ -37,9 +37,9 @@ export default async function SupportPage() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-display-sm text-ink-950">Support</h1>
-          <p className="mt-1 text-sm text-ink-600">Apne tickets aur unka status.</p>
+          <p className="mt-1 text-sm text-ink-600">Your tickets and their status.</p>
         </div>
-        <ButtonLink href="/account/support/new">+ Naya ticket</ButtonLink>
+        <ButtonLink href="/account/support/new">+ New ticket</ButtonLink>
       </div>
 
       {tickets.length > 0 ? (
@@ -78,9 +78,9 @@ export default async function SupportPage() {
       ) : (
         <EmptyState
           className="mt-6"
-          title="Koi ticket nahi"
-          description="Booking, quote ya payment mein masla ho to ticket khol dein — humari team dekh legi."
-          action={{ label: 'Ticket kholein', href: '/account/support/new' }}
+          title="No tickets"
+          description="If there is a problem with a booking, quote or payment, open a ticket — our team will look into it."
+          action={{ label: 'Open a ticket', href: '/account/support/new' }}
         />
       )}
     </div>

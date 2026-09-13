@@ -81,7 +81,7 @@ export async function submitQuote(params: {
   validUntil?: Date | null;
 }): Promise<Quote> {
   if (params.items.length === 0) {
-    throw new AppError('VALIDATION_ERROR', 'Quote mein kam az kam ek item hona chahiye.');
+    throw new AppError('VALIDATION_ERROR', 'A quote must have at least one item.');
   }
   if (params.items.length > MAX_ITEMS) {
     throw new AppError('VALIDATION_ERROR', `A quote cannot have more than ${MAX_ITEMS} items.`);
@@ -405,9 +405,9 @@ export async function completeBooking(params: {
     event: NOTIFICATION_EVENTS.JOB_COMPLETED,
     userId: booking.customerId,
     title: 'Job completed',
-    body: `${booking.service.name} mukammal. Total: ${formatPaisa(result.booking.finalTotalPaisa ?? 0)}.${
+    body: `${booking.service.name} complete. Total: ${formatPaisa(result.booking.finalTotalPaisa ?? 0)}.${
       guaranteeDays > 0 ? ` A ${guaranteeDays}-day service guarantee applies.` : ''
-    } Payment record karein aur review dein.`,
+    } Record the payment and leave a review.`,
     href: `/account/bookings/${booking.id}`,
     data: { bookingId: booking.id },
   });
@@ -441,13 +441,13 @@ export async function quoteHistoryFor(bookingId: string) {
 }
 
 /** Human-readable label for a quote line kind. */
-export const QUOTE_ITEM_LABELS: Record<QuoteItemKind, { en: string; ur: string }> = {
-  INSPECTION: { en: 'Inspection', ur: 'Muaina' },
-  LABOUR: { en: 'Labour', ur: 'Mazdoori' },
-  PARTS: { en: 'Parts', ur: 'Parts' },
-  EMERGENCY_FEE: { en: 'Emergency fee', ur: 'Emergency fee' },
-  TRAVEL: { en: 'Travel', ur: 'Aane jane ka kharcha' },
-  OTHER: { en: 'Other', ur: 'Deegar' },
+export const QUOTE_ITEM_LABELS: Record<QuoteItemKind, string> = {
+  INSPECTION: 'Inspection',
+  LABOUR: 'Labour',
+  PARTS: 'Parts',
+  EMERGENCY_FEE: 'Emergency fee',
+  TRAVEL: 'Travel',
+  OTHER: 'Other',
 };
 
 /** Whether the platform requires an inspection-first flow for this service. */

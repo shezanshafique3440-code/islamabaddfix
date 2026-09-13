@@ -12,8 +12,8 @@ import { BookingWizard } from '@/components/booking/BookingWizard';
 import { SkeletonCard } from '@/components/ui/Skeleton';
 
 export const metadata: Metadata = {
-  title: 'Service book karein',
-  description: 'Apna masla batayein, technician chunein aur booking confirm karein.',
+  title: 'Book a service',
+  description: 'Describe your problem, pick a technician and confirm the booking.',
   robots: { index: false, follow: true },
 };
 

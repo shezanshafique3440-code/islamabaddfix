@@ -67,9 +67,9 @@ export default async function ProviderLayout({ children }: { children: React.Rea
       </div>
       <BottomNav
         items={[
-          { href: '/provider', label: 'Aaj', icon: NavIcons.home },
+          { href: '/provider', label: 'Today', icon: NavIcons.home },
           { href: '/provider/jobs', label: 'Jobs', icon: NavIcons.jobs, match: '/provider/jobs' },
-          { href: '/provider/earnings', label: 'Kamai', icon: NavIcons.earnings },
+          { href: '/provider/earnings', label: 'Earnings', icon: NavIcons.earnings },
           { href: '/provider/notifications', label: 'Alerts', icon: NavIcons.bell },
         ]}
         badge={{ '/provider/notifications': unread, '/provider/jobs': pendingOffers }}

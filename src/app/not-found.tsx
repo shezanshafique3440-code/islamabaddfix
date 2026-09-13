@@ -13,9 +13,9 @@ export default function NotFound() {
       <main id="main" className="flex flex-1 items-center justify-center px-4 py-16">
         <div className="max-w-md text-center">
           <p className="text-eyebrow uppercase text-brand-700">404</p>
-          <h1 className="mt-2 text-display-sm text-ink-950">Yeh page nahi mila</h1>
+          <h1 className="mt-2 text-display-sm text-ink-950">Page not found</h1>
           <p className="mt-3 text-sm leading-relaxed text-ink-600">
-            Ho sakta hai link purana ho ya page hata diya gaya ho. Neeche se aage barhein.
+            The link may be old or the page may have been removed. Carry on from below.
           </p>
           <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
             <ButtonLink href="/">Home</ButtonLink>
@@ -24,9 +24,9 @@ export default function NotFound() {
             </ButtonLink>
           </div>
           <p className="mt-5 text-sm text-ink-500">
-            Madad chahiye?{' '}
+            Need help?{' '}
             <Link href="/contact" className="font-medium text-brand-700 hover:underline">
-              Support se rabta karein
+              Contact support
             </Link>
           </p>
         </div>

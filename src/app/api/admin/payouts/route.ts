@@ -60,7 +60,7 @@ export const POST = route(async (request) => {
   const input = await parseJson(request, createPayoutSchema);
 
   if (input.periodEnd < input.periodStart) {
-    throw new AppError('VALIDATION_ERROR', 'Period ka end start se pehle nahi ho sakta.');
+    throw new AppError('VALIDATION_ERROR', 'The end of the period cannot be before the start.');
   }
 
   const bookings = await prisma.booking.findMany({
@@ -81,7 +81,7 @@ export const POST = route(async (request) => {
   if (bookings.length === 0) {
     throw new AppError(
       'NOT_FOUND',
-      'Is period mein koi aisi completed booking nahi jo pehle se payout mein na ho.',
+      'There are no completed bookings in this period that are not already in a payout.',
     );
   }
 

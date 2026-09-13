@@ -8,12 +8,12 @@ import { JobOfferList } from '@/components/provider/JobOfferList';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { cn } from '@/lib/utils';
 
-export const metadata: Metadata = { title: 'Meri jobs', robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: 'My jobs', robots: { index: false, follow: false } };
 
 const TABS = [
-  { key: 'offers', label: 'Nayi requests' },
-  { key: 'active', label: 'Chal rahi hain' },
-  { key: 'completed', label: 'Mukammal' },
+  { key: 'offers', label: 'New requests' },
+  { key: 'active', label: 'In progress' },
+  { key: 'completed', label: 'Completed' },
   { key: 'all', label: 'Sab' },
 ] as const;
 
@@ -42,7 +42,7 @@ export default async function ProviderJobsPage({
 
   return (
     <div>
-      <h1 className="text-display-sm text-ink-950">Meri jobs</h1>
+      <h1 className="text-display-sm text-ink-950">My jobs</h1>
 
       <nav aria-label="Job filters" className="no-scrollbar -mx-1 mt-5 overflow-x-auto px-1">
         <div className="flex gap-1.5">
@@ -70,8 +70,8 @@ export default async function ProviderJobsPage({
             <JobOfferList offers={offers} />
           ) : (
             <EmptyState
-              title="Koi nayi request nahi"
-              description="Nayi request aane par aap ko notification milega. Jitni jaldi jawab denge, utni behtar ranking."
+              title="No new requests"
+              description="You get a notification when a new request arrives. The faster you respond, the better your ranking."
             />
           )
         ) : list && list.items.length > 0 ? (
@@ -83,8 +83,8 @@ export default async function ProviderJobsPage({
           />
         ) : (
           <EmptyState
-            title={view === 'completed' ? 'Abhi koi job mukammal nahi' : 'Koi job chal nahi rahi'}
-            description="Nayi requests 'Nayi requests' tab mein dikhengi."
+            title={view === 'completed' ? 'No completed jobs yet' : 'No jobs in progress'}
+            description="New requests appear in the ‘New requests’ tab."
           />
         )}
       </div>

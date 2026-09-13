@@ -18,12 +18,12 @@ export const metadata: Metadata = {
 type Params = { params: Promise<{ id: string }> };
 
 const ITEM_LABELS: Record<string, string> = {
-  INSPECTION: 'Muaina',
-  LABOUR: 'Mazdoori',
+  INSPECTION: 'Inspection',
+  LABOUR: 'Labour',
   PARTS: 'Parts',
   EMERGENCY_FEE: 'Emergency fee',
-  TRAVEL: 'Aane jane ka kharcha',
-  OTHER: 'Deegar',
+  TRAVEL: 'Travel',
+  OTHER: 'Other',
 };
 
 /**
@@ -109,7 +109,7 @@ export default async function ReceiptPage({ params }: Params) {
           href={`/account/bookings/${booking.id}`}
           className="text-sm font-medium text-brand-700 hover:underline"
         >
-          ← Booking par wapis
+          ← Back to booking
         </Link>
         <PrintButton />
       </div>
@@ -120,7 +120,9 @@ export default async function ReceiptPage({ params }: Params) {
             <p className="text-lg font-bold tracking-tight text-ink-950">
               Islamabad<span className="text-brand-700">Fix</span>
             </p>
-            <p className="mt-0.5 text-xs text-ink-500">Problem batao. Baqi hum sambhal lenge.</p>
+            <p className="mt-0.5 text-xs text-ink-500">
+              Tell us the problem. We will handle the rest.
+            </p>
           </div>
           <div className="text-right">
             <p className="text-xs font-semibold uppercase tracking-wide text-ink-400">Receipt</p>
@@ -144,24 +146,24 @@ export default async function ReceiptPage({ params }: Params) {
         </dl>
 
         <p className="mt-4 border-t border-ink-100 pt-4 text-sm text-ink-600">
-          <span className="font-medium text-ink-800">Masla: </span>
+          <span className="font-medium text-ink-800">Problem: </span>
           {booking.problemDescription}
         </p>
 
         {/* Every approved quote, in the order the customer approved them, so an
             additional charge is visibly separate from the original. */}
         <table className="mt-5 w-full text-sm">
-          <caption className="sr-only">Kaam ki tafseel aur qeemat</caption>
+          <caption className="sr-only">Work details and price</caption>
           <thead>
             <tr className="border-b border-ink-200 text-left">
               <th scope="col" className="pb-2 text-xs font-semibold uppercase text-ink-500">
-                Tafseel
+                Details
               </th>
               <th
                 scope="col"
                 className="pb-2 text-right text-xs font-semibold uppercase text-ink-500"
               >
-                Qeemat
+                Price
               </th>
             </tr>
           </thead>
@@ -173,7 +175,7 @@ export default async function ReceiptPage({ params }: Params) {
                 {quote.isAdditional ? (
                   <tr>
                     <td colSpan={2} className="pt-3 text-xs font-semibold uppercase text-ink-500">
-                      Extra charges — aap ki approval ke baad
+                      Extra charges — only after you approve
                     </td>
                   </tr>
                 ) : null}
@@ -241,7 +243,7 @@ export default async function ReceiptPage({ params }: Params) {
           <h2 className="text-xs font-semibold uppercase tracking-wide text-ink-500">Payment</h2>
           {booking.payments.length === 0 ? (
             <p className="mt-1.5 text-sm text-ink-600">
-              Is booking par koi payment record nahi hai.
+              There is no payment record on this booking.
             </p>
           ) : (
             <ul className="mt-1.5 space-y-1 text-sm text-ink-700">
@@ -266,22 +268,20 @@ export default async function ReceiptPage({ params }: Params) {
         {booking.guaranteeEligible && booking.guaranteeExpiresAt ? (
           <p className="mt-4 rounded-xl border border-brand-200 bg-brand-50 px-4 py-3 text-xs leading-relaxed text-brand-900 print:border-ink-300 print:bg-transparent">
             <strong className="font-semibold">
-              {booking.guaranteeDays}-din Fix Guarantee is booking par laagu hai
+              The {booking.guaranteeDays}-day Fix Guarantee applies to this booking
             </strong>{' '}
-            — {formatDateTime(booking.guaranteeExpiresAt)} tak. Wohi masla wapis aaye to re-visit
-            request kar sakte hain; har claim ka jaiza ops team karti hai.
+            — until {formatDateTime(booking.guaranteeExpiresAt)}. If the same problem returns you
+            can request a re-visit; every claim is reviewed by the ops team.
           </p>
         ) : null}
 
         <footer className="mt-5 border-t border-ink-200 pt-4 text-xs leading-relaxed text-ink-500">
           <p>
-            Islamabad Fix ek marketplace hai. Technicians khud-mukhtar (independent) service
-            providers hain, Islamabad Fix ke mulazim nahi. Sawal ho to {supportEmail} par likhein
-            aur booking reference {booking.reference} zaroor likhein.
+            Islamabad Fix is a marketplace. Technicians are independent service providers, not
+            employees of Islamabad Fix. For any question write to {supportEmail} and be sure to
+            include booking reference {booking.reference}.
           </p>
-          <p className="mt-1.5">
-            Yeh computer se bana receipt hai, is par dastakhat ki zaroorat nahi.
-          </p>
+          <p className="mt-1.5">This is a computer-generated receipt and needs no signature.</p>
         </footer>
       </article>
     </div>

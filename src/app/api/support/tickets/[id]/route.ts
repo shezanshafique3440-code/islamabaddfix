@@ -30,9 +30,9 @@ async function loadTicket(id: string, ctx: Awaited<ReturnType<typeof requireAuth
       },
     },
   });
-  if (!ticket) throw new AppError('NOT_FOUND', 'Ticket nahi mila.');
+  if (!ticket) throw new AppError('NOT_FOUND', 'Ticket not found.');
   if (ticket.requesterId !== ctx.user.id && !isStaff(ctx.role)) {
-    throw new AppError('NOT_FOUND', 'Ticket nahi mila.');
+    throw new AppError('NOT_FOUND', 'Ticket not found.');
   }
   return ticket;
 }
@@ -98,8 +98,7 @@ export const POST = route(async (request, { params }: Params) => {
 /** Staff-only: assign and change status. */
 export const PATCH = route(async (request, { params }: Params) => {
   const ctx = await requireAuth();
-  if (!isStaff(ctx.role))
-    throw new AppError('FORBIDDEN', 'Sirf support team yeh change kar sakti hai.');
+  if (!isStaff(ctx.role)) throw new AppError('FORBIDDEN', 'Only the support team can change this.');
   const { id } = await params;
   const input = await parseJson(request, updateTicketSchema);
 

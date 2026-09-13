@@ -34,7 +34,7 @@ export const POST = route(async (request) => {
 
   const userId = await consumeTwoFactorChallenge(input.challengeToken);
   if (!(await verifySecondFactor(userId, input.code))) {
-    throw new AppError('INVALID_CREDENTIALS', 'Code ghalat hai ya istemal ho chuka hai.');
+    throw new AppError('INVALID_CREDENTIALS', 'The code is wrong or has already been used.');
   }
 
   const user = await prisma.user.findFirstOrThrow({

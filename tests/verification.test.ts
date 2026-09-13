@@ -288,9 +288,7 @@ describe('phone verification', () => {
 
     // Even the correct code is now useless — a six-digit secret does not
     // survive unlimited guessing.
-    await expect(confirmPhoneVerification(user.id, report.devToken!)).rejects.toThrow(
-      /expired/i,
-    );
+    await expect(confirmPhoneVerification(user.id, report.devToken!)).rejects.toThrow(/expired/i);
   });
 
   it('refuses a code that has expired', async () => {
@@ -304,9 +302,7 @@ describe('phone verification', () => {
       },
     });
 
-    await expect(confirmPhoneVerification(user.id, report.devToken!)).rejects.toThrow(
-      /expired/i,
-    );
+    await expect(confirmPhoneVerification(user.id, report.devToken!)).rejects.toThrow(/expired/i);
   });
 
   it('will not let one account claim a number another has proven', async () => {

@@ -39,7 +39,7 @@ export function StepDone({
         </span>
 
         <h1 className="mt-4 text-display-sm text-ink-950">
-          {isEmergency ? 'Emergency request bhej di gayi' : 'Booking confirm ho gayi'}
+          {isEmergency ? 'Emergency request sent' : 'Booking confirmed'}
         </h1>
 
         <p className="mt-2 text-sm text-ink-600">
@@ -48,14 +48,14 @@ export function StepDone({
         </p>
 
         <div className="mt-6 rounded-xl bg-ink-50 p-4 text-left">
-          <p className="text-sm font-semibold text-ink-900">Ab kya hoga?</p>
+          <p className="text-sm font-semibold text-ink-900">What happens next?</p>
           <ol className="mt-2.5 space-y-2 text-sm text-ink-700">
             {booking.awaitingManualAssignment ? (
               <li className="flex gap-2.5">
                 <Step n={1} />
                 <span>
-                  Is waqt automatic match nahi mila, is liye humari ops team aap ke liye technician
-                  dhoond kar assign karegi. Aap ko notification mil jayega.
+                  No automatic match right now, so our ops team will find and assign a technician
+                  for you. You will get a notification.
                 </span>
               </li>
             ) : (
@@ -63,47 +63,47 @@ export function StepDone({
                 <Step n={1} />
                 <span>
                   {booking.providersNotified === 1
-                    ? 'Technician ko request bhej di gayi hai.'
-                    : `${booking.providersNotified} technicians ko request bhej di gayi hai.`}{' '}
-                  Qubool karne par aap ko notification milega.
+                    ? 'The request has been sent to the technician.'
+                    : `Your request went out to ${booking.providersNotified} technicians.`}{' '}
+                  You will be notified when it is accepted.
                 </span>
               </li>
             )}
             <li className="flex gap-2.5">
               <Step n={2} />
-              <span>Technician muaina karke likhit quote bhejega.</span>
+              <span>The technician inspects and sends a written quote.</span>
             </li>
             <li className="flex gap-2.5">
               <Step n={3} />
               <span>
-                Aap quote approve karein — uske baad hi kaam shuru hoga aur time confirm hoga.
+                You approve the quote — only then does work start and the time get confirmed.
               </span>
             </li>
             <li className="flex gap-2.5">
               <Step n={4} />
-              <span>Kaam mukammal hone par payment record karein aur review dein.</span>
+              <span>When the work is complete, record the payment and leave a review.</span>
             </li>
           </ol>
         </div>
 
         <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
           <ButtonLink href={`/account/bookings/${booking.id}`} size="lg">
-            Booking track karein
+            Track booking
           </ButtonLink>
           <ButtonLink href="/account" variant="outline" size="lg">
-            Meri bookings
+            My bookings
           </ButtonLink>
         </div>
 
         <p className="mt-5 text-xs text-ink-500">
-          Kuch badalna hai?{' '}
+          Need to change something? From the{' '}
           <Link
             href={`/account/bookings/${booking.id}`}
             className="font-medium text-brand-700 hover:underline"
           >
-            Booking page
+            booking page
           </Link>{' '}
-          se cancel ya support se rabta kar sakte hain.
+          you can cancel it or contact support.
         </p>
       </div>
     </div>

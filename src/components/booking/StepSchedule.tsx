@@ -56,11 +56,11 @@ export function StepSchedule({
 
   return (
     <StepShell
-      title="Kab aana hai?"
+      title="When should we come?"
       description={
         draft.isEmergency
-          ? 'Emergency booking ke liye hum foran available technicians dhoondte hain.'
-          : `Kam az kam ${config.minLeadMinutes} minute baad ka slot chunein.`
+          ? 'For an emergency booking we look for technicians who are available right now.'
+          : `Pick a slot at least ${config.minLeadMinutes} minutes from now.`
       }
     >
       <div className="space-y-5">
@@ -89,12 +89,12 @@ export function StepSchedule({
             />
             <span className="min-w-0">
               <span className="flex items-center gap-2 text-sm font-semibold text-ink-900">
-                🚨 Emergency — foran chahiye
+                🚨 Emergency — needed right now
               </span>
               <span className="mt-1 block text-xs leading-relaxed text-ink-600">
-                Sirf emergency-available technicians dikhenge. Emergency fee un ke rate ke mutabiq
-                hoti hai (default {formatPaisa(config.defaultEmergencyFeePaisa)}) aur confirm karne
-                se pehle saaf dikhayi jayegi.
+                Only technicians available for emergencies are shown. The emergency fee is set by
+                their own rate (default {formatPaisa(config.defaultEmergencyFeePaisa)}) and is shown
+                clearly before you confirm.
               </span>
             </span>
           </label>
@@ -103,10 +103,10 @@ export function StepSchedule({
         {draft.isEmergency ? (
           <div className="rounded-xl border border-alert-200 bg-alert-50 p-4">
             <p className="text-sm font-medium text-alert-700">
-              Emergency request foran bheji jayegi.
+              The emergency request goes out immediately.
             </p>
             <p className="mt-1.5 text-xs leading-relaxed text-ink-700">
-              Aag, gas leak ya kisi ke zakhmi hone ki soorat mein pehle Rescue 1122 ko call karein.
+              If there is fire, a gas leak or an injury, call Rescue 1122 first.
             </p>
           </div>
         ) : (
@@ -147,7 +147,7 @@ export function StepSchedule({
             {/* Slots */}
             <div>
               <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-500">
-                Waqt
+                Time
               </p>
               <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
                 {slots.map(({ hour, slot, disabled }) => {
@@ -175,15 +175,15 @@ export function StepSchedule({
               </div>
               {slots.every((slot) => slot.disabled) ? (
                 <p className="mt-2 text-sm text-ink-500">
-                  Aaj ke sab slots guzar gaye — agla din chunein.
+                  Every slot today has passed — pick another day.
                 </p>
               ) : null}
             </div>
 
             {service ? (
               <p className="text-xs text-ink-500">
-                Technician andazan {service.estimatedMinutes} minute ka waqt legaa. Slot ka matlab
-                aane ka waqt hai, kaam khatam hone ka nahi.
+                The technician will need about {service.estimatedMinutes} minutes. The slot is the
+                arrival time, not the time the work finishes.
               </p>
             ) : null}
           </>
@@ -191,7 +191,7 @@ export function StepSchedule({
 
         {selected && !draft.isEmergency ? (
           <Badge tone="brand">
-            Chuna gaya:{' '}
+            Selected:{' '}
             {selected.toLocaleString('en-PK', { dateStyle: 'medium', timeStyle: 'short' })}
           </Badge>
         ) : null}
@@ -201,7 +201,7 @@ export function StepSchedule({
         onBack={onBack}
         onNext={onNext}
         nextDisabled={!draft.isEmergency && draft.scheduledFor === null}
-        nextLabel="Technicians dekhein"
+        nextLabel="See technicians"
       />
     </StepShell>
   );
@@ -231,7 +231,7 @@ function buildDays(maxLeadDays: number) {
     date.setDate(date.getDate() + offset);
     return {
       date,
-      label: offset === 0 ? 'Aaj' : offset === 1 ? 'Kal' : (dayNames[date.getDay()] ?? ''),
+      label: offset === 0 ? 'Today' : offset === 1 ? 'Tomorrow' : (dayNames[date.getDay()] ?? ''),
       month: monthNames[date.getMonth()] ?? '',
     };
   });

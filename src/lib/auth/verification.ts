@@ -120,10 +120,7 @@ async function issue(params: {
     },
   });
   if (issuedThisHour >= ISSUE_LIMIT_PER_HOUR[params.purpose]) {
-    throw new AppError(
-      'RATE_LIMITED',
-      'Too many requests. Please try again shortly.',
-    );
+    throw new AppError('RATE_LIMITED', 'Too many requests. Please try again shortly.');
   }
 
   await prisma.$transaction([

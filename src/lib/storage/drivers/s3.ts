@@ -22,7 +22,7 @@ function s3(): S3Client {
   if (!integrations.storage.configured || env.STORAGE_DRIVER !== 's3') {
     throw new AppError(
       'INTEGRATION_NOT_CONFIGURED',
-      'Object storage (S3) configured nahi hai. STORAGE_* variables set karein.',
+      'Object storage (S3) is not configured. Set the STORAGE_* variables.',
     );
   }
   client ??= new S3Client({
@@ -58,7 +58,7 @@ export const s3Driver: StorageDriver = {
 
   async get(key: string) {
     const result = await s3().send(new GetObjectCommand({ Bucket: env.STORAGE_BUCKET, Key: key }));
-    if (!result.Body) throw new AppError('NOT_FOUND', 'File storage mein nahi mili.');
+    if (!result.Body) throw new AppError('NOT_FOUND', 'The file was not found in storage.');
     const bytes = await result.Body.transformToByteArray();
     return {
       body: Buffer.from(bytes),

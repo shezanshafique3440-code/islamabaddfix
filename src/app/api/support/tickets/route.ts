@@ -68,7 +68,7 @@ export const POST = route(async (request) => {
       booking !== null &&
       (booking.customerId === ctx.user.id ||
         (ctx.providerId !== undefined && booking.providerId === ctx.providerId));
-    if (!isParty) throw new AppError('NOT_FOUND', 'Booking nahi mili.');
+    if (!isParty) throw new AppError('NOT_FOUND', 'Booking not found.');
   }
 
   const ticket = await prisma.$transaction(async (tx) => {
@@ -107,7 +107,7 @@ export const POST = route(async (request) => {
 
   await notifyAdmins({
     event: NOTIFICATION_EVENTS.SUPPORT_TICKET_UPDATE,
-    title: `Naya support ticket — ${ticket.reference}`,
+    title: `New support ticket — ${ticket.reference}`,
     body: ticket.subject,
     href: `/admin/support/${ticket.id}`,
     data: { ticketId: ticket.id },

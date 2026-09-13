@@ -25,23 +25,22 @@ export default function GlobalError({
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-16">
       <div className="max-w-md text-center">
-        <h1 className="text-display-sm text-ink-950">Kuch ghalat ho gaya</h1>
+        <h1 className="text-display-sm text-ink-950">Something went wrong</h1>
         <p className="mt-3 text-sm leading-relaxed text-ink-600">
-          Hum se yeh page load nahi ho saka. Dobara koshish karein — masla rahe to support se rabta
-          karein.
+          We could not load this page. Try again — if the problem continues, contact support.
         </p>
         {error.digest ? (
           <p className="mt-3 font-mono text-xs text-ink-400">Reference: {error.digest}</p>
         ) : null}
         <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
-          <Button onClick={reset}>Dobara koshish karein</Button>
+          <Button onClick={reset}>Try again</Button>
           <ButtonLink href="/" variant="outline">
             Home
           </ButtonLink>
         </div>
         <p className="mt-5 text-sm text-ink-500">
           <Link href="/contact" className="font-medium text-brand-700 hover:underline">
-            Support se rabta karein
+            Contact support
           </Link>
         </p>
       </div>

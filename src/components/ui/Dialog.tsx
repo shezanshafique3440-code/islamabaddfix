@@ -75,7 +75,7 @@ export function Dialog({
       <div className="flex flex-col-reverse gap-2 border-t border-ink-200 bg-ink-50/60 px-5 py-3 sm:flex-row sm:justify-end">
         {footer ?? (
           <Button variant="outline" onClick={onClose}>
-            Band karein
+            Close
           </Button>
         )}
       </div>
@@ -90,8 +90,8 @@ export function ConfirmDialog({
   onConfirm,
   title,
   description,
-  confirmLabel = 'Confirm karein',
-  cancelLabel = 'Rehne dein',
+  confirmLabel = 'Confirm',
+  cancelLabel = 'Leave it',
   destructive,
   loading,
 }: {

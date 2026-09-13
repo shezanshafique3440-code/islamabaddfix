@@ -78,17 +78,17 @@ export function BookingList({
                 {/* Anything demanding the reader's attention gets its own line. */}
                 {needsAction ? (
                   <p className="mt-3 rounded-lg bg-warn-50 px-3 py-2 text-xs font-medium text-warn-700">
-                    Quote aa gaya hai — approve ya reject karein.
+                    Your quote has arrived — approve or reject it.
                   </p>
                 ) : null}
                 {booking.status === 'COMPLETED' && !booking.hasReview ? (
                   <p className="mt-3 rounded-lg bg-brand-50 px-3 py-2 text-xs font-medium text-brand-800">
-                    Review dena baqi hai — aapki rating doosron ki madad karti hai.
+                    A review is still pending — your rating helps others.
                   </p>
                 ) : null}
                 {booking.hasDispute ? (
                   <p className="mt-3 rounded-lg bg-alert-50 px-3 py-2 text-xs font-medium text-alert-700">
-                    Is booking par dispute khula hai.
+                    There is an open dispute on this booking.
                   </p>
                 ) : null}
               </Link>
