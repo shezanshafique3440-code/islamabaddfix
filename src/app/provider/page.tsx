@@ -9,6 +9,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { formatPaisa } from '@/lib/money';
 import { JobOfferList } from '@/components/provider/JobOfferList';
 import { TodaySchedule } from '@/components/provider/TodaySchedule';
+import { plural } from '@/lib/utils';
 
 export const metadata: Metadata = {
   title: 'Today’s work',
@@ -103,7 +104,7 @@ export default async function ProviderTodayPage() {
             <strong className="font-semibold text-ink-900">
               {formatPaisa(earnings.pendingPayout.earningsPaisa)}
             </strong>{' '}
-            from {earnings.pendingPayout.jobs} completed job(s) is not in a payout yet.
+            from {plural(earnings.pendingPayout.jobs, 'completed job')} is not in a payout yet.
           </p>
           <Link
             href="/provider/earnings"

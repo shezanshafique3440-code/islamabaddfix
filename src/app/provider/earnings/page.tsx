@@ -5,7 +5,7 @@ import { getProviderEarnings } from '@/lib/analytics';
 import { prisma } from '@/lib/db';
 import { getSetting } from '@/lib/settings';
 import { formatPaisa } from '@/lib/money';
-import { formatDate } from '@/lib/utils';
+import { formatDate, plural } from '@/lib/utils';
 import { Badge } from '@/components/ui/Badge';
 import { EmptyState } from '@/components/ui/EmptyState';
 
@@ -54,22 +54,22 @@ export default async function ProviderEarningsPage() {
         <Stat
           label="Today"
           value={formatPaisa(earnings.today.earningsPaisa)}
-          hint={`${earnings.today.jobs} job`}
+          hint={plural(earnings.today.jobs, 'job')}
         />
         <Stat
           label="This week"
           value={formatPaisa(earnings.week.earningsPaisa)}
-          hint={`${earnings.week.jobs} jobs`}
+          hint={plural(earnings.week.jobs, 'job')}
         />
         <Stat
           label="This month"
           value={formatPaisa(earnings.month.earningsPaisa)}
-          hint={`${earnings.month.jobs} jobs`}
+          hint={plural(earnings.month.jobs, 'job')}
         />
         <Stat
           label="Pending payout"
           value={formatPaisa(earnings.pendingPayout.earningsPaisa)}
-          hint={`${earnings.pendingPayout.jobs} jobs`}
+          hint={plural(earnings.pendingPayout.jobs, 'job')}
         />
       </dl>
 

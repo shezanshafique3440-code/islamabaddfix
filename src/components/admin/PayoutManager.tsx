@@ -236,7 +236,7 @@ function CreatePayoutDialog({
     <Dialog
       open={row !== null}
       onClose={onClose}
-      title={`${row?.businessName} ke liye payout`}
+      title={`Payout for ${row?.businessName}`}
       description="Only completed bookings that are not already in a payout will be included."
       footer={
         <>

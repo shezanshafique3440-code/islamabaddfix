@@ -50,21 +50,21 @@ export default async function AdminDashboardPage() {
               <QueueLink
                 href="/admin/providers?status=PENDING_VERIFICATION"
                 count={metrics.queues.pendingProviders}
-                label="providers verification ke liye"
+                label="providers awaiting verification"
               />
             ) : null}
             {metrics.queues.unassignedBookings > 0 ? (
               <QueueLink
                 href="/admin/bookings?status=PENDING"
                 count={metrics.queues.unassignedBookings}
-                label="bookings bina technician"
+                label="bookings with no technician"
               />
             ) : null}
             {metrics.quality.openDisputes > 0 ? (
               <QueueLink
                 href="/admin/disputes"
                 count={metrics.quality.openDisputes}
-                label="khule disputes"
+                label="open disputes"
               />
             ) : null}
             {metrics.quality.openGuaranteeClaims > 0 ? (

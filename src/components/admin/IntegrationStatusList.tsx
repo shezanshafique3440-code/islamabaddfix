@@ -147,7 +147,7 @@ function StatusRow({
         <p className="text-sm text-ink-800">{label}</p>
         {note ? <p className="text-xs text-ink-500">{note}</p> : null}
       </div>
-      <Badge tone={configured ? 'success' : 'neutral'}>
+      <Badge tone={configured ? 'success' : 'neutral'} className="whitespace-nowrap">
         {configured ? 'Configured' : 'Not configured'}
       </Badge>
     </li>

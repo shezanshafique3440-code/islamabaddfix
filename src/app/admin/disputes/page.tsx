@@ -60,7 +60,7 @@ export default async function AdminDisputesPage({
               : 'rounded-lg px-3 py-2 text-sm font-medium text-ink-600 hover:bg-ink-100'
           }
         >
-          Khule
+          Open
         </Link>
         <Link
           href="/admin/disputes?view=resolved"

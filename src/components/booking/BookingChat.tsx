@@ -96,7 +96,9 @@ export function BookingChat({
     <div className="rounded-2xl border border-ink-200 bg-surface">
       <div className="flex items-center justify-between border-b border-ink-100 px-4 py-3">
         <h3 className="text-[0.9375rem] font-semibold text-ink-900">Messages</h3>
-        <span className="text-xs text-ink-500">Only you and {other} — plus the support team.</span>
+        <span className="text-xs text-ink-500">
+          Only you and the {other} — plus the support team.
+        </span>
       </div>
 
       <div

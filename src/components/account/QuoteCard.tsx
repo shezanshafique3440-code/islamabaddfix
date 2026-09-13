@@ -88,7 +88,11 @@ export function QuoteCard({
             <tr key={item.id}>
               <td className="py-2 pr-2">
                 <span className="text-ink-800">{item.label}</span>
-                <span className="ml-1.5 text-xs text-ink-500">{ITEM_LABELS[item.kind]}</span>
+                {/* The kind is only worth showing when it says something the
+                    technician's own label does not. "Labour  Labour" does not. */}
+                {item.label.trim().toLowerCase() !== ITEM_LABELS[item.kind].toLowerCase() ? (
+                  <span className="ml-1.5 text-xs text-ink-500">{ITEM_LABELS[item.kind]}</span>
+                ) : null}
                 {item.quantity > 1 ? (
                   <span className="ml-1.5 text-xs text-ink-500">× {item.quantity}</span>
                 ) : null}

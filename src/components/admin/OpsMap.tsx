@@ -109,7 +109,7 @@ export function OpsMap({
             },
             {
               value: 'unassigned',
-              label: `Bina technician (${bookings.filter((b) => b.providerName === null).length})`,
+              label: `No technician (${bookings.filter((b) => b.providerName === null).length})`,
             },
           ] as const
         ).map((option) => (

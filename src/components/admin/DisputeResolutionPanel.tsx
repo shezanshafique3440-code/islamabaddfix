@@ -84,7 +84,7 @@ export function DisputeResolutionPanel({
           </p>
         ) : refundablePaisa > 0 ? (
           <p className="mt-2 text-sm text-ink-600">
-            Refund ke liye {formatPaisa(refundablePaisa)} available hai.
+            {formatPaisa(refundablePaisa)} is available to refund.
           </p>
         ) : (
           <p className="mt-2 text-sm text-ink-600">The full amount has already been refunded.</p>

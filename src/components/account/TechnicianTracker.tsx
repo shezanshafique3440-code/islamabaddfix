@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { api, ApiError } from '@/lib/client/api';
 import { Badge } from '@/components/ui/Badge';
 import { NotConfiguredNotice } from '@/components/ui/EmptyState';
+import { plural } from '@/lib/utils';
 
 interface Snapshot {
   state: 'not_trackable' | 'sharing_off' | 'no_fix' | 'stale' | 'live';
@@ -94,8 +95,8 @@ export function TechnicianTracker({
           </p>
           {snapshot.roughMinutesAway !== null ? (
             <p className="mt-1 text-sm text-ink-600">
-              Roughly {snapshot.roughMinutesAway} minute(s) at city speed. This is worked out from
-              distance alone — not traffic, not a route — so treat it as a rough idea.
+              Roughly {plural(snapshot.roughMinutesAway, 'minute')} at city speed. This is worked
+              out from distance alone — not traffic, not a route — so treat it as a rough idea.
             </p>
           ) : null}
         </>
@@ -108,7 +109,7 @@ export function TechnicianTracker({
           Updated{' '}
           {snapshot.ageSeconds < 60
             ? 'just now'
-            : `${Math.round(snapshot.ageSeconds / 60)} minute(s) ago`}
+            : `${plural(Math.round(snapshot.ageSeconds / 60), 'minute')} ago`}
           . Refreshes every {POLL_MS / 1000} seconds.
         </p>
       ) : null}

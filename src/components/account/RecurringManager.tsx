@@ -9,7 +9,7 @@ import { ConfirmDialog, Dialog } from '@/components/ui/Dialog';
 import { Select, TextInput, Textarea } from '@/components/ui/Field';
 import { useToast } from '@/components/ui/Toast';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { formatDateTime } from '@/lib/utils';
+import { formatDateTime, plural } from '@/lib/utils';
 
 export interface ScheduleView {
   id: string;
@@ -110,12 +110,12 @@ export function RecurringManager({
                   <p className="mt-0.5 text-xs text-ink-500">
                     {schedule.addressLabel}
                     {schedule.providerName ? ` · prefers ${schedule.providerName}` : ''} ·{' '}
-                    {schedule.bookingsCreated} booking(s) so far
+                    {plural(schedule.bookingsCreated, 'booking')} so far
                   </p>
                   {schedule.status === 'ACTIVE' ? (
                     <p className="mt-1.5 text-xs text-brand-700">
                       Next visit {formatDateTime(schedule.nextOccurrenceAt)} — the booking appears{' '}
-                      {options.leadDays} day(s) before, and a technician is matched then.
+                      {plural(options.leadDays, 'day')} before, and a technician is matched then.
                     </p>
                   ) : (
                     <p className="mt-1.5 text-xs text-ink-500">
@@ -378,9 +378,9 @@ function CreateDialog({
         />
 
         <p className="rounded-xl bg-ink-50 px-3.5 py-2.5 text-xs leading-relaxed text-ink-600">
-          Each visit is booked {options.leadDays} day(s) beforehand and matched to a technician then
-          — so the person who comes may differ between visits. You can pause or end this at any
-          time, and pausing never books the visits that went by.
+          Each visit is booked {plural(options.leadDays, 'day')} beforehand and matched to a
+          technician then — so the person who comes may differ between visits. You can pause or end
+          this at any time, and pausing never books the visits that went by.
         </p>
       </div>
     </Dialog>

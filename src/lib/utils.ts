@@ -124,3 +124,13 @@ export function distanceKm(
 export function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }
+
+/**
+ * "1 job", "2 jobs", "0 jobs".
+ *
+ * Small enough to look unnecessary, and the reason every dashboard in the wild
+ * says "1 jobs" somewhere.
+ */
+export function plural(count: number, singular: string, pluralForm?: string): string {
+  return `${count} ${count === 1 ? singular : (pluralForm ?? `${singular}s`)}`;
+}

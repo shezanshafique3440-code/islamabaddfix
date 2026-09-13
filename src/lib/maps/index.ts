@@ -1,6 +1,15 @@
 import { env, integrations } from '../env';
 import { AppError } from '../errors';
 import { distanceKm } from '../utils';
+import type { LatLng, GeocodeResult } from './shared';
+
+/*
+ * Re-exported so server code can keep importing everything from one place.
+ * Client components must import from './shared' directly — this module reads
+ * the server environment the moment it is loaded.
+ */
+export { coarsen, directionsUrl } from './shared';
+export type { LatLng, GeocodeResult } from './shared';
 
 /**
  * Maps abstraction.
@@ -16,17 +25,6 @@ import { distanceKm } from '../utils';
  *  - The client reads `mapsStatus()` and renders a manual address form instead
  *    of a dead map canvas.
  */
-
-export interface LatLng {
-  latitude: number;
-  longitude: number;
-}
-
-export interface GeocodeResult extends LatLng {
-  formattedAddress: string;
-  /** Provider-specific place identifier, when available. */
-  placeId?: string;
-}
 
 export const mapsStatus = () => ({
   configured: integrations.maps.configured,
@@ -149,25 +147,4 @@ export async function reverseGeocode(point: LatLng): Promise<GeocodeResult> {
   }
 
   throw new AppError('INTEGRATION_NOT_CONFIGURED', 'Unknown maps provider.');
-}
-
-/**
- * Coarsen a point to roughly a 1 km grid. Used wherever a location is shown to
- * someone who should see the area but not the doorstep — the ops map before a
- * job is accepted, for instance.
- */
-export function coarsen(point: LatLng, precision = 2): LatLng {
-  const factor = 10 ** precision;
-  return {
-    latitude: Math.round(point.latitude * factor) / factor,
-    longitude: Math.round(point.longitude * factor) / factor,
-  };
-}
-
-/** Deep link that works with no API key at all — opens the user's own map app. */
-export function directionsUrl(destination: LatLng, label?: string): string {
-  const query = label
-    ? `${destination.latitude},${destination.longitude}(${encodeURIComponent(label)})`
-    : `${destination.latitude},${destination.longitude}`;
-  return `https://www.google.com/maps/dir/?api=1&destination=${query}`;
 }

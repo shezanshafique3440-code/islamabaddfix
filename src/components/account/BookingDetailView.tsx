@@ -527,7 +527,7 @@ export function BookingDetailView({
 
       {/* ----------------------------------------------------------- timeline */}
       <section className="rounded-2xl border border-ink-200 bg-surface p-5">
-        <h2 className="text-[0.9375rem] font-semibold text-ink-900">Booking ki history</h2>
+        <h2 className="text-[0.9375rem] font-semibold text-ink-900">Booking history</h2>
         <ol className="mt-3 space-y-3">
           {booking.timeline.map((entry) => (
             <li key={entry.id} className="flex gap-3">

@@ -15,7 +15,7 @@ import { Select, Textarea, TextInput } from '@/components/ui/Field';
 import { QuoteCard } from '@/components/account/QuoteCard';
 import { formatPaisa, splitCommission } from '@/lib/money';
 import { formatDateTime, formatRelative } from '@/lib/utils';
-import { directionsUrl } from '@/lib/maps';
+import { directionsUrl } from '@/lib/maps/shared';
 import { BookingChat } from '@/components/booking/BookingChat';
 import { RescheduleDialog } from '@/components/booking/RescheduleDialog';
 
