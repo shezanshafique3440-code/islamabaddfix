@@ -49,6 +49,12 @@ tags:
   - name: Provider
   - name: Files
   - name: Assistant
+  - name: Memberships
+    description: Purchasable tiers. Benefits are snapshotted at purchase and applied server-side.
+  - name: Repeat visits
+    description: Standing arrangements that generate ordinary bookings. Nothing is pre-priced.
+  - name: Scheduled jobs
+    description: Driven by an external scheduler with a bearer secret. Idempotent.
 
 security:
   - sessionCookie: []
@@ -1719,6 +1725,283 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/Failure' }
 
+  /bookings/{id}/tracking:
+    parameters:
+      - { in: path, name: id, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [Bookings]
+      summary: Where the technician is
+      description: |
+        Available only while the technician is actually travelling to or working
+        on this booking, only to that booking's own customer, and only when the
+        provider has consented to share their location.
+
+        Every state is reported, including the three that are not "here they
+        are". A fix older than five minutes is returned but labelled `stale`,
+        because drawing it as current is worse than showing nothing.
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: The current snapshot.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data: { $ref: '#/components/schemas/TrackingSnapshot' }
+        '404':
+          description: '`NOT_FOUND` — including when the booking is somebody else''s.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+
+  /bookings/{id}/call:
+    parameters:
+      - { in: path, name: id, required: true, schema: { type: string, format: uuid } }
+    post:
+      tags: [Bookings]
+      summary: Open a call channel to the other party
+      description: |
+        Returns a masked channel when a telephony provider is configured, and
+        otherwise the real number already shared after acceptance — with a note
+        saying exactly that. Refused before a technician accepts and once the
+        booking closes. Every channel opened is written to the audit log.
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: The channel.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data: { $ref: '#/components/schemas/CallChannel' }
+        '409':
+          description: '`CONFLICT` — no technician assigned, or contact details are not shared at this stage.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+
+  /files/{id}/assess:
+    parameters:
+      - { in: path, name: id, required: true, schema: { type: string, format: uuid } }
+    post:
+      tags: [Files]
+      summary: What a photo shows
+      description: |
+        Reads the visible facts off a photo — a model number, a corroded
+        fitting, water where it should not be. It never states a diagnosis and
+        never gives a repair instruction; the output filter that guards the text
+        assistant runs on it, and the disclaimer is always present.
+
+        With no vision model configured, `available` is false and
+        `unavailableReason` explains why, including that the photo still reaches
+        the technician.
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: The assessment, or an honest reason there is none.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data: { $ref: '#/components/schemas/PhotoAssessmentResult' }
+
+  /memberships/plans:
+    get:
+      tags: [Memberships]
+      summary: Purchasable plans
+      description: |
+        Public. Returns only active plans, with a plain-language benefit list.
+        `meta.enabled` says whether memberships are switched on at all.
+      responses:
+        '200':
+          description: The plans on sale.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+
+  /memberships:
+    get:
+      tags: [Memberships]
+      summary: The caller's memberships
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: History, plus `meta.activeBenefits`.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+    post:
+      tags: [Memberships]
+      summary: Buy a plan
+      description: |
+        Records an intent. Nothing is charged: no online gateway is configured,
+        so there is no honest automatic path from "clicked subscribe" to "has
+        paid". An administrator confirms the payment and only then do benefits
+        apply. `meta.awaitingPaymentConfirmation` is always true.
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [planId, method]
+              properties:
+                planId: { type: string, format: uuid }
+                method: { type: string, enum: [CASH, BANK_TRANSFER, ONLINE_GATEWAY] }
+      responses:
+        '201':
+          description: Recorded, pending payment.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+        '409':
+          description: '`MEMBERSHIP_ALREADY_ACTIVE` or `MEMBERSHIP_NOT_AVAILABLE`.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+
+  /memberships/{id}/cancel:
+    parameters:
+      - { in: path, name: id, required: true, schema: { type: string, format: uuid } }
+    post:
+      tags: [Memberships]
+      summary: Cancel a membership
+      description: |
+        Benefits stop immediately. Bookings already completed keep the discount
+        they were given — the ledger is not rewritten.
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties:
+                reason: { type: string, minLength: 4, maxLength: 500 }
+      responses:
+        '200':
+          description: Cancelled.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+
+  /recurring:
+    get:
+      tags: [Repeat visits]
+      summary: The caller's standing arrangements
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: Schedules, each with a human-readable summary and its next occurrence.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+    post:
+      tags: [Repeat visits]
+      summary: Set up a repeat visit
+      description: |
+        A schedule generates an ordinary booking a few days before each
+        occurrence, which then goes through normal matching, quoting and
+        approval. Nothing about it is pre-priced.
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [serviceId, addressId, frequency, timeOfDayMinutes, problemDescription]
+              properties:
+                serviceId: { type: string, format: uuid }
+                addressId: { type: string, format: uuid }
+                providerId: { type: string, format: uuid, nullable: true }
+                frequency: { type: string, enum: [WEEKLY, FORTNIGHTLY, MONTHLY, QUARTERLY] }
+                intervalCount: { type: integer, minimum: 1, maximum: 12, default: 1 }
+                timeOfDayMinutes: { type: integer, minimum: 0, maximum: 1439 }
+                dayOfWeek: { type: integer, minimum: 0, maximum: 6, nullable: true }
+                dayOfMonth:
+                  type: integer
+                  minimum: 1
+                  maximum: 28
+                  nullable: true
+                  description: Capped at 28 so every month actually has the day.
+                problemDescription: { type: string, minLength: 10, maxLength: 3000 }
+                maxOccurrences: { type: integer, minimum: 1, maximum: 200, nullable: true }
+                endsAt: { type: string, format: date-time, nullable: true }
+      responses:
+        '201':
+          description: Created. `meta.firstBookingCreatedBefore` says when the first booking appears.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+
+  /recurring/{id}:
+    parameters:
+      - { in: path, name: id, required: true, schema: { type: string, format: uuid } }
+    patch:
+      tags: [Repeat visits]
+      summary: Pause, resume or end a repeat visit
+      description: |
+        Resuming moves to the next future occurrence; it never backfills the
+        ones that went by while it was paused.
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status: { type: string, enum: [ACTIVE, PAUSED, ENDED] }
+                reason: { type: string, maxLength: 500, nullable: true }
+      responses:
+        '200':
+          description: Updated.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+
+  /cron/recurring:
+    post:
+      tags: [Scheduled jobs]
+      summary: Generate due repeat visits and retire lapsed memberships
+      description: |
+        Authenticated with `Authorization: Bearer $CRON_SECRET`, compared in
+        constant time. With no secret configured the endpoint refuses every
+        caller: an unauthenticated job runner that can create bookings is worse
+        than none.
+
+        Idempotent. Running it twice, late, or after a missed window produces
+        the same result as running it once.
+      responses:
+        '200':
+          description: What the run did.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+        '401':
+          description: '`UNAUTHENTICATED` — wrong or missing bearer secret.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+        '503':
+          description: '`INTEGRATION_NOT_CONFIGURED` — no `CRON_SECRET` on this deployment.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Failure' }
+
 components:
   securitySchemes:
     sessionCookie:
@@ -2217,3 +2500,74 @@ components:
         disclaimer:
           type: string
           description: Attached to every conclusion. This is a suggestion, not a diagnosis.
+
+    TrackingSnapshot:
+      type: object
+      properties:
+        state:
+          type: string
+          enum: [not_trackable, sharing_off, no_fix, stale, live]
+          description: |
+            Every state is reported rather than collapsing the unhappy ones into
+            silence. `stale` still carries a position; it is labelled, not hidden.
+        point:
+          type: object
+          nullable: true
+          properties:
+            latitude: { type: number }
+            longitude: { type: number }
+        distanceKm: { type: number, nullable: true }
+        distanceIsEstimate: { type: boolean }
+        roughMinutesAway:
+          type: integer
+          nullable: true
+          description: |
+            Distance over an assumed city speed. Not an ETA — there is no routing
+            engine and no traffic feed behind it, and the UI says "roughly".
+        recordedAt: { type: string, format: date-time, nullable: true }
+        ageSeconds: { type: integer, nullable: true }
+        mapsConfigured: { type: boolean }
+        message: { type: string, description: One sentence the UI shows verbatim. }
+
+    CallChannel:
+      type: object
+      properties:
+        mode:
+          type: string
+          enum: [masked, direct]
+          description: '`direct` when no telephony provider is configured.'
+        dialNumber: { type: string }
+        counterpartName: { type: string }
+        numberIsReal:
+          type: boolean
+          description: True when the caller is seeing the other party's actual number.
+        expiresInMinutes: { type: integer, nullable: true }
+        note: { type: string, description: Says plainly which mode is in force and why. }
+
+    PhotoAssessmentResult:
+      type: object
+      properties:
+        available: { type: boolean }
+        assessment:
+          type: object
+          nullable: true
+          properties:
+            observations:
+              type: array
+              items: { type: string }
+              description: What is visible. No inference dressed up as observation.
+            identifiers:
+              type: array
+              items: { type: string }
+              description: Model, rating-plate or error text legible in the image.
+            technicianNotes:
+              type: array
+              items: { type: string }
+              description: What the technician should bring or expect. Never an instruction to the customer.
+            hazard: { type: string, nullable: true }
+            confidence: { type: number, minimum: 0, maximum: 1 }
+            summary: { type: string }
+        disclaimer:
+          type: string
+          description: Always present. A photo makes a model more confident and no more correct.
+        unavailableReason: { type: string, nullable: true }

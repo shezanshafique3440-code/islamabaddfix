@@ -74,6 +74,9 @@ header.
 | `POST /ai/intake`                                  | 30 per hour                              |
 | `POST /bookings/{id}/review`                       | 20 per hour                              |
 | `POST /support/tickets`                            | 10 per hour                              |
+| `POST /memberships`                                | 6 per day                                |
+| `POST /recurring`                                  | 12 per hour (shares the booking limit)   |
+| `POST /files/{id}/assess`                          | 30 per hour (shares the AI limit)        |
 | webhooks                                           | 300 per minute                           |
 
 ### Error codes
@@ -200,14 +203,94 @@ shown a fake confirmation.
 
 ### Other
 
-| Method               | Path                    | Notes                                                                                                                          |
-| -------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `POST`               | `/ai/intake`            | `{ message, history? }`. Returns the assessment plus `source` (`llm` \| `rules`), `degraded`, `safetyNotice` and `disclaimer`. |
-| `POST`               | `/providers/match`      | Ranked providers for a service, zone and slot, each with a score `breakdown`.                                                  |
-| `GET`                | `/notifications`        | The caller's notifications.                                                                                                    |
-| `POST`               | `/notifications/read`   | `{ ids?: [] }` — omit to mark all read.                                                                                        |
-| `GET`/`POST`         | `/support/tickets`      | List or open a ticket.                                                                                                         |
-| `GET`/`POST`/`PATCH` | `/support/tickets/{id}` | Read, reply, close.                                                                                                            |
+| Method               | Path                      | Notes                                                                                                                          |
+| -------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `POST`               | `/ai/intake`              | `{ message, history? }`. Returns the assessment plus `source` (`llm` \| `rules`), `degraded`, `safetyNotice` and `disclaimer`. |
+| `POST`               | `/providers/match`        | Ranked providers for a service, zone and slot, each with a score `breakdown`.                                                  |
+| `GET`                | `/notifications`          | The caller's notifications.                                                                                                    |
+| `POST`               | `/notifications/read`     | `{ ids?: [] }` — omit to mark all read.                                                                                        |
+| `GET`/`POST`         | `/support/tickets`        | List or open a ticket.                                                                                                         |
+| `GET`/`POST`/`PATCH` | `/support/tickets/{id}`   | Read, reply, close.                                                                                                            |
+| `GET`                | `/bookings/{id}/tracking` | Where the technician is. See **Tracking** below.                                                                               |
+| `POST`               | `/bookings/{id}/call`     | Opens a call channel to the other party. See **Calling** below.                                                                |
+| `POST`               | `/files/{id}/assess`      | What a photo shows. See **Photo assessment** below.                                                                            |
+
+---
+
+### Tracking
+
+`GET /bookings/{id}/tracking` returns one of five states, and the UI shows all
+five rather than going quiet on the unhappy ones:
+
+| `state`         | Meaning                                                                  |
+| --------------- | ------------------------------------------------------------------------ |
+| `not_trackable` | The technician has not set off, or the job is finished.                  |
+| `sharing_off`   | The technician has location sharing turned off.                          |
+| `no_fix`        | Sharing is on, but their phone has not reported a position.              |
+| `stale`         | The last fix is older than five minutes. Position is returned, labelled. |
+| `live`          | A fix from the last five minutes.                                        |
+
+`roughMinutesAway` is distance divided by an assumed city speed. It is not an
+ETA — there is no routing engine behind it — and the UI says "roughly".
+
+Tracking is available only while the booking is `ON_THE_WAY`, `ARRIVED` or
+`IN_PROGRESS`, only to that booking's own customer, and only when the provider
+has consented to sharing.
+
+### Calling
+
+`POST /bookings/{id}/call` returns `{ mode, dialNumber, counterpartName,
+numberIsReal, expiresInMinutes, note }`.
+
+`mode` is `masked` when a telephony provider is configured, and `direct`
+otherwise — in which case `dialNumber` is the real number already shared after
+acceptance, and `note` says so. Refused before a technician accepts and after
+the booking closes. Every channel opened is written to the audit log.
+
+### Photo assessment
+
+`POST /files/{id}/assess` returns `{ available, assessment, disclaimer,
+unavailableReason }`. The assessment lists what is _visible_ — observations,
+readable identifiers, notes for the technician, and any hazard. It never states
+a diagnosis and never gives a repair instruction; the same output filter that
+guards the text assistant runs on it, and `disclaimer` is always present.
+
+With no vision model configured, `available` is `false` and
+`unavailableReason` explains why — including that the photo still reaches the
+technician.
+
+---
+
+### Memberships
+
+| Method | Path                       | Notes                                                                                                           |
+| ------ | -------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `GET`  | `/memberships/plans`       | Public. Active plans with a plain-language benefit list. `meta.enabled` says whether memberships are on at all. |
+| `GET`  | `/memberships`             | The caller's memberships, plus `meta.activeBenefits`.                                                           |
+| `POST` | `/memberships`             | `{ planId, method }`. Records an intent; `meta.awaitingPaymentConfirmation` is always `true`.                   |
+| `POST` | `/memberships/{id}/cancel` | `{ reason }`. Benefits stop immediately; completed bookings keep what they were given.                          |
+
+A membership is `PENDING_PAYMENT` until an admin confirms the money arrived. No
+online gateway is configured, so there is no honest automatic path from
+"clicked subscribe" to "has paid", and the API says so rather than implying one.
+
+Benefits — discount, emergency-fee waiver, guarantee bonus days, priority
+fan-out — are snapshotted onto the membership at purchase and applied
+server-side in the transaction that freezes the booking total. A client cannot
+send a discount, exactly as it cannot send a commission.
+
+### Repeat visits
+
+| Method  | Path              | Notes                                                                                                      |
+| ------- | ----------------- | ---------------------------------------------------------------------------------------------------------- |
+| `GET`   | `/recurring`      | The caller's standing arrangements.                                                                        |
+| `POST`  | `/recurring`      | `{ serviceId, addressId, frequency, timeOfDayMinutes, dayOfWeek \| dayOfMonth, problemDescription, ... }`. |
+| `PATCH` | `/recurring/{id}` | `{ status: ACTIVE \| PAUSED \| ENDED, reason? }`.                                                          |
+
+A schedule generates an ordinary booking a few days before each occurrence,
+which then goes through normal matching, quoting and approval. Nothing about a
+repeat visit is pre-priced. Resuming a paused schedule moves to the next future
+occurrence; it never backfills the ones that went by.
 
 ---
 
@@ -281,6 +364,22 @@ All admin endpoints require a staff role and a specific permission;
 | Audit                 | `GET /admin/audit`                                                                                                                                                                                                                                                |
 
 Catalogue and user deletions are soft; history stays readable.
+
+---
+
+## Scheduled jobs
+
+| Method | Path              | Notes                                                                   |
+| ------ | ----------------- | ----------------------------------------------------------------------- |
+| `POST` | `/cron/recurring` | Generates due repeat visits and retires lapsed memberships. Idempotent. |
+
+Authenticated with `Authorization: Bearer $CRON_SECRET`, compared in constant
+time. With no `CRON_SECRET` set the endpoint refuses every caller: an
+unauthenticated job runner that can create bookings is worse than none.
+
+Point any scheduler at it — a platform cron, a systemd timer, a CI job. Running
+it twice, late, or after a missed window produces the same result as running it
+once.
 
 ---
 

@@ -46,6 +46,14 @@ correct at build time, not just at runtime, and they must never hold a secret.
 `NEXT_PUBLIC_MAPS_API_KEY` is public by definition — restrict it by HTTP
 referrer at the provider.
 
+**`CRON_SECRET` is required for anything to happen on a schedule.** Repeat
+visits only generate bookings, and lapsed memberships only expire, when
+something calls `POST /api/cron/recurring` with `Authorization: Bearer
+$CRON_SECRET`. Without the secret set the endpoint refuses every caller —
+deliberately, because an unauthenticated job runner that can create bookings is
+worse than no job runner. Generate it the same way as `AUTH_SECRET` and see
+§4 for wiring a scheduler to it.
+
 **Secrets belong in your platform's secret store**, not in a `.env` file on the
 server. `.env` is gitignored and should stay that way; the repository contains
 only `.env.example`.
@@ -106,9 +114,14 @@ ALLOW_DEMO_SEED=false npm run db:seed
 ```
 
 With `ALLOW_DEMO_SEED=false` the seed writes only the reference catalogue
-(8 categories, 42 services, 25 zones with centroids) and the administrator
-account from `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD`. Set those to real
-values _before_ seeding, and change the password on first login.
+(8 categories, 42 services, 25 zones with centroids), two membership plans left
+**inactive**, and the administrator account from `SEED_ADMIN_EMAIL` /
+`SEED_ADMIN_PASSWORD`. Set those to real values _before_ seeding, and change the
+password on first login.
+
+The membership plans are deliberately inactive and `memberships.enabled` is
+off: a plan is a commercial promise, so it goes on sale only when somebody
+decides it should, from Admin → Memberships.
 
 The seed is idempotent and safe to re-run; it never resets the admin password on
 a re-run.
@@ -142,6 +155,29 @@ That registers a customer and a provider, onboards and approves the provider,
 books a job, quotes it, works it to completion, pays, reviews and claims the
 guarantee — over HTTP, through the real routes, checking the database row behind
 every response. It writes data, so never point it at production.
+
+### Wiring the scheduler
+
+Two things need a periodic nudge: repeat visits must turn into bookings a few
+days before each occurrence, and lapsed memberships must be retired. One
+endpoint does both, and it is idempotent, so a scheduler that fires twice, late
+or after a missed window produces the same result as one that fires once.
+
+Hourly is plenty; the lead time is measured in days.
+
+```bash
+# crontab, systemd timer, platform scheduler — anything that can make a request
+0 * * * * curl -fsS -X POST https://islamabadfix.pk/api/cron/recurring \
+  -H "Authorization: Bearer $CRON_SECRET" >/dev/null
+```
+
+Check it is actually running: the admin dashboard's integration board shows
+**Scheduled jobs** as configured or not, and every run writes a
+`recurring.run` entry to the audit log with what it created, ended and skipped.
+A repeat visit that could not be booked — a deleted address, a retired service —
+pauses itself and notifies the customer rather than failing the whole run, so
+watch for `recurring.paused` notifications as a signal that a schedule needs
+attention.
 
 ---
 

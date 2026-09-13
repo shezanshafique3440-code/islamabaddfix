@@ -15,29 +15,36 @@ plainly instead of pretending to work.
 
 ## What is actually built
 
-| Area                                                               | State                                                                   |
-| ------------------------------------------------------------------ | ----------------------------------------------------------------------- |
-| Customer booking (7-step wizard, intake → confirm)                 | Working end to end                                                      |
-| Password reset, email confirmation, phone OTP                      | Working                                                                 |
-| Customer ↔ technician messaging on a booking                       | Working                                                                 |
-| Rescheduling a visit                                               | Working                                                                 |
-| Printable receipts                                                 | Working                                                                 |
-| Two-factor authentication for staff                                | Working                                                                 |
-| Notification preferences, data export, account closure             | Working                                                                 |
-| Provider onboarding, admin verification, suspension                | Working                                                                 |
-| Matching engine (hard eligibility filters + tunable scoring)       | Working                                                                 |
-| Quotes, additional charges, customer approval                      | Working                                                                 |
-| Booking lifecycle state machine + full status history              | Working                                                                 |
-| Commission split, provider earnings, payouts                       | Working, server-side only                                               |
-| Cash payments                                                      | Working                                                                 |
-| Online payment gateway                                             | Interface built, needs credentials                                      |
-| Disputes, Fix Guarantee claims                                     | Working                                                                 |
-| Reviews and ratings                                                | Working                                                                 |
-| Admin dashboard: ops, catalogue, zones, settings, analytics, audit | Working                                                                 |
-| AI intake assistant                                                | Working; falls back to a rule-based classifier, and says which answered |
-| Maps / geocoding                                                   | Interface built, needs credentials; zone centroids used meanwhile       |
-| Email / SMS / WhatsApp / voice agent                               | Interfaces built, need credentials                                      |
-| Object storage                                                     | Local disk by default; S3/MinIO driver included                         |
+| Area                                                               | State                                                                              |
+| ------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| Customer booking (7-step wizard, intake → confirm)                 | Working end to end                                                                 |
+| Password reset, email confirmation, phone OTP                      | Working                                                                            |
+| Customer ↔ technician messaging on a booking                       | Working                                                                            |
+| Rescheduling a visit                                               | Working                                                                            |
+| Printable receipts                                                 | Working                                                                            |
+| Two-factor authentication for staff                                | Working                                                                            |
+| Notification preferences, data export, account closure             | Working                                                                            |
+| Provider onboarding, admin verification, suspension                | Working                                                                            |
+| Matching engine (hard eligibility filters + tunable scoring)       | Working                                                                            |
+| Quotes, additional charges, customer approval                      | Working                                                                            |
+| Booking lifecycle state machine + full status history              | Working                                                                            |
+| Commission split, provider earnings, payouts                       | Working, server-side only                                                          |
+| Cash payments                                                      | Working                                                                            |
+| Online payment gateway                                             | Interface built, needs credentials                                                 |
+| Disputes, Fix Guarantee claims                                     | Working                                                                            |
+| Reviews and ratings                                                | Working                                                                            |
+| Membership tiers (discount, guarantee bonus, priority, fee waiver) | Working; activation needs an admin to confirm the payment                          |
+| Repeat visits (weekly / fortnightly / monthly / quarterly)         | Working; driven by `POST /api/cron/recurring`                                      |
+| Live technician tracking                                           | Working where the provider has consented to share location                         |
+| Customer ↔ technician calling                                      | Working; masked calling needs a telephony provider, direct otherwise               |
+| Photo assessment                                                   | Interface built, needs a vision model; the photo reaches the technician regardless |
+| Light / dark / system theme                                        | Working; both themes pass WCAG AA on every rendered text node                      |
+| Admin dashboard: ops, catalogue, zones, settings, analytics, audit | Working                                                                            |
+| AI intake assistant                                                | Working; falls back to a rule-based classifier, and says which answered            |
+| Maps / geocoding                                                   | Interface built, needs credentials; zone centroids used meanwhile                  |
+| Email / SMS / WhatsApp / voice agent                               | Interfaces built, need credentials                                                 |
+| Object storage                                                     | Local disk by default; S3/MinIO driver included                                    |
+| Scheduled jobs                                                     | Interface built, needs `CRON_SECRET`; refuses every caller without it              |
 
 An unconfigured integration is a first-class state, not an error. `/api/health`
 reports exactly which ones are live.
@@ -169,6 +176,27 @@ These are deliberate, and they are enforced in code, not just in copy:
   because a customer must be able to find out that a stranger is on the way to
   their house, and security messages about their own account. Changing
   the platform setting later never reaches back into a job already done.
+- **A membership is not live until the money is.** Buying one records an
+  intent; an administrator confirms the payment and only then do benefits
+  apply. Nothing pretends to have charged a card, because no gateway is
+  configured to charge one.
+- **Editing a plan never changes what a member already bought.** Every benefit
+  is snapshotted onto the membership at purchase. Retiring a tier removes it
+  from sale and takes nothing away from the people on it.
+- **Guarantee bonus days extend a guarantee; they never create one.** A plan
+  cannot sell cover on a service the guarantee excludes.
+- **Priority means a wider first wave, not a place in a queue.** Nothing queues
+  in this system, so a member's request simply reaches more technicians at
+  once. The plans page says that in those words.
+- **A repeat visit is not a subscription.** Each occurrence becomes an ordinary
+  booking with its own written quote, which the customer approves as usual.
+- **Tracking shows what we actually know.** A position more than five minutes
+  old is labelled stale rather than drawn as current, the minutes-away figure
+  is distance over an assumed speed rather than a routed ETA, and a technician
+  who has not consented to share location is reported as exactly that.
+- **A call is only "private" when it is.** Without a telephony provider the app
+  hands over the real number — the one already shared after acceptance — and
+  says so, instead of showing a masking badge over an ordinary `tel:` link.
 
 ---
 

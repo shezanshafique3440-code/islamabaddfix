@@ -123,7 +123,7 @@ existence of somebody's CNIC scan is itself private. Denials are audit-logged.
 
 ## 3. Database schema
 
-34 models. UUID primary keys, `deletedAt` soft deletion where history matters,
+39 models. UUID primary keys, `deletedAt` soft deletion where history matters,
 money as integer paisa, and every timestamp in UTC.
 
 ### Identity and access
@@ -162,6 +162,16 @@ money as integer paisa, and every timestamp in UTC.
 | `Review`                     | One per booking, from the customer, after completion.                                                                                                                |
 | `Dispute` / `GuaranteeClaim` | Escalations. Customer-opened, staff-resolved, audit-logged.                                                                                                          |
 
+### Commerce on top of the job
+
+| Model               | Purpose                                                                                                                                                              |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MembershipPlan`    | A purchasable tier. Entirely admin-configurable: what a tier grants is data, not code.                                                                               |
+| `Membership`        | One purchase by one customer, with every benefit **snapshotted at purchase**. Editing a plan changes what the next buyer gets, never what a member already paid for. |
+| `MembershipPayment` | Separate from `Payment`, which is per booking — making `bookingId` nullable there would put a null check in every payment query in the product.                      |
+| `MembershipBenefit` | Ledger of what a membership actually paid out on a given booking. Written in the transaction that freezes the total, so a receipt line is always traceable.          |
+| `RecurringSchedule` | A standing arrangement. Generates ordinary bookings; holds no price of its own.                                                                                      |
+
 ### Supporting
 
 `Conversation` / `ConversationParticipant` / `Message` (threads on bookings,
@@ -181,6 +191,7 @@ cannot. From `prisma/migrations/*_constraints/migration.sql`:
 - a refund never exceeds the payment it refunds
 - one default address per user (partial unique index)
 - at most one approved initial quote per booking (partial unique index)
+- at most one benefit of each kind per booking (unique on `bookingId, kind`)
 - case-insensitive unique email
 
 ---
@@ -365,31 +376,48 @@ refrigeration or structural work.
 - **Mobile first.** Most of this market is on a mid-range Android phone on
   mobile data; layouts are built at 360px and up, with a bottom navigation bar
   on small screens.
-- **Roman Urdu throughout**, because that is what people in Islamabad actually
-  read and type.
+- **One language, written properly.** The interface is English. It used to be
+  Roman Urdu — Urdu words in the Latin alphabet — which is a dialect of neither:
+  it excludes readers who know Urdu script, reads as an error to English
+  readers, and no screen reader, spellchecker or search engine handles it.
+  Roman Urdu survives in exactly one place, the intent classifier and the
+  hazard patterns, because people still _type_ "AC se thandi hawa nahi aa rahi"
+  and that has to keep working.
+- **Light, dark and system themes.** Every palette resolves through a CSS
+  variable, so the dark theme restates tokens rather than editing components.
+  The dark ramp is hand-tuned rather than inverted — a tint that washes on
+  white glows on black. The stored choice is applied by a blocking inline
+  script before first paint, so navigation never flashes white. Both themes are
+  audited by walking the rendered pages and computing WCAG contrast for every
+  painting text node against its true composited background; both pass AA
+  everywhere.
 
 ---
 
 ## 10. Testing
 
-| Suite                              | What it covers                                                                                       |
-| ---------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `tests/money.test.ts`              | Paisa arithmetic, the commission split, rounding direction                                           |
-| `tests/state-machine.test.ts`      | The transition table, per actor                                                                      |
-| `tests/auth.test.ts`               | Registration, login, lockout, token rotation, family revocation, password change                     |
-| `tests/booking-flow.test.ts`       | Creation, offers, acceptance, quotes, additional charges, cancellation, reviews                      |
-| `tests/provider-approval.test.ts`  | Onboarding, admin approval, badge honesty, suspension, public projection                             |
-| `tests/matching.test.ts`           | Hard filters, scoring, offers, response statistics                                                   |
-| `tests/uploads.test.ts`            | MIME/extension/magic-byte validation, read authorization                                             |
-| `tests/disputes.test.ts`           | Disputes, refunds, guarantee eligibility and decisions                                               |
-| `tests/ai-safety.test.ts`          | Hazard detection, the output filter, the intake pipeline                                             |
-| `tests/security.test.ts`           | Booking visibility, server-side money, credentials, permissions, rate limits                         |
-| `tests/acceptance.test.ts`         | The full AC-repair scenario, seventeen steps, asserting database state at each                       |
-| `tests/verification.test.ts`       | Password reset, email confirmation, phone OTP — and that none of them leak whether an account exists |
-| `tests/two-factor.test.ts`         | TOTP against the RFC vectors, enrolment, replay refusal, recovery codes                              |
-| `tests/messaging.test.ts`          | Who can read a booking thread, who cannot, and when a visit may be moved                             |
-| `tests/account.test.ts`            | Notification preferences, data export, account closure                                               |
-| `tests/ui/booking-wizard.test.tsx` | Intake honesty, confirm-step promises, quote rendering                                               |
+| Suite                              | What it covers                                                                                              |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `tests/money.test.ts`              | Paisa arithmetic, the commission split, rounding direction                                                  |
+| `tests/state-machine.test.ts`      | The transition table, per actor                                                                             |
+| `tests/auth.test.ts`               | Registration, login, lockout, token rotation, family revocation, password change                            |
+| `tests/booking-flow.test.ts`       | Creation, offers, acceptance, quotes, additional charges, cancellation, reviews                             |
+| `tests/provider-approval.test.ts`  | Onboarding, admin approval, badge honesty, suspension, public projection                                    |
+| `tests/matching.test.ts`           | Hard filters, scoring, offers, response statistics                                                          |
+| `tests/uploads.test.ts`            | MIME/extension/magic-byte validation, read authorization                                                    |
+| `tests/disputes.test.ts`           | Disputes, refunds, guarantee eligibility and decisions                                                      |
+| `tests/ai-safety.test.ts`          | Hazard detection, the output filter, the intake pipeline                                                    |
+| `tests/security.test.ts`           | Booking visibility, server-side money, credentials, permissions, rate limits                                |
+| `tests/acceptance.test.ts`         | The full AC-repair scenario, seventeen steps, asserting database state at each                              |
+| `tests/verification.test.ts`       | Password reset, email confirmation, phone OTP — and that none of them leak whether an account exists        |
+| `tests/two-factor.test.ts`         | TOTP against the RFC vectors, enrolment, replay refusal, recovery codes                                     |
+| `tests/messaging.test.ts`          | Who can read a booking thread, who cannot, and when a visit may be moved                                    |
+| `tests/account.test.ts`            | Notification preferences, data export, account closure                                                      |
+| `tests/memberships.test.ts`        | Benefit arithmetic and caps, snapshot-at-purchase, grace period, what a member is actually billed           |
+| `tests/recurring.test.ts`          | Recurrence arithmetic, idempotent generation, pause without backfill, one broken schedule not killing a run |
+| `tests/tracking.test.ts`           | Every tracking state, the freshness boundary, and who may watch whom; call-channel authorisation            |
+| `tests/vision.test.ts`             | Photo ownership, unsupported types, and the honest unavailable state                                        |
+| `tests/ui/booking-wizard.test.tsx` | Intake honesty, confirm-step promises, quote rendering                                                      |
 
 Server tests run against a real PostgreSQL database — the behaviour under test
 lives partly in Postgres, so mocking it out would test nothing. The suite
