@@ -114,7 +114,7 @@ export function StepDetails({
             onChange={(event) => patch({ problem: event.target.value })}
             rows={4}
             placeholder="How long has this been happening? What sound does it make? Has it been repaired before?"
-            className="w-full rounded-xl border border-ink-300 bg-white px-3.5 py-2.5 text-[0.9375rem] leading-relaxed text-ink-900 placeholder:text-ink-400 hover:border-ink-400 focus:border-brand-600"
+            className="w-full rounded-xl border border-ink-300 bg-surface px-3.5 py-2.5 text-[0.9375rem] leading-relaxed text-ink-900 placeholder:text-ink-500 hover:border-ink-400 focus:border-brand-600"
           />
           <p className="mt-1 text-xs text-ink-500">
             {draft.problem.trim().length < 10
@@ -125,20 +125,20 @@ export function StepDetails({
 
         <div>
           <label htmlFor="notes" className="mb-1.5 block text-sm font-medium text-ink-800">
-            Any instructions for the technician? <span className="text-ink-400">(optional)</span>
+            Any instructions for the technician? <span className="text-ink-500">(optional)</span>
           </label>
           <input
             id="notes"
             value={draft.customerNotes}
             onChange={(event) => patch({ customerNotes: event.target.value })}
             placeholder="For example: the doorbell at the gate is broken, please call."
-            className="h-11 w-full rounded-xl border border-ink-300 bg-white px-3.5 text-[0.9375rem] text-ink-900 placeholder:text-ink-400 hover:border-ink-400 focus:border-brand-600"
+            className="h-11 w-full rounded-xl border border-ink-300 bg-surface px-3.5 text-[0.9375rem] text-ink-900 placeholder:text-ink-500 hover:border-ink-400 focus:border-brand-600"
           />
         </div>
 
         <div>
           <p className="mb-1.5 text-sm font-medium text-ink-800">
-            A photo or short video <span className="text-ink-400">(optional)</span>
+            A photo or short video <span className="text-ink-500">(optional)</span>
           </p>
 
           {isSignedIn ? (
@@ -150,7 +150,7 @@ export function StepDetails({
                 multiple
                 onChange={(event) => handleFiles(event.target.files)}
                 disabled={uploading || media.length >= MAX_FILES}
-                className="block w-full text-sm text-ink-600 file:mr-3 file:h-10 file:cursor-pointer file:rounded-xl file:border-0 file:bg-ink-900 file:px-4 file:text-sm file:font-semibold file:text-white hover:file:bg-ink-800 disabled:opacity-50"
+                className="block w-full text-sm text-ink-600 file:mr-3 file:h-10 file:cursor-pointer file:rounded-xl file:border-0 file:bg-contrast file:px-4 file:text-sm file:font-semibold file:text-contrast-fg hover:file:bg-contrast-hover disabled:opacity-50"
               />
               <p className="mt-1.5 text-xs text-ink-500">
                 Photos up to 8 MB, videos up to 40 MB. Up to {MAX_FILES} files. Only you, the
@@ -204,7 +204,7 @@ export function StepDetails({
                   <button
                     type="button"
                     onClick={() => remove(file.id)}
-                    className="absolute -right-1.5 -top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-ink-900 text-white shadow-sm hover:bg-alert-600"
+                    className="absolute -right-1.5 -top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-contrast text-contrast-fg shadow-sm hover:bg-alert-600"
                     aria-label={`Remove ${file.originalName}`}
                   >
                     <svg

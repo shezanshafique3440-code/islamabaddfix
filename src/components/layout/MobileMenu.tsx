@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button, ButtonLink } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
+import { ThemeToggle } from './ThemeToggle';
 
 /**
  * Mobile navigation drawer.
@@ -67,12 +68,12 @@ export function MobileMenu({
         <div className="fixed inset-0 z-50 animate-fade-in">
           <button
             type="button"
-            className="absolute inset-0 bg-ink-950/40 backdrop-blur-sm"
+            className="absolute inset-0 bg-scrim/40 backdrop-blur-sm"
             onClick={() => setOpen(false)}
             aria-label="Close menu"
           />
           <div
-            className="absolute inset-y-0 right-0 flex w-[min(20rem,85vw)] animate-slide-in-right flex-col bg-white shadow-pop"
+            className="absolute inset-y-0 right-0 flex w-[min(20rem,85vw)] animate-slide-in-right flex-col bg-surface shadow-pop"
             role="dialog"
             aria-label="Navigation"
           >
@@ -132,6 +133,7 @@ export function MobileMenu({
             </nav>
 
             <div className="space-y-2 border-t border-ink-200 p-4">
+              <ThemeToggle className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-ink-300 text-[0.9375rem] font-medium text-ink-800 hover:bg-ink-50" />
               {isSignedIn ? (
                 <LogoutButton />
               ) : (

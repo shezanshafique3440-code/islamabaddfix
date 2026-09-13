@@ -94,8 +94,8 @@ export default async function AdminTicketPage({ params }: Params) {
         staff={staff}
       />
 
-      <section className="rounded-2xl border border-ink-200 bg-white p-5">
-        <h2 className="text-xs font-semibold uppercase tracking-wide text-ink-400">
+      <section className="rounded-2xl border border-ink-200 bg-surface p-5">
+        <h2 className="text-xs font-semibold uppercase tracking-wide text-ink-500">
           Original message
         </h2>
         <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-ink-800">

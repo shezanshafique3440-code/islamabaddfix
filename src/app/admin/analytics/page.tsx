@@ -63,7 +63,7 @@ export default async function AdminAnalyticsPage({
               className={cn(
                 'rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                 days === range
-                  ? 'bg-ink-900 text-white'
+                  ? 'bg-contrast text-contrast-fg'
                   : 'border border-ink-200 text-ink-600 hover:bg-ink-50',
               )}
             >
@@ -81,7 +81,7 @@ export default async function AdminAnalyticsPage({
         <MetricCard label="Commission" value={formatPaisa(totals.commission)} />
       </dl>
 
-      <section className="rounded-2xl border border-ink-200 bg-white p-5">
+      <section className="rounded-2xl border border-ink-200 bg-surface p-5">
         <h2 className="text-[0.9375rem] font-semibold text-ink-900">Daily trend</h2>
         <div className="mt-4">
           <BookingsChart data={series} />
@@ -107,7 +107,7 @@ export default async function AdminAnalyticsPage({
         />
       </div>
 
-      <section className="rounded-2xl border border-ink-200 bg-white p-5">
+      <section className="rounded-2xl border border-ink-200 bg-surface p-5">
         <h2 className="text-[0.9375rem] font-semibold text-ink-900">Customer retention</h2>
         <dl className="mt-4 grid gap-3 sm:grid-cols-4">
           <MetricCard label="Customers" value={String(retention.totalCustomers)} />
@@ -143,7 +143,7 @@ export default async function AdminAnalyticsPage({
                   <Th className="text-right">Earnings</Th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-ink-100 bg-white">
+              <tbody className="divide-y divide-ink-100 bg-surface">
                 {providers.map((provider) => (
                   <tr key={provider.providerId}>
                     <Td>
@@ -198,7 +198,7 @@ function BreakdownPanel({
 }) {
   const max = Math.max(1, ...rows.map((row) => row.primary));
   return (
-    <section className="rounded-2xl border border-ink-200 bg-white p-5">
+    <section className="rounded-2xl border border-ink-200 bg-surface p-5">
       <h2 className="text-[0.9375rem] font-semibold text-ink-900">{title}</h2>
       {rows.length > 0 ? (
         <ul className="mt-4 space-y-2.5">

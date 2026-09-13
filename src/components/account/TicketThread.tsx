@@ -34,7 +34,7 @@ export function TicketThread({
   const [loading, setLoading] = useState(false);
 
   return (
-    <div className="rounded-2xl border border-ink-200 bg-white">
+    <div className="rounded-2xl border border-ink-200 bg-surface">
       <div className="border-b border-ink-200 px-5 py-3.5">
         <h2 className="text-[0.9375rem] font-semibold text-ink-900">Conversation</h2>
       </div>
@@ -49,7 +49,9 @@ export function TicketThread({
               <div
                 className={cn(
                   'max-w-[85%] rounded-2xl px-4 py-2.5',
-                  message.isMine ? 'bg-brand-700 text-white' : 'bg-ink-100 text-ink-900',
+                  message.isMine
+                    ? 'bg-brand-700 text-white dark:text-brand-50'
+                    : 'bg-ink-100 text-ink-900',
                 )}
               >
                 <p className="text-xs font-semibold opacity-80">
@@ -103,7 +105,7 @@ export function TicketThread({
             onChange={(event) => setBody(event.target.value)}
             rows={3}
             placeholder="Write your message..."
-            className="w-full rounded-xl border border-ink-300 px-3.5 py-2.5 text-sm text-ink-900 placeholder:text-ink-400 hover:border-ink-400 focus:border-brand-600"
+            className="w-full rounded-xl border border-ink-300 px-3.5 py-2.5 text-sm text-ink-900 placeholder:text-ink-500 hover:border-ink-400 focus:border-brand-600"
           />
           <div className="mt-2 flex justify-end">
             <Button type="submit" size="sm" loading={loading} disabled={body.trim().length === 0}>

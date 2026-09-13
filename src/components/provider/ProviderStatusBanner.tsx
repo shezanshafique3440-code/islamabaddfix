@@ -39,7 +39,7 @@ export function ProviderStatusBanner({
         </p>
         <Link
           href="/provider/onboarding"
-          className="mt-3 inline-flex h-10 items-center rounded-xl bg-warn-600 px-4 text-sm font-semibold text-white hover:bg-warn-700"
+          className="mt-3 inline-flex h-10 items-center rounded-xl bg-warn-600 px-4 text-sm font-semibold text-white hover:bg-warn-700 dark:text-warn-50"
         >
           {incomplete ? 'Complete your profile' : 'View profile'}
         </Link>
@@ -84,7 +84,7 @@ export function ProviderStatusBanner({
       </p>
       <Link
         href="/contact"
-        className="mt-3 inline-flex h-10 items-center rounded-xl border border-ink-300 bg-white px-4 text-sm font-semibold text-ink-900 hover:bg-ink-50"
+        className="mt-3 inline-flex h-10 items-center rounded-xl border border-ink-300 bg-surface px-4 text-sm font-semibold text-ink-900 hover:bg-ink-50"
       >
         Contact support
       </Link>

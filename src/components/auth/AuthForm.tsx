@@ -305,7 +305,7 @@ export function RegisterForm() {
         error={errors.acceptedTerms}
         label={
           <>
-            Main{' '}
+            I agree to the{' '}
             <Link
               href="/terms"
               target="_blank"
@@ -313,14 +313,14 @@ export function RegisterForm() {
             >
               Terms
             </Link>{' '}
-            aur{' '}
+            and the{' '}
             <Link
               href="/privacy"
               target="_blank"
               className="font-medium text-brand-700 hover:underline"
             >
               Privacy Policy
-            </Link>{' '}
+            </Link>
             .
           </>
         }

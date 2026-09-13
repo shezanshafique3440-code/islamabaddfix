@@ -26,7 +26,7 @@ export function StepDone({
 }) {
   return (
     <div className="mx-auto max-w-xl px-4 py-12 sm:px-6">
-      <div className="rounded-2xl border border-ink-200 bg-white p-6 text-center sm:p-8">
+      <div className="rounded-2xl border border-ink-200 bg-surface p-6 text-center sm:p-8">
         <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-brand-100">
           <svg
             viewBox="0 0 24 24"
@@ -112,7 +112,7 @@ export function StepDone({
 
 function Step({ n }: { n: number }) {
   return (
-    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-600 text-[0.625rem] font-bold text-white">
+    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-600 text-[0.625rem] font-bold text-white dark:text-brand-50">
       {n}
     </span>
   );

@@ -145,7 +145,7 @@ export default async function FaqPage() {
                       {item.q}
                       <svg
                         viewBox="0 0 20 20"
-                        className="h-4 w-4 shrink-0 text-ink-400 transition-transform group-open:rotate-180"
+                        className="h-4 w-4 shrink-0 text-ink-500 transition-transform group-open:rotate-180"
                         fill="currentColor"
                         aria-hidden="true"
                       >

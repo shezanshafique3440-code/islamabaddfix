@@ -69,12 +69,12 @@ export default async function EmergencyPage() {
     <>
       <div className="border-b border-alert-200 bg-alert-50">
         <div className="mx-auto max-w-content px-4 py-10 sm:px-6 sm:py-12">
-          <nav aria-label="Breadcrumb" className="mb-3 text-sm text-ink-500">
+          <nav aria-label="Breadcrumb" className="mb-3 text-sm text-ink-600">
             <Link href="/" className="hover:text-brand-700 hover:underline">
               Home
             </Link>
           </nav>
-          <p className="text-eyebrow uppercase text-alert-600">🚨 Emergency</p>
+          <p className="text-eyebrow uppercase text-alert-700">🚨 Emergency</p>
           <h1 className="mt-2 text-display-sm text-ink-950 sm:text-display">
             Need help right now?
           </h1>
@@ -109,10 +109,10 @@ export default async function EmergencyPage() {
                       <li key={service.id}>
                         <Link
                           href={`/book?service=${service.slug}&emergency=1`}
-                          className="hover:border-alert-300 flex items-center justify-between gap-3 rounded-xl border border-ink-200 bg-white px-4 py-3 transition-all hover:bg-alert-50/50"
+                          className="flex items-center justify-between gap-3 rounded-xl border border-ink-200 bg-surface px-4 py-3 transition-all hover:border-alert-300 hover:bg-alert-50/50"
                         >
                           <span className="text-sm font-medium text-ink-900">{service.name}</span>
-                          <span aria-hidden="true" className="text-ink-400">
+                          <span aria-hidden="true" className="text-ink-500">
                             →
                           </span>
                         </Link>
@@ -136,7 +136,7 @@ export default async function EmergencyPage() {
           <h2 id="emergency-fee" className="text-title text-ink-950">
             Emergency charges
           </h2>
-          <div className="mt-3 rounded-2xl border border-ink-200 bg-white p-5">
+          <div className="mt-3 rounded-2xl border border-ink-200 bg-surface p-5">
             <p className="text-sm leading-relaxed text-ink-700">
               On an emergency visit the technician applies their emergency fee, which is charged on
               top of the normal service charge. The default is{' '}
@@ -203,7 +203,7 @@ export default async function EmergencyPage() {
  */
 function SafetyNotice() {
   return (
-    <div className="border-alert-300 rounded-2xl border-2 bg-white p-5">
+    <div className="rounded-2xl border-2 border-alert-300 bg-surface p-5">
       <h2 className="flex items-center gap-2 text-sm font-bold text-alert-700">
         <span aria-hidden="true">⚠️</span> Safety first
       </h2>

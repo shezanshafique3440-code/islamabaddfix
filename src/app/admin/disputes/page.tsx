@@ -56,7 +56,7 @@ export default async function AdminDisputesPage({
           aria-current={!showResolved ? 'page' : undefined}
           className={
             !showResolved
-              ? 'rounded-lg bg-ink-900 px-3 py-2 text-sm font-medium text-white'
+              ? 'rounded-lg bg-contrast px-3 py-2 text-sm font-medium text-contrast-fg'
               : 'rounded-lg px-3 py-2 text-sm font-medium text-ink-600 hover:bg-ink-100'
           }
         >
@@ -67,7 +67,7 @@ export default async function AdminDisputesPage({
           aria-current={showResolved ? 'page' : undefined}
           className={
             showResolved
-              ? 'rounded-lg bg-ink-900 px-3 py-2 text-sm font-medium text-white'
+              ? 'rounded-lg bg-contrast px-3 py-2 text-sm font-medium text-contrast-fg'
               : 'rounded-lg px-3 py-2 text-sm font-medium text-ink-600 hover:bg-ink-100'
           }
         >
@@ -81,7 +81,7 @@ export default async function AdminDisputesPage({
             <li key={dispute.id}>
               <Link
                 href={`/admin/disputes/${dispute.id}`}
-                className="block rounded-2xl border border-ink-200 bg-white p-4 transition-shadow hover:shadow-lift"
+                className="block rounded-2xl border border-ink-200 bg-surface p-4 transition-shadow hover:shadow-lift"
               >
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0">

@@ -49,7 +49,7 @@ export function QuoteCard({
   className?: string;
 }) {
   return (
-    <div className={cn('rounded-xl border border-ink-200 bg-white p-4', className)}>
+    <div className={cn('rounded-xl border border-ink-200 bg-surface p-4', className)}>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-sm font-semibold text-ink-900">
@@ -77,7 +77,7 @@ export function QuoteCard({
           ) : null}
         </div>
         {quote.submittedAt ? (
-          <span className="text-xs text-ink-400">{formatDateTime(quote.submittedAt)}</span>
+          <span className="text-xs text-ink-500">{formatDateTime(quote.submittedAt)}</span>
         ) : null}
       </div>
 
@@ -88,7 +88,7 @@ export function QuoteCard({
             <tr key={item.id}>
               <td className="py-2 pr-2">
                 <span className="text-ink-800">{item.label}</span>
-                <span className="ml-1.5 text-xs text-ink-400">{ITEM_LABELS[item.kind]}</span>
+                <span className="ml-1.5 text-xs text-ink-500">{ITEM_LABELS[item.kind]}</span>
                 {item.quantity > 1 ? (
                   <span className="ml-1.5 text-xs text-ink-500">× {item.quantity}</span>
                 ) : null}

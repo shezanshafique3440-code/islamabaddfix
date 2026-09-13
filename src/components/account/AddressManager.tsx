@@ -46,7 +46,7 @@ export function AddressManager({
           {addresses.map((address) => (
             <li
               key={address.id}
-              className="flex flex-wrap items-start justify-between gap-3 rounded-2xl border border-ink-200 bg-white p-4"
+              className="flex flex-wrap items-start justify-between gap-3 rounded-2xl border border-ink-200 bg-surface p-4"
             >
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">

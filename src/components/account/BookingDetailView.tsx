@@ -106,7 +106,7 @@ export function BookingDetailView({
 
       {/* -------------------------------------------------- pending quote CTA */}
       {pendingQuote ? (
-        <section className="border-warn-300 rounded-2xl border-2 bg-warn-50 p-5">
+        <section className="rounded-2xl border-2 border-warn-300 bg-warn-50 p-5">
           <h2 className="text-title text-ink-950">
             {pendingQuote.isAdditional ? 'Extra charges need your approval' : 'Quote received'}
           </h2>
@@ -157,7 +157,7 @@ export function BookingDetailView({
       ) : null}
 
       {/* ------------------------------------------------------------ details */}
-      <section className="rounded-2xl border border-ink-200 bg-white">
+      <section className="rounded-2xl border border-ink-200 bg-surface">
         <div className="border-b border-ink-200 px-5 py-4">
           <h2 className="text-[0.9375rem] font-semibold text-ink-900">Booking details</h2>
         </div>
@@ -251,7 +251,7 @@ export function BookingDetailView({
 
       {/* ----------------------------------------------------------- provider */}
       {booking.provider ? (
-        <section className="rounded-2xl border border-ink-200 bg-white p-5">
+        <section className="rounded-2xl border border-ink-200 bg-surface p-5">
           <h2 className="text-[0.9375rem] font-semibold text-ink-900">Your technician</h2>
           <div className="mt-3 flex items-start gap-3.5">
             <Avatar name={booking.provider.businessName} url={booking.provider.photoUrl} />
@@ -300,7 +300,7 @@ export function BookingDetailView({
 
       {/* ------------------------------------------------------------ pricing */}
       {booking.pricing.approvedTotalPaisa !== null || booking.quotes.length > 0 ? (
-        <section className="rounded-2xl border border-ink-200 bg-white">
+        <section className="rounded-2xl border border-ink-200 bg-surface">
           <div className="border-b border-ink-200 px-5 py-4">
             <h2 className="text-[0.9375rem] font-semibold text-ink-900">Price</h2>
           </div>
@@ -354,7 +354,7 @@ export function BookingDetailView({
 
       {/* ------------------------------------------------------------ payment */}
       {booking.status === 'COMPLETED' || booking.payments.length > 0 ? (
-        <section className="rounded-2xl border border-ink-200 bg-white p-5">
+        <section className="rounded-2xl border border-ink-200 bg-surface p-5">
           <h2 className="text-[0.9375rem] font-semibold text-ink-900">Payment</h2>
 
           {booking.payments.length > 0 ? (
@@ -431,7 +431,7 @@ export function BookingDetailView({
 
       {/* ------------------------------------------------------------- review */}
       {booking.status === 'COMPLETED' ? (
-        <section className="rounded-2xl border border-ink-200 bg-white p-5">
+        <section className="rounded-2xl border border-ink-200 bg-surface p-5">
           <h2 className="text-[0.9375rem] font-semibold text-ink-900">Your review</h2>
           {booking.review ? (
             <div className="mt-3">
@@ -478,7 +478,7 @@ export function BookingDetailView({
               ) : (
                 <ul className="mt-3 space-y-2">
                   {booking.guarantee.claims.map((claim) => (
-                    <li key={claim.id} className="rounded-lg bg-white/70 px-3 py-2 text-sm">
+                    <li key={claim.id} className="rounded-lg bg-surface/70 px-3 py-2 text-sm">
                       <span className="font-mono text-xs text-ink-600">{claim.reference}</span>
                       <span className="ml-2 font-medium text-ink-900">{claim.status}</span>
                       {claim.revisitScheduledFor ? (
@@ -499,7 +499,7 @@ export function BookingDetailView({
 
       {/* ----------------------------------------------------------- disputes */}
       {booking.disputes.length > 0 ? (
-        <section className="rounded-2xl border border-alert-200 bg-white p-5">
+        <section className="rounded-2xl border border-alert-200 bg-surface p-5">
           <h2 className="text-[0.9375rem] font-semibold text-ink-900">Disputes</h2>
           <ul className="mt-3 space-y-3">
             {booking.disputes.map((dispute) => (
@@ -526,7 +526,7 @@ export function BookingDetailView({
       ) : null}
 
       {/* ----------------------------------------------------------- timeline */}
-      <section className="rounded-2xl border border-ink-200 bg-white p-5">
+      <section className="rounded-2xl border border-ink-200 bg-surface p-5">
         <h2 className="text-[0.9375rem] font-semibold text-ink-900">Booking ki history</h2>
         <ol className="mt-3 space-y-3">
           {booking.timeline.map((entry) => (
@@ -538,7 +538,7 @@ export function BookingDetailView({
               <div className="min-w-0">
                 <p className="text-sm font-medium text-ink-900">{entry.label}</p>
                 {entry.reason ? <p className="text-xs text-ink-500">{entry.reason}</p> : null}
-                <p className="text-xs text-ink-400">{formatDateTime(entry.at)}</p>
+                <p className="text-xs text-ink-500">{formatDateTime(entry.at)}</p>
               </div>
             </li>
           ))}
@@ -630,7 +630,7 @@ export function BookingDetailView({
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-1 px-5 py-3.5 sm:flex-row sm:gap-4">
-      <dt className="w-32 shrink-0 text-xs font-semibold uppercase tracking-wide text-ink-400">
+      <dt className="w-32 shrink-0 text-xs font-semibold uppercase tracking-wide text-ink-500">
         {label}
       </dt>
       <dd className="min-w-0 flex-1 text-sm text-ink-800">{children}</dd>

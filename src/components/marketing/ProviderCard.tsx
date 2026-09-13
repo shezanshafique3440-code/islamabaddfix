@@ -54,7 +54,7 @@ export function ProviderCard({
   return (
     <div
       className={cn(
-        'flex flex-col gap-4 rounded-2xl border border-ink-200 bg-white p-4 transition-shadow hover:shadow-lift sm:p-5',
+        'flex flex-col gap-4 rounded-2xl border border-ink-200 bg-surface p-4 transition-shadow hover:shadow-lift sm:p-5',
         className,
       )}
     >
@@ -143,7 +143,7 @@ function Stat({
 }) {
   return (
     <div>
-      <dt className="text-[0.6875rem] font-medium uppercase tracking-wide text-ink-400">{label}</dt>
+      <dt className="text-[0.6875rem] font-medium uppercase tracking-wide text-ink-500">{label}</dt>
       <dd
         className={cn(
           'mt-0.5 truncate text-sm',

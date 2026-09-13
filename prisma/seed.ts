@@ -64,7 +64,7 @@ const CATEGORIES: CategorySeed[] = [
   {
     name: 'AC & Cooling',
     slug: 'ac-cooling',
-    tagline: 'AC service, repair aur installation',
+    tagline: 'AC service, repair and installation',
     description:
       'Split and window AC service, repair, installation and gas refilling. Verified technicians who inspect first, then quote.',
     iconKey: 'snowflake',
@@ -120,7 +120,7 @@ const CATEGORIES: CategorySeed[] = [
   {
     name: 'Electrical',
     slug: 'electrical',
-    tagline: 'Wiring, fans, UPS aur generator',
+    tagline: 'Wiring, fans, UPS and generators',
     description:
       'Electrical repair for homes and offices, wiring, light installation, UPS and generator work. Do not attempt electrical work yourself.',
     iconKey: 'bolt',
@@ -353,7 +353,7 @@ const CATEGORIES: CategorySeed[] = [
   {
     name: 'Appliances',
     slug: 'appliances',
-    tagline: 'Fridge, washing machine aur geyser',
+    tagline: 'Fridge, washing machine and geyser',
     description:
       'Refrigerator, washing machine, microwave and geyser repair. Tell us the brand and model so the technician brings the right parts.',
     iconKey: 'plug',
@@ -399,7 +399,7 @@ const CATEGORIES: CategorySeed[] = [
   {
     name: 'Security',
     slug: 'security',
-    tagline: 'CCTV aur access control',
+    tagline: 'CCTV and access control',
     description:
       'CCTV installation and repair, access control and security system maintenance. You get a quote for cameras and cabling after a site visit.',
     iconKey: 'shield',
@@ -588,7 +588,7 @@ const DEMO_PROVIDERS: DemoProviderSeed[] = [
     fullName: 'Usman Khalid',
     email: 'demo.usman@islamabadfix.pk',
     phone: '+923001234505',
-    headline: 'Fridge, washing machine aur geyser',
+    headline: 'Fridge, washing machine and geyser',
     description:
       'Refrigerator, washing machine, microwave and geyser repair. Parts available for Dawlance, PEL, Haier and Samsung.',
     years: 7,
@@ -606,7 +606,7 @@ const DEMO_PROVIDERS: DemoProviderSeed[] = [
     fullName: 'Hamza Sheikh',
     email: 'demo.hamza@islamabadfix.pk',
     phone: '+923001234506',
-    headline: 'CCTV installation aur maintenance',
+    headline: 'CCTV installation and maintenance',
     description:
       'CCTV for homes and shops, DVR/NVR setup and live view on your phone. Camera count and cabling are quoted after a site survey.',
     years: 6,
@@ -642,7 +642,7 @@ const DEMO_PROVIDERS: DemoProviderSeed[] = [
     fullName: 'Shahid Iqbal',
     email: 'demo.shahid@islamabadfix.pk',
     phone: '+923001234508',
-    headline: 'Wiring, generator aur emergency electrical',
+    headline: 'Wiring, generators and emergency electrical',
     description:
       'House wiring, generator service and emergency electrical faults. Available at night for urgent faults.',
     years: 14,

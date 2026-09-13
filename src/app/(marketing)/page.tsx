@@ -154,7 +154,7 @@ export default async function HomePage() {
               <Link
                 key={category.slug}
                 href={`/services/${category.slug}`}
-                className="group rounded-xl border border-ink-200 bg-white p-4 transition-all hover:border-brand-300 hover:shadow-card"
+                className="group rounded-xl border border-ink-200 bg-surface p-4 transition-all hover:border-brand-300 hover:shadow-card"
               >
                 <p className="text-sm font-semibold text-ink-900 group-hover:text-brand-700">
                   {category.name}
@@ -162,7 +162,7 @@ export default async function HomePage() {
                 <p className="mt-1 text-sm text-ink-600">
                   {cheapest !== null ? formatPaisaRange(cheapest, dearest) : 'Quote par'}
                 </p>
-                <p className="mt-2 text-xs text-ink-400">
+                <p className="mt-2 text-xs text-ink-500">
                   Indicative range — the final price is set by the quote
                 </p>
               </Link>
@@ -209,7 +209,7 @@ export default async function HomePage() {
               {reviews.map((review) => (
                 <figure
                   key={review.id}
-                  className="flex flex-col rounded-2xl border border-ink-200 bg-white p-5"
+                  className="flex flex-col rounded-2xl border border-ink-200 bg-surface p-5"
                 >
                   <div className="flex items-center justify-between gap-2">
                     <Rating value={review.rating} size="sm" />
@@ -238,18 +238,20 @@ export default async function HomePage() {
 
       {/* ----------------------------------------------- provider recruiting */}
       <section className="mx-auto max-w-content px-4 py-14 sm:px-6 sm:py-16">
-        <div className="grid items-center gap-8 rounded-2xl bg-ink-950 p-7 text-white sm:p-10 lg:grid-cols-2">
+        <div className="grid items-center gap-8 rounded-2xl bg-panel p-7 text-panel-fg sm:p-10 lg:grid-cols-2">
           <div>
-            <p className="text-eyebrow uppercase text-brand-300">For providers</p>
+            <p className="text-eyebrow uppercase text-brand-300 dark:text-brand-700">
+              For providers
+            </p>
             <h2 className="mt-2.5 text-display-sm">Grow your service business in {city}.</h2>
-            <p className="mt-3 text-sm leading-relaxed text-ink-300">
+            <p className="mt-3 text-sm leading-relaxed text-panel-muted">
               New customers, a digital profile, booking management and an earnings dashboard —
               without expensive marketing.
             </p>
             <ButtonLink
               href="/provider-signup"
               size="lg"
-              className="mt-6 bg-white text-ink-950 hover:bg-ink-100"
+              className="mt-6 bg-panel-fg text-panel hover:opacity-90"
             >
               Join Islamabad Fix
             </ButtonLink>
@@ -263,10 +265,10 @@ export default async function HomePage() {
               'Reviews and ratings',
               'Earnings dashboard',
             ].map((benefit) => (
-              <li key={benefit} className="flex items-center gap-2.5 text-sm text-ink-200">
+              <li key={benefit} className="flex items-center gap-2.5 text-sm text-panel-fg/85">
                 <svg
                   viewBox="0 0 20 20"
-                  className="h-4 w-4 shrink-0 text-brand-400"
+                  className="h-4 w-4 shrink-0 text-brand-400 dark:text-brand-700"
                   fill="currentColor"
                   aria-hidden="true"
                 >
@@ -293,7 +295,7 @@ export default async function HomePage() {
                 {item.question}
                 <svg
                   viewBox="0 0 20 20"
-                  className="h-4 w-4 shrink-0 text-ink-400 transition-transform group-open:rotate-180"
+                  className="h-4 w-4 shrink-0 text-ink-500 transition-transform group-open:rotate-180"
                   fill="currentColor"
                   aria-hidden="true"
                 >

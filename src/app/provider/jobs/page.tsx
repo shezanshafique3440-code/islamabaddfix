@@ -54,7 +54,7 @@ export default async function ProviderJobsPage({
               className={cn(
                 'shrink-0 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                 view === tab.key
-                  ? 'bg-ink-900 text-white'
+                  ? 'bg-contrast text-contrast-fg'
                   : 'text-ink-600 hover:bg-ink-100 hover:text-ink-900',
               )}
             >

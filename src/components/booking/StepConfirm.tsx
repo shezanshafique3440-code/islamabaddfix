@@ -308,7 +308,7 @@ export function StepConfirm({
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-1 p-4 sm:flex-row sm:gap-4">
-      <dt className="w-28 shrink-0 text-xs font-semibold uppercase tracking-wide text-ink-400">
+      <dt className="w-28 shrink-0 text-xs font-semibold uppercase tracking-wide text-ink-500">
         {label}
       </dt>
       <dd className="min-w-0 flex-1 text-sm">{children}</dd>

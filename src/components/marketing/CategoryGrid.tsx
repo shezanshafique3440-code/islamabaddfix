@@ -29,7 +29,7 @@ export function CategoryGrid({
         <Link
           key={category.slug}
           href={`/services/${category.slug}`}
-          className="group flex items-center gap-3 rounded-xl border border-ink-200 bg-white p-3.5 transition-all duration-150 hover:border-brand-300 hover:bg-brand-50/40 hover:shadow-card"
+          className="group flex items-center gap-3 rounded-xl border border-ink-200 bg-surface p-3.5 transition-all duration-150 hover:border-brand-300 hover:bg-brand-50/40 hover:shadow-card"
         >
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-700 transition-colors group-hover:bg-brand-100">
             <ServiceIcon iconKey={category.iconKey} className="h-5 w-5" />
@@ -48,7 +48,7 @@ export function CategoryGrid({
       {showMore ? (
         <Link
           href="/services"
-          className="group flex items-center gap-3 rounded-xl border border-dashed border-ink-300 bg-white p-3.5 transition-colors hover:border-brand-400 hover:bg-brand-50/40"
+          className="group flex items-center gap-3 rounded-xl border border-dashed border-ink-300 bg-surface p-3.5 transition-colors hover:border-brand-400 hover:bg-brand-50/40"
         >
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-ink-100 text-ink-600 transition-colors group-hover:bg-brand-100 group-hover:text-brand-700">
             <svg

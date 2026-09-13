@@ -128,7 +128,7 @@ export default async function AdminDashboardPage() {
 
       <section
         aria-labelledby="chart-heading"
-        className="rounded-2xl border border-ink-200 bg-white p-5"
+        className="rounded-2xl border border-ink-200 bg-surface p-5"
       >
         <h2 id="chart-heading" className="text-[0.9375rem] font-semibold text-ink-900">
           Last 14 days
@@ -187,7 +187,7 @@ export default async function AdminDashboardPage() {
 
       <section
         aria-labelledby="categories-heading"
-        className="rounded-2xl border border-ink-200 bg-white p-5"
+        className="rounded-2xl border border-ink-200 bg-surface p-5"
       >
         <h2 id="categories-heading" className="text-[0.9375rem] font-semibold text-ink-900">
           Top categories (30 days)
@@ -249,7 +249,7 @@ function QueueLink({ href, count, label }: { href: string; count: number; label:
     <li>
       <Link
         href={href}
-        className="inline-flex items-center gap-2 rounded-xl bg-white px-3.5 py-2 text-sm font-medium text-ink-900 shadow-sm hover:bg-ink-50"
+        className="inline-flex items-center gap-2 rounded-xl bg-surface px-3.5 py-2 text-sm font-medium text-ink-900 shadow-sm hover:bg-ink-50"
       >
         <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-alert-500 px-1.5 text-xs font-bold text-white">
           {count}

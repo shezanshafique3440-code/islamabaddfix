@@ -338,7 +338,7 @@ export function ProviderOnboardingForm({
               accept="image/jpeg,image/png,image/webp"
               onChange={(event) => uploadPhoto(event.target.files)}
               disabled={uploadingPhoto || !profile}
-              className="block w-full text-sm text-ink-600 file:mr-3 file:h-10 file:cursor-pointer file:rounded-xl file:border-0 file:bg-ink-900 file:px-4 file:text-sm file:font-semibold file:text-white hover:file:bg-ink-800 disabled:opacity-50"
+              className="block w-full text-sm text-ink-600 file:mr-3 file:h-10 file:cursor-pointer file:rounded-xl file:border-0 file:bg-contrast file:px-4 file:text-sm file:font-semibold file:text-contrast-fg hover:file:bg-contrast-hover disabled:opacity-50"
             />
             {!profile ? (
               <p className="mt-1.5 text-xs text-ink-500">
@@ -450,8 +450,8 @@ export function ProviderOnboardingForm({
                 className={cn(
                   'rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors',
                   selected
-                    ? 'border-brand-600 bg-brand-600 text-white'
-                    : 'border-ink-300 bg-white text-ink-700 hover:bg-ink-50',
+                    ? 'border-brand-600 bg-brand-600 text-white dark:text-brand-50'
+                    : 'border-ink-300 bg-surface text-ink-700 hover:bg-ink-50',
                 )}
               >
                 {zone.name}
@@ -528,7 +528,7 @@ export function ProviderOnboardingForm({
                     </select>
                   </div>
                 ) : (
-                  <span className="text-sm text-ink-400">Day off</span>
+                  <span className="text-sm text-ink-500">Day off</span>
                 )}
               </li>
             );
@@ -591,7 +591,7 @@ export function ProviderOnboardingForm({
               accept="application/pdf,image/jpeg,image/png,image/webp"
               onChange={(event) => uploadDocument(event.target.files)}
               disabled={uploadingDoc || !profile}
-              className="block w-full text-sm text-ink-600 file:mr-3 file:h-10 file:cursor-pointer file:rounded-xl file:border-0 file:bg-ink-900 file:px-4 file:text-sm file:font-semibold file:text-white hover:file:bg-ink-800 disabled:opacity-50"
+              className="block w-full text-sm text-ink-600 file:mr-3 file:h-10 file:cursor-pointer file:rounded-xl file:border-0 file:bg-contrast file:px-4 file:text-sm file:font-semibold file:text-contrast-fg hover:file:bg-contrast-hover disabled:opacity-50"
             />
             <p className="mt-1.5 text-xs text-ink-500">
               🔒 Only you and the ops team can see this document. Never customers.
@@ -690,7 +690,7 @@ export function ProviderOnboardingForm({
         />
       ) : null}
 
-      <div className="sticky bottom-16 z-10 rounded-2xl border border-ink-200 bg-white/95 p-4 backdrop-blur md:bottom-4">
+      <div className="sticky bottom-16 z-10 rounded-2xl border border-ink-200 bg-surface/95 p-4 backdrop-blur md:bottom-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-xs text-ink-500">
             {selectedServiceIds.length} service · {zoneIds.length} area
@@ -720,7 +720,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-ink-200 bg-white p-5">
+    <section className="rounded-2xl border border-ink-200 bg-surface p-5">
       <h2 className="text-[0.9375rem] font-semibold text-ink-900">{title}</h2>
       {description ? (
         <p className="mt-1 text-sm leading-relaxed text-ink-600">{description}</p>

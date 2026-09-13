@@ -94,7 +94,7 @@ export function RecurringManager({
       {schedules.length > 0 ? (
         <ul className="mt-4 space-y-3">
           {schedules.map((schedule) => (
-            <li key={schedule.id} className="rounded-2xl border border-ink-200 bg-white p-4">
+            <li key={schedule.id} className="rounded-2xl border border-ink-200 bg-surface p-4">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">

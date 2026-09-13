@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { env } from '@/lib/env';
 import { ToastProvider } from '@/components/ui/Toast';
+import { THEME_INIT_SCRIPT } from '@/components/layout/ThemeToggle';
 import './globals.css';
 
 const APP_NAME = 'Islamabad Fix';
@@ -45,17 +46,30 @@ export const viewport: Viewport = {
   initialScale: 1,
   // Zoom is left enabled deliberately: pinch-to-zoom is an accessibility need.
   maximumScale: 5,
-  themeColor: '#0b6b51',
+  // Two entries so the browser chrome matches the theme in use rather than
+  // painting a light bar above a dark page.
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#0b6b51' },
+    { media: '(prefers-color-scheme: dark)', color: '#12171a' },
+  ],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        {/*
+         * Applies the stored theme before the first paint. Without this, every
+         * dark-mode user sees a white flash on every navigation — the single
+         * thing that makes a dark theme feel bolted on.
+         */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
       <body>
         {/* Keyboard users land here first and can jump past the nav. */}
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-brand-700 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-brand-700 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white dark:focus:text-brand-50"
         >
           Skip to main content
         </a>

@@ -97,7 +97,7 @@ export default async function ProviderTodayPage() {
       </section>
 
       {earnings.pendingPayout.jobs > 0 ? (
-        <section className="rounded-2xl border border-ink-200 bg-white p-5">
+        <section className="rounded-2xl border border-ink-200 bg-surface p-5">
           <h2 className="text-[0.9375rem] font-semibold text-ink-900">Pending payout</h2>
           <p className="mt-1.5 text-sm text-ink-600">
             <strong className="font-semibold text-ink-900">
@@ -119,8 +119,8 @@ export default async function ProviderTodayPage() {
 
 function Stat({ label, value, hint }: { label: string; value: string; hint?: string }) {
   return (
-    <div className="rounded-xl border border-ink-200 bg-white p-3.5">
-      <dt className="text-[0.6875rem] font-medium uppercase tracking-wide text-ink-400">{label}</dt>
+    <div className="rounded-xl border border-ink-200 bg-surface p-3.5">
+      <dt className="text-[0.6875rem] font-medium uppercase tracking-wide text-ink-500">{label}</dt>
       <dd className="mt-1 text-lg font-bold tracking-tight text-ink-950">{value}</dd>
       {hint ? <p className="mt-0.5 text-xs text-ink-500">{hint}</p> : null}
     </div>

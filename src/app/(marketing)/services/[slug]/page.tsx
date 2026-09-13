@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const title = `${category.name} Islamabad — verified technicians`;
   const description =
     category.description ??
-    `${category.name} services in Islamabad. Verified technicians, transparent quotes aur asaan booking.`;
+    `${category.name} services in Islamabad. Verified technicians, transparent quotes and easy booking.`;
 
   return {
     title,
@@ -116,7 +116,7 @@ export default async function CategoryPage({ params }: Params) {
           <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {category.services.map((service) => (
               <li key={service.id}>
-                <div className="flex h-full flex-col rounded-xl border border-ink-200 bg-white p-4">
+                <div className="flex h-full flex-col rounded-xl border border-ink-200 bg-surface p-4">
                   <div className="flex items-start justify-between gap-2">
                     <h3 className="text-sm font-semibold text-ink-900">{service.name}</h3>
                     {service.isEmergencyEnabled ? <Badge tone="danger">Emergency</Badge> : null}
@@ -129,10 +129,10 @@ export default async function CategoryPage({ params }: Params) {
                   <p className="mt-3 text-sm font-medium text-ink-800">
                     {formatPaisaRange(service.minPricePaisa, service.maxPricePaisa)}
                   </p>
-                  <p className="mt-0.5 text-xs text-ink-400">
+                  <p className="mt-0.5 text-xs text-ink-500">
                     {service.requiresInspection
                       ? 'Final price after inspection'
-                      : `Andazan ${service.estimatedMinutes} minute`}
+                      : `About ${service.estimatedMinutes} minutes`}
                   </p>
                   <ButtonLink
                     href={`/book?service=${service.slug}`}

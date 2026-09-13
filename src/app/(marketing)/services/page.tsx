@@ -54,7 +54,7 @@ export default async function ServicesPage() {
                   <li key={service.slug}>
                     <Link
                       href={`/services/detail/${service.slug}`}
-                      className="group flex h-full flex-col rounded-xl border border-ink-200 bg-white p-4 transition-all hover:border-brand-300 hover:shadow-card"
+                      className="group flex h-full flex-col rounded-xl border border-ink-200 bg-surface p-4 transition-all hover:border-brand-300 hover:shadow-card"
                     >
                       <span className="flex items-start justify-between gap-2">
                         <span className="text-sm font-semibold text-ink-900 group-hover:text-brand-700">
@@ -74,10 +74,10 @@ export default async function ServicesPage() {
                       <span className="mt-auto pt-3 text-sm font-medium text-ink-700">
                         {formatPaisaRange(service.minPricePaisa, service.maxPricePaisa)}
                       </span>
-                      <span className="mt-0.5 text-xs text-ink-400">
+                      <span className="mt-0.5 text-xs text-ink-500">
                         {service.requiresInspection
                           ? 'Quote after inspection'
-                          : `Andazan ${service.estimatedMinutes} min`}
+                          : `About ${service.estimatedMinutes} min`}
                       </span>
                     </Link>
                   </li>

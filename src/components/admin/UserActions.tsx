@@ -38,7 +38,7 @@ export function UserActions({
   const [loading, setLoading] = useState(false);
 
   if (isSelf) {
-    return <span className="text-xs text-ink-400">You</span>;
+    return <span className="text-xs text-ink-500">You</span>;
   }
 
   return (

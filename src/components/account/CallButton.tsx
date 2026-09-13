@@ -84,7 +84,7 @@ export function CallButton({
               </Button>
               <a
                 href={`tel:${channel.dialNumber.replace(/\s+/g, '')}`}
-                className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-brand-700 px-4 text-[0.9375rem] font-semibold text-white hover:bg-brand-800"
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-brand-700 px-4 text-[0.9375rem] font-semibold text-white hover:bg-brand-800 dark:text-brand-50"
               >
                 Dial {channel.dialNumber}
               </a>

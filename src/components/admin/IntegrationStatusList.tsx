@@ -125,7 +125,7 @@ const CHANNEL_LABELS: Record<string, string> = {
 
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl border border-ink-200 bg-white p-5">
+    <div className="rounded-2xl border border-ink-200 bg-surface p-5">
       <h3 className="text-[0.9375rem] font-semibold text-ink-900">{title}</h3>
       <ul className="mt-3 space-y-2.5">{children}</ul>
     </div>

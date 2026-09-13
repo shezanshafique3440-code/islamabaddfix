@@ -114,7 +114,7 @@ export default async function ProvidersPage({
                       aria-current={isCurrent ? 'page' : undefined}
                       className={
                         isCurrent
-                          ? 'flex h-9 min-w-9 items-center justify-center rounded-lg bg-brand-700 px-3 text-sm font-semibold text-white'
+                          ? 'flex h-9 min-w-9 items-center justify-center rounded-lg bg-brand-700 px-3 text-sm font-semibold text-white dark:text-brand-50'
                           : 'flex h-9 min-w-9 items-center justify-center rounded-lg border border-ink-200 px-3 text-sm text-ink-700 hover:bg-ink-50'
                       }
                     >

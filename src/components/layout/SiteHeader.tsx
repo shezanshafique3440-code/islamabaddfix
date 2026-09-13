@@ -5,6 +5,7 @@ import { countUnread } from '@/lib/notifications';
 import { ButtonLink } from '@/components/ui/Button';
 import { Logo } from './Logo';
 import { MobileMenu } from './MobileMenu';
+import { ThemeToggle } from './ThemeToggle';
 
 const NAV_LINKS = [
   { href: '/services', label: 'Services' },
@@ -22,7 +23,7 @@ export async function SiteHeader() {
   const unread = ctx ? await countUnread(ctx.user.id) : 0;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-ink-200 bg-white/90 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-ink-200 bg-surface/90 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-content items-center gap-6 px-4 sm:px-6">
         <Logo />
 
@@ -39,6 +40,7 @@ export async function SiteHeader() {
         </nav>
 
         <div className="ml-auto hidden items-center gap-2 lg:flex">
+          <ThemeToggle />
           {ctx ? (
             <>
               <Link

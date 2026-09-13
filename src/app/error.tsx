@@ -30,7 +30,7 @@ export default function GlobalError({
           We could not load this page. Try again — if the problem continues, contact support.
         </p>
         {error.digest ? (
-          <p className="mt-3 font-mono text-xs text-ink-400">Reference: {error.digest}</p>
+          <p className="mt-3 font-mono text-xs text-ink-500">Reference: {error.digest}</p>
         ) : null}
         <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
           <Button onClick={reset}>Try again</Button>

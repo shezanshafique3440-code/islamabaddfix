@@ -10,8 +10,178 @@
  */
 
 @layer base {
+  /*
+   * Theme tokens.
+   *
+   * Components never name a hex value; they name a step, and the step resolves
+   * here. That is what makes a whole dark theme possible without editing 150
+   * components — and what stops the two themes drifting apart.
+   *
+   * The dark ramp is not an inversion of the light one. A tint that reads as a
+   * gentle wash on white glows on a dark ground, so the low steps are
+   * desaturated and darkened by hand, and the high steps are lifted so text
+   * sitting on those tints stays readable.
+   */
   :root {
     color-scheme: light;
+
+    --c-surface: 255 255 255;
+    --c-surface-raised: 255 255 255;
+    --c-surface-sunken: 247 248 248;
+
+    --c-brand-50: 238 251 245;
+    --c-brand-100: 214 245 230;
+    --c-brand-200: 176 233 208;
+    --c-brand-300: 124 215 180;
+    --c-brand-400: 69 189 147;
+    --c-brand-500: 31 161 121;
+    --c-brand-600: 15 134 99;
+    --c-brand-700: 11 107 81;
+    --c-brand-800: 11 84 66;
+    --c-brand-900: 10 69 55;
+    --c-brand-950: 3 39 32;
+    --c-ink-50: 247 248 248;
+    --c-ink-100: 238 240 241;
+    --c-ink-200: 216 221 224;
+    --c-ink-300: 182 191 196;
+    --c-ink-400: 141 154 161;
+    --c-ink-500: 103 117 124;
+    --c-ink-600: 87 100 107;
+    --c-ink-700: 71 82 87;
+    --c-ink-800: 61 70 74;
+    --c-ink-900: 36 43 46;
+    --c-ink-950: 20 24 26;
+    --c-alert-50: 254 243 242;
+    --c-alert-100: 254 228 226;
+    --c-alert-200: 254 205 202;
+    --c-alert-300: 253 162 155;
+    --c-alert-400: 249 112 102;
+    --c-alert-500: 240 68 56;
+    --c-alert-600: 217 45 32;
+    --c-alert-700: 180 35 24;
+    --c-alert-800: 145 32 24;
+    --c-alert-900: 122 39 26;
+    --c-alert-950: 85 22 12;
+    --c-warn-50: 255 250 235;
+    --c-warn-100: 254 240 199;
+    --c-warn-200: 254 223 137;
+    --c-warn-300: 254 200 75;
+    --c-warn-400: 253 176 34;
+    --c-warn-500: 247 144 9;
+    --c-warn-600: 220 104 3;
+    --c-warn-700: 181 71 8;
+    --c-warn-800: 147 55 13;
+    --c-warn-900: 122 46 14;
+    --c-warn-950: 78 29 9;
+    --c-info-50: 239 248 255;
+    --c-info-100: 209 233 255;
+    --c-info-200: 178 221 255;
+    --c-info-300: 132 202 255;
+    --c-info-400: 83 177 253;
+    --c-info-500: 46 144 250;
+    --c-info-600: 21 112 239;
+    --c-info-700: 23 92 211;
+    --c-info-800: 24 73 169;
+    --c-info-900: 25 65 133;
+    --c-info-950: 16 42 86;
+
+    --c-contrast: 36 43 46;
+    --c-contrast-hover: 61 70 74;
+    --c-contrast-active: 20 24 26;
+    --c-contrast-fg: 255 255 255;
+
+    --c-panel: 20 24 26;
+    --c-panel-fg: 255 255 255;
+    --c-panel-muted: 182 191 196;
+
+    --c-scrim: 20 24 26;
+
+    --c-chart-1: 15 134 99;
+    --c-chart-2: 109 40 217;
+    --c-chart-3: 180 83 9;
+  }
+
+  .dark {
+    color-scheme: dark;
+
+    --c-surface: 18 23 26;
+    --c-surface-raised: 24 30 34;
+    --c-surface-sunken: 13 17 19;
+
+    --c-brand-50: 8 34 28;
+    --c-brand-100: 10 51 41;
+    --c-brand-200: 13 72 56;
+    --c-brand-300: 16 96 73;
+    --c-brand-400: 23 131 95;
+    --c-brand-500: 34 163 119;
+    --c-brand-600: 47 189 140;
+    --c-brand-700: 91 208 166;
+    --c-brand-800: 142 224 194;
+    --c-brand-900: 189 237 219;
+    --c-brand-950: 231 250 242;
+    --c-ink-50: 25 29 32;
+    --c-ink-100: 32 38 42;
+    --c-ink-200: 44 52 56;
+    --c-ink-300: 59 70 76;
+    --c-ink-400: 85 99 106;
+    --c-ink-500: 117 132 140;
+    --c-ink-600: 149 163 170;
+    --c-ink-700: 180 192 198;
+    --c-ink-800: 204 213 218;
+    --c-ink-900: 228 234 237;
+    --c-ink-950: 246 248 249;
+    --c-alert-50: 44 18 16;
+    --c-alert-100: 63 23 20;
+    --c-alert-200: 87 29 24;
+    --c-alert-300: 117 39 31;
+    --c-alert-400: 156 50 42;
+    --c-alert-500: 196 69 59;
+    --c-alert-600: 224 92 80;
+    --c-alert-700: 240 131 122;
+    --c-alert-800: 246 169 162;
+    --c-alert-900: 251 207 203;
+    --c-alert-950: 253 236 235;
+    --c-warn-50: 42 28 7;
+    --c-warn-100: 59 39 8;
+    --c-warn-200: 83 53 10;
+    --c-warn-300: 112 71 12;
+    --c-warn-400: 150 96 15;
+    --c-warn-500: 189 125 20;
+    --c-warn-600: 220 154 36;
+    --c-warn-700: 234 181 77;
+    --c-warn-800: 244 205 130;
+    --c-warn-900: 250 226 182;
+    --c-warn-950: 253 243 226;
+    --c-info-50: 13 28 46;
+    --c-info-100: 18 39 64;
+    --c-info-200: 24 54 88;
+    --c-info-300: 31 74 121;
+    --c-info-400: 42 99 161;
+    --c-info-500: 58 127 199;
+    --c-info-600: 84 152 224;
+    --c-info-700: 125 180 234;
+    --c-info-800: 168 205 242;
+    --c-info-900: 207 227 248;
+    --c-info-950: 236 244 253;
+
+    /* An inverted chip flips with the page: light on dark. */
+    --c-contrast: 228 234 237;
+    --c-contrast-hover: 204 213 218;
+    --c-contrast-active: 246 248 249;
+    --c-contrast-fg: 25 29 32;
+
+    /* A panel that is dark by design stays dark, and lifts instead. */
+    --c-panel: 29 36 39;
+    --c-panel-fg: 246 248 249;
+    --c-panel-muted: 149 163 170;
+
+    --c-scrim: 0 0 0;
+
+    /* Chart hues lifted for a dark ground; the pairwise separation that the
+       palette checker verified is preserved by shifting all three together. */
+    --c-chart-1: 52 199 149;
+    --c-chart-2: 167 139 250;
+    --c-chart-3: 240 161 60;
   }
 
   html {
@@ -20,7 +190,7 @@
   }
 
   body {
-    @apply bg-white text-ink-900 antialiased;
+    @apply bg-surface text-ink-900 antialiased;
     font-feature-settings: 'cv11', 'ss01';
     font-variant-numeric: tabular-nums;
   }
@@ -30,13 +200,24 @@
     @apply outline-none ring-2 ring-brand-600 ring-offset-2;
   }
 
-  /* Roman Urdu strings mix scripts; keep numerals consistently Latin. */
-  [lang='ur'] {
-    font-feature-settings: normal;
-  }
-
   ::selection {
     @apply bg-brand-100 text-brand-900;
+  }
+
+  /*
+   * Headings wrap on meaning rather than on whatever fits, and paragraphs avoid
+   * a one-word last line. Both are single declarations that the browser either
+   * honours or ignores — no layout risk, and a noticeable lift on a phone where
+   * a display heading breaks two or three times.
+   */
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
   }
 }
 
@@ -51,11 +232,13 @@
   .skeleton::after {
     @apply absolute inset-0 -translate-x-full;
     content: '';
+    /* The sweep is the surface colour, so it lightens on white and lightens
+       a dark panel too — a hardcoded white streak would flash on dark. */
     background-image: linear-gradient(
       90deg,
-      rgb(255 255 255 / 0) 0%,
-      rgb(255 255 255 / 0.55) 50%,
-      rgb(255 255 255 / 0) 100%
+      rgb(var(--c-surface) / 0) 0%,
+      rgb(var(--c-surface) / 0.55) 50%,
+      rgb(var(--c-surface) / 0) 100%
     );
     animation: shimmer 1.6s infinite;
   }
@@ -63,6 +246,25 @@
   /* Hairline that survives fractional device pixel ratios. */
   .hairline {
     @apply border-ink-200;
+  }
+
+  /*
+   * Colour transition applied only while the theme is being switched.
+   *
+   * A permanent `transition: colors` on everything looks smooth on a toggle and
+   * awful everywhere else — hovers lag, and the first paint of a page sweeps
+   * through the palette. So the toggle adds this class for a moment and removes
+   * it again.
+   */
+  .theme-switching,
+  .theme-switching *,
+  .theme-switching *::before,
+  .theme-switching *::after {
+    transition:
+      background-color 180ms ease,
+      border-color 180ms ease,
+      color 180ms ease,
+      fill 180ms ease !important;
   }
 }
 
@@ -81,9 +283,16 @@
     .animate-fade-in,
     .animate-slide-up,
     .animate-slide-in-right,
-    .skeleton::after {
+    .skeleton::after,
+    .theme-switching,
+    .theme-switching * {
       animation: none !important;
       transition: none !important;
+    }
+
+    /* A button that shrinks under the finger is motion too. */
+    .press {
+      transform: none !important;
     }
   }
 }

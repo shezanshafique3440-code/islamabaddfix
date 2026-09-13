@@ -80,7 +80,7 @@ export function CatalogueManager({ categories }: { categories: CategoryRow[] }) 
 
       <div className="mt-5 space-y-4">
         {categories.map((category) => (
-          <section key={category.id} className="rounded-2xl border border-ink-200 bg-white">
+          <section key={category.id} className="rounded-2xl border border-ink-200 bg-surface">
             <div className="flex flex-wrap items-start justify-between gap-3 border-b border-ink-200 p-4">
               <div className="flex min-w-0 items-start gap-3">
                 <ServiceIconTile iconKey={category.iconKey} size="sm" />

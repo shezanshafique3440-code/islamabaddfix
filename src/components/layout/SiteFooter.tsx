@@ -31,8 +31,8 @@ export async function SiteFooter() {
           <div className="lg:col-span-1">
             <Logo showTagline />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink-600">
-              Home and business services in {city} — verified professionals, transparent quotes aur
-              asaan booking.
+              Home and business services in {city} — verified professionals, transparent quotes and
+              easy booking.
             </p>
           </div>
 

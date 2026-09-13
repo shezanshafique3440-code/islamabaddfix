@@ -76,7 +76,7 @@ export function PhotoAssessment({ fileId }: { fileId: string }) {
   const unclear = assessment.confidence < UNCLEAR;
 
   return (
-    <div className="mt-3 rounded-xl border border-ink-200 bg-white p-4">
+    <div className="mt-3 rounded-xl border border-ink-200 bg-surface p-4">
       {assessment.hazard ? (
         <p
           role="alert"
@@ -97,7 +97,7 @@ export function PhotoAssessment({ fileId }: { fileId: string }) {
 
       {assessment.identifiers.length > 0 ? (
         <div className="mt-3">
-          <h4 className="text-[0.6875rem] font-medium uppercase tracking-wide text-ink-400">
+          <h4 className="text-[0.6875rem] font-medium uppercase tracking-wide text-ink-500">
             Readable on the label
           </h4>
           <ul className="mt-1 flex flex-wrap gap-1.5">
@@ -115,7 +115,7 @@ export function PhotoAssessment({ fileId }: { fileId: string }) {
 
       {assessment.observations.length > 0 ? (
         <div className="mt-3">
-          <h4 className="text-[0.6875rem] font-medium uppercase tracking-wide text-ink-400">
+          <h4 className="text-[0.6875rem] font-medium uppercase tracking-wide text-ink-500">
             What is visible
           </h4>
           <ul className="mt-1 space-y-1 text-sm text-ink-700">
@@ -128,7 +128,7 @@ export function PhotoAssessment({ fileId }: { fileId: string }) {
 
       {assessment.technicianNotes.length > 0 ? (
         <div className="mt-3">
-          <h4 className="text-[0.6875rem] font-medium uppercase tracking-wide text-ink-400">
+          <h4 className="text-[0.6875rem] font-medium uppercase tracking-wide text-ink-500">
             Passed to the technician
           </h4>
           <ul className="mt-1 space-y-1 text-sm text-ink-700">

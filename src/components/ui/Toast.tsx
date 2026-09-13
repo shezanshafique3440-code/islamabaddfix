@@ -60,9 +60,9 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
             key={entry.id}
             className={cn(
               'pointer-events-auto flex w-full max-w-sm animate-slide-up items-start gap-3 rounded-xl border px-4 py-3 shadow-pop',
-              entry.tone === 'success' && 'border-brand-200 bg-white',
-              entry.tone === 'error' && 'border-alert-200 bg-white',
-              entry.tone === 'info' && 'border-ink-200 bg-white',
+              entry.tone === 'success' && 'border-brand-200 bg-surface',
+              entry.tone === 'error' && 'border-alert-200 bg-surface',
+              entry.tone === 'info' && 'border-ink-200 bg-surface',
             )}
           >
             <ToastIcon tone={entry.tone} />
@@ -75,7 +75,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
             <button
               type="button"
               onClick={() => dismiss(entry.id)}
-              className="-mr-1 -mt-0.5 rounded-lg p-1 text-ink-400 hover:bg-ink-100 hover:text-ink-700"
+              className="-mr-1 -mt-0.5 rounded-lg p-1 text-ink-500 hover:bg-ink-100 hover:text-ink-700"
               aria-label="Close"
             >
               <svg viewBox="0 0 20 20" className="h-4 w-4" fill="currentColor" aria-hidden="true">

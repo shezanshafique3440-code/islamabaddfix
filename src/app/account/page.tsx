@@ -46,7 +46,7 @@ export default async function AccountBookingsPage({
         </div>
         <Link
           href="/book"
-          className="hidden h-10 items-center rounded-xl bg-brand-700 px-4 text-sm font-semibold text-white hover:bg-brand-800 sm:inline-flex md:hidden"
+          className="hidden h-10 items-center rounded-xl bg-brand-700 px-4 text-sm font-semibold text-white hover:bg-brand-800 dark:text-brand-50 sm:inline-flex md:hidden"
         >
           + New booking
         </Link>
@@ -62,7 +62,7 @@ export default async function AccountBookingsPage({
               className={cn(
                 'shrink-0 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                 scope === tab.key
-                  ? 'bg-ink-900 text-white'
+                  ? 'bg-contrast text-contrast-fg'
                   : 'text-ink-600 hover:bg-ink-100 hover:text-ink-900',
               )}
             >

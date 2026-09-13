@@ -19,7 +19,7 @@ export function TodaySchedule({ jobs }: { jobs: BookingSummary[] }) {
         <li key={job.id}>
           <Link
             href={`/provider/jobs/${job.id}`}
-            className="flex gap-4 rounded-2xl border border-ink-200 bg-white p-4 transition-shadow hover:shadow-lift"
+            className="flex gap-4 rounded-2xl border border-ink-200 bg-surface p-4 transition-shadow hover:shadow-lift"
           >
             <div className="w-16 shrink-0 border-r border-ink-100 pr-3">
               <p className="text-sm font-bold tracking-tight text-ink-950">

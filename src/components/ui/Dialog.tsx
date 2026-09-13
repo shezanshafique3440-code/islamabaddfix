@@ -56,8 +56,8 @@ export function Dialog({
         if (event.target === ref.current) onClose();
       }}
       className={cn(
-        'w-[calc(100%-2rem)] rounded-2xl border border-ink-200 bg-white p-0 shadow-pop',
-        'backdrop:bg-ink-950/40 backdrop:backdrop-blur-sm',
+        'w-[calc(100%-2rem)] rounded-2xl border border-ink-200 bg-surface p-0 shadow-pop',
+        'backdrop:bg-scrim/40 backdrop:backdrop-blur-sm',
         'open:animate-slide-up',
         widths,
       )}

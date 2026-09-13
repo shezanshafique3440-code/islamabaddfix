@@ -36,7 +36,7 @@ export default async function ProviderReviewsPage() {
         <p className="mt-1 text-sm text-ink-600">A better rating moves you up in matching.</p>
       </header>
 
-      <section className="rounded-2xl border border-ink-200 bg-white p-5">
+      <section className="rounded-2xl border border-ink-200 bg-surface p-5">
         <div className="flex flex-wrap items-center gap-6">
           <div>
             <p className="text-3xl font-bold tracking-tight text-ink-950">
@@ -76,14 +76,14 @@ export default async function ProviderReviewsPage() {
       {reviews.items.length > 0 ? (
         <ul className="space-y-4">
           {reviews.items.map((review) => (
-            <li key={review.id} className="rounded-2xl border border-ink-200 bg-white p-5">
+            <li key={review.id} className="rounded-2xl border border-ink-200 bg-surface p-5">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2.5">
                   <Rating value={review.rating} size="sm" />
                   <span className="text-sm font-medium text-ink-800">{review.authorFirstName}</span>
                   {review.isDemo ? <DemoBadge /> : null}
                 </div>
-                <span className="text-xs text-ink-400">{formatDate(review.createdAt)}</span>
+                <span className="text-xs text-ink-500">{formatDate(review.createdAt)}</span>
               </div>
 
               {review.comment ? (

@@ -117,7 +117,7 @@ export default async function ReceiptPage({ params }: Params) {
         <PrintButton />
       </div>
 
-      <article className="rounded-2xl border border-ink-200 bg-white p-6 print:rounded-none print:border-0 print:p-0">
+      <article className="rounded-2xl border border-ink-200 bg-surface p-6 print:rounded-none print:border-0 print:p-0">
         <header className="flex flex-wrap items-start justify-between gap-4 border-b border-ink-200 pb-5">
           <div>
             <p className="text-lg font-bold tracking-tight text-ink-950">
@@ -128,7 +128,7 @@ export default async function ReceiptPage({ params }: Params) {
             </p>
           </div>
           <div className="text-right">
-            <p className="text-xs font-semibold uppercase tracking-wide text-ink-400">Receipt</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-ink-500">Receipt</p>
             <p className="text-sm font-bold text-ink-950">{booking.reference}</p>
             <p className="mt-0.5 text-xs text-ink-500">
               {formatDateTime(booking.completedAt ?? booking.createdAt)}
@@ -186,7 +186,7 @@ export default async function ReceiptPage({ params }: Params) {
                   <tr key={`${quoteIndex}-${itemIndex}`}>
                     <td className="py-2 pr-3">
                       <span className="text-ink-800">{item.label}</span>
-                      <span className="ml-1.5 text-xs text-ink-400">
+                      <span className="ml-1.5 text-xs text-ink-500">
                         {ITEM_LABELS[item.kind] ?? item.kind}
                       </span>
                       {item.quantity > 1 ? (
@@ -304,7 +304,7 @@ export default async function ReceiptPage({ params }: Params) {
 function Pair({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-[0.6875rem] font-semibold uppercase tracking-wide text-ink-400">
+      <dt className="text-[0.6875rem] font-semibold uppercase tracking-wide text-ink-500">
         {label}
       </dt>
       <dd className="mt-0.5 text-ink-900">{value}</dd>

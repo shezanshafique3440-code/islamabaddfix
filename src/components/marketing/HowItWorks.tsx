@@ -40,7 +40,7 @@ export function HowItWorks() {
             />
           ) : null}
           <div className="relative flex items-baseline gap-3">
-            <span className="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-700 text-sm font-bold text-white">
+            <span className="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-700 text-sm font-bold text-white dark:text-brand-50">
               {step.number}
             </span>
             <h3 className="text-[0.9375rem] font-semibold tracking-tight text-ink-900">

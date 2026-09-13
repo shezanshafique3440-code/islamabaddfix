@@ -47,7 +47,7 @@ export default async function MembershipPage() {
                 return (
                   <section
                     key={plan.id}
-                    className="flex flex-col rounded-2xl border border-ink-200 bg-white p-6 transition-shadow hover:shadow-card"
+                    className="flex flex-col rounded-2xl border border-ink-200 bg-surface p-6 transition-shadow hover:shadow-card"
                   >
                     <h2 className="text-title text-ink-950">{plan.name}</h2>
                     {plan.tagline ? (

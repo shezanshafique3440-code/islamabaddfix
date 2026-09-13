@@ -6,12 +6,21 @@ type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'success' | 'outli
 type Size = 'sm' | 'md' | 'lg';
 
 const VARIANTS: Record<Variant, string> = {
-  primary: 'bg-brand-700 text-white hover:bg-brand-800 active:bg-brand-900 shadow-sm',
-  secondary: 'bg-ink-900 text-white hover:bg-ink-800 active:bg-ink-950 shadow-sm',
-  outline: 'border border-ink-300 bg-white text-ink-900 hover:bg-ink-50 active:bg-ink-100',
+  primary:
+    'bg-brand-700 text-white dark:text-brand-50 hover:bg-brand-800 active:bg-brand-900 shadow-sm',
+  secondary:
+    'bg-contrast text-contrast-fg hover:bg-contrast-hover active:bg-contrast-active shadow-sm',
+  outline: 'border border-ink-300 bg-surface text-ink-900 hover:bg-ink-50 active:bg-ink-100',
   ghost: 'text-ink-700 hover:bg-ink-100 active:bg-ink-200',
-  danger: 'bg-alert-600 text-white hover:bg-alert-700 active:bg-alert-700 shadow-sm',
-  success: 'bg-brand-600 text-white hover:bg-brand-700 active:bg-brand-800 shadow-sm',
+  danger:
+    // Red is the one hue where neither a light nor a dark foreground clears AA
+    // against a mid tone. So on a dark ground the button takes a genuinely dark
+    // red — a low step, because the ramp inverts — and keeps its white text.
+    // A bright red with dark text passes too, but reads as a warning chip
+    // rather than something you are about to do.
+    'bg-alert-600 text-white hover:bg-alert-700 active:bg-alert-700 shadow-sm dark:bg-alert-300 dark:hover:bg-alert-400',
+  success:
+    'bg-brand-600 text-white dark:text-brand-50 hover:bg-brand-700 active:bg-brand-800 shadow-sm',
 };
 
 const SIZES: Record<Size, string> = {
@@ -22,7 +31,11 @@ const SIZES: Record<Size, string> = {
 };
 
 const BASE =
-  'inline-flex items-center justify-center font-semibold transition-colors duration-150 ' +
+  'inline-flex items-center justify-center font-semibold ' +
+  'transition-[background-color,border-color,color,transform] duration-150 ' +
+  // A 2% dip under the finger. Small enough to read as physical rather than
+  // bouncy, and switched off entirely under prefers-reduced-motion.
+  'press active:scale-[0.98] ' +
   'disabled:pointer-events-none disabled:opacity-50 select-none whitespace-nowrap';
 
 interface CommonProps {

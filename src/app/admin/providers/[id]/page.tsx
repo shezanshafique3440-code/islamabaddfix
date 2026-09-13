@@ -142,7 +142,7 @@ export default async function AdminProviderDetailPage({ params }: Params) {
           </dl>
           {provider.description ? (
             <div className="mt-4 border-t border-ink-100 pt-3">
-              <p className="text-xs font-semibold uppercase tracking-wide text-ink-400">Details</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-ink-500">Details</p>
               <p className="mt-1.5 whitespace-pre-line text-sm text-ink-700">
                 {provider.description}
               </p>
@@ -205,7 +205,7 @@ export default async function AdminProviderDetailPage({ params }: Params) {
           )}
 
           <div className="mt-4 border-t border-ink-100 pt-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-ink-400">
+            <p className="text-xs font-semibold uppercase tracking-wide text-ink-500">
               Working hours
             </p>
             {provider.availability.length > 0 ? (
@@ -247,7 +247,7 @@ export default async function AdminProviderDetailPage({ params }: Params) {
                     href={fileUrl(document.id)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="shrink-0 rounded-lg border border-ink-300 bg-white px-3 py-1.5 text-sm font-medium text-ink-800 hover:bg-ink-50"
+                    className="shrink-0 rounded-lg border border-ink-300 bg-surface px-3 py-1.5 text-sm font-medium text-ink-800 hover:bg-ink-50"
                   >
                     Open
                   </a>
@@ -314,7 +314,7 @@ function Panel({
   className?: string;
 }) {
   return (
-    <section className={`rounded-2xl border border-ink-200 bg-white p-5 ${className ?? ''}`}>
+    <section className={`rounded-2xl border border-ink-200 bg-surface p-5 ${className ?? ''}`}>
       <h2 className="text-[0.9375rem] font-semibold text-ink-900">{title}</h2>
       <div className="mt-3">{children}</div>
     </section>

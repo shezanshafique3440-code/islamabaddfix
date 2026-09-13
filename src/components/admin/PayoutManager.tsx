@@ -88,7 +88,7 @@ export function PayoutManager({
                   <Th />
                 </tr>
               </thead>
-              <tbody className="divide-y divide-ink-100 bg-white">
+              <tbody className="divide-y divide-ink-100 bg-surface">
                 {pending.map((row) => (
                   <tr key={row.providerId}>
                     <Td className="font-medium text-ink-900">{row.businessName}</Td>
@@ -131,7 +131,7 @@ export function PayoutManager({
             {payouts.map((payout) => (
               <li
                 key={payout.id}
-                className="flex flex-wrap items-start justify-between gap-3 rounded-2xl border border-ink-200 bg-white p-4"
+                className="flex flex-wrap items-start justify-between gap-3 rounded-2xl border border-ink-200 bg-surface p-4"
               >
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">

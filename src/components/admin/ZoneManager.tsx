@@ -69,7 +69,7 @@ export function ZoneManager({ zones }: { zones: ZoneRow[] }) {
               <Th />
             </tr>
           </thead>
-          <tbody className="divide-y divide-ink-100 bg-white">
+          <tbody className="divide-y divide-ink-100 bg-surface">
             {zones.map((zone) => (
               <tr key={zone.id}>
                 <Td>

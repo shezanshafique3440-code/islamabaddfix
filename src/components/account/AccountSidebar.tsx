@@ -50,7 +50,7 @@ export function AccountSidebar({ unread }: { unread: number }) {
         <div className="pt-3">
           <Link
             href="/book"
-            className="flex h-10 items-center justify-center rounded-xl bg-brand-700 text-sm font-semibold text-white hover:bg-brand-800"
+            className="flex h-10 items-center justify-center rounded-xl bg-brand-700 text-sm font-semibold text-white hover:bg-brand-800 dark:text-brand-50"
           >
             + New booking
           </Link>

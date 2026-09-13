@@ -73,7 +73,7 @@ export default async function ProviderEarningsPage() {
         />
       </dl>
 
-      <section className="rounded-2xl border border-ink-200 bg-white p-5">
+      <section className="rounded-2xl border border-ink-200 bg-surface p-5">
         <h2 className="text-[0.9375rem] font-semibold text-ink-900">Totals</h2>
         <dl className="mt-3 space-y-2 text-sm">
           <div className="flex justify-between gap-3">
@@ -115,7 +115,7 @@ export default async function ProviderEarningsPage() {
                   <Th>Payout</Th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-ink-100 bg-white">
+              <tbody className="divide-y divide-ink-100 bg-surface">
                 {recentJobs.map((job) => (
                   <tr key={job.id}>
                     <Td className="font-mono text-xs">{job.reference}</Td>
@@ -160,7 +160,7 @@ export default async function ProviderEarningsPage() {
             {payouts.map((payout) => (
               <li
                 key={payout.id}
-                className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-ink-200 bg-white p-4"
+                className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-ink-200 bg-surface p-4"
               >
                 <div>
                   <p className="text-sm font-semibold text-ink-900">
@@ -192,7 +192,7 @@ export default async function ProviderEarningsPage() {
             ))}
           </ul>
         ) : (
-          <div className="mt-4 rounded-2xl border border-ink-200 bg-white p-5">
+          <div className="mt-4 rounded-2xl border border-ink-200 bg-surface p-5">
             <p className="text-sm text-ink-600">
               No payouts recorded yet. On cash bookings the money comes to you directly from the
               customer; the platform commission is accounted for here. Bank payouts are processed by
@@ -207,8 +207,8 @@ export default async function ProviderEarningsPage() {
 
 function Stat({ label, value, hint }: { label: string; value: string; hint?: string }) {
   return (
-    <div className="rounded-xl border border-ink-200 bg-white p-3.5">
-      <dt className="text-[0.6875rem] font-medium uppercase tracking-wide text-ink-400">{label}</dt>
+    <div className="rounded-xl border border-ink-200 bg-surface p-3.5">
+      <dt className="text-[0.6875rem] font-medium uppercase tracking-wide text-ink-500">{label}</dt>
       <dd className="mt-1 text-lg font-bold tracking-tight text-ink-950">{value}</dd>
       {hint ? <p className="mt-0.5 text-xs text-ink-500">{hint}</p> : null}
     </div>

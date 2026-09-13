@@ -79,7 +79,7 @@ export function ProviderSettingsForm({
           void save();
         }}
       >
-        <section className="rounded-2xl border border-ink-200 bg-white p-5">
+        <section className="rounded-2xl border border-ink-200 bg-surface p-5">
           <h2 className="text-[0.9375rem] font-semibold text-ink-900">Work capacity</h2>
           <div className="mt-4 space-y-4">
             <TextInput
@@ -104,7 +104,7 @@ export function ProviderSettingsForm({
           </div>
         </section>
 
-        <section className="rounded-2xl border border-ink-200 bg-white p-5">
+        <section className="rounded-2xl border border-ink-200 bg-surface p-5">
           <h2 className="text-[0.9375rem] font-semibold text-ink-900">Emergency service</h2>
           <div className="mt-4 space-y-4">
             <Checkbox
@@ -131,7 +131,7 @@ export function ProviderSettingsForm({
           </div>
         </section>
 
-        <section className="rounded-2xl border border-ink-200 bg-white p-5">
+        <section className="rounded-2xl border border-ink-200 bg-surface p-5">
           <h2 className="text-[0.9375rem] font-semibold text-ink-900">Location sharing</h2>
           <p className="mt-1 text-sm leading-relaxed text-ink-600">
             When on, your location appears only on the ops team’s dispatch map — never to customers.

@@ -105,7 +105,7 @@ export default async function TermsPage() {
             },
             {
               h: '10. Contact',
-              p: [`Sawalat ke liye: ${email}`],
+              p: [`Questions: ${email}`],
             },
           ].map((section) => (
             <section key={section.h}>

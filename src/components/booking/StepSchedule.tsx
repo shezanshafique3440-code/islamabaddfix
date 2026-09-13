@@ -69,7 +69,7 @@ export function StepSchedule({
             className={cn(
               'flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-colors',
               draft.isEmergency
-                ? 'border-alert-300 ring-alert-300 bg-alert-50 ring-1'
+                ? 'border-alert-300 bg-alert-50 ring-1 ring-alert-300'
                 : 'border-ink-200 hover:bg-ink-50',
             )}
           >
@@ -128,7 +128,7 @@ export function StepSchedule({
                         'flex w-16 shrink-0 flex-col items-center rounded-xl border py-2.5 transition-colors',
                         active
                           ? 'border-brand-600 bg-brand-50/60 ring-1 ring-brand-600'
-                          : 'border-ink-200 bg-white hover:bg-ink-50',
+                          : 'border-ink-200 bg-surface hover:bg-ink-50',
                       )}
                     >
                       <span className="text-[0.6875rem] font-medium uppercase text-ink-500">
@@ -137,7 +137,7 @@ export function StepSchedule({
                       <span className="mt-0.5 text-lg font-bold leading-none text-ink-900">
                         {day.date.getDate()}
                       </span>
-                      <span className="mt-0.5 text-[0.6875rem] text-ink-400">{day.month}</span>
+                      <span className="mt-0.5 text-[0.6875rem] text-ink-500">{day.month}</span>
                     </button>
                   );
                 })}
@@ -162,10 +162,10 @@ export function StepSchedule({
                       className={cn(
                         'h-11 rounded-xl border text-sm font-medium transition-colors',
                         isSelected
-                          ? 'border-brand-600 bg-brand-700 text-white'
+                          ? 'border-brand-600 bg-brand-700 text-white dark:text-brand-50'
                           : disabled
                             ? 'cursor-not-allowed border-ink-100 bg-ink-50 text-ink-300'
-                            : 'border-ink-200 bg-white text-ink-800 hover:border-brand-300 hover:bg-brand-50',
+                            : 'border-ink-200 bg-surface text-ink-800 hover:border-brand-300 hover:bg-brand-50',
                       )}
                     >
                       {formatHour(hour)}

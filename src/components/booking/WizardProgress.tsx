@@ -73,14 +73,14 @@ export function WizardProgress({
                   'flex items-center gap-2 rounded-lg px-2 py-1.5 text-xs font-semibold transition-colors',
                   isDone && 'text-brand-700 hover:bg-brand-50',
                   isCurrent && 'text-ink-900',
-                  !isDone && !isCurrent && 'cursor-default text-ink-400',
+                  !isDone && !isCurrent && 'cursor-default text-ink-500',
                 )}
               >
                 <span
                   className={cn(
                     'flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[0.625rem]',
-                    isDone && 'bg-brand-600 text-white',
-                    isCurrent && 'bg-ink-900 text-white',
+                    isDone && 'bg-brand-600 text-white dark:text-brand-50',
+                    isCurrent && 'bg-contrast text-contrast-fg',
                     !isDone && !isCurrent && 'bg-ink-200 text-ink-500',
                   )}
                 >
@@ -137,7 +137,7 @@ export function StepFooter({
             type="button"
             onClick={onNext}
             disabled={nextDisabled || loading}
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-brand-700 px-5 text-[0.9375rem] font-semibold text-white transition-colors hover:bg-brand-800 disabled:pointer-events-none disabled:opacity-50"
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-brand-700 px-5 text-[0.9375rem] font-semibold text-white transition-colors hover:bg-brand-800 disabled:pointer-events-none disabled:opacity-50 dark:text-brand-50"
           >
             {loading ? (
               <svg
@@ -193,7 +193,7 @@ export function StepShell({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-ink-200 bg-white p-5 sm:p-6">
+    <section className="rounded-2xl border border-ink-200 bg-surface p-5 sm:p-6">
       <h2 className="text-title text-ink-950">{title}</h2>
       {description ? (
         <p className="mt-1.5 text-sm leading-relaxed text-ink-600">{description}</p>

@@ -77,7 +77,7 @@ export default async function AdminGuaranteeDetailPage({ params }: Params) {
       </header>
 
       {/* Eligibility facts, stated up front — these decide the claim. */}
-      <section className="rounded-2xl border border-ink-200 bg-white p-5">
+      <section className="rounded-2xl border border-ink-200 bg-surface p-5">
         <h2 className="text-[0.9375rem] font-semibold text-ink-900">Eligibility</h2>
         <dl className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <Fact
@@ -200,7 +200,7 @@ export default async function AdminGuaranteeDetailPage({ params }: Params) {
 
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl border border-ink-200 bg-white p-5">
+    <section className="rounded-2xl border border-ink-200 bg-surface p-5">
       <h2 className="text-[0.9375rem] font-semibold text-ink-900">{title}</h2>
       <div className="mt-3">{children}</div>
     </section>
@@ -219,7 +219,7 @@ function Row({ label, value }: { label: string; value: string }) {
 function Fact({ label, value, tone }: { label: string; value: string; tone?: 'good' | 'bad' }) {
   return (
     <div>
-      <dt className="text-[0.6875rem] font-medium uppercase tracking-wide text-ink-400">{label}</dt>
+      <dt className="text-[0.6875rem] font-medium uppercase tracking-wide text-ink-500">{label}</dt>
       <dd
         className={
           tone === 'good'

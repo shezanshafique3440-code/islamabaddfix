@@ -90,7 +90,7 @@ export default async function AdminDisputeDetailPage({ params }: Params) {
           </p>
           {dispute.files.length > 0 ? (
             <div className="mt-4 border-t border-ink-100 pt-3">
-              <p className="text-xs font-semibold uppercase tracking-wide text-ink-400">Evidence</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-ink-500">Evidence</p>
               <ul className="mt-2 space-y-1.5">
                 {dispute.files.map((file) => (
                   <li key={file.id}>
@@ -112,7 +112,7 @@ export default async function AdminDisputeDetailPage({ params }: Params) {
         <Panel title="Parties">
           <dl className="space-y-3 text-sm">
             <div>
-              <dt className="text-xs font-semibold uppercase tracking-wide text-ink-400">
+              <dt className="text-xs font-semibold uppercase tracking-wide text-ink-500">
                 Customer
               </dt>
               <dd className="mt-0.5 text-ink-900">{dispute.booking.customer.fullName}</dd>
@@ -130,7 +130,7 @@ export default async function AdminDisputeDetailPage({ params }: Params) {
             </div>
             {dispute.booking.provider ? (
               <div>
-                <dt className="text-xs font-semibold uppercase tracking-wide text-ink-400">
+                <dt className="text-xs font-semibold uppercase tracking-wide text-ink-500">
                   Provider
                 </dt>
                 <dd className="mt-0.5">
@@ -284,7 +284,7 @@ export default async function AdminDisputeDetailPage({ params }: Params) {
                     {entry.toStatus}
                   </p>
                   {entry.reason ? <p className="text-xs text-ink-500">{entry.reason}</p> : null}
-                  <p className="text-xs text-ink-400">{formatDateTime(entry.createdAt)}</p>
+                  <p className="text-xs text-ink-500">{formatDateTime(entry.createdAt)}</p>
                 </div>
               </li>
             ))}
@@ -305,7 +305,7 @@ function Panel({
   className?: string;
 }) {
   return (
-    <section className={`rounded-2xl border border-ink-200 bg-white p-5 ${className ?? ''}`}>
+    <section className={`rounded-2xl border border-ink-200 bg-surface p-5 ${className ?? ''}`}>
       <h2 className="text-[0.9375rem] font-semibold text-ink-900">{title}</h2>
       <div className="mt-3">{children}</div>
     </section>

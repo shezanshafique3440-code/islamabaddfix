@@ -119,7 +119,7 @@ export default async function ProviderSignupPage() {
               },
             ].map((step, index) => (
               <li key={step.title} className="flex gap-4">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-700 text-sm font-bold text-white">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-700 text-sm font-bold text-white dark:text-brand-50">
                   {index + 1}
                 </span>
                 <div>
@@ -132,7 +132,7 @@ export default async function ProviderSignupPage() {
         </section>
 
         <section className="mt-16 grid gap-6 lg:grid-cols-2">
-          <div className="rounded-2xl border border-ink-200 bg-white p-6">
+          <div className="rounded-2xl border border-ink-200 bg-surface p-6">
             <h2 className="text-title text-ink-950">What it costs</h2>
             <p className="mt-3 text-sm leading-relaxed text-ink-700">
               No fee to build a profile or to be listed. The platform takes{' '}
@@ -148,7 +148,7 @@ export default async function ProviderSignupPage() {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-ink-200 bg-white p-6">
+          <div className="rounded-2xl border border-ink-200 bg-surface p-6">
             <h2 className="text-title text-ink-950">Which services?</h2>
             <p className="mt-3 text-sm text-ink-700">We need providers in these categories:</p>
             <div className="mt-3 flex flex-wrap gap-1.5">
@@ -164,15 +164,15 @@ export default async function ProviderSignupPage() {
           </div>
         </section>
 
-        <div className="mt-14 rounded-2xl bg-ink-950 p-8 text-center text-white">
+        <div className="mt-14 rounded-2xl bg-panel p-8 text-center text-panel-fg">
           <h2 className="text-display-sm">Ready to get started?</h2>
-          <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-ink-300">
+          <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-panel-muted">
             Creating an account takes two minutes. Review starts once your profile is complete.
           </p>
           <ButtonLink
             href="/register?role=provider"
             size="lg"
-            className="mt-6 bg-white text-ink-950 hover:bg-ink-100"
+            className="mt-6 bg-panel-fg text-panel hover:opacity-90"
           >
             Join Islamabad Fix
           </ButtonLink>

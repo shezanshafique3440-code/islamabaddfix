@@ -62,7 +62,7 @@ export function StepService({
                     'flex shrink-0 items-center gap-2.5 rounded-xl border px-3 py-2.5 text-left transition-colors lg:w-full',
                     active
                       ? 'border-brand-600 bg-brand-50/60 ring-1 ring-brand-600'
-                      : 'border-ink-200 bg-white hover:border-ink-300 hover:bg-ink-50',
+                      : 'border-ink-200 bg-surface hover:border-ink-300 hover:bg-ink-50',
                   )}
                 >
                   <ServiceIconTile iconKey={entry.iconKey} size="sm" />
@@ -110,14 +110,14 @@ export function StepService({
                     <p className="mt-1.5 text-xs text-ink-500">
                       {service.requiresInspection
                         ? 'Quote after inspection'
-                        : `Andazan ${service.estimatedMinutes} min`}
+                        : `About ${service.estimatedMinutes} min`}
                     </p>
                   </div>
                   <span className="shrink-0 text-right">
                     <span className="block text-sm font-semibold text-ink-900">
                       {formatPaisaRange(service.minPricePaisa, service.maxPricePaisa)}
                     </span>
-                    <span className="block text-[0.6875rem] text-ink-400">andazan</span>
+                    <span className="block text-[0.6875rem] text-ink-500">andazan</span>
                   </span>
                 </div>
               </RadioCard>

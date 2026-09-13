@@ -137,7 +137,7 @@ export function ProviderJobView({
 
       {/* ------------------------------------------------------------- action */}
       {isAssigned && actions.length > 0 ? (
-        <section className="rounded-2xl border border-ink-200 bg-white p-5">
+        <section className="rounded-2xl border border-ink-200 bg-surface p-5">
           <h2 className="text-[0.9375rem] font-semibold text-ink-900">What to do next</h2>
           <div className="mt-3 flex flex-wrap gap-2">
             {canQuote ? (
@@ -213,7 +213,7 @@ export function ProviderJobView({
       ) : null}
 
       {/* -------------------------------------------------------- job details */}
-      <section className="rounded-2xl border border-ink-200 bg-white">
+      <section className="rounded-2xl border border-ink-200 bg-surface">
         <div className="border-b border-ink-200 px-5 py-4">
           <h2 className="text-[0.9375rem] font-semibold text-ink-900">Job details</h2>
         </div>
@@ -337,7 +337,7 @@ export function ProviderJobView({
 
       {/* ------------------------------------------------------- money for me */}
       {booking.pricing.approvedTotalPaisa !== null ? (
-        <section className="rounded-2xl border border-ink-200 bg-white p-5">
+        <section className="rounded-2xl border border-ink-200 bg-surface p-5">
           <h2 className="text-[0.9375rem] font-semibold text-ink-900">The money</h2>
           <dl className="mt-3 space-y-1.5 text-sm">
             <div className="flex justify-between gap-3">
@@ -404,7 +404,7 @@ export function ProviderJobView({
 
       {/* ---------------------------------------------------- customer review */}
       {booking.review ? (
-        <section className="rounded-2xl border border-ink-200 bg-white p-5">
+        <section className="rounded-2xl border border-ink-200 bg-surface p-5">
           <h2 className="text-[0.9375rem] font-semibold text-ink-900">Customer ka review</h2>
           <div className="mt-3">
             <Rating value={booking.review.rating} />
@@ -424,7 +424,7 @@ export function ProviderJobView({
           ) : null}
         </section>
       ) : booking.status === 'COMPLETED' ? (
-        <section className="rounded-2xl border border-ink-200 bg-white p-5">
+        <section className="rounded-2xl border border-ink-200 bg-surface p-5">
           <h2 className="text-[0.9375rem] font-semibold text-ink-900">Feedback</h2>
           <p className="mt-1 text-sm text-ink-600">
             The customer has not left a review yet. You can rate the customer — only the ops team
@@ -437,7 +437,7 @@ export function ProviderJobView({
       ) : null}
 
       {/* ----------------------------------------------------------- timeline */}
-      <section className="rounded-2xl border border-ink-200 bg-white p-5">
+      <section className="rounded-2xl border border-ink-200 bg-surface p-5">
         <h2 className="text-[0.9375rem] font-semibold text-ink-900">History</h2>
         <ol className="mt-3 space-y-3">
           {booking.timeline.map((entry) => (
@@ -449,7 +449,7 @@ export function ProviderJobView({
               <div>
                 <p className="text-sm font-medium text-ink-900">{entry.label}</p>
                 {entry.reason ? <p className="text-xs text-ink-500">{entry.reason}</p> : null}
-                <p className="text-xs text-ink-400">{formatDateTime(entry.at)}</p>
+                <p className="text-xs text-ink-500">{formatDateTime(entry.at)}</p>
               </div>
             </li>
           ))}
@@ -462,7 +462,7 @@ export function ProviderJobView({
       {isAssigned ? (
         <section className="mt-6">
           {reschedule ? (
-            <div className="mb-4 flex flex-wrap items-center gap-3 rounded-xl border border-ink-200 bg-white px-4 py-3">
+            <div className="mb-4 flex flex-wrap items-center gap-3 rounded-xl border border-ink-200 bg-surface px-4 py-3">
               <p className="flex-1 text-sm text-ink-600">
                 Cannot make it right now? Let the customer know and reschedule.
               </p>
@@ -527,7 +527,7 @@ export function ProviderJobView({
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-1 px-5 py-3.5 sm:flex-row sm:gap-4">
-      <dt className="w-32 shrink-0 text-xs font-semibold uppercase tracking-wide text-ink-400">
+      <dt className="w-32 shrink-0 text-xs font-semibold uppercase tracking-wide text-ink-500">
         {label}
       </dt>
       <dd className="min-w-0 flex-1 text-sm text-ink-800">{children}</dd>
@@ -856,7 +856,7 @@ function CompleteDialog({
       <div className="space-y-4">
         <div>
           <p className="mb-1.5 text-sm font-medium text-ink-800">
-            Photos of the work <span className="text-ink-400">(recommended)</span>
+            Photos of the work <span className="text-ink-500">(recommended)</span>
           </p>
           <input
             type="file"
@@ -864,7 +864,7 @@ function CompleteDialog({
             multiple
             onChange={(event) => uploadProof(event.target.files)}
             disabled={uploading}
-            className="block w-full text-sm text-ink-600 file:mr-3 file:h-10 file:cursor-pointer file:rounded-xl file:border-0 file:bg-ink-900 file:px-4 file:text-sm file:font-semibold file:text-white hover:file:bg-ink-800 disabled:opacity-50"
+            className="block w-full text-sm text-ink-600 file:mr-3 file:h-10 file:cursor-pointer file:rounded-xl file:border-0 file:bg-contrast file:px-4 file:text-sm file:font-semibold file:text-contrast-fg hover:file:bg-contrast-hover disabled:opacity-50"
           />
           <p className="mt-1.5 text-xs text-ink-500">
             Completion photos become evidence in your favour if there is a dispute.

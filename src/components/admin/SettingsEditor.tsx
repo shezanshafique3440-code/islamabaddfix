@@ -97,7 +97,7 @@ export function SettingsEditor({
       ) : null}
 
       {groups.map((group) => (
-        <section key={group} className="rounded-2xl border border-ink-200 bg-white">
+        <section key={group} className="rounded-2xl border border-ink-200 bg-surface">
           <div className="border-b border-ink-200 px-5 py-3.5">
             <h2 className="text-[0.9375rem] font-semibold text-ink-900">
               {GROUP_LABELS[group] ?? group}
@@ -122,7 +122,7 @@ export function SettingsEditor({
                           {isFinancial ? <Badge tone="warn">Financial</Badge> : null}
                         </div>
                         <p className="mt-0.5 text-xs leading-relaxed text-ink-500">{entry.help}</p>
-                        <p className="mt-1 font-mono text-[0.6875rem] text-ink-400">{entry.key}</p>
+                        <p className="mt-1 font-mono text-[0.6875rem] text-ink-500">{entry.key}</p>
                       </div>
 
                       <div className="flex shrink-0 items-center gap-2">
@@ -141,7 +141,7 @@ export function SettingsEditor({
                           >
                             <span
                               className={cn(
-                                'absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform',
+                                'absolute top-0.5 h-5 w-5 rounded-full bg-surface shadow-sm transition-transform',
                                 currentValue === true
                                   ? 'translate-x-[1.375rem]'
                                   : 'translate-x-0.5',

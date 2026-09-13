@@ -31,7 +31,7 @@ export function BookingList({
             <li key={booking.id}>
               <Link
                 href={`${hrefPrefix}/${booking.id}`}
-                className="block rounded-2xl border border-ink-200 bg-white p-4 transition-shadow hover:shadow-lift"
+                className="block rounded-2xl border border-ink-200 bg-surface p-4 transition-shadow hover:shadow-lift"
               >
                 <div className="flex items-start gap-3.5">
                   <ServiceIconTile iconKey={booking.category.iconKey} />
@@ -109,7 +109,7 @@ export function BookingList({
                 aria-current={target === pagination.page ? 'page' : undefined}
                 className={
                   target === pagination.page
-                    ? 'flex h-9 min-w-9 items-center justify-center rounded-lg bg-brand-700 px-3 text-sm font-semibold text-white'
+                    ? 'flex h-9 min-w-9 items-center justify-center rounded-lg bg-brand-700 px-3 text-sm font-semibold text-white dark:text-brand-50'
                     : 'flex h-9 min-w-9 items-center justify-center rounded-lg border border-ink-200 px-3 text-sm text-ink-700 hover:bg-ink-50'
                 }
               >

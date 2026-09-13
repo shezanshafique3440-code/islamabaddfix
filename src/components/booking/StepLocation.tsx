@@ -120,7 +120,7 @@ export function StepLocation({
                 aria-pressed={mode === option.value}
                 className={
                   mode === option.value
-                    ? 'h-10 rounded-xl bg-ink-900 px-4 text-sm font-semibold text-white'
+                    ? 'h-10 rounded-xl bg-contrast px-4 text-sm font-semibold text-contrast-fg'
                     : 'h-10 rounded-xl border border-ink-300 px-4 text-sm font-medium text-ink-700 hover:bg-ink-50'
                 }
               >

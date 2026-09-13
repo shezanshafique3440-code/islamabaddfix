@@ -11,8 +11,8 @@ import { cn } from '@/lib/utils';
  */
 
 const CONTROL =
-  'w-full rounded-xl border bg-white px-3.5 text-[0.9375rem] text-ink-900 ' +
-  'placeholder:text-ink-400 transition-colors ' +
+  'w-full rounded-xl border bg-surface px-3.5 text-[0.9375rem] text-ink-900 ' +
+  'placeholder:text-ink-500 transition-colors ' +
   'disabled:cursor-not-allowed disabled:bg-ink-50 disabled:text-ink-500';
 
 const CONTROL_OK = 'border-ink-300 hover:border-ink-400 focus:border-brand-600';
@@ -218,7 +218,7 @@ export function RadioCard({
         'w-full rounded-2xl border p-4 text-left transition-all duration-150',
         checked
           ? 'border-brand-600 bg-brand-50/50 ring-1 ring-brand-600'
-          : 'border-ink-200 bg-white hover:border-ink-300 hover:bg-ink-50/50',
+          : 'border-ink-200 bg-surface hover:border-ink-300 hover:bg-ink-50/50',
         disabled && 'cursor-not-allowed opacity-60',
         className,
       )}

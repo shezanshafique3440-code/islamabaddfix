@@ -52,7 +52,7 @@ export default async function AdminAuditPage({
           href="/admin/audit"
           className={
             !query.action
-              ? 'rounded-lg bg-ink-900 px-3 py-1.5 text-xs font-medium text-white'
+              ? 'rounded-lg bg-contrast px-3 py-1.5 text-xs font-medium text-contrast-fg'
               : 'rounded-lg border border-ink-200 px-3 py-1.5 text-xs font-medium text-ink-600 hover:bg-ink-50'
           }
         >
@@ -64,7 +64,7 @@ export default async function AdminAuditPage({
             href={`/admin/audit?action=${entry.action}`}
             className={
               query.action === entry.action
-                ? 'rounded-lg bg-ink-900 px-3 py-1.5 text-xs font-medium text-white'
+                ? 'rounded-lg bg-contrast px-3 py-1.5 text-xs font-medium text-contrast-fg'
                 : 'rounded-lg border border-ink-200 px-3 py-1.5 text-xs font-medium text-ink-600 hover:bg-ink-50'
             }
           >
@@ -75,7 +75,7 @@ export default async function AdminAuditPage({
 
       {entries.length > 0 ? (
         <>
-          <ul className="mt-5 divide-y divide-ink-100 overflow-hidden rounded-2xl border border-ink-200 bg-white">
+          <ul className="mt-5 divide-y divide-ink-100 overflow-hidden rounded-2xl border border-ink-200 bg-surface">
             {entries.map((entry) => (
               <li key={entry.id} className="px-4 py-3.5">
                 <div className="flex flex-wrap items-start justify-between gap-3">
@@ -98,7 +98,7 @@ export default async function AdminAuditPage({
                       </pre>
                     ) : null}
                   </div>
-                  <span className="shrink-0 text-xs text-ink-400">
+                  <span className="shrink-0 text-xs text-ink-500">
                     {formatDateTime(entry.createdAt)}
                   </span>
                 </div>
@@ -119,7 +119,7 @@ export default async function AdminAuditPage({
                     href={`/admin/audit?${params.toString()}`}
                     className={
                       target === page
-                        ? 'flex h-9 min-w-9 items-center justify-center rounded-lg bg-brand-700 px-3 text-sm font-semibold text-white'
+                        ? 'flex h-9 min-w-9 items-center justify-center rounded-lg bg-brand-700 px-3 text-sm font-semibold text-white dark:text-brand-50'
                         : 'flex h-9 min-w-9 items-center justify-center rounded-lg border border-ink-200 px-3 text-sm text-ink-700 hover:bg-ink-50'
                     }
                   >

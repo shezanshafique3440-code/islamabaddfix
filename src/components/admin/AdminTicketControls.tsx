@@ -50,7 +50,7 @@ export function AdminTicketControls({
   }
 
   return (
-    <section className="flex flex-wrap items-end gap-4 rounded-2xl border border-ink-200 bg-white p-5">
+    <section className="flex flex-wrap items-end gap-4 rounded-2xl border border-ink-200 bg-surface p-5">
       <div>
         <label htmlFor="ticket-status" className="mb-1.5 block text-sm font-medium text-ink-800">
           Status

@@ -118,7 +118,7 @@ export function StepProvider({
             {providers.map((provider, index) => (
               <div key={provider.providerId} className="relative">
                 {index === 0 && !draft.isEmergency ? (
-                  <span className="absolute -top-2 left-4 z-10 rounded-full bg-brand-700 px-2 py-0.5 text-[0.625rem] font-bold uppercase tracking-wide text-white">
+                  <span className="absolute -top-2 left-4 z-10 rounded-full bg-brand-700 px-2 py-0.5 text-[0.625rem] font-bold uppercase tracking-wide text-white dark:text-brand-50">
                     Best match
                   </span>
                 ) : null}
@@ -140,7 +140,7 @@ export function StepProvider({
                       }
                       className={
                         draft.providerId === provider.providerId
-                          ? 'h-10 w-full rounded-xl bg-brand-700 text-sm font-semibold text-white'
+                          ? 'h-10 w-full rounded-xl bg-brand-700 text-sm font-semibold text-white dark:text-brand-50'
                           : 'h-10 w-full rounded-xl border border-ink-300 text-sm font-semibold text-ink-800 hover:bg-ink-50'
                       }
                     >

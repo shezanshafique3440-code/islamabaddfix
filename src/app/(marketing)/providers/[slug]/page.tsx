@@ -164,7 +164,7 @@ export default async function ProviderProfilePage({ params }: Params) {
               <h2 id="services-heading" className="text-title text-ink-950">
                 Services and rates
               </h2>
-              <ul className="mt-4 divide-y divide-ink-200 rounded-xl border border-ink-200 bg-white">
+              <ul className="mt-4 divide-y divide-ink-200 rounded-xl border border-ink-200 bg-surface">
                 {provider.services.map((service) => (
                   <li
                     key={service.id}
@@ -215,7 +215,7 @@ export default async function ProviderProfilePage({ params }: Params) {
               {reviews.items.length > 0 ? (
                 <ul className="mt-4 space-y-4">
                   {reviews.items.map((review) => (
-                    <li key={review.id} className="rounded-xl border border-ink-200 bg-white p-4">
+                    <li key={review.id} className="rounded-xl border border-ink-200 bg-surface p-4">
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <div className="flex items-center gap-2.5">
                           <Rating value={review.rating} size="sm" />
@@ -224,7 +224,7 @@ export default async function ProviderProfilePage({ params }: Params) {
                           </span>
                           {review.isDemo ? <DemoBadge /> : null}
                         </div>
-                        <span className="text-xs text-ink-400">{formatDate(review.createdAt)}</span>
+                        <span className="text-xs text-ink-500">{formatDate(review.createdAt)}</span>
                       </div>
                       {review.comment ? (
                         <p className="mt-2.5 text-sm leading-relaxed text-ink-700">
@@ -246,7 +246,7 @@ export default async function ProviderProfilePage({ params }: Params) {
           </div>
 
           <aside className="space-y-4">
-            <div className="rounded-2xl border border-ink-200 bg-white p-5">
+            <div className="rounded-2xl border border-ink-200 bg-surface p-5">
               <h2 className="text-eyebrow uppercase text-ink-500">Verification</h2>
               <ul className="mt-3 space-y-3">
                 {provider.badges.map((badge) => {
@@ -282,7 +282,7 @@ export default async function ProviderProfilePage({ params }: Params) {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-ink-200 bg-white p-5">
+            <div className="rounded-2xl border border-ink-200 bg-surface p-5">
               <h2 className="text-eyebrow uppercase text-ink-500">Service areas</h2>
               <div className="mt-3 flex flex-wrap gap-1.5">
                 {provider.zones.map((zone) => (
@@ -297,7 +297,7 @@ export default async function ProviderProfilePage({ params }: Params) {
             </div>
 
             {provider.availability.length > 0 ? (
-              <div className="rounded-2xl border border-ink-200 bg-white p-5">
+              <div className="rounded-2xl border border-ink-200 bg-surface p-5">
                 <h2 className="text-eyebrow uppercase text-ink-500">Working hours</h2>
                 <dl className="mt-3 space-y-1.5 text-sm">
                   {provider.availability.map((window, index) => (
@@ -316,7 +316,7 @@ export default async function ProviderProfilePage({ params }: Params) {
               </div>
             ) : null}
 
-            <div className="rounded-2xl border border-ink-200 bg-white p-5 text-sm">
+            <div className="rounded-2xl border border-ink-200 bg-surface p-5 text-sm">
               <h2 className="text-eyebrow uppercase text-ink-500">Platform par</h2>
               <p className="mt-2 text-ink-700">Since {formatDate(provider.memberSince)}</p>
             </div>

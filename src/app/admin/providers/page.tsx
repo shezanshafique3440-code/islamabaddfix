@@ -82,7 +82,7 @@ export default async function AdminProvidersPage({
           />
           <button
             type="submit"
-            className="h-10 rounded-xl bg-ink-900 px-4 text-sm font-semibold text-white hover:bg-ink-800"
+            className="h-10 rounded-xl bg-contrast px-4 text-sm font-semibold text-contrast-fg hover:bg-contrast-hover"
           >
             Search
           </button>
@@ -98,7 +98,7 @@ export default async function AdminProvidersPage({
             className={cn(
               'rounded-lg px-3 py-2 text-sm font-medium transition-colors',
               status === tab.key
-                ? 'bg-ink-900 text-white'
+                ? 'bg-contrast text-contrast-fg'
                 : 'text-ink-600 hover:bg-ink-100 hover:text-ink-900',
             )}
           >
@@ -116,7 +116,7 @@ export default async function AdminProvidersPage({
               <li key={provider.id}>
                 <Link
                   href={`/admin/providers/${provider.id}`}
-                  className="flex flex-wrap items-start gap-4 rounded-2xl border border-ink-200 bg-white p-4 transition-shadow hover:shadow-lift"
+                  className="flex flex-wrap items-start gap-4 rounded-2xl border border-ink-200 bg-surface p-4 transition-shadow hover:shadow-lift"
                 >
                   <Avatar
                     name={provider.businessName}

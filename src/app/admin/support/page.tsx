@@ -51,7 +51,9 @@ export default async function AdminSupportPage({
             aria-current={view.key === tab.key ? 'page' : undefined}
             className={cn(
               'rounded-lg px-3 py-2 text-sm font-medium',
-              view.key === tab.key ? 'bg-ink-900 text-white' : 'text-ink-600 hover:bg-ink-100',
+              view.key === tab.key
+                ? 'bg-contrast text-contrast-fg'
+                : 'text-ink-600 hover:bg-ink-100',
             )}
           >
             {tab.label}
@@ -65,7 +67,7 @@ export default async function AdminSupportPage({
             <li key={ticket.id}>
               <Link
                 href={`/admin/support/${ticket.id}`}
-                className="block rounded-2xl border border-ink-200 bg-white p-4 transition-shadow hover:shadow-lift"
+                className="block rounded-2xl border border-ink-200 bg-surface p-4 transition-shadow hover:shadow-lift"
               >
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0">

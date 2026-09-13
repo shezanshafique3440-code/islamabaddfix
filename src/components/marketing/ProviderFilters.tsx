@@ -45,7 +45,7 @@ export function ProviderFilters({
   );
 
   const selectClass =
-    'h-10 rounded-xl border border-ink-300 bg-white px-3 text-sm text-ink-900 hover:border-ink-400 focus:border-brand-600';
+    'h-10 rounded-xl border border-ink-300 bg-surface px-3 text-sm text-ink-900 hover:border-ink-400 focus:border-brand-600';
 
   return (
     <div className="space-y-3">
@@ -64,11 +64,11 @@ export function ProviderFilters({
           value={search}
           onChange={(event) => setSearch(event.target.value)}
           placeholder="Search by name or service..."
-          className="h-10 flex-1 rounded-xl border border-ink-300 bg-white px-3.5 text-sm text-ink-900 placeholder:text-ink-400 hover:border-ink-400 focus:border-brand-600"
+          className="h-10 flex-1 rounded-xl border border-ink-300 bg-surface px-3.5 text-sm text-ink-900 placeholder:text-ink-500 hover:border-ink-400 focus:border-brand-600"
         />
         <button
           type="submit"
-          className="h-10 rounded-xl bg-ink-900 px-4 text-sm font-semibold text-white hover:bg-ink-800"
+          className="h-10 rounded-xl bg-contrast px-4 text-sm font-semibold text-contrast-fg hover:bg-contrast-hover"
         >
           Search
         </button>
@@ -123,7 +123,7 @@ export function ProviderFilters({
             'h-10 rounded-xl border px-3.5 text-sm font-medium transition-colors',
             current.emergencyOnly
               ? 'border-alert-300 bg-alert-50 text-alert-700'
-              : 'border-ink-300 bg-white text-ink-700 hover:bg-ink-50',
+              : 'border-ink-300 bg-surface text-ink-700 hover:bg-ink-50',
           )}
         >
           🚨 Emergency only

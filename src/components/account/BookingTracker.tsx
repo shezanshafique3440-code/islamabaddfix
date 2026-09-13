@@ -60,8 +60,8 @@ export function BookingTracker({
               <span
                 className={cn(
                   'flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[0.625rem] font-bold',
-                  done && 'bg-brand-600 text-white',
-                  current && 'bg-ink-900 text-white ring-4 ring-ink-900/10',
+                  done && 'bg-brand-600 text-white dark:text-brand-50',
+                  current && 'bg-contrast text-contrast-fg ring-4 ring-ink-900/10',
                   !done && !current && 'bg-ink-200 text-ink-500',
                 )}
               >
@@ -91,7 +91,7 @@ export function BookingTracker({
             <p
               className={cn(
                 'pb-4 text-xs sm:pb-0',
-                current ? 'font-semibold text-ink-900' : done ? 'text-ink-600' : 'text-ink-400',
+                current ? 'font-semibold text-ink-900' : done ? 'text-ink-600' : 'text-ink-500',
               )}
             >
               {entry.label}

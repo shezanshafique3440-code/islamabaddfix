@@ -31,7 +31,7 @@ export default async function ContactPage() {
         <div className="grid gap-4 sm:grid-cols-2">
           <a
             href={`tel:${phone.replace(/\s+/g, '')}`}
-            className="rounded-2xl border border-ink-200 bg-white p-5 transition-shadow hover:shadow-card"
+            className="rounded-2xl border border-ink-200 bg-surface p-5 transition-shadow hover:shadow-card"
           >
             <p className="text-eyebrow uppercase text-ink-500">Phone</p>
             <p className="mt-2 text-lg font-semibold text-ink-950">{phone}</p>
@@ -40,7 +40,7 @@ export default async function ContactPage() {
 
           <a
             href={`mailto:${email}`}
-            className="rounded-2xl border border-ink-200 bg-white p-5 transition-shadow hover:shadow-card"
+            className="rounded-2xl border border-ink-200 bg-surface p-5 transition-shadow hover:shadow-card"
           >
             <p className="text-eyebrow uppercase text-ink-500">Email</p>
             <p className="mt-2 break-all text-lg font-semibold text-ink-950">{email}</p>

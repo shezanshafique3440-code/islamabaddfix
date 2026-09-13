@@ -73,7 +73,7 @@ export function TechnicianTracker({
   const positioned = snapshot.state === 'live' || snapshot.state === 'stale';
 
   return (
-    <div className="rounded-2xl border border-ink-200 bg-white p-5">
+    <div className="rounded-2xl border border-ink-200 bg-surface p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 className="text-[0.9375rem] font-semibold text-ink-900">Where {technicianName} is</h2>
         <Badge tone={snapshot.state === 'live' ? 'success' : 'warn'}>

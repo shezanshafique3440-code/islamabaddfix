@@ -79,7 +79,7 @@ export function MembershipPanel({
   return (
     <div className="space-y-8">
       {membership ? (
-        <section className="rounded-2xl border border-ink-200 bg-white p-5">
+        <section className="rounded-2xl border border-ink-200 bg-surface p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="text-[0.9375rem] font-semibold text-ink-900">{membership.planName}</h2>
@@ -144,7 +144,7 @@ export function MembershipPanel({
             {plans.map((plan) => (
               <div
                 key={plan.id}
-                className="flex flex-col rounded-2xl border border-ink-200 bg-white p-5"
+                className="flex flex-col rounded-2xl border border-ink-200 bg-surface p-5"
               >
                 <h3 className="text-[0.9375rem] font-semibold text-ink-900">{plan.name}</h3>
                 {plan.tagline ? (
@@ -358,7 +358,7 @@ function CancelDialog({
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-[0.6875rem] font-medium uppercase tracking-wide text-ink-400">{label}</dt>
+      <dt className="text-[0.6875rem] font-medium uppercase tracking-wide text-ink-500">{label}</dt>
       <dd className="mt-0.5 text-sm font-semibold text-ink-900">{value}</dd>
     </div>
   );

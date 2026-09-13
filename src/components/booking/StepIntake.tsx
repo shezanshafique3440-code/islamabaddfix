@@ -111,7 +111,7 @@ export function StepIntake({
             onChange={(event) => setText(event.target.value)}
             rows={4}
             placeholder="For example: the AC runs but no cold air comes out."
-            className="w-full rounded-xl border border-ink-300 bg-white px-3.5 py-2.5 text-[0.9375rem] leading-relaxed text-ink-900 placeholder:text-ink-400 hover:border-ink-400 focus:border-brand-600"
+            className="w-full rounded-xl border border-ink-300 bg-surface px-3.5 py-2.5 text-[0.9375rem] leading-relaxed text-ink-900 placeholder:text-ink-500 hover:border-ink-400 focus:border-brand-600"
           />
           {error ? (
             <p role="alert" className="mt-1.5 text-sm text-alert-600">
@@ -125,7 +125,7 @@ export function StepIntake({
             type="button"
             onClick={analyse}
             disabled={loading || text.trim().length < 3}
-            className="inline-flex h-10 items-center gap-2 rounded-xl bg-ink-900 px-4 text-sm font-semibold text-white hover:bg-ink-800 disabled:opacity-50"
+            className="inline-flex h-10 items-center gap-2 rounded-xl bg-contrast px-4 text-sm font-semibold text-contrast-fg hover:bg-contrast-hover disabled:opacity-50"
           >
             {loading ? 'Checking...' : 'Take a look'}
           </button>
@@ -175,14 +175,14 @@ export function StepIntake({
                   <div className="flex items-center gap-2.5">
                     <ServiceIconTile iconKey={result.category.iconKey} size="sm" />
                     <div>
-                      <dt className="text-[0.6875rem] uppercase tracking-wide text-ink-400">
+                      <dt className="text-[0.6875rem] uppercase tracking-wide text-ink-500">
                         Category
                       </dt>
                       <dd className="text-sm font-semibold text-ink-900">{result.category.name}</dd>
                     </div>
                   </div>
                   <div>
-                    <dt className="text-[0.6875rem] uppercase tracking-wide text-ink-400">
+                    <dt className="text-[0.6875rem] uppercase tracking-wide text-ink-500">
                       Urgency
                     </dt>
                     <dd className="mt-0.5">
@@ -205,14 +205,14 @@ export function StepIntake({
                   </div>
                   {result.service ? (
                     <div>
-                      <dt className="text-[0.6875rem] uppercase tracking-wide text-ink-400">
+                      <dt className="text-[0.6875rem] uppercase tracking-wide text-ink-500">
                         Service
                       </dt>
                       <dd className="text-sm font-semibold text-ink-900">{result.service.name}</dd>
                     </div>
                   ) : null}
                   <div>
-                    <dt className="text-[0.6875rem] uppercase tracking-wide text-ink-400">
+                    <dt className="text-[0.6875rem] uppercase tracking-wide text-ink-500">
                       Recommendation
                     </dt>
                     <dd className="text-sm text-ink-800">{result.recommendation}</dd>
@@ -232,7 +232,7 @@ export function StepIntake({
                   <ul className="mt-2 space-y-1.5">
                     {result.questions.map((question) => (
                       <li key={question} className="flex gap-2 text-sm text-ink-700">
-                        <span aria-hidden="true" className="text-ink-400">
+                        <span aria-hidden="true" className="text-ink-500">
                           •
                         </span>
                         {question}

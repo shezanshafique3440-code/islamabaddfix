@@ -74,7 +74,7 @@ export default async function AdminUsersPage({
           />
           <button
             type="submit"
-            className="h-10 rounded-xl bg-ink-900 px-4 text-sm font-semibold text-white hover:bg-ink-800"
+            className="h-10 rounded-xl bg-contrast px-4 text-sm font-semibold text-contrast-fg hover:bg-contrast-hover"
           >
             Search
           </button>
@@ -86,7 +86,7 @@ export default async function AdminUsersPage({
           href="/admin/users"
           className={cn(
             'rounded-lg px-3 py-2 text-sm font-medium',
-            !role ? 'bg-ink-900 text-white' : 'text-ink-600 hover:bg-ink-100',
+            !role ? 'bg-contrast text-contrast-fg' : 'text-ink-600 hover:bg-ink-100',
           )}
         >
           Sab
@@ -97,7 +97,7 @@ export default async function AdminUsersPage({
             href={`/admin/users?role=${entry}`}
             className={cn(
               'rounded-lg px-3 py-2 text-sm font-medium',
-              role === entry ? 'bg-ink-900 text-white' : 'text-ink-600 hover:bg-ink-100',
+              role === entry ? 'bg-contrast text-contrast-fg' : 'text-ink-600 hover:bg-ink-100',
             )}
           >
             {entry.replace('_', ' ').toLowerCase()}
@@ -120,7 +120,7 @@ export default async function AdminUsersPage({
                 <Th />
               </tr>
             </thead>
-            <tbody className="divide-y divide-ink-100 bg-white">
+            <tbody className="divide-y divide-ink-100 bg-surface">
               {users.map((user) => (
                 <tr key={user.id}>
                   <Td>

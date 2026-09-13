@@ -63,7 +63,7 @@ export function DisputeResolutionPanel({
 
   return (
     <>
-      <section className="rounded-2xl border border-ink-200 bg-white p-5">
+      <section className="rounded-2xl border border-ink-200 bg-surface p-5">
         <h2 className="text-[0.9375rem] font-semibold text-ink-900">Resolution</h2>
 
         {resolutionNotes ? (

@@ -71,7 +71,7 @@ export function AdminSidebar({ role, counts }: { role: Role; counts: Counts }) {
       <nav aria-label="Admin" className="sticky top-24 space-y-5">
         {GROUPS.map((group) => (
           <div key={group.label}>
-            <p className="px-3 text-[0.6875rem] font-semibold uppercase tracking-wide text-ink-400">
+            <p className="px-3 text-[0.6875rem] font-semibold uppercase tracking-wide text-ink-500">
               {group.label}
             </p>
             <div className="mt-1.5 space-y-0.5">
@@ -107,7 +107,7 @@ export function AdminSidebar({ role, counts }: { role: Role; counts: Counts }) {
           </div>
         ))}
 
-        <p className="px-3 text-xs text-ink-400">
+        <p className="px-3 text-xs text-ink-500">
           Signed in as {role === 'SUPER_ADMIN' ? 'super admin' : 'admin'}
         </p>
       </nav>

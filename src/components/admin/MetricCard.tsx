@@ -16,8 +16,8 @@ export function MetricCard({
   tone?: 'default' | 'positive' | 'negative';
 }) {
   return (
-    <div className="rounded-xl border border-ink-200 bg-white p-4">
-      <dt className="text-[0.6875rem] font-medium uppercase tracking-wide text-ink-400">{label}</dt>
+    <div className="rounded-xl border border-ink-200 bg-surface p-4">
+      <dt className="text-[0.6875rem] font-medium uppercase tracking-wide text-ink-500">{label}</dt>
       <dd
         className={
           tone === 'positive'

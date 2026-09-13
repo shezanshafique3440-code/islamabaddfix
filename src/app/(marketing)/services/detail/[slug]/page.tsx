@@ -101,7 +101,7 @@ export default async function ServiceDetailPage({ params }: Params) {
           </div>
 
           <aside className="space-y-4">
-            <div className="rounded-2xl border border-ink-200 bg-white p-5">
+            <div className="rounded-2xl border border-ink-200 bg-surface p-5">
               <h2 className="text-eyebrow uppercase text-ink-500">Indicative price</h2>
               <p className="mt-2 text-2xl font-bold tracking-tight text-ink-950">
                 {formatPaisaRange(service.minPricePaisa, service.maxPricePaisa)}

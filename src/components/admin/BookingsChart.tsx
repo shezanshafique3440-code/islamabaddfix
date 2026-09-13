@@ -158,7 +158,7 @@ export function BookingsChart({ data }: { data: Point[] }) {
 
           {hover !== null && data[hover] ? (
             <div
-              className="pointer-events-none absolute z-10 -translate-x-1/2 rounded-lg border border-ink-200 bg-white px-2.5 py-1.5 text-xs shadow-lift"
+              className="pointer-events-none absolute z-10 -translate-x-1/2 rounded-lg border border-ink-200 bg-surface px-2.5 py-1.5 text-xs shadow-lift"
               style={{
                 left: `${Math.min(88, Math.max(12, hover * groupWidth + groupWidth / 2))}%`,
                 top: '-0.5rem',
@@ -178,7 +178,7 @@ export function BookingsChart({ data }: { data: Point[] }) {
         </div>
 
         {/* Sparse x labels: first, middle, last. */}
-        <div className="mt-1.5 flex justify-between text-[0.625rem] text-ink-400">
+        <div className="mt-1.5 flex justify-between text-[0.625rem] text-ink-500">
           <span>{formatDay(data[0]!.date)}</span>
           {data.length > 4 ? (
             <span>{formatDay(data[Math.floor(data.length / 2)]!.date)}</span>
@@ -224,7 +224,7 @@ export function BookingsChart({ data }: { data: Point[] }) {
             vectorEffect="non-scaling-stroke"
           />
         </svg>
-        <div className="mt-1 flex justify-between text-[0.625rem] text-ink-400">
+        <div className="mt-1 flex justify-between text-[0.625rem] text-ink-500">
           <span>Rs. 0</span>
           <span>Peak {formatPaisa(maxRevenue)}</span>
         </div>
@@ -266,7 +266,7 @@ export function BookingsChart({ data }: { data: Point[] }) {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-ink-100 bg-white">
+            <tbody className="divide-y divide-ink-100 bg-surface">
               {data.map((point) => (
                 <tr key={point.date}>
                   <td className="px-3 py-2 text-ink-700">{formatDay(point.date)}</td>

@@ -121,7 +121,7 @@ export function OpsMap({
             className={cn(
               'rounded-lg px-3 py-2 text-sm font-medium transition-colors',
               filter === option.value
-                ? 'bg-ink-900 text-white'
+                ? 'bg-contrast text-contrast-fg'
                 : 'border border-ink-200 text-ink-600 hover:bg-ink-50',
             )}
           >
@@ -142,7 +142,7 @@ export function OpsMap({
               <section
                 key={zoneName}
                 className={cn(
-                  'rounded-2xl border bg-white p-4',
+                  'rounded-2xl border bg-surface p-4',
                   uncovered ? 'border-alert-300' : 'border-ink-200',
                 )}
               >
@@ -204,7 +204,7 @@ export function OpsMap({
 
                 {entry.providers.length > 0 ? (
                   <div className="mt-3 border-t border-ink-100 pt-2.5">
-                    <p className="text-[0.6875rem] font-semibold uppercase tracking-wide text-ink-400">
+                    <p className="text-[0.6875rem] font-semibold uppercase tracking-wide text-ink-500">
                       Providers
                     </p>
                     <ul className="mt-1.5 space-y-1">

@@ -31,7 +31,7 @@ export default async function AdminSettingsPage() {
 
       {/* An account that can issue refunds and approve providers deserves more
           than a password. */}
-      <section className="mt-6 rounded-2xl border border-ink-200 bg-white p-5">
+      <section className="mt-6 rounded-2xl border border-ink-200 bg-surface p-5">
         <h2 className="text-[0.9375rem] font-semibold text-ink-900">Protecting your account</h2>
         <div className="mt-4">
           <TwoFactorPanel initial={twoFactor} email={ctx.user.email} />

@@ -93,7 +93,7 @@ export function BookingChat({
   const other = audience === 'customer' ? 'technician' : 'customer';
 
   return (
-    <div className="rounded-2xl border border-ink-200 bg-white">
+    <div className="rounded-2xl border border-ink-200 bg-surface">
       <div className="flex items-center justify-between border-b border-ink-100 px-4 py-3">
         <h3 className="text-[0.9375rem] font-semibold text-ink-900">Messages</h3>
         <span className="text-xs text-ink-500">Only you and {other} — plus the support team.</span>
@@ -152,7 +152,7 @@ export function BookingChat({
               }}
               rows={2}
               placeholder="Write a message…"
-              className="min-h-[2.75rem] flex-1 resize-y rounded-xl border border-ink-300 bg-white px-3 py-2 text-sm text-ink-900 placeholder:text-ink-400 focus:border-brand-600"
+              className="min-h-[2.75rem] flex-1 resize-y rounded-xl border border-ink-300 bg-surface px-3 py-2 text-sm text-ink-900 placeholder:text-ink-500 focus:border-brand-600"
             />
             <Button type="submit" loading={sending} disabled={draft.trim().length === 0}>
               Send
@@ -186,7 +186,7 @@ function Bubble({ message }: { message: Message }) {
       <div
         className={cn(
           'max-w-[80%] rounded-2xl px-3.5 py-2',
-          mine ? 'bg-brand-700 text-white' : 'bg-ink-100 text-ink-900',
+          mine ? 'bg-brand-700 text-white dark:text-brand-50' : 'bg-ink-100 text-ink-900',
         )}
       >
         {!mine ? (

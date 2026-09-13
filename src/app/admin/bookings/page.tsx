@@ -52,7 +52,7 @@ export default async function AdminBookingsPage({
           />
           <button
             type="submit"
-            className="h-10 rounded-xl bg-ink-900 px-4 text-sm font-semibold text-white hover:bg-ink-800"
+            className="h-10 rounded-xl bg-contrast px-4 text-sm font-semibold text-contrast-fg hover:bg-contrast-hover"
           >
             Search
           </button>
@@ -68,7 +68,7 @@ export default async function AdminBookingsPage({
             className={cn(
               'rounded-lg px-3 py-2 text-sm font-medium transition-colors',
               scope === tab.key
-                ? 'bg-ink-900 text-white'
+                ? 'bg-contrast text-contrast-fg'
                 : 'text-ink-600 hover:bg-ink-100 hover:text-ink-900',
             )}
           >

@@ -76,8 +76,8 @@ export default async function TicketPage({ params }: Params) {
         </Badge>
       </div>
 
-      <div className="mt-5 rounded-2xl border border-ink-200 bg-white p-5">
-        <p className="text-xs font-semibold uppercase tracking-wide text-ink-400">Your message</p>
+      <div className="mt-5 rounded-2xl border border-ink-200 bg-surface p-5">
+        <p className="text-xs font-semibold uppercase tracking-wide text-ink-500">Your message</p>
         <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-ink-800">
           {ticket.description}
         </p>

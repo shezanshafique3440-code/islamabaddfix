@@ -28,7 +28,7 @@ export default async function NotificationsPage() {
       </div>
 
       {notifications.length > 0 ? (
-        <ul className="mt-6 divide-y divide-ink-200 overflow-hidden rounded-2xl border border-ink-200 bg-white">
+        <ul className="mt-6 divide-y divide-ink-200 overflow-hidden rounded-2xl border border-ink-200 bg-surface">
           {notifications.map((entry) => {
             const body = (
               <div
@@ -47,7 +47,7 @@ export default async function NotificationsPage() {
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-semibold text-ink-900">{entry.title}</p>
                   <p className="mt-0.5 text-sm leading-relaxed text-ink-600">{entry.body}</p>
-                  <p className="mt-1 text-xs text-ink-400">{formatRelative(entry.createdAt)}</p>
+                  <p className="mt-1 text-xs text-ink-500">{formatRelative(entry.createdAt)}</p>
                 </div>
               </div>
             );

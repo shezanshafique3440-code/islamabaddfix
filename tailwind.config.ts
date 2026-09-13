@@ -8,77 +8,66 @@ import type { Config } from 'tailwindcss';
  * marginally more distinctive face. Weight, tracking and scale carry the
  * typographic identity instead.
  */
+/** Tailwind steps for one palette, each pointing at its CSS variable. */
+const STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950] as const;
+
+function ramp(name: string): Record<string, string> {
+  return Object.fromEntries(
+    STEPS.map((step) => [String(step), `rgb(var(--c-${name}-${step}) / <alpha-value>)`]),
+  );
+}
+
 const config: Config = {
   content: ['./src/**/*.{ts,tsx}'],
+  // Class strategy: the theme is chosen explicitly and stored, so a media
+  // query alone would fight the user's own choice.
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        brand: {
-          50: '#eefbf5',
-          100: '#d6f5e6',
-          200: '#b0e9d0',
-          300: '#7cd7b4',
-          400: '#45bd93',
-          500: '#1fa179',
-          600: '#0f8663',
-          700: '#0b6b51',
-          800: '#0b5442',
-          900: '#0a4537',
-          950: '#032720',
-        },
-        ink: {
-          50: '#f7f8f8',
-          100: '#eef0f1',
-          200: '#d8dde0',
-          300: '#b6bfc4',
-          400: '#8d9aa1',
-          500: '#6e7c84',
-          600: '#57646b',
-          700: '#475257',
-          800: '#3d464a',
-          900: '#242b2e',
-          950: '#14181a',
-        },
-        alert: {
-          50: '#fef3f2',
-          100: '#fee4e2',
-          200: '#fecdca',
-          400: '#f97066',
-          500: '#f04438',
-          600: '#d92d20',
-          700: '#b42318',
-        },
-        warn: {
-          50: '#fffaeb',
-          100: '#fef0c7',
-          200: '#fedf89',
-          500: '#f79009',
-          600: '#dc6803',
-          700: '#b54708',
-        },
-        info: {
-          50: '#eff8ff',
-          100: '#d1e9ff',
-          500: '#2e90fa',
-          600: '#1570ef',
-          700: '#175cd3',
+        /*
+         * Every palette resolves through a CSS variable so the dark theme can
+         * restate it without touching a single component class. The variables
+         * hold space-separated RGB channels, which is what lets Tailwind's
+         * `<alpha-value>` keep working — `bg-surface/70` still means something.
+         */
+        surface: {
+          DEFAULT: 'rgb(var(--c-surface) / <alpha-value>)',
+          raised: 'rgb(var(--c-surface-raised) / <alpha-value>)',
+          sunken: 'rgb(var(--c-surface-sunken) / <alpha-value>)',
         },
         /*
-         * Categorical chart hues, in fixed assignment order.
+         * Two tokens for the "inverted" pattern, because it means two things.
          *
-         * Deliberately separate from the status colours above: amber and red
-         * mean "warning" and "problem" everywhere else in the product, so
-         * reusing them as data series would make a chart look like an alert.
+         * `contrast` is a small element deliberately opposite to the page — a
+         * dark chip on white. On a dark page the honest equivalent is a light
+         * chip, so it flips.
          *
-         * Validated with the dataviz palette checker (light surface, all pairs):
-         * worst adjacent CVD deltaE 10.0 deutan / 13.2 tritan, normal-vision 21.9 —
-         * all above the 8 floor, so colour alone is legible for CVD readers,
-         * and every chart still carries a legend plus direct labels.
+         * `panel` is a large marketing block that is dark by design. It stays
+         * dark in both themes and merely lifts off the background; flipping it
+         * would put a white slab in the middle of a dark page.
          */
+        contrast: {
+          DEFAULT: 'rgb(var(--c-contrast) / <alpha-value>)',
+          hover: 'rgb(var(--c-contrast-hover) / <alpha-value>)',
+          active: 'rgb(var(--c-contrast-active) / <alpha-value>)',
+          fg: 'rgb(var(--c-contrast-fg) / <alpha-value>)',
+        },
+        panel: {
+          DEFAULT: 'rgb(var(--c-panel) / <alpha-value>)',
+          fg: 'rgb(var(--c-panel-fg) / <alpha-value>)',
+          muted: 'rgb(var(--c-panel-muted) / <alpha-value>)',
+        },
+        scrim: 'rgb(var(--c-scrim) / <alpha-value>)',
+        brand: ramp('brand'),
+        ink: ramp('ink'),
+        alert: ramp('alert'),
+        warn: ramp('warn'),
+        info: ramp('info'),
         chart: {
-          1: '#0f8663',
-          2: '#6d28d9',
-          3: '#b45309',
+          1: 'rgb(var(--c-chart-1) / <alpha-value>)',
+          2: 'rgb(var(--c-chart-2) / <alpha-value>)',
+          3: 'rgb(var(--c-chart-3) / <alpha-value>)',
         },
       },
       fontFamily: {
